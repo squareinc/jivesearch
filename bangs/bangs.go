@@ -90,6 +90,13 @@ func New() *Bangs {
 			},
 		},
 		{
+			[]string{"gi"},
+			"Google Images", "search",
+			[]Region{
+				{def, "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch"},
+			},
+		},
+		{
 			[]string{"gru", "googleru"},
 			"Google Russia", "search",
 			[]Region{
