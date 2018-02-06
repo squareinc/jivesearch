@@ -13,8 +13,8 @@ type Characters struct {
 	Answer
 }
 
-func (c *Characters) setQuery(r *http.Request) answerer {
-	c.Answer.setQuery(r)
+func (c *Characters) setQuery(r *http.Request, qv string) answerer {
+	c.Answer.setQuery(r, qv)
 	return c
 }
 

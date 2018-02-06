@@ -11,8 +11,8 @@ type UserAgent struct {
 	Answer
 }
 
-func (u *UserAgent) setQuery(r *http.Request) answerer {
-	u.Answer.setQuery(r)
+func (u *UserAgent) setQuery(r *http.Request, qv string) answerer {
+	u.Answer.setQuery(r, qv)
 	return u
 }
 

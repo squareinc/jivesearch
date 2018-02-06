@@ -45,23 +45,23 @@
       {{end}}
       <div id="results_container" class="pure-u-1 pure-u-xl-22-24">
         {{if and .Instant .Instant.Triggered}}
-          {{if or .Instant.Text .Instant.HTML}}
+          {{if or .Instant.HTML .Instant.Text .Instant.Raw }}
           <div id="instant" class="pure-u-1 pure-u-xl-15-24">
             <div id="answer" class="pure-u-1">
               <div style="margin:15px;margin-bottom:5px;">
               {{if .Instant.HTML}}
                 {{.Instant.HTML|SafeHTML}}
-              {{else}}
+              {{else if .Instant.Text}}
                 {{.Instant.Text}}
+              {{else if .Instant.Raw}}
+                {{InstantFormatter .Instant.Raw $context.Region|SafeHTML}}
               {{end}}
               </div>
               <div class="pure-u-1">
                 <div style="float:right;text-align:right;cursor:pointer;padding:15px;padding-top:5px;">
                   <div id="moreinfo" class="pure-u-1">More Info</div>
                   <div id="contributors" class="pure-u-1" style="display:none;"><br>
-                    <div class="pure-u-1">
-                      This Instant Answer was made by the following contributors:
-                    </div>
+                    <div class="pure-u-1">Contributors</div>
                     {{range $contributor := .Instant.Contributors}}
                     <div class="pure-u-1" style="float:right;text-align:right;">
                       {{if $contributor.Github}}
@@ -186,16 +186,20 @@
             {{end}}
             </div>
 
+            {{$now := Now}}
             {{$death := .Wikipedia.Claims.Death}}
-            {{range $i, $d := .Wikipedia.Claims.Birthday}}
+
+            {{range $i, $b := .Wikipedia.Claims.Birthday}}
               {{if eq $i 0}} 
               <div class="pure-u-1 wikipedia_claim">
-                <em>Born:</em>
+                <em>Born:</em> {{WikiDateTime $b}}
                 {{if $death}}
-                  {{WikiDateTime $d false}}
+                  {{range $j, $d := $death}}
+                    {{if eq $j 0}}(Age {{WikiYears $b $d}}){{end}}                
+                  {{end}}
                 {{else}}
-                  {{WikiDateTime $d true}}
-                {{end}}             
+                  (Age {{WikiYears $b $now}})
+                {{end}}
               </div>
               {{end}} 
             {{end}} 
@@ -203,7 +207,7 @@
             {{range $i, $d := .Wikipedia.Claims.Death}}
               {{if eq $i 0}} 
               <div class="pure-u-1 wikipedia_claim">
-                <em>Died:</em> {{WikiDateTime $d false}}                
+                <em>Died:</em> {{WikiDateTime $d}}                
               </div>
               {{end}}
             {{end}}
@@ -217,10 +221,10 @@
                 {{WikiLabel .Labels $context.Preferred}}
               {{end}}
               {{range $i, $s := $c.Start}}
-                {{if eq $i 0}}(m. {{WikiDateTime $s false}}{{end}}{{if not $c.End}}){{end}}
+                {{if eq $i 0}}(m. {{WikiDateTime $s}}{{end}}{{if not $c.End}}){{end}}
               {{end}}
               {{range $i, $e := $c.End}}
-                {{if eq $i 0}}- {{WikiDateTime $e false}}){{end}}
+                {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
               {{end}}              
               </div>
             {{end}}
@@ -229,7 +233,7 @@
             {{range $i, $c := .Wikipedia.Claims.Start}}
               {{if eq $i 0}}
               <div class="pure-u-1 wikipedia_claim">
-                <em>Started:</em> {{WikiDateTime $c false}} 
+                <em>Started:</em> {{WikiDateTime $c}} 
                 {{range $j, $l := $loc}}
                   {{if eq $j 0}}
                     - {{WikiLabel .Labels $context.Preferred}}
@@ -248,10 +252,10 @@
                 {{WikiLabel .Labels $context.Preferred}}
               {{end}}
               {{range $i, $s := $c.Start}}
-                {{if eq $i 0}}({{WikiDateTime $s false}}{{end}}{{if not $c.End}} - ){{end}}
+                {{if eq $i 0}}({{WikiDateTime $s}}{{end}}{{if not $c.End}} - ){{end}}
               {{end}}
               {{range $i, $e := $c.End}}
-                {{if eq $i 0}}- {{WikiDateTime $e false}}){{end}}
+                {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
               {{end}}              
               </div>
             {{end}}

@@ -12,21 +12,25 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"golang.org/x/text/language"
 )
 
 var funcMap = template.FuncMap{
-	"Commafy":       commafy,
-	"SafeHTML":      safeHTML,
-	"Truncate":      truncate,
-	"HMACKey":       hmacKey,
-	"WikiCanonical": wikiCanonical,
-	"WikiDateTime":  wikiDateTime,
-	"WikiLabel":     wikiLabel,
-	"WikiJoin":      wikiJoin,
-	"WikiAmount":    wikiAmount,
+	"Commafy":          commafy,
+	"SafeHTML":         safeHTML,
+	"Truncate":         truncate,
+	"HMACKey":          hmacKey,
+	"InstantFormatter": instantFormatter,
+	"Now":              now,
+	"WikiCanonical":    wikiCanonical,
+	"WikiDateTime":     wikiDateTime,
+	"WikiYears":        wikiYears,
+	"WikiLabel":        wikiLabel,
+	"WikiJoin":         wikiJoin,
+	"WikiAmount":       wikiAmount,
 }
 
 // where did this come from?
@@ -94,16 +98,49 @@ func hmacKey(u string) string {
 	return base64.URLEncoding.EncodeToString(h.Sum(nil))
 }
 
+func instantFormatter(raw interface{}, r language.Region) string {
+	switch raw.(type) {
+	case []wikipedia.Quantity: // e.g. height, weight, etc.
+		i := raw.([]wikipedia.Quantity)
+		if len(i) == 0 {
+			return ""
+		}
+		return wikiAmount(i[0], r)
+	case instant.Age:
+		a := raw.(instant.Age)
+		if a.Alive {
+			return fmt.Sprintf(`<em>Age:</em> %d Years<br><span style="color:#666;">%v</span>`,
+				wikiYears(a.Birthday.Birthday, time.Now()), wikiDateTime(a.Birthday.Birthday))
+		}
+		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
+			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
+	case instant.Birthday:
+		b := raw.(instant.Birthday)
+		return wikiDateTime(b.Birthday)
+	case instant.Death:
+		d := raw.(instant.Death)
+		return fmt.Sprintf("<em>Date of Death:</em> %v", wikiDateTime(d.Death))
+	}
+
+	return ""
+}
+
+func now() time.Time {
+	return time.Now()
+}
+
 // wikiCanonical returns the canonical form of a wikipedia title.
 // if this breaks Wikidata dumps have "sitelinks"
 func wikiCanonical(t string) string {
 	return strings.Replace(t, " ", "_", -1)
 }
 
-// wikiDateTime tries to format a date with optional time.
+// wikiDateTime formats a date with optional time.
 // We assume Gregorian calendar below. (Julian calendar TODO).
 // Note: Wikidata only uses Gregorian and Julian calendars.
-func wikiDateTime(dt wikipedia.DateTime, includeAge bool) string {
+func wikiDateTime(dt wikipedia.DateTime) string {
+	// we loop through the formats until one is found
+	// starting with most specific and ending with most general order
 	for j, f := range []string{time.RFC3339Nano, "2006"} {
 		var ff string
 
@@ -121,22 +158,50 @@ func wikiDateTime(dt wikipedia.DateTime, includeAge bool) string {
 			continue
 		}
 
-		formatted := t.Format(ff)
-
-		if includeAge {
-			now := time.Now()
-			years := now.Year() - t.Year()
-			if now.YearDay() < t.YearDay() {
-				years--
-			}
-
-			return fmt.Sprintf("%v (age %d)", formatted, years)
-		}
-
-		return formatted
+		return t.Format(ff)
 	}
 
 	return ""
+}
+
+// wikiYears calculates the number of years (rounded down) betwee two dates.
+// e.g. a person's age
+func wikiYears(start, end interface{}) int {
+	var parseDateTime = func(d interface{}) time.Time {
+		switch d.(type) {
+		case wikipedia.DateTime:
+			dt := d.(wikipedia.DateTime)
+			for j, f := range []string{time.RFC3339Nano, "2006"} {
+				if j == 1 {
+					dt.Value = dt.Value[:4]
+				}
+				t, err := time.Parse(f, dt.Value)
+				if err != nil {
+					log.Debug.Println(err)
+					continue
+				}
+				return t
+			}
+
+		case time.Time:
+			return d.(time.Time)
+		default:
+			log.Debug.Printf("unknown type %T\n", d)
+		}
+		return time.Time{}
+	}
+
+	s := parseDateTime(start)
+	e := parseDateTime(end)
+
+	years := e.Year() - s.Year()
+	if e.YearDay() < s.YearDay() {
+		years--
+	}
+
+	log.Info.Println(s, e, s.YearDay(), e.YearDay(), years)
+
+	return years
 }
 
 // wikiLabel extracts the closest label for a Wikipedia Item using a language matcher
@@ -170,7 +235,7 @@ func wikiJoin(items []wikipedia.Wikidata, preferred []language.Tag) string {
 	return strings.Join(sl, ", ")
 }
 
-// wikiAmount displays a unit in meters if non-US.
+// wikiAmount displays a unit in meters, feet, etc depending on user's region
 func wikiAmount(q wikipedia.Quantity, r language.Region) string {
 	var f string
 

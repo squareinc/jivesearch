@@ -12,8 +12,8 @@ type CamelCase struct {
 	Answer
 }
 
-func (c *CamelCase) setQuery(r *http.Request) answerer {
-	c.Answer.setQuery(r)
+func (c *CamelCase) setQuery(r *http.Request, qv string) answerer {
+	c.Answer.setQuery(r, qv)
 	return c
 }
 

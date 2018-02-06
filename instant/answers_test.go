@@ -19,9 +19,14 @@ func TestDetect(t *testing.T) {
 		},
 	}
 
-	for i, ia := range answers() {
+	i := Instant{
+		QueryVar: "q",
+		Fetcher:  &mockFetcher{},
+	}
+
+	for j, ia := range i.answers() {
 		if len(ia.tests()) == 0 {
-			t.Fatalf("No tests for answer #%d", i)
+			t.Fatalf("No tests for answer #%d", j)
 		}
 		cases = append(cases, ia.tests()...)
 	}
@@ -40,7 +45,7 @@ func TestDetect(t *testing.T) {
 
 			r.Header.Set("User-Agent", c.userAgent)
 
-			got := Detect(r)
+			got := i.Detect(r)
 
 			var solved bool
 

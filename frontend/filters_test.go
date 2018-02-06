@@ -167,8 +167,7 @@ func TestWikiCanonical(t *testing.T) {
 
 func TestWikiDateTime(t *testing.T) {
 	type args struct {
-		dt  wikipedia.DateTime
-		age bool
+		dt wikipedia.DateTime
 	}
 
 	for _, tt := range []struct {
@@ -183,9 +182,8 @@ func TestWikiDateTime(t *testing.T) {
 					Value:    "1972-12-31T00:00:00Z",
 					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 				},
-				true,
 			},
-			want: "December 31, 1972 (age 45)",
+			want: "December 31, 1972",
 		},
 		{
 			name: "year",
@@ -194,13 +192,12 @@ func TestWikiDateTime(t *testing.T) {
 					Value:    "1987",
 					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 				},
-				false,
 			},
 			want: "1987",
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			got := wikiDateTime(tt.args.dt, tt.args.age)
+			got := wikiDateTime(tt.args.dt)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)

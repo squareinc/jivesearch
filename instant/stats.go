@@ -18,8 +18,8 @@ type Stats struct {
 
 var reStats *regexp.Regexp
 
-func (s *Stats) setQuery(r *http.Request) answerer {
-	s.Answer.setQuery(r)
+func (s *Stats) setQuery(r *http.Request, qv string) answerer {
+	s.Answer.setQuery(r, qv)
 	return s
 }
 

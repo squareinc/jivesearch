@@ -15,8 +15,8 @@ type Frequency struct {
 
 var reFrequency *regexp.Regexp
 
-func (f *Frequency) setQuery(r *http.Request) answerer {
-	f.Answer.setQuery(r)
+func (f *Frequency) setQuery(r *http.Request, qv string) answerer {
+	f.Answer.setQuery(r, qv)
 	return f
 }
 

@@ -8,14 +8,18 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"github.com/jivesearch/jivesearch/wikipedia"
 )
 
-// QueryVar is the http request variable to parse
-var QueryVar = "q"
+// Instant holds config information for the instant answers
+type Instant struct {
+	QueryVar string
+	wikipedia.Fetcher
+}
 
 // answerer outlines methods for an instant answer
 type answerer interface {
-	setQuery(r *http.Request) answerer
+	setQuery(r *http.Request, qv string) answerer
 	setUserAgent(r *http.Request) answerer
 	setType() answerer
 	setContributors() answerer
@@ -34,6 +38,7 @@ type Answer struct {
 	userAgent    string
 	triggers     []string
 	triggerFuncs []triggerFunc
+	triggerWord  string
 	remainder    string
 	Solution
 }
@@ -43,6 +48,7 @@ type Solution struct {
 	Type         string                     `json:"type,omitempty"`
 	Triggered    bool                       `json:"triggered"`
 	Contributors []contributors.Contributor `json:"contributors,omitempty"`
+	Raw          interface{}                `json:"answer,omitempty"`
 	Text         string                     `json:"text,omitempty"`
 	HTML         string                     `json:"html,omitempty"` // TODO: custom html
 	Err          error                      `json:"error,omitempty"`
@@ -50,10 +56,10 @@ type Solution struct {
 }
 
 // Detect loops through all instant answers to find a solution
-var Detect = func(r *http.Request) Solution {
-	for _, ia := range answers() {
+func (i *Instant) Detect(r *http.Request) Solution {
+	for _, ia := range i.answers() {
 		ia.setUserAgent(r)
-		ia.setQuery(r).setTriggers().setTriggerFuncs()
+		ia.setQuery(r, i.QueryVar).setTriggers().setTriggerFuncs()
 		if triggered := ia.trigger(); triggered {
 			ia.setType().
 				setContributors().
@@ -69,8 +75,8 @@ var Detect = func(r *http.Request) Solution {
 // setQuery sets the query field
 // If future answers need custom setQuery methods we
 // could implement same model as we do for setTriggerFuncs()
-func (a *Answer) setQuery(r *http.Request) {
-	q := strings.ToLower(strings.TrimSpace(r.FormValue(QueryVar)))
+func (a *Answer) setQuery(r *http.Request, qv string) {
+	q := strings.ToLower(strings.TrimSpace(r.FormValue(qv)))
 	q = strings.Trim(q, "?")
 	a.query = strings.Join(strings.Fields(q), " ") // Replace multiple whitespace w/ single whitespace
 }
@@ -90,6 +96,7 @@ type triggerFunc func(a *Answer) *Answer
 var startsWith triggerFunc = func(a *Answer) *Answer {
 	for _, w := range a.triggers {
 		if pre := strings.TrimPrefix(a.query, w); pre != a.query {
+			a.triggerWord = w
 			a.remainder = strings.TrimSpace(pre)
 			a.Triggered = true
 			return a
@@ -101,6 +108,7 @@ var startsWith triggerFunc = func(a *Answer) *Answer {
 var endsWith triggerFunc = func(a *Answer) *Answer {
 	for _, w := range a.triggers {
 		if suff := strings.TrimSuffix(a.query, w); suff != a.query {
+			a.triggerWord = w
 			a.remainder = strings.TrimSpace(suff)
 			a.Triggered = true
 			return a
@@ -121,7 +129,7 @@ type test struct {
 
 // answers returns a slice of all instant answers
 // Note: Since we modify fields of the answers we probably shouldn't reuse them....
-func answers() []answerer {
+func (i *Instant) answers() []answerer {
 	return []answerer{
 		&BirthStone{},
 		&CamelCase{},
@@ -135,6 +143,7 @@ func answers() []answerer {
 		&Stats{},
 		&Temperature{},
 		&UserAgent{},
+		&WikiData{Fetcher: i.Fetcher}, // seems awkward to do this every call
 	}
 }
 

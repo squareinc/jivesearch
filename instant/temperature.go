@@ -14,8 +14,8 @@ type Temperature struct {
 	Answer
 }
 
-func (t *Temperature) setQuery(r *http.Request) answerer {
-	t.Answer.setQuery(r)
+func (t *Temperature) setQuery(r *http.Request, qv string) answerer {
+	t.Answer.setQuery(r, qv)
 	return t
 }
 

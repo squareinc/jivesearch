@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/bangs"
+	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/vote"
@@ -26,6 +27,7 @@ import (
 type Frontend struct {
 	Document
 	*bangs.Bangs
+	*instant.Instant
 	Suggest suggest.Suggester
 	Search  search.Fetcher
 	Wikipedia

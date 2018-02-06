@@ -11,8 +11,8 @@ type BirthStone struct {
 	Answer
 }
 
-func (b *BirthStone) setQuery(r *http.Request) answerer {
-	b.Answer.setQuery(r)
+func (b *BirthStone) setQuery(r *http.Request, qv string) answerer {
+	b.Answer.setQuery(r, qv)
 	return b
 }
 

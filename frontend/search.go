@@ -161,7 +161,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}(d.Context.Q, ac)
 
 		go func(r *http.Request) {
-			ic <- instant.Detect(r)
+			ic <- f.Instant.Detect(r)
 		}(r)
 
 		go func(d data) {

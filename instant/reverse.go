@@ -12,8 +12,8 @@ type Reverse struct {
 	Answer
 }
 
-func (r *Reverse) setQuery(req *http.Request) answerer {
-	r.Answer.setQuery(req)
+func (r *Reverse) setQuery(req *http.Request, qv string) answerer {
+	r.Answer.setQuery(req, qv)
 	return r
 }
 

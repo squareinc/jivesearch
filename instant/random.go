@@ -16,8 +16,8 @@ type Random struct {
 
 var reRandom *regexp.Regexp
 
-func (r *Random) setQuery(req *http.Request) answerer {
-	r.Answer.setQuery(req)
+func (r *Random) setQuery(req *http.Request, qv string) answerer {
+	r.Answer.setQuery(req, qv)
 	return r
 }
 

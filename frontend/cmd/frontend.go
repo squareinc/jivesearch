@@ -14,6 +14,7 @@ import (
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/frontend"
+	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
@@ -96,7 +97,6 @@ func main() {
 		}
 	}
 
-	// Setup the voting backend. Tables will be setup automatically.
 	// The database needs to be setup beforehand.
 	db, err := sql.Open("postgres",
 		fmt.Sprintf(
@@ -113,6 +113,13 @@ func main() {
 
 	defer db.Close()
 	db.SetMaxIdleConns(0)
+
+	f.Instant = &instant.Instant{
+		QueryVar: "q",
+		Fetcher: &wikipedia.PostgreSQL{
+			DB: db,
+		},
+	}
 
 	f.Vote = &vote.PostgreSQL{
 		DB:    db,

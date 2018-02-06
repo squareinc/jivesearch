@@ -31,8 +31,8 @@ type Person struct {
 	End   string
 }
 
-func (p *Potus) setQuery(r *http.Request) answerer {
-	p.Answer.setQuery(r)
+func (p *Potus) setQuery(r *http.Request, qv string) answerer {
+	p.Answer.setQuery(r, qv)
 	return p
 }
 

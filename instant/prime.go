@@ -18,8 +18,8 @@ type Prime struct {
 
 var rePrime *regexp.Regexp
 
-func (p *Prime) setQuery(r *http.Request) answerer {
-	p.Answer.setQuery(r)
+func (p *Prime) setQuery(r *http.Request, qv string) answerer {
+	p.Answer.setQuery(r, qv)
 	return p
 }
 

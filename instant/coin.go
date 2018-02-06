@@ -12,8 +12,8 @@ type Coin struct {
 	Answer
 }
 
-func (c *Coin) setQuery(r *http.Request) answerer {
-	c.Answer.setQuery(r)
+func (c *Coin) setQuery(r *http.Request, qv string) answerer {
+	c.Answer.setQuery(r, qv)
 	return c
 }
 

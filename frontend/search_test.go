@@ -215,7 +215,11 @@ func TestSearchHandler(t *testing.T) {
 				Document: Document{
 					Matcher: matcher,
 				},
-				Bangs:   bangs.New(),
+				Bangs: bangs.New(),
+				Instant: &instant.Instant{
+					QueryVar: "q",
+					Fetcher:  &mockWikipedia{},
+				},
 				Suggest: &mockSuggester{},
 				Search:  &mockSearch{},
 				Wikipedia: Wikipedia{
@@ -223,11 +227,6 @@ func TestSearchHandler(t *testing.T) {
 					Fetcher: &mockWikipedia{},
 				},
 				Vote: &mockVoter{},
-			}
-
-			// override instant answer detection for mocking
-			instant.Detect = func(r *http.Request) instant.Solution {
-				return instant.Solution{}
 			}
 
 			req, err := http.NewRequest("GET", "/", nil)
