@@ -110,6 +110,24 @@ func New() *Bangs {
 				{def, "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all"},
 			},
 		},
+		{
+			[]string{"so", "stackoverflow"},
+			"Stack Overflow", "programming",
+			[]Region{
+				{def, "https://stackoverflow.com/search?q={{{term}}}"},
+			},
+		},
+		{
+			// The regional wikis don't seem to redirect to the uppercase form like enwiki does.
+			// e.g. "bob marley" in German redirects to "https://de.wikipedia.org/wiki/Bob_marley", instead of "Bob_Marley"
+			[]string{"w", "wikipedia"},
+			"Wikipedia", "encyclopedia",
+			[]Region{
+				{def, "https://en.wikipedia.org/wiki/{{{term}}}"},
+				{"de", "https://de.wikipedia.org/wiki/{{{term}}}"},
+				{"fr", "https://fr.wikipedia.org/wiki/{{{term}}}"},
+			},
+		},
 	}
 
 	// create a map for faster lookups
