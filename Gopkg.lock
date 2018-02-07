@@ -337,7 +337,7 @@
     ".",
     "third_party/http"
   ]
-  revision = "1933f5bf1c1f658b03d941ee511aed4c417c0c78"
+  revision = "82ba3b64454920e6e46aa9cce2b1609838877b6a"
 
 [solve-meta]
   analyzer-name = "dep"

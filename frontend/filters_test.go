@@ -4,7 +4,9 @@ import (
 	"html/template"
 	"reflect"
 	"testing"
+	"time"
 
+	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -113,7 +115,8 @@ func TestTruncate(t *testing.T) {
 
 func TestHMACKey(t *testing.T) {
 	type args struct {
-		u string
+		u      string
+		secret string
 	}
 
 	for _, tt := range []struct {
@@ -123,17 +126,132 @@ func TestHMACKey(t *testing.T) {
 	}{
 		{
 			name: "basic",
-			args: args{"http://www.example.com/some/path/?query=string"},
+			args: args{"http://www.example.com/some/path/?query=string", "my_secret"},
 			want: "LGSCFXg045ByB4ShdCHRIDlrPUDJ9eyFSrGz0HrtfAo=",
+		},
+		{
+			name: "empty secret",
+			args: args{"http://www.example.com/some/path/?query=string", ""},
+			want: "oz13AtRiNq7h_rBVZMXccxPnDfnVHR12zd4honudDk4=",
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			hmacSecret = func() string { return "my_secret" }
+			hmacSecret = func() string { return tt.args.secret }
 
 			got := hmacKey(tt.args.u)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInstantFormatter(t *testing.T) {
+	type args struct {
+		raw interface{}
+		l   language.Tag
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "empty",
+			args: args{
+				[]wikipedia.Quantity{},
+				language.English,
+			},
+			want: "",
+		},
+		{
+			name: "kg",
+			args: args{
+				[]wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				language.Italian,
+			},
+			want: "147 kg",
+		},
+		{
+			name: "age (alive)",
+			args: args{
+				instant.Age{
+					Birthday: instant.Birthday{
+						Birthday: wikipedia.DateTime{
+							Value:    "1972-12-31T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<em>Age:</em> 45 Years<br><span style="color:#666;">December 31, 1972</span>`,
+		},
+		{
+			name: "age (at time of death)",
+			args: args{
+				instant.Age{
+					Birthday: instant.Birthday{
+						Birthday: wikipedia.DateTime{
+							Value:    "1956-04-30T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+					Death: instant.Death{
+						Death: wikipedia.DateTime{
+							Value:    "1984-03-13T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<em>Age at Death:</em> 27 Years<br><span style="color:#666;">April 30, 1956 - March 13, 1984</span>`,
+		},
+		{
+			name: "birthday",
+			args: args{
+				instant.Birthday{
+					Birthday: wikipedia.DateTime{
+						Value:    "1938-07-31T00:00:00Z",
+						Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+					},
+				},
+				language.English,
+			},
+			want: `July 31, 1938`,
+		},
+		{
+			name: "death",
+			args: args{
+				instant.Death{
+					Death: wikipedia.DateTime{
+						Value:    "2015-05-14T00:00:00Z",
+						Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+					},
+				},
+				language.English,
+			},
+			want: `May 14, 2015`,
+		},
+		{
+			name: "unknown",
+			args: args{1, language.English},
+			want: "",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			r, _ := tt.args.l.Region()
+			now = func() time.Time {
+				return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
+			}
+
+			got := instantFormatter(tt.args.raw, r)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %q, want %q", got, tt.want)
 			}
 		})
 	}
@@ -198,6 +316,85 @@ func TestWikiDateTime(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := wikiDateTime(tt.args.dt)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiYears(t *testing.T) {
+	type args struct {
+		start interface{}
+		end   interface{}
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want int
+	}{
+		{
+			name: "zero",
+			args: args{
+				time.Time{},
+				time.Time{},
+			},
+			want: 0,
+		},
+		{
+			name: "basic",
+			args: args{
+				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
+				time.Date(2017, 11, 18, 20, 34, 58, 651387237, time.UTC),
+			},
+			want: 42,
+		},
+		{
+			name: "almost 42",
+			args: args{
+				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
+				time.Date(2017, 11, 16, 20, 34, 58, 651387237, time.UTC),
+			},
+			want: 41,
+		},
+		{
+			name: "wikiDateTime",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1854-12-31T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+				wikipedia.DateTime{
+					Value:    "1912-04-30T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: 57,
+		},
+		{
+			name: "wikiDateTime year",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1794",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+				wikipedia.DateTime{
+					Value:    "1954-02-14T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: 160,
+		},
+		{
+			name: "wrong type",
+			args: args{5, 12},
+			want: 0,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiYears(tt.args.start, tt.args.end)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)

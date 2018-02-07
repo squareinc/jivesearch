@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"math"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -79,16 +80,15 @@ func truncate(txt string, max int, preserve bool) string {
 }
 
 var hmacSecret = func() string {
-	secret := os.Getenv("hmac_secret")
-	if secret == "" {
-		log.Info.Println(`hmac secret for image proxy is blank. Please set the "hmac_secret" env variable`)
-	}
-	return secret
+	return os.Getenv("hmac_secret")
 }
 
 // hmacKey generates an hmac key for our reverse image proxy
 func hmacKey(u string) string {
 	secret := hmacSecret()
+	if secret == "" {
+		log.Info.Println(`hmac secret for image proxy is blank. Please set the "hmac_secret" env variable`)
+	}
 
 	h := hmac.New(sha256.New, []byte(secret))
 	if _, err := h.Write([]byte(u)); err != nil {
@@ -108,10 +108,14 @@ func instantFormatter(raw interface{}, r language.Region) string {
 		return wikiAmount(i[0], r)
 	case instant.Age:
 		a := raw.(instant.Age)
-		if a.Alive {
+
+		// alive
+		if reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
 			return fmt.Sprintf(`<em>Age:</em> %d Years<br><span style="color:#666;">%v</span>`,
-				wikiYears(a.Birthday.Birthday, time.Now()), wikiDateTime(a.Birthday.Birthday))
+				wikiYears(a.Birthday.Birthday, now()), wikiDateTime(a.Birthday.Birthday))
 		}
+
+		// dead
 		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
 			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
 	case instant.Birthday:
@@ -119,15 +123,14 @@ func instantFormatter(raw interface{}, r language.Region) string {
 		return wikiDateTime(b.Birthday)
 	case instant.Death:
 		d := raw.(instant.Death)
-		return fmt.Sprintf("<em>Date of Death:</em> %v", wikiDateTime(d.Death))
+		return wikiDateTime(d.Death)
+	default:
+		log.Debug.Printf("unknown type %T\n", raw)
+		return ""
 	}
-
-	return ""
 }
 
-func now() time.Time {
-	return time.Now()
-}
+var now = func() time.Time { return time.Now().UTC() }
 
 // wikiCanonical returns the canonical form of a wikipedia title.
 // if this breaks Wikidata dumps have "sitelinks"
@@ -198,8 +201,6 @@ func wikiYears(start, end interface{}) int {
 	if e.YearDay() < s.YearDay() {
 		years--
 	}
-
-	log.Info.Println(s, e, s.YearDay(), e.YearDay(), years)
 
 	return years
 }

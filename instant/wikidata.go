@@ -76,7 +76,6 @@ func (w *WikiData) setTriggerFuncs() answerer {
 // Birthday is a person's date of birth
 type Birthday struct {
 	Birthday wikipedia.DateTime `json:"birthday,omitempty"`
-	Alive    bool               `json:"alive,omitempty"`
 }
 
 // Death is a person's date of death
@@ -105,10 +104,7 @@ func (w *WikiData) setSolution() answerer {
 			return w
 		}
 
-		b := Birthday{item.Birthday[0], true}
-		if len(item.Death) > 0 {
-			b.Alive = false
-		}
+		b := Birthday{item.Birthday[0]}
 
 		if w.triggerWord == "age" || w.triggerWord == "how old is" {
 			a := Age{
@@ -164,7 +160,6 @@ func (w *WikiData) tests() []test {
 								Value:    "1945-02-06T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 							},
-							Alive: false,
 						},
 						Death: Death{
 							Death: wikipedia.DateTime{
@@ -189,7 +184,6 @@ func (w *WikiData) tests() []test {
 							Value:    "1942-11-27T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 						},
-						Alive: false,
 					},
 					Cache: true,
 				},
