@@ -30,7 +30,7 @@ func (c *config) bangsHandler(w http.ResponseWriter, r *http.Request) {
 	l := language.MustParse("en-US")
 	reg, _ := l.Region()
 
-	if loc, ok := c.Bangs.Detect(q, reg.String(), l.String()); ok {
+	if loc, ok := c.Bangs.Detect(q, reg, l); ok {
 		http.Redirect(w, r, loc, http.StatusFound)
 		return
 	}

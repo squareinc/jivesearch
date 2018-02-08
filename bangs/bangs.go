@@ -1,33 +1,77 @@
-// Package bangs detects when queries should be redirected to 3rd party sites
+// Package bangs provides functionality to query other websites
 package bangs
 
 import (
-	"fmt"
 	"strings"
-	"sync"
+
+	"golang.org/x/text/language"
 )
 
 // Bangs holds a map of !bangs
 type Bangs struct {
-	sync.Mutex
-	M map[string]map[string]string
+	Bangs []Bang
 }
 
 // Bang holds a single !bang
 type Bang struct {
-	Triggers []string
-	Name     string
-	Category string
-	Regions  []Region
-}
-
-// Region holds the regional information and url of a !bang
-type Region struct {
-	Region   string
-	Location string
+	Name            string
+	Category        string
+	Triggers        []string
+	Regions         map[string]string
+	Transformations []transformation
 }
 
 var def = "default"
+
+// Detect lets us know if we have a !bang match.
+func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string, bool) {
+	fields := strings.Fields(q)
+
+	for i, field := range fields {
+		if field == "!" || (!strings.HasPrefix(field, "!") && !strings.HasSuffix(field, "!")) {
+			continue
+		}
+
+		k := strings.ToLower(strings.Trim(field, "!"))
+		for _, bng := range b.Bangs {
+			if triggered := trigger(k, bng.Triggers); !triggered {
+				continue
+			}
+
+			remainder := strings.Join(append(fields[:i], fields[i+1:]...), " ")
+
+			for _, fn := range bng.Transformations {
+				remainder = fn(remainder)
+			}
+
+			for _, reg := range []string{strings.ToLower(region.String()), def} { // use default region if no region specified
+				if u, ok := bng.Regions[reg]; ok {
+					u = strings.Replace(u, "{{{term}}}", remainder, -1)
+					return strings.Replace(u, "{{{lang}}}", l.String(), -1), true
+				}
+			}
+		}
+	}
+	return "", false
+}
+
+type transformation func(string) string
+
+// Returns the canonical version of a Wikipedia title.
+// "bob maRLey" -> "Bob_Marley"
+// Some regional queries will be incorrect: https://es.wikipedia.org/wiki/De_la_Tierra_a_la_Luna
+var wikipediaCanonical = func(q string) string {
+	return strings.Replace(strings.Title(strings.ToLower(q)), " ", "_", -1)
+}
+
+func trigger(k string, triggers []string) bool {
+	for _, trigger := range triggers {
+		if k == trigger {
+			return true
+		}
+	}
+	return false
+}
 
 // New creates a pointer with the default !bangs.
 // Use default url unless a region is provided.
@@ -43,130 +87,89 @@ var def = "default"
 func New() *Bangs {
 	// Not sure about the structure here...slice of Bangs makes it easy to add bangs
 	// Would like to add autocomplete feature so that people can find !bangs easier.
-	b := &Bangs{
-		M: make(map[string]map[string]string),
-	}
-
-	bngs := []Bang{
+	b := &Bangs{}
+	b.Bangs = []Bang{
 		{
-			[]string{"a", "amazon"},
-			"Amazon", "shopping",
-			[]Region{
-				{def, "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"},
-				{"ca", "https://www.amazon.ca/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"},
-				{"fr", "https://www.amazon.fr/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"},
-				{"uk", "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"},
+			"Amazon", "shopping", []string{"a", "amazon"},
+			map[string]string{
+				def:  "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
+				"ca": "https://www.amazon.ca/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
+				"fr": "https://www.amazon.fr/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
+				"uk": "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"b", "bing"},
-			"Bing", "search",
-			[]Region{
-				{def, "https://www.bing.com/search?q={{{term}}}"},
+			"Bing", "search", []string{"b", "bing"},
+			map[string]string{
+				def: "https://www.bing.com/search?q={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"gh", "github"},
-			"Github", "programming",
-			[]Region{
-				{def, "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1"},
+			"Github", "programming", []string{"gh", "github"},
+			map[string]string{
+				def: "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"g", "google"},
-			"Google", "search",
-			[]Region{
-				{def, "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}"},
-				{"ca", "https://www.google.ca/search?q={{{term}}}"},
-				{"fr", "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}"},
-				{"ru", "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}"},
+			"Google", "search", []string{"g", "google"},
+			map[string]string{
+				def:  "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
+				"ca": "https://www.google.ca/search?q={{{term}}}",
+				"fr": "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
+				"ru": "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"gfr", "googlefr"},
-			"Google France", "search",
-			[]Region{
-				{def, "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}"},
+			"Google France", "search", []string{"gfr", "googlefr"},
+			map[string]string{
+				def: "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"gi"},
-			"Google Images", "search",
-			[]Region{
-				{def, "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch"},
+			"Google Images", "search", []string{"gi"},
+			map[string]string{
+				def: "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"gru", "googleru"},
-			"Google Russia", "search",
-			[]Region{
-				{def, "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}"},
+			"Google Russia", "search", []string{"gru", "googleru"},
+			map[string]string{
+				def: "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"reddit"},
-			"Reddit", "social media",
-			[]Region{
-				{def, "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all"},
+			"Reddit", "social media", []string{"reddit"},
+			map[string]string{
+				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
 			},
+			[]transformation{},
 		},
 		{
-			[]string{"so", "stackoverflow"},
-			"Stack Overflow", "programming",
-			[]Region{
-				{def, "https://stackoverflow.com/search?q={{{term}}}"},
+			"Stack Overflow", "programming", []string{"so", "stackoverflow"},
+			map[string]string{
+				def: "https://stackoverflow.com/search?q={{{term}}}",
 			},
+			[]transformation{},
 		},
 		{
-			// The regional wikis don't seem to redirect to the uppercase form like enwiki does.
-			// e.g. "bob marley" in German redirects to "https://de.wikipedia.org/wiki/Bob_marley", instead of "Bob_Marley"
-			[]string{"w", "wikipedia"},
 			"Wikipedia", "encyclopedia",
-			[]Region{
-				{def, "https://en.wikipedia.org/wiki/{{{term}}}"},
-				{"de", "https://de.wikipedia.org/wiki/{{{term}}}"},
-				{"fr", "https://fr.wikipedia.org/wiki/{{{term}}}"},
+			[]string{"w", "wikipedia"},
+			map[string]string{
+				def:  "https://en.wikipedia.org/wiki/{{{term}}}",
+				"es": "https://es.wikipedia.org/wiki/{{{term}}}",
+				"de": "https://de.wikipedia.org/wiki/{{{term}}}",
+				"fr": "https://fr.wikipedia.org/wiki/{{{term}}}",
 			},
+			[]transformation{wikipediaCanonical},
 		},
-	}
-
-	// create a map for faster lookups
-	for _, bng := range bngs {
-		for _, t := range bng.Triggers {
-			if _, ok := b.M[t]; ok {
-				panic(fmt.Sprintf("duplicate trigger found %v", t))
-			}
-			b.M[t] = make(map[string]string)
-			for _, r := range bng.Regions {
-				b.M[t][r.Region] = r.Location
-			}
-		}
 	}
 
 	return b
-}
-
-// Detect lets us know if we have a !bang match.
-func (b *Bangs) Detect(q, region, language string) (string, bool) {
-	b.Lock()
-	defer b.Unlock()
-
-	fields := strings.Fields(q)
-
-	for i, field := range fields {
-		if field == "!" || (!strings.HasPrefix(field, "!") && !strings.HasSuffix(field, "!")) {
-			continue
-		}
-
-		if bng, ok := b.M[strings.ToLower(strings.Trim(field, "!"))]; ok { // find the bang
-			for _, reg := range []string{strings.ToLower(region), def} { // use default region if no region specified
-				if u, ok := bng[reg]; ok {
-					remainder := strings.Join(append(fields[:i], fields[i+1:]...), " ")
-					u = strings.Replace(u, "{{{term}}}", remainder, -1)
-					return strings.Replace(u, "{{{lang}}}", language, -1), true
-				}
-			}
-		}
-	}
-	return "", false
 }
