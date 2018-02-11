@@ -71,7 +71,7 @@ $(document).ready(function() {
   // autocomplete
   $(function(){
     $("#query").autocomplete({
-      delay: 50,
+      delay: 25,
       minLength: 1,
       messages: {
         noResults: "",

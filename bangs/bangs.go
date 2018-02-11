@@ -186,6 +186,13 @@ func New() *Bangs {
 			[]transformation{},
 		},
 		{
+			"IMDb", []string{"imdb"},
+			map[string]string{
+				def: "http://www.imdb.com/find?q={{{term}}}&s=all",
+			},
+			[]transformation{},
+		},
+		{
 			"Reddit", []string{"reddit"},
 			map[string]string{
 				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
