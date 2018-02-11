@@ -26,6 +26,8 @@ func TestSetDefaults(t *testing.T) {
 		{"elasticsearch.url", "http://127.0.0.1:9200"},
 		{"elasticsearch.search.index", "test-search"},
 		{"elasticsearch.search.type", "document"},
+		{"elasticsearch.bangs.index", "test-bangs"},
+		{"elasticsearch.bangs.type", "bang"},
 		{"elasticsearch.query.index", "test-queries"},
 		{"elasticsearch.query.type", "query"},
 		{"elasticsearch.robots.index", "test-robots"},

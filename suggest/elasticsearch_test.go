@@ -126,7 +126,6 @@ func TestCompletion(t *testing.T) {
 				}
 			}`,
 			want: Results{
-				RawQuery:    `{"completion_suggest":{"text":"b","completion":{"field":"completion_suggest","size":10}}}`,
 				Suggestions: []string{"brad", "bros", "bob", "blondie", "brad pitt", "buster"},
 			},
 		},
@@ -213,7 +212,6 @@ func TestCompletion(t *testing.T) {
 				}
 			}`,
 			want: Results{
-				RawQuery:    `{"completion_suggest":{"text":"ji","completion":{"field":"completion_suggest","size":7}}}`,
 				Suggestions: []string{"jiffy", "jill", "jim", "jimi"},
 			},
 		},
@@ -461,5 +459,5 @@ func MockService(url string) (*ElasticSearch, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &ElasticSearch{Client: client, Index: "queries", Type: "query"}, nil
+	return &ElasticSearch{Client: client, Index: "test-queries", Type: "query"}, nil
 }

@@ -35,6 +35,10 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("elasticsearch.url", "http://127.0.0.1:9200")
 	cfg.SetDefault("elasticsearch.search.index", "test-search")
 	cfg.SetDefault("elasticsearch.search.type", "document")
+
+	cfg.SetDefault("elasticsearch.bangs.index", "test-bangs")
+	cfg.SetDefault("elasticsearch.bangs.type", "bang")
+
 	cfg.SetDefault("elasticsearch.query.index", "test-queries")
 	cfg.SetDefault("elasticsearch.query.type", "query")
 

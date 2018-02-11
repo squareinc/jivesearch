@@ -47,8 +47,6 @@ func setup(v *viper.Viper) *http.Server {
 	frontend.ParseTemplates()
 	f = &frontend.Frontend{}
 
-	f.Bangs = bangs.New()
-
 	router := f.Router(v)
 
 	return &http.Server{
@@ -79,7 +77,7 @@ func main() {
 		},
 	}
 
-	// Set the backend for our autocomplete & phrase suggestor
+	// autocomplete & phrase suggestor
 	f.Suggest = &suggest.ElasticSearch{
 		Client: client,
 		Index:  v.GetString("elasticsearch.query.index"),
@@ -95,6 +93,29 @@ func main() {
 		if err := f.Suggest.Setup(); err != nil {
 			panic(err)
 		}
+	}
+
+	// !bangs
+	f.Bangs = bangs.New()
+	f.Bangs.Suggester = &bangs.ElasticSearch{
+		Client: client,
+		Index:  v.GetString("elasticsearch.bangs.index"),
+		Type:   v.GetString("elasticsearch.bangs.type"),
+	}
+
+	exists, err = f.Bangs.Suggester.IndexExists()
+	if err != nil {
+		panic(err)
+	}
+
+	if exists { // always want to recreate to add any changes/new !bangs
+		if err := f.Bangs.Suggester.DeleteIndex(); err != nil {
+			panic(err)
+		}
+	}
+
+	if err := f.Bangs.Suggester.Setup(f.Bangs.Bangs); err != nil {
+		panic(err)
 	}
 
 	// The database needs to be setup beforehand.
@@ -114,6 +135,7 @@ func main() {
 	defer db.Close()
 	db.SetMaxIdleConns(0)
 
+	// Instant Answers
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
 		Fetcher: &wikipedia.PostgreSQL{
@@ -121,6 +143,7 @@ func main() {
 		},
 	}
 
+	// Voting
 	f.Vote = &vote.PostgreSQL{
 		DB:    db,
 		Table: v.GetString("postgresql.votes.table"),

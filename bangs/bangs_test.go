@@ -1,6 +1,7 @@
 package bangs
 
 import (
+	"reflect"
 	"testing"
 
 	"golang.org/x/text/language"
@@ -13,6 +14,54 @@ func TestDefault(t *testing.T) {
 		if _, ok := bng.Regions[def]; !ok {
 			t.Fatalf("%q bang needs a default region", bng.Name)
 		}
+	}
+}
+
+func TestDuplicateTriggers(t *testing.T) {
+	seen := make(map[string]bool)
+
+	b := New()
+	for _, bng := range b.Bangs {
+		for _, trig := range bng.Triggers {
+			if _, ok := seen[trig]; ok {
+				t.Fatalf("duplicate trigger found %q", trig)
+			}
+			seen[trig] = true
+		}
+	}
+}
+
+func TestSuggest(t *testing.T) {
+	type args struct {
+		term string
+		size int
+	}
+
+	for _, c := range []struct {
+		name string
+		args
+		want Results
+	}{
+		{
+			"basic",
+			args{"g", 10},
+			Results{Suggestions: []Suggestion{
+				{"g", "Google"}, {"gfr", "Google France"}, {"gh", "GitHub"}, {"gi", "Google Images"},
+			}},
+		},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			b := New()
+			b.Suggester = &mockSuggester{}
+			got, err := b.Suggest(c.args.term, c.args.size)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !reflect.DeepEqual(got, c.want) {
+				t.Errorf("got %q, want %q", got, c.want)
+			}
+		})
 	}
 }
 
@@ -97,4 +146,26 @@ func TestDetect(t *testing.T) {
 			}
 		})
 	}
+}
+
+type mockSuggester struct{}
+
+func (m *mockSuggester) suggest(term string, size int) (Results, error) {
+	res := Results{Suggestions: []Suggestion{
+		{Trigger: "g"}, {Trigger: "gfr"}, {Trigger: "gh"}, {Trigger: "gi"},
+	}}
+
+	return res, nil
+}
+
+func (m *mockSuggester) IndexExists() (bool, error) {
+	return true, nil
+}
+
+func (m *mockSuggester) DeleteIndex() error {
+	return nil
+}
+
+func (m *mockSuggester) Setup(bangs []Bang) error {
+	return nil
 }

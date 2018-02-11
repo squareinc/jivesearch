@@ -56,10 +56,22 @@ $(document).ready(function() {
     window.location.href = window.location.pathname + replaceQueryParam(queryString(), 'p', $(this).data('page'));
   });
 
+  function isBang(item) {
+    return item.hasOwnProperty("trigger");
+  }
+
+  function label(item){
+    var label = item.label;
+    if (isBang(item)){
+      label = "!" + item.trigger;
+    }
+    return label
+  }
+
   // autocomplete
   $(function(){
     $("#query").autocomplete({
-      delay: 75,
+      delay: 50,
       minLength: 1,
       messages: {
         noResults: "",
@@ -70,23 +82,51 @@ $(document).ready(function() {
       },
       source: function(request, callback){
         $.getJSON('/autocomplete', {q: request.term}, function(data){ // '{q: request.term}' changes it from ?term=b to ?q=b so nginx doesn't log query.
-            callback(data.suggestions);
+          callback(data.suggestions);
         });
       },
       select: function(event, ui){
-        $("#query").val(ui.item.label);
-        document.getElementById('form').submit();
+        if (!isBang(ui.item)){ 
+          $("#query").val(label(ui.item));
+          document.getElementById('form').submit();
+          return false;
+        }
+
+        // don't submit bang if they aren't done w/ query
+        $("#query").val(label(ui.item) + " ");
         return false;
       },
       focus: function(event, ui) {
-        $("#query").val(ui.item.label);
+        $("#query").val(label(ui.item));
         return false;
       },
       }).data('ui-autocomplete')._renderItem = function(ul, item){
+        var label = item.label;
+        var bang = isBang(item);
+        
+        if (bang===true){
+          label = item.trigger;
+        }
+        
+        // highlight matches in the dropdown
         var re = new RegExp(this.term, 'i');
         var re = new RegExp("^" + this.term);
-        var r = item.label.replace(re, "<span style='font-weight:normal;'>" + "$&" + "</span>");
-        return $("<li></li>" ).data("item.autocomplete", item).append("<a>" + r + "</a>").appendTo(ul);
+        var r = label.replace(re, "<span style='font-weight:normal;'>" + "$&" + "</span>");
+        var formatted = "<a>" + r + "</a>";
+
+        if (bang===true){
+          var img = item.name.toLowerCase().replace(" ", "") + ".ico"; // "Stack Overflow" -> "stackoverflow.ico"
+          if (item.name.startsWith("Google ")){ // "Google France", etc.. -> "google.ico"
+            img = "google.ico";
+          }
+
+          // Note: below about 600px this doesn't display right.
+          // I've tried adding "display:none" for the bang name in main.css but that isn't being respected for some reason.
+          r = '<span style="vertical-align:top;">' + item.name + '</span><span style="float:right;margin-right:50%;margin-left:1px;"> !' + r + '</span>';
+          formatted = '<a><img width="20" height="20" style="vertical-align:top;" src="/static/icons/bangs/' + img + '"/> ' + r + '</a>';
+        }
+
+        return $("<li></li>").data("item.autocomplete", item).append(formatted).appendTo(ul);
       };
   });
 

@@ -18,7 +18,6 @@ import (
 	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"github.com/oxtoacart/bpool"
-	"github.com/pkg/errors"
 	"golang.org/x/text/language"
 )
 
@@ -137,13 +136,51 @@ func errHandler(w http.ResponseWriter, rsp *response) {
 
 func (f *Frontend) autocompleteHandler(w http.ResponseWriter, r *http.Request) *response {
 	q := strings.TrimSpace(r.FormValue("q"))
+
+	if q == "!" {
+		// give a default set of !bang suggestions
+		res := bangs.Results{
+			Suggestions: []bangs.Suggestion{
+				{Trigger: "g", Name: "Google"},
+				{Trigger: "a", Name: "Amazon"},
+				{Trigger: "b", Name: "Bing"},
+				{Trigger: "r", Name: "Reddit"},
+				{Trigger: "w", Name: "Wikipedia"},
+			},
+		}
+
+		return &response{
+			status:   http.StatusOK,
+			template: "json",
+			data:     res,
+		}
+
+	} else if len(q) > 1 && !strings.HasPrefix(q, " ") && strings.HasPrefix(q, "!") {
+		res, err := f.Bangs.Suggest(q, 10)
+		if err != nil {
+			return &response{
+				status: http.StatusInternalServerError,
+				err:    err,
+			}
+		}
+
+		if len(res.Suggestions) > 0 {
+			return &response{
+				status:   http.StatusOK,
+				template: "json",
+				data:     res,
+			}
+		}
+	}
+
 	res, err := f.Suggest.Completion(q, 10)
 	if err != nil {
 		return &response{
 			status: http.StatusInternalServerError,
-			err:    errors.Wrapf(err, "autocomplete error %q (%v)", q, res.RawQuery),
+			err:    err,
 		}
 	}
+
 	return &response{
 		status:   http.StatusOK,
 		template: "json",

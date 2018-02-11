@@ -14,6 +14,5 @@ type Suggester interface {
 
 // Results are the results of an autocomplete query
 type Results struct { // remember top-level arrays = no-no in javascript/json
-	RawQuery    string   `json:"-"`
 	Suggestions []string `json:"suggestions"`
 }
