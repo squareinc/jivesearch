@@ -21,8 +21,8 @@ type ElasticSearch struct {
 	Type   string
 }
 
-// suggest retrieves !bang suggestions from Elasticsearch
-func (e *ElasticSearch) suggest(term string, size int) (Results, error) {
+// SuggestResults retrieves !bang suggestions from Elasticsearch
+func (e *ElasticSearch) SuggestResults(term string, size int) (Results, error) {
 	// Another option is the NewFuzzyCompletionSuggester and
 	// set the "Fuzziness" but we'll start with this for now.
 	res := Results{}

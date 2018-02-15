@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/spf13/pflag"
 )
 
 func TestRouter(t *testing.T) {
@@ -66,4 +67,28 @@ func TestRouter(t *testing.T) {
 			}
 		})
 	}
+}
+
+type mockProvider struct {
+	m map[string]interface{}
+}
+
+func (p *mockProvider) SetDefault(key string, value interface{}) {
+	p.m[key] = value
+}
+func (p *mockProvider) SetTypeByDefaultValue(bool) {}
+func (p *mockProvider) BindPFlag(key string, flg *pflag.Flag) error {
+	return nil
+}
+func (p *mockProvider) Get(key string) interface{} {
+	return p.m[key]
+}
+func (p *mockProvider) GetString(key string) string {
+	return p.m[key].(string)
+}
+func (p *mockProvider) GetInt(key string) int {
+	return p.m[key].(int)
+}
+func (p *mockProvider) GetStringSlice(key string) []string {
+	return p.m[key].([]string)
 }

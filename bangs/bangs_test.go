@@ -150,7 +150,7 @@ func TestDetect(t *testing.T) {
 
 type mockSuggester struct{}
 
-func (m *mockSuggester) suggest(term string, size int) (Results, error) {
+func (m *mockSuggester) SuggestResults(term string, size int) (Results, error) {
 	res := Results{Suggestions: []Suggestion{
 		{Trigger: "g"}, {Trigger: "gfr"}, {Trigger: "gh"}, {Trigger: "gi"},
 	}}

@@ -26,7 +26,7 @@ type Suggester interface {
 	IndexExists() (bool, error)
 	DeleteIndex() error
 	Setup([]Bang) error
-	suggest(term string, size int) (Results, error)
+	SuggestResults(term string, size int) (Results, error)
 }
 
 // Results are the results of an autocomplete query
@@ -44,7 +44,7 @@ const def = "default"
 
 // Suggest is an autocomplete for !bangs
 func (b *Bangs) Suggest(term string, size int) (Results, error) {
-	res, err := b.Suggester.suggest(term, size)
+	res, err := b.Suggester.SuggestResults(term, size)
 	if err != nil {
 		return res, err
 	}

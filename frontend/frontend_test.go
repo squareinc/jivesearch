@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/suggest"
-	"github.com/spf13/pflag"
 )
 
 func TestMiddleware(t *testing.T) {
@@ -109,11 +109,41 @@ func TestAutocompleteHandler(t *testing.T) {
 				},
 			},
 		},
+		{"default !bangs", "!",
+			&response{
+				status:   http.StatusOK,
+				template: "json",
+				data: bangs.Results{
+					Suggestions: []bangs.Suggestion{
+						{Trigger: "g", Name: "Google"},
+						{Trigger: "a", Name: "Amazon"},
+						{Trigger: "b", Name: "Bing"},
+						{Trigger: "r", Name: "Reddit"},
+						{Trigger: "w", Name: "Wikipedia"},
+					},
+				},
+			},
+		},
+		{"g !bangs", "!g",
+			&response{
+				status:   http.StatusOK,
+				template: "json",
+				data: bangs.Results{
+					Suggestions: []bangs.Suggestion{
+						{Trigger: "g", Name: "Google"},
+						{Trigger: "gh", Name: "GitHub"},
+					},
+				},
+			},
+		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			f := &Frontend{
 				Suggest: &mockSuggester{},
 			}
+
+			f.Bangs = bangs.New()
+			f.Bangs.Suggester = &mockBangSuggester{}
 
 			req, err := http.NewRequest("GET", "/", nil)
 			if err != nil {
@@ -133,28 +163,12 @@ func TestAutocompleteHandler(t *testing.T) {
 	}
 }
 
-type mockProvider struct {
-	m map[string]interface{}
-}
+func TestParseTemplates(t *testing.T) {
+	ParseTemplates()
 
-func (p *mockProvider) SetDefault(key string, value interface{}) {
-	p.m[key] = value
-}
-func (p *mockProvider) SetTypeByDefaultValue(bool) {}
-func (p *mockProvider) BindPFlag(key string, flg *pflag.Flag) error {
-	return nil
-}
-func (p *mockProvider) Get(key string) interface{} {
-	return p.m[key]
-}
-func (p *mockProvider) GetString(key string) string {
-	return p.m[key].(string)
-}
-func (p *mockProvider) GetInt(key string) int {
-	return p.m[key].(int)
-}
-func (p *mockProvider) GetStringSlice(key string) []string {
-	return p.m[key].([]string)
+	if _, ok := templates["search"]; !ok {
+		t.Fatal("Our search template is not in our templates map.")
+	}
 }
 
 type mockSuggester struct {
@@ -196,10 +210,27 @@ func (ms *mockSuggester) IndexExists() (bool, error) {
 
 func (ms *mockSuggester) Setup() error { return nil }
 
-func TestParseTemplates(t *testing.T) {
-	ParseTemplates()
+type mockBangSuggester struct{}
 
-	if _, ok := templates["search"]; !ok {
-		t.Fatal("Our search template is not in our templates map.")
+func (m *mockBangSuggester) SuggestResults(term string, size int) (bangs.Results, error) {
+	res := bangs.Results{
+		Suggestions: []bangs.Suggestion{
+			{Trigger: "g", Name: "Google"},
+			{Trigger: "gh", Name: "GitHub"},
+		},
 	}
+
+	return res, nil
+}
+
+func (m *mockBangSuggester) IndexExists() (bool, error) {
+	return false, nil
+}
+
+func (m *mockBangSuggester) DeleteIndex() error {
+	return nil
+}
+
+func (m *mockBangSuggester) Setup(bangs []bangs.Bang) error {
+	return nil
 }

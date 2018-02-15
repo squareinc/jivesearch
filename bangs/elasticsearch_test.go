@@ -124,7 +124,7 @@ func TestSuggestES(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			got, err := e.suggest(c.args.term, c.args.size)
+			got, err := e.SuggestResults(c.args.term, c.args.size)
 			if err != nil {
 				t.Fatal(err)
 			}
