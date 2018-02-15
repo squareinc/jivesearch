@@ -155,6 +155,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"eBay", []string{"e", "ebay"},
+			map[string]string{
+				def: "https://www.ebay.com/sch/items/?_nkw={{{term}}}&_sacat=&_ex_kw=&_mPrRngCbx=1&_udlo=&_udhi=&_sop=12&_fpos=&_fspt=1&_sadis=&LH_CAds=&rmvSB=true",
+			},
+			[]fn{},
+		},
+		{
 			"Google", []string{"g", "google"},
 			map[string]string{
 				def:  "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
