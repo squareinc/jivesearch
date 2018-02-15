@@ -88,6 +88,9 @@ func SetDefaults(cfg Provider) {
 	// useragent for fetching api's, images, etc.
 	cfg.SetDefault("useragent", "https://github.com/jivesearch/jivesearch")
 
+	// stackoverflow API settings
+	cfg.SetDefault("stackoverflow.key", "app key") // https://stackapps.com/apps/oauth/
+
 	// wikipedia settings
 	truncate := 250
 	cfg.SetDefault("wikipedia.truncate", truncate) // chars

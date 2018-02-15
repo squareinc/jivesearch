@@ -1,6 +1,7 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"sort"
@@ -41,17 +42,15 @@ func (s *Stats) setContributors() answerer {
 	return s
 }
 
-func (s *Stats) setTriggers() answerer {
-	s.triggers = []string{
+func (s *Stats) setRegex() answerer {
+	triggers := []string{
 		"avg", "average", "mean", "median", "sum", "total",
 	}
-	return s
-}
 
-func (s *Stats) setTriggerFuncs() answerer {
-	s.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return s
 }
 
@@ -66,27 +65,22 @@ func (s *Stats) setSolution() answerer {
 		}
 	}
 
-	for _, a := range s.triggers {
-		if !strings.Contains(s.query, a) {
-			continue
-		}
+	var txt string
+	var ans float64
 
-		var txt string
-		var ans float64
-
-		if a == "avg" || a == "average" || a == "mean" {
-			txt = "Average: "
-			ans = average(numbers)
-		} else if a == "median" {
-			txt = "Median: "
-			ans = median(numbers)
-		} else if a == "sum" || a == "total" {
-			txt = "Sum: "
-			ans = sum(numbers)
-		}
-		s.Text = txt + strconv.FormatFloat(ans, 'f', -1, 64)
-		break
+	switch s.triggerWord {
+	case "avg", "average", "mean":
+		txt = "Average: "
+		ans = average(numbers)
+	case "median":
+		txt = "Median: "
+		ans = median(numbers)
+	case "sum", "total":
+		txt = "Sum: "
+		ans = sum(numbers)
 	}
+
+	s.Text = txt + strconv.FormatFloat(ans, 'f', -1, 64)
 
 	return s
 }

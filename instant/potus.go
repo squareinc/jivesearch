@@ -54,17 +54,15 @@ func (p *Potus) setContributors() answerer {
 	return p
 }
 
-func (p *Potus) setTriggers() answerer {
-	p.triggers = []string{
+func (p *Potus) setRegex() answerer {
+	triggers := []string{
 		"president of the united states", "potus",
 	}
-	return p
-}
 
-func (p *Potus) setTriggerFuncs() answerer {
-	p.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return p
 }
 

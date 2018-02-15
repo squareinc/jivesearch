@@ -1,7 +1,10 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
@@ -34,20 +37,18 @@ func (b *BirthStone) setContributors() answerer {
 	return b
 }
 
-func (b *BirthStone) setTriggers() answerer {
-	b.triggers = []string{
+func (b *BirthStone) setRegex() answerer {
+	triggers := []string{
 		"birthstones",
 		"birth stones",
 		"birthstone",
 		"birth stone",
 	}
-	return b
-}
 
-func (b *BirthStone) setTriggerFuncs() answerer {
-	b.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	b.regex = append(b.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	b.regex = append(b.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return b
 }
 

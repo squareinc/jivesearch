@@ -1,7 +1,9 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
@@ -35,18 +37,16 @@ func (c *CamelCase) setContributors() answerer {
 	return c
 }
 
-func (c *CamelCase) setTriggers() answerer {
-	c.triggers = []string{
+func (c *CamelCase) setRegex() answerer {
+	triggers := []string{
 		"camelcase",
 		"camel case",
 	}
-	return c
-}
 
-func (c *CamelCase) setTriggerFuncs() answerer {
-	c.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return c
 }
 

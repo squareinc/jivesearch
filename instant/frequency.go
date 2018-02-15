@@ -1,19 +1,21 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
+
+var reFrequency *regexp.Regexp
 
 // Frequency is an instant answer
 type Frequency struct {
 	Answer
 }
-
-var reFrequency *regexp.Regexp
 
 func (f *Frequency) setQuery(r *http.Request, qv string) answerer {
 	f.Answer.setQuery(r, qv)
@@ -38,18 +40,14 @@ func (f *Frequency) setContributors() answerer {
 	return f
 }
 
-func (f *Frequency) setTriggers() answerer {
-	f.triggers = []string{
+func (f *Frequency) setRegex() answerer {
+	triggers := []string{
 		"frequency of",
 	}
-	return f
-}
 
-func (f *Frequency) setTriggerFuncs() answerer {
-	f.triggerFuncs = []triggerFunc{
-		startsWith,
-		// endsWith, // not implemented yet
-	}
+	t := strings.Join(triggers, "|")
+	f.regex = append(f.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	//f.regex = append(f.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t))) // not implemented yet
 	return f
 }
 
@@ -57,7 +55,7 @@ func (f *Frequency) setSolution() answerer {
 	var char string
 	var wrd string
 
-	matches := reFrequency.FindStringSubmatch(f.query)
+	matches := reFrequency.FindStringSubmatch(f.remainder)
 	if len(matches) == 3 {
 		char = matches[1]
 		wrd = matches[2]
@@ -96,13 +94,7 @@ func (f *Frequency) tests() []test {
 		test{
 			query: "frequency of",
 			expected: []Solution{
-				Solution{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Text:         "",
-					Cache:        true,
-				},
+				Solution{},
 			},
 		},
 		test{
@@ -160,5 +152,5 @@ func (f *Frequency) tests() []test {
 }
 
 func init() {
-	reFrequency = regexp.MustCompile(`^frequency of (.*?) in (.+)`)
+	reFrequency = regexp.MustCompile(`^(.*?) in (.+)`)
 }

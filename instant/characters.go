@@ -1,7 +1,9 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -36,8 +38,8 @@ func (c *Characters) setContributors() answerer {
 	return c
 }
 
-func (c *Characters) setTriggers() answerer {
-	c.triggers = []string{
+func (c *Characters) setRegex() answerer {
+	triggers := []string{
 		"number of characters in", "number of characters",
 		"number of chars in", "number of chars",
 		"char count of", "char count",
@@ -46,13 +48,11 @@ func (c *Characters) setTriggers() answerer {
 		"characters count of", "characters count",
 		"length in chars", "length in characters",
 	}
-	return c
-}
 
-func (c *Characters) setTriggerFuncs() answerer {
-	c.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return c
 }
 

@@ -8,9 +8,12 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
+	"github.com/abursavich/nett"
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"github.com/spf13/viper"
 )
@@ -31,7 +34,7 @@ func (c *cfg) handler(w http.ResponseWriter, r *http.Request) {
 
 func favHandler(w http.ResponseWriter, r *http.Request) {}
 
-func setup() (*sql.DB, error) {
+func setup() (*sql.DB, string, error) {
 	v := viper.New()
 	v.SetEnvPrefix("jivesearch")
 	v.AutomaticEnv()
@@ -53,11 +56,11 @@ func setup() (*sql.DB, error) {
 
 	db.SetMaxIdleConns(0)
 
-	return db, err
+	return db, v.GetString("stackoverflow.key"), err
 }
 
 func main() {
-	db, err := setup()
+	db, key, err := setup()
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +70,20 @@ func main() {
 	c := &cfg{
 		&instant.Instant{
 			QueryVar: "q",
-			Fetcher: &wikipedia.PostgreSQL{
+			StackOverflowFetcher: &stackoverflow.API{
+				Key: key,
+				HTTPClient: &http.Client{
+					Transport: &http.Transport{
+						Dial: (&nett.Dialer{
+							Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
+							IPFilter: nett.DualStack,
+						}).Dial,
+						DisableKeepAlives: true,
+					},
+					Timeout: 5 * time.Second,
+				},
+			},
+			WikiDataFetcher: &wikipedia.PostgreSQL{
 				DB: db,
 			},
 		},

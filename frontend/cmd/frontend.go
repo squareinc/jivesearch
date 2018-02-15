@@ -11,10 +11,12 @@ import (
 
 	"time"
 
+	"github.com/abursavich/nett"
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/frontend"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
@@ -138,7 +140,20 @@ func main() {
 	// Instant Answers
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
-		Fetcher: &wikipedia.PostgreSQL{
+		StackOverflowFetcher: &stackoverflow.API{
+			Key: v.GetString("stackoverflow.key"),
+			HTTPClient: &http.Client{
+				Transport: &http.Transport{
+					Dial: (&nett.Dialer{
+						Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
+						IPFilter: nett.DualStack,
+					}).Dial,
+					DisableKeepAlives: true,
+				},
+				Timeout: 5 * time.Second,
+			},
+		},
+		WikiDataFetcher: &wikipedia.PostgreSQL{
 			DB: db,
 		},
 	}

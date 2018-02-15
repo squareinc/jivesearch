@@ -1,7 +1,10 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
@@ -36,8 +39,8 @@ func (u *UserAgent) setContributors() answerer {
 	return u
 }
 
-func (u *UserAgent) setTriggers() answerer {
-	u.triggers = []string{
+func (u *UserAgent) setRegex() answerer {
+	triggers := []string{
 		"user agent", "user agent?",
 		"useragent", "useragent?",
 		"my user agent", "my user agent?",
@@ -48,13 +51,8 @@ func (u *UserAgent) setTriggers() answerer {
 		"what is my useragent", "what is my useragent?",
 	}
 
-	return u
-}
-
-func (u *UserAgent) setTriggerFuncs() answerer {
-	u.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	u.regex = append(u.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)$`, t)))
 
 	return u
 }

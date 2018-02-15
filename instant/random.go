@@ -1,10 +1,12 @@
 package instant
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
@@ -39,17 +41,15 @@ func (r *Random) setContributors() answerer {
 	return r
 }
 
-func (r *Random) setTriggers() answerer {
-	r.triggers = []string{
+func (r *Random) setRegex() answerer {
+	triggers := []string{
 		"random number", "random number between",
 	}
-	return r
-}
 
-func (r *Random) setTriggerFuncs() answerer {
-	r.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	r.regex = append(r.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	r.regex = append(r.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return r
 }
 

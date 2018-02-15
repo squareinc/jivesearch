@@ -41,17 +41,15 @@ func (p *Prime) setContributors() answerer {
 	return p
 }
 
-func (p *Prime) setTriggers() answerer {
-	p.triggers = []string{
+func (p *Prime) setRegex() answerer {
+	triggers := []string{
 		"prime numbers", "prime number", "prime",
 	}
-	return p
-}
 
-func (p *Prime) setTriggerFuncs() answerer {
-	p.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return p
 }
 

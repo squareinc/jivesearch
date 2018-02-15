@@ -4,17 +4,21 @@ package instant
 import (
 	"math/rand"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/wikipedia"
 )
 
 // Instant holds config information for the instant answers
 type Instant struct {
-	QueryVar string
-	wikipedia.Fetcher
+	QueryVar             string
+	StackOverflowFetcher stackoverflow.Fetcher
+	WikiDataFetcher      wikipedia.Fetcher
 }
 
 // answerer outlines methods for an instant answer
@@ -23,8 +27,7 @@ type answerer interface {
 	setUserAgent(r *http.Request) answerer
 	setType() answerer
 	setContributors() answerer
-	setTriggers() answerer
-	setTriggerFuncs() answerer
+	setRegex() answerer
 	trigger() bool
 	setSolution() answerer
 	setCache() answerer
@@ -34,12 +37,11 @@ type answerer interface {
 
 // Answer holds an instant answer when triggered
 type Answer struct {
-	query        string
-	userAgent    string
-	triggers     []string
-	triggerFuncs []triggerFunc
-	triggerWord  string
-	remainder    string
+	query       string
+	userAgent   string
+	regex       []*regexp.Regexp
+	triggerWord string
+	remainder   string
 	Solution
 }
 
@@ -56,10 +58,11 @@ type Solution struct {
 }
 
 // Detect loops through all instant answers to find a solution
+// Necessary to use goroutines??? setSolution called only when triggered.
 func (i *Instant) Detect(r *http.Request) Solution {
 	for _, ia := range i.answers() {
 		ia.setUserAgent(r)
-		ia.setQuery(r, i.QueryVar).setTriggers().setTriggerFuncs()
+		ia.setQuery(r, i.QueryVar).setRegex()
 		if triggered := ia.trigger(); triggered {
 			ia.setType().
 				setContributors().
@@ -81,40 +84,32 @@ func (a *Answer) setQuery(r *http.Request, qv string) {
 	a.query = strings.Join(strings.Fields(q), " ") // Replace multiple whitespace w/ single whitespace
 }
 
-// trigger executes the triggerer for an instant answer
+// trigger executes the regex for an instant answer
 func (a *Answer) trigger() bool {
-	for _, t := range a.triggerFuncs {
-		if a := t(a); a.Triggered {
-			return a.Triggered
+	for _, re := range a.regex {
+		match := re.FindStringSubmatch(a.query)
+		if len(match) == 0 {
+			continue
+		}
+
+		for i, name := range re.SubexpNames() {
+			if i == 0 || name == "" {
+				continue
+			}
+			a.Triggered = true
+
+			switch name {
+			case "trigger":
+				a.triggerWord = match[i]
+			case "remainder":
+				a.remainder = match[i]
+			default:
+				log.Info.Printf("unknown named capture group %q", name)
+				return false
+			}
 		}
 	}
 	return a.Triggered
-}
-
-type triggerFunc func(a *Answer) *Answer
-
-var startsWith triggerFunc = func(a *Answer) *Answer {
-	for _, w := range a.triggers {
-		if pre := strings.TrimPrefix(a.query, w); pre != a.query {
-			a.triggerWord = w
-			a.remainder = strings.TrimSpace(pre)
-			a.Triggered = true
-			return a
-		}
-	}
-	return a
-}
-
-var endsWith triggerFunc = func(a *Answer) *Answer {
-	for _, w := range a.triggers {
-		if suff := strings.TrimSuffix(a.query, w); suff != a.query {
-			a.triggerWord = w
-			a.remainder = strings.TrimSpace(suff)
-			a.Triggered = true
-			return a
-		}
-	}
-	return a
 }
 
 func (a *Answer) solution() Solution {
@@ -143,7 +138,8 @@ func (i *Instant) answers() []answerer {
 		&Stats{},
 		&Temperature{},
 		&UserAgent{},
-		&WikiData{Fetcher: i.Fetcher}, // seems awkward to do this every call
+		&StackOverflow{Fetcher: i.StackOverflowFetcher}, // put this last as it will trigger "15% f to c"
+		&WikiData{Fetcher: i.WikiDataFetcher},           // seems awkward to do this every call
 	}
 }
 

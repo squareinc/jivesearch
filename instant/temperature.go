@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
@@ -37,17 +38,15 @@ func (t *Temperature) setContributors() answerer {
 	return t
 }
 
-func (t *Temperature) setTriggers() answerer {
-	t.triggers = []string{
+func (t *Temperature) setRegex() answerer {
+	triggers := []string{
 		"celsius to fahrenheit", "fahrenheit to celsius", "c to f", "f to c",
 	}
-	return t
-}
 
-func (t *Temperature) setTriggerFuncs() answerer {
-	t.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	tr := strings.Join(triggers, "|")
+	t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, tr)))
+	t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, tr)))
+
 	return t
 }
 

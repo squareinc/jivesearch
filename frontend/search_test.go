@@ -218,7 +218,6 @@ func TestSearchHandler(t *testing.T) {
 				Bangs: bangs.New(),
 				Instant: &instant.Instant{
 					QueryVar: "q",
-					Fetcher:  &mockWikipedia{},
 				},
 				Suggest: &mockSuggester{},
 				Search:  &mockSearch{},

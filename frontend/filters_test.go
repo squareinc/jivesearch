@@ -147,6 +147,55 @@ func TestHMACKey(t *testing.T) {
 	}
 }
 
+func TestSource(t *testing.T) {
+	type args struct {
+		src instant.Solution
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "empty",
+			args: args{instant.Solution{}},
+			want: "",
+		},
+		{
+			name: "stackoverflow",
+			args: args{
+				instant.Solution{
+					Type: "stackoverflow",
+					Raw: instant.StackOverflowAnswer{
+						Answer: instant.SOAnswer{
+							User: "bob",
+						},
+					},
+				},
+			},
+			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
+		},
+		{
+			name: "wikidata",
+			args: args{
+				instant.Solution{
+					Type: "wikidata",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := source(tt.args.src)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestInstantFormatter(t *testing.T) {
 	type args struct {
 		raw interface{}
@@ -165,6 +214,21 @@ func TestInstantFormatter(t *testing.T) {
 				language.English,
 			},
 			want: "",
+		},
+		{
+			name: "stackoverflow",
+			args: args{
+				instant.StackOverflowAnswer{
+					Question: "A made up question",
+					Link:     "https://stackoverflow.com/questions/90210/a-made-up-question",
+					Answer: instant.SOAnswer{
+						User: "Roger Roger",
+						Text: "A clever answer",
+					},
+				},
+				language.English,
+			},
+			want: `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/questions/90210/a-made-up-question"><em>A made up question</em></a><br>A clever answer`,
 		},
 		{
 			name: "kg",

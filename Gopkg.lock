@@ -45,7 +45,7 @@
     "redis"
   ]
   revision = "d1ed5c67e5794de818ea85e6b522fda02623a484"
-  version = "v1.4.0"
+  version = "v1.5.0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -105,8 +105,8 @@
 [[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
-  revision = "d419a98cdbed11a922bf76f257b7c4be79b50e73"
-  version = "v1.7.4"
+  revision = "c3beff4c2358b44d0493c7dda585e7db7ff28ae6"
+  version = "v1.7.6"
 
 [[projects]]
   branch = "master"
@@ -144,8 +144,8 @@
     "config",
     "uritemplates"
   ]
-  revision = "2963eb09b89294356e1a826068f33e5a44326ac0"
-  version = "v6.1.5"
+  revision = "9f4560b20fb3bd4bb855fada3e6feea59b26ce66"
+  version = "v6.1.7"
 
 [[projects]]
   branch = "master"
@@ -192,8 +192,8 @@
 [[projects]]
   name = "github.com/spf13/cast"
   packages = ["."]
-  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
-  version = "v1.1.0"
+  revision = "8965335b8c7107321228e3e3702cab9832751bac"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -331,13 +331,13 @@
   revision = "6a222229fa0697e6da06ec80f8ffd0ada346669d"
 
 [[projects]]
-  branch = "master"
   name = "willnorris.com/go/imageproxy"
   packages = [
     ".",
     "third_party/http"
   ]
   revision = "82ba3b64454920e6e46aa9cce2b1609838877b6a"
+  version = "v0.7.0"
 
 [solve-meta]
   analyzer-name = "dep"

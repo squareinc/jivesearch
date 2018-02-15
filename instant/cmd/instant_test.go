@@ -10,6 +10,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -59,8 +60,9 @@ func TestHandler(t *testing.T) {
 
 			conf := &cfg{
 				&instant.Instant{
-					QueryVar: "q",
-					Fetcher:  &mockFetcher{},
+					QueryVar:             "q",
+					StackOverflowFetcher: &mockStackOverflowFetcher{},
+					WikiDataFetcher:      &mockWikiFetcher{},
 				},
 			}
 
@@ -95,7 +97,7 @@ func TestSetup(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := setup()
+			_, _, err := setup()
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -103,12 +105,19 @@ func TestSetup(t *testing.T) {
 	}
 }
 
-type mockFetcher struct{}
+type mockStackOverflowFetcher struct{}
 
-func (mf *mockFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
+func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackoverflow.Response, error) {
+	resp := stackoverflow.Response{}
+	return resp, nil
+}
+
+type mockWikiFetcher struct{}
+
+func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
 	return &wikipedia.Item{}, nil
 }
 
-func (mf *mockFetcher) Setup() error {
+func (mf *mockWikiFetcher) Setup() error {
 	return nil
 }

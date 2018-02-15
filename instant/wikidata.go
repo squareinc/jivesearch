@@ -1,10 +1,12 @@
 package instant
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
-	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -56,20 +58,18 @@ const height = "height"
 const howTallis = "how tall is"
 const howTallwas = "how tall was"
 
-func (w *WikiData) setTriggers() answerer {
-	w.triggers = []string{
+func (w *WikiData) setRegex() answerer {
+	triggers := []string{
 		age, howOldIs,
 		birthday, born,
 		death, died,
 		howTallis, howTallwas, height,
 	}
-	return w
-}
 
-func (w *WikiData) setTriggerFuncs() answerer {
-	w.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	w.regex = append(w.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	w.regex = append(w.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+
 	return w
 }
 
@@ -95,7 +95,8 @@ type Age struct {
 func (w *WikiData) setSolution() answerer {
 	item, err := w.Fetch(w.remainder, language.English)
 	if err != nil {
-		log.Info.Println(err) // errors should be returned to caller, not handled here
+		w.Err = err
+		return w
 	}
 
 	switch w.triggerWord {
@@ -229,9 +230,9 @@ func (w *WikiData) tests() []test {
 }
 
 // mock Wikidata Fetcher
-type mockFetcher struct{}
+type mockWikiFetcher struct{}
 
-func (mf *mockFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
+func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
 	switch query {
 	case "bob marley":
 		return &wikipedia.Item{
@@ -292,6 +293,6 @@ func (mf *mockFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, 
 
 }
 
-func (mf *mockFetcher) Setup() error {
+func (mf *mockWikiFetcher) Setup() error {
 	return nil
 }

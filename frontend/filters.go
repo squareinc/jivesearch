@@ -26,6 +26,7 @@ var funcMap = template.FuncMap{
 	"HMACKey":          hmacKey,
 	"InstantFormatter": instantFormatter,
 	"Now":              now,
+	"Source":           source,
 	"WikiCanonical":    wikiCanonical,
 	"WikiDateTime":     wikiDateTime,
 	"WikiYears":        wikiYears,
@@ -98,8 +99,36 @@ func hmacKey(u string) string {
 	return base64.URLEncoding.EncodeToString(h.Sum(nil))
 }
 
+// source will show the source of an instant answer if data comes from a 3rd party
+func source(answer instant.Solution) string {
+	txt, u, img := "", "", ""
+	var f string
+
+	switch answer.Type {
+	case "stackoverflow":
+		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
+		// Can select one or the other but not both in their filter.
+		user := answer.Raw.(instant.StackOverflowAnswer).Answer.User
+		img = `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/>`
+		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
+	case "wikidata":
+		txt, u = "Wikipedia", "https://www.wikipedia.org/"
+		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	default:
+	}
+
+	return f
+}
+
 func instantFormatter(raw interface{}, r language.Region) string {
 	switch raw.(type) {
+	case instant.StackOverflowAnswer:
+		a := raw.(instant.StackOverflowAnswer)
+		return fmt.Sprintf(
+			`<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="%v"><em>%v</em></a><br>%v`,
+			a.Link, a.Question, a.Answer.Text,
+		)
 	case []wikipedia.Quantity: // e.g. height, weight, etc.
 		i := raw.([]wikipedia.Quantity)
 		if len(i) == 0 {

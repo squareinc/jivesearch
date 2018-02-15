@@ -20,8 +20,9 @@ func TestDetect(t *testing.T) {
 	}
 
 	i := Instant{
-		QueryVar: "q",
-		Fetcher:  &mockFetcher{},
+		QueryVar:             "q",
+		StackOverflowFetcher: &mockStackOverflowFetcher{},
+		WikiDataFetcher:      &mockWikiFetcher{},
 	}
 
 	for j, ia := range i.answers() {

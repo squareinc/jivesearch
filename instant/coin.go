@@ -1,8 +1,11 @@
 package instant
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 )
@@ -35,17 +38,13 @@ func (c *Coin) setContributors() answerer {
 	return c
 }
 
-func (c *Coin) setTriggers() answerer {
-	c.triggers = []string{
+func (c *Coin) setRegex() answerer {
+	triggers := []string{
 		"flip a coin", "heads or tails", "coin toss",
 	}
-	return c
-}
 
-func (c *Coin) setTriggerFuncs() answerer {
-	c.triggerFuncs = []triggerFunc{
-		startsWith, endsWith,
-	}
+	t := strings.Join(triggers, "|")
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)$`, t)))
 
 	return c
 }

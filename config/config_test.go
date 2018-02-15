@@ -68,6 +68,9 @@ func TestSetDefaults(t *testing.T) {
 
 		{"useragent", "https://github.com/jivesearch/jivesearch"},
 
+		// stackoverflow API settings
+		{"stackoverflow.key", "app key"},
+
 		// wikipedia settings
 		{"wikipedia.truncate", 250},
 	}
