@@ -15,10 +15,10 @@ type Bangs struct {
 
 // Bang holds a single !bang
 type Bang struct {
-	Name            string            `json:"name"`
-	Triggers        []string          `json:"triggers"`
-	Regions         map[string]string `json:"regions"`
-	Transformations []transformation  `json:"-"`
+	Name      string            `json:"name"`
+	Triggers  []string          `json:"triggers"`
+	Regions   map[string]string `json:"regions"`
+	Functions []fn              `json:"-"`
 }
 
 // Suggester is a !bangs suggester/autocomplete
@@ -81,8 +81,8 @@ func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string
 
 			remainder := strings.Join(append(fields[:i], fields[i+1:]...), " ")
 
-			for _, fn := range bng.Transformations {
-				remainder = fn(remainder)
+			for _, f := range bng.Functions {
+				remainder = f(remainder)
 			}
 
 			for _, reg := range []string{strings.ToLower(region.String()), def} { // use default region if no region specified
@@ -96,7 +96,7 @@ func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string
 	return "", false
 }
 
-type transformation func(string) string
+type fn func(string) string
 
 // Returns the canonical version of a Wikipedia title.
 // "bob maRLey" -> "Bob_Marley"
@@ -138,21 +138,21 @@ func New() *Bangs {
 				"fr": "https://www.amazon.fr/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
 				"uk": "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Bing", []string{"b", "bing"},
 			map[string]string{
 				def: "https://www.bing.com/search?q={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"GitHub", []string{"gh", "git", "github"},
 			map[string]string{
 				def: "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Google", []string{"g", "google"},
@@ -162,49 +162,56 @@ func New() *Bangs {
 				"fr": "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
 				"ru": "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Google France", []string{"gfr", "googlefr"},
 			map[string]string{
 				def: "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Google Images", []string{"gi"},
 			map[string]string{
 				def: "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Google Russia", []string{"gru", "googleru"},
 			map[string]string{
 				def: "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"IMDb", []string{"imdb"},
 			map[string]string{
 				def: "http://www.imdb.com/find?q={{{term}}}&s=all",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Reddit", []string{"reddit"},
 			map[string]string{
 				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
 			},
-			[]transformation{},
+			[]fn{},
 		},
 		{
 			"Stack Overflow", []string{"so", "stackoverflow"},
 			map[string]string{
 				def: "https://stackoverflow.com/search?q={{{term}}}",
 			},
-			[]transformation{},
+			[]fn{},
+		},
+		{
+			"Twitter", []string{"tw", "twitter"},
+			map[string]string{
+				def: "https://twitter.com/search?q={{{term}}}",
+			},
+			[]fn{},
 		},
 		{
 			// I think these need to be mapped to languages, not regions...
@@ -215,7 +222,7 @@ func New() *Bangs {
 				"de": "https://de.wikipedia.org/wiki/{{{term}}}",
 				"fr": "https://fr.wikipedia.org/wiki/{{{term}}}",
 			},
-			[]transformation{wikipediaCanonical},
+			[]fn{wikipediaCanonical},
 		},
 	}
 
