@@ -71,14 +71,14 @@ func (c *Coin) tests() []test {
 		tst := test{
 			query: q,
 			expected: []Solution{
-				Solution{
+				{
 					Type:         "coin toss",
 					Triggered:    true,
 					Contributors: contrib,
 					Text:         "Heads",
 					Cache:        false,
 				},
-				Solution{
+				{
 					Type:         "coin toss",
 					Triggered:    true,
 					Contributors: contrib,

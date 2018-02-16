@@ -53,10 +53,10 @@ func (t *Temperature) setRegex() answerer {
 func (t *Temperature) setSolution() answerer {
 	matches := make(map[string]float64)
 	combos := [][]string{
-		[]string{"<f>fahrenheit", "<c>celsius"},
-		[]string{"<c>celsius", "<f>fahrenheit"},
-		[]string{"<c>c", "<f>f"},
-		[]string{"<f>f", "<c>c"},
+		{"<f>fahrenheit", "<c>celsius"},
+		{"<c>celsius", "<f>fahrenheit"},
+		{"<c>c", "<f>f"},
+		{"<f>f", "<c>c"},
 	}
 
 	for _, c := range combos {
@@ -107,10 +107,10 @@ func (t *Temperature) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "17 degrees c to f",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -119,10 +119,10 @@ func (t *Temperature) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "79.9 f to c",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -131,10 +131,10 @@ func (t *Temperature) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "107.9 fahrenheit to celsius",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -143,10 +143,10 @@ func (t *Temperature) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "-9.3 celsius to fahrenheit",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

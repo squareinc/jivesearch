@@ -96,10 +96,10 @@ func (s *Stats) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "avg 3 4e6",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -108,10 +108,10 @@ func (s *Stats) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "11 18 -142 Average",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -120,10 +120,10 @@ func (s *Stats) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "6 3 -5 23 Median",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -132,10 +132,10 @@ func (s *Stats) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "median 17 12 -18",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -144,10 +144,10 @@ func (s *Stats) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "58 96 -41 sum",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -156,10 +156,10 @@ func (s *Stats) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "Total -17 3 87 -476",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

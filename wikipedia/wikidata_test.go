@@ -15,17 +15,17 @@ var shaqLabels = Labels{
 var shaqRawAliases = `{"de": [{"value": "Shaquille Rashaun O'Neal", "language": "de"}, {"value": "Shaq", "language": "de"}, {"value": "Shaquille O'Neal", "language": "de"}, {"value": "Shaquille Rashaun O’Neal", "language": "de"}], "en": [{"value": "Shaquille Rashaun O'Neal", "language": "en"}, {"value": "Shaq", "language": "en"}, {"value": "The Diesel", "language": "en"}, {"value": "Superman", "language": "en"}, {"value": "The Big Aristotle", "language": "en"}, {"value": "M.D.E. (Most Dominant Ever)", "language": "en"}, {"value": "L.C.L. (Last Center Left)", "language": "en"}, {"value": "The Big Shakespeare", "language": "en"}, {"value": "Wilt Chamberneezy", "language": "en"}, {"value": "Officer Shaq", "language": "en"}, {"value": "The Big Deporter", "language": "en"}, {"value": "Shaq Daddy", "language": "en"}, {"value": "Shaq-Fu", "language": "en"}, {"value": "Big Daddy", "language": "en"}, {"value": "The Big Baryshnikov", "language": "en"}, {"value": "Dr. Shaq", "language": "en"}, {"value": "Osama Bin Shaq", "language": "en"}, {"value": "The Big Cactus", "language": "en"}, {"value": "Warrior", "language": "en"}, {"value": "The Eighth Wonder", "language": "en"}, {"value": "Big Fella", "language": "en"}]}`
 var shaqAliases = Aliases{
 	"de": []Text{
-		Text{Text: "Shaquille Rashaun O'Neal", Language: "de"}, Text{Text: "Shaq", Language: "de"},
-		Text{Text: "Shaquille O'Neal", Language: "de"}, Text{Text: "Shaquille Rashaun O’Neal", Language: "de"},
+		{Text: "Shaquille Rashaun O'Neal", Language: "de"}, {Text: "Shaq", Language: "de"},
+		{Text: "Shaquille O'Neal", Language: "de"}, {Text: "Shaquille Rashaun O’Neal", Language: "de"},
 	},
 	"en": []Text{
-		Text{Text: "Shaquille Rashaun O'Neal", Language: "en"}, Text{Text: "Shaq", Language: "en"},
-		Text{Text: "The Diesel", Language: "en"}, Text{Text: "Superman", Language: "en"},
-		Text{Text: "The Big Aristotle", Language: "en"}, Text{Text: "M.D.E. (Most Dominant Ever)", Language: "en"},
-		Text{Text: "L.C.L. (Last Center Left)", Language: "en"}, Text{Text: "The Big Shakespeare", Language: "en"},
-		Text{Text: "Wilt Chamberneezy", Language: "en"}, Text{Text: "Officer Shaq", Language: "en"},
-		Text{Text: "The Big Deporter", Language: "en"}, Text{Text: "Shaq Daddy", Language: "en"},
-		Text{Text: "Shaq-Fu", Language: "en"}, Text{Text: "Big Daddy", Language: "en"},
+		{Text: "Shaquille Rashaun O'Neal", Language: "en"}, {Text: "Shaq", Language: "en"},
+		{Text: "The Diesel", Language: "en"}, {Text: "Superman", Language: "en"},
+		{Text: "The Big Aristotle", Language: "en"}, {Text: "M.D.E. (Most Dominant Ever)", Language: "en"},
+		{Text: "L.C.L. (Last Center Left)", Language: "en"}, {Text: "The Big Shakespeare", Language: "en"},
+		{Text: "Wilt Chamberneezy", Language: "en"}, {Text: "Officer Shaq", Language: "en"},
+		{Text: "The Big Deporter", Language: "en"}, {Text: "Shaq Daddy", Language: "en"},
+		{Text: "Shaq-Fu", Language: "en"}, {Text: "Big Daddy", Language: "en"},
 		{Text: "The Big Baryshnikov", Language: "en"}, {Text: "Dr. Shaq", Language: "en"},
 		{Text: "Osama Bin Shaq", Language: "en"}, {Text: "The Big Cactus", Language: "en"},
 		{Text: "Warrior", Language: "en"}, {Text: "The Eighth Wonder", Language: "en"},
@@ -372,42 +372,42 @@ var shaqRawClaims = `{
 var shaqClaims = &Claims{
 	Image: []string{"Shaqmiami.jpg"},
 	Sex: []Wikidata{
-		Wikidata{
+		{
 			ID: "Q6581097",
 		},
 	},
 	Spouse: []Spouse{
-		Spouse{
+		{
 			Item: []Wikidata{
-				Wikidata{
+				{
 					ID: "Q7491045",
 				},
 			},
 			Start: []DateTime{
-				DateTime{
+				{
 					Value: "2002-12-26T00:00:00Z", Calendar: Wikidata{ID: "Q1985727"},
 				},
 			},
 			End: []DateTime{
-				DateTime{
+				{
 					Value: "2009-11-10T00:00:00Z", Calendar: Wikidata{ID: "Q1985727"},
 				},
 			},
 			Place: []Wikidata{
-				Wikidata{
+				{
 					ID: "Q2021533",
 				},
 			},
 		},
 	},
 	Height: []Quantity{
-		Quantity{
+		{
 			Amount: "2.16",
 			Unit:   Wikidata{ID: "Q11573"},
 		},
 	},
 	BirthName: []Text{
-		Text{
+		{
 			Text:     "This is not the real name for Shaq",
 			Language: "en",
 		},

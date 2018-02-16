@@ -305,8 +305,6 @@ func (c *Crawler) work(lnk string) {
 		c.err <- errors.Wrapf(err, "unable to insert doc: %v", doc.ID)
 		return
 	}
-
-	return
 }
 
 // fetchRobots fetches and caches the robots.txt file

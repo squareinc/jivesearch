@@ -72,10 +72,10 @@ func (c *CamelCase) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "camelcase metallica rocks",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -84,10 +84,10 @@ func (c *CamelCase) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "aliCE in chAins Is better camel case",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -96,10 +96,10 @@ func (c *CamelCase) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "camel case O'doyle ruLES",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

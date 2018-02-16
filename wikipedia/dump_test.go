@@ -206,8 +206,7 @@ func TestCirrusLinks(t *testing.T) {
 type mockDumper struct{}
 
 func (md *mockDumper) Dump(wikidata bool, lang language.Tag, rows chan interface{}) error {
-	for _ = range rows {
-	}
+	<-rows
 
 	return nil
 }

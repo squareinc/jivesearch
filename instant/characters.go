@@ -78,10 +78,10 @@ func (c *Characters) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: `number of chars in "Jimi Hendrix"`,
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -90,10 +90,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "number of chars   in Pink   Floyd",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -102,10 +102,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "Bob Dylan   number of characters in",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -114,10 +114,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "number of characters Janis   Joplin",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -126,10 +126,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "char count Led Zeppelin",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -138,10 +138,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "char count of ' 87 '",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -150,10 +150,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "they're chars count",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -162,10 +162,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "chars count of something",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -174,10 +174,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "Another something chars count of",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -186,10 +186,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "1234567 character count",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -198,10 +198,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "character count of house of cards",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -210,10 +210,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "characters count 50 cent",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -222,10 +222,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "characters count of 1 dollar",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -234,34 +234,34 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "chars in saved by the bell",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "chars 21 jump street",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "characters in house of cards",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "characters beavis and butthead",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "char count equity",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -270,10 +270,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "characters count seal",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -282,10 +282,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "length in chars lion",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -294,10 +294,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "length in characters mountain",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -306,10 +306,10 @@ func (c *Characters) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "length of 1 meter",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
 	}

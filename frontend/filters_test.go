@@ -482,9 +482,9 @@ func TestWikiLabel(t *testing.T) {
 			name: "basic",
 			args: args{
 				map[string]wikipedia.Text{
-					"en":    wikipedia.Text{Text: "english language", Language: "en"},
-					"de":    wikipedia.Text{Text: "german language", Language: "de"},
-					"sr-el": wikipedia.Text{Text: "this doesn't parse language", Language: "sr-el"},
+					"en":    {Text: "english language", Language: "en"},
+					"de":    {Text: "german language", Language: "de"},
+					"sr-el": {Text: "this doesn't parse language", Language: "sr-el"},
 				},
 				[]language.Tag{
 					language.English, language.French, language.German,
@@ -518,16 +518,16 @@ func TestWikiJoin(t *testing.T) {
 			name: "basic",
 			args: args{
 				[]wikipedia.Wikidata{
-					wikipedia.Wikidata{ID: "1", Labels: map[string]wikipedia.Text{
-						"fr": wikipedia.Text{Text: "rock in french", Language: "fr"},
-						"en": wikipedia.Text{Text: "rock", Language: "en"},
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"fr": {Text: "rock in french", Language: "fr"},
+						"en": {Text: "rock", Language: "en"},
 					}},
-					wikipedia.Wikidata{ID: "1", Labels: map[string]wikipedia.Text{
-						"en": wikipedia.Text{Text: "rap", Language: "en"},
-						"de": wikipedia.Text{Text: "rap in german", Language: "de"},
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"en": {Text: "rap", Language: "en"},
+						"de": {Text: "rap in german", Language: "de"},
 					}},
-					wikipedia.Wikidata{ID: "1", Labels: map[string]wikipedia.Text{
-						"en": wikipedia.Text{Text: "country", Language: "en"},
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"en": {Text: "country", Language: "en"},
 					}},
 				},
 				[]language.Tag{

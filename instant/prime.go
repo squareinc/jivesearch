@@ -84,10 +84,10 @@ func (p *Prime) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "prime numbers between 5 and 121",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -96,10 +96,10 @@ func (p *Prime) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "prime number between 614 and 537",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -108,10 +108,10 @@ func (p *Prime) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "prime between -484 and 87",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -120,10 +120,10 @@ func (p *Prime) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "prime between 999764 and 1000351", // tests our max
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

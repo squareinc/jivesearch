@@ -30,10 +30,7 @@ import (
 )
 
 var (
-	f          *frontend.Frontend
-	httpClient = &http.Client{
-		Timeout: 2 * time.Second,
-	}
+	f *frontend.Frontend
 )
 
 func setup(v *viper.Viper) *http.Server {

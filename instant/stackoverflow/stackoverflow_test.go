@@ -49,9 +49,9 @@ func TestAPIFetch(t *testing.T) {
 			}`,
 			want: Response{
 				Items: []Item{
-					Item{
+					{
 						Answers: []Answer{
-							Answer{
+							{
 								Owner: Owner{
 									DisplayName: "NikiC",
 								},

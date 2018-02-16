@@ -77,14 +77,14 @@ func TestFetch(t *testing.T) {
 				&Results{
 					Count: 2,
 					Documents: []*document.Document{
-						&document.Document{
+						{
 							ID: "http://example.com/articles/is-bob-dylan-literature-1476401068",
 							Content: document.Content{
 								Title:       "Is Bob Dylan Literature? - WSJ",
 								Description: "The Nobel committee says ‘Yes’ to Bob Dylan.",
 							},
 						},
-						&document.Document{
+						{
 							ID: "http://www.example.com/book-search/author/DYLAN",
 							Content: document.Content{
 								Title:       "Dylan, Bob - example",
@@ -143,14 +143,14 @@ func TestFetch(t *testing.T) {
 				&Results{
 					Count: 2500,
 					Documents: []*document.Document{
-						&document.Document{
+						{
 							ID: "http://example.com.br/articles/is-bob-dylan-literature-1476401068",
 							Content: document.Content{
 								Title:       "Is Bob Dylan Literature? - WSJ",
 								Description: "The Nobel committee says ‘Yes’ to Bob Dylan.",
 							},
 						},
-						&document.Document{
+						{
 							ID: "http://www.example.com.br/book-search/author/DYLAN",
 							Content: document.Content{
 								Title:       "Dylan, Bob - example",

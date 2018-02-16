@@ -75,11 +75,11 @@ func (u *UserAgent) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query:     "user agent",
 			userAgent: "firefox",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -88,11 +88,11 @@ func (u *UserAgent) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query:     "useragent?",
 			userAgent: "opera",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -101,11 +101,11 @@ func (u *UserAgent) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query:     "my user agent",
 			userAgent: "some random ua",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -114,11 +114,11 @@ func (u *UserAgent) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query:     "what's my user agent?",
 			userAgent: "chrome",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -127,11 +127,11 @@ func (u *UserAgent) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query:     "what is my useragent?",
 			userAgent: "internet explorer",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

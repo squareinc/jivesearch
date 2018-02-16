@@ -101,7 +101,9 @@ func hmacKey(u string) string {
 
 // source will show the source of an instant answer if data comes from a 3rd party
 func source(answer instant.Solution) string {
-	txt, u, img := "", "", ""
+	var txt string
+	var u string
+	var img string
 	var f string
 
 	switch answer.Type {

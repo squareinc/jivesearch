@@ -85,22 +85,22 @@ func (f *Frequency) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "a in abracadabra frequency of",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "frequency of",
 			expected: []Solution{
-				Solution{},
+				{},
 			},
 		},
-		test{
+		{
 			query: "frequency of a in abracadabra",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -109,10 +109,10 @@ func (f *Frequency) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "frequency of o in cooler",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -121,10 +121,10 @@ func (f *Frequency) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "frequency of s in jimi hendrix",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -133,10 +133,10 @@ func (f *Frequency) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "frequency of e in fred astaire",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

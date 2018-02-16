@@ -385,7 +385,7 @@ func setValue(field reflect.Value, p property) error {
 
 		v := Coordinate{
 			Globe: []Wikidata{
-				Wikidata{
+				{
 					ID: strings.TrimPrefix(val["globe"].(string), "http://www.wikidata.org/entity/"),
 				},
 			},

@@ -239,14 +239,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 }
 
 func (f *Frontend) wikiHandler(query string, preferred []language.Tag) (*wikipedia.Item, error) {
-	var err error
-	item := &wikipedia.Item{}
-
 	lang, _, _ := f.Wikipedia.Matcher.Match(preferred...)
-	item, err = f.Wikipedia.Fetch(query, lang)
-	if err != nil {
-		return item, err
-	}
-
-	return item, err
+	return f.Wikipedia.Fetch(query, lang)
 }

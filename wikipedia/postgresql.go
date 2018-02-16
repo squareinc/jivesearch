@@ -266,17 +266,17 @@ func (t *table) setColumns() error {
 	switch t.Type {
 	case wikiTable:
 		t.columns = []column{
-			column{"id", "text", true},
-			column{"title", "text", true},
-			column{"text", "text", false},
+			{"id", "text", true},
+			{"title", "text", true},
+			{"text", "text", false},
 		}
 	case wikidataTable:
 		t.columns = []column{
-			column{"id", "text", true},
-			column{"labels", "jsonb", true},
-			column{"aliases", "jsonb", true},
-			column{"descriptions", "jsonb", false},
-			column{"claims", "jsonb", true},
+			{"id", "text", true},
+			{"labels", "jsonb", true},
+			{"aliases", "jsonb", true},
+			{"descriptions", "jsonb", false},
+			{"claims", "jsonb", true},
 		}
 	default:
 		err = fmt.Errorf("unknown postgresql table type %v", t.Type)

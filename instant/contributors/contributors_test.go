@@ -19,7 +19,7 @@ func TestLoad(t *testing.T) {
 			name:  "match",
 			names: []string{"sethklarman", "davidabrams"},
 			want: []Contributor{
-				Contributor{Name: "Seth Klarman", Github: "sethklarman"},
+				{Name: "Seth Klarman", Github: "sethklarman"},
 			},
 		},
 		{

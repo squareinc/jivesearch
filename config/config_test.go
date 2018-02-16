@@ -89,8 +89,8 @@ type provider struct {
 
 func (p *provider) SetDefault(key string, value interface{}) {
 	p.m[key] = value
-	return
 }
+
 func (p *provider) SetTypeByDefaultValue(bool) {}
 
 func (p *provider) BindPFlag(key string, flg *pflag.Flag) error {

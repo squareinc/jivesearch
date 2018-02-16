@@ -170,7 +170,7 @@ func (d *Document) SetPolicyFromHeader(bot string) *Document {
 }
 
 // TODO: Process the bot directive for our bot
-var botPolicy = regexp.MustCompile(`(?P<bot>.*):(?P<policy>.*)`)
+// var botPolicy = regexp.MustCompile(`(?P<bot>.*):(?P<policy>.*)`)
 
 // In case of competing directives we follow the most restrictive.
 // Since our default is to Index and Follow we don't want to

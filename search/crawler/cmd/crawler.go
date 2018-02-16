@@ -77,8 +77,6 @@ func setup(v *viper.Viper) {
 		},
 		Timeout: v.GetDuration("crawler.timeout"),
 	}
-
-	return
 }
 
 func main() {

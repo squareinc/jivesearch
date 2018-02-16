@@ -84,10 +84,10 @@ func (r *Reverse) tests() []test {
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
-		test{
+		{
 			query: "reverse ahh lights....ahh see 'em",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -96,10 +96,10 @@ func (r *Reverse) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: "reverse 私日本語は話せません",
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
@@ -108,10 +108,10 @@ func (r *Reverse) tests() []test {
 				},
 			},
 		},
-		test{
+		{
 			query: `reverse "ahh yeah"`,
 			expected: []Solution{
-				Solution{
+				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,

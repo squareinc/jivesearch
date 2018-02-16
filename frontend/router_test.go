@@ -16,27 +16,27 @@ func TestRouter(t *testing.T) {
 	}
 
 	for _, c := range []*route{
-		&route{
+		{
 			name:   "search",
 			method: "GET",
 			url:    "https://www.example.com/?q=search+term",
 		},
-		&route{
+		{
 			name:   "autocomplete",
 			method: "GET",
 			url:    "http://127.0.0.1/autocomplete",
 		},
-		&route{
+		{
 			name:   "vote",
 			method: "POST",
 			url:    "http://localhost/vote",
 		},
-		&route{
+		{
 			name:   "favicon",
 			method: "GET",
 			url:    "http://example.com/favicon.ico",
 		},
-		&route{
+		{
 			name:   "static",
 			method: "GET",
 			url:    "https://example.com/static/main.js",

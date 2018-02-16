@@ -14,10 +14,10 @@ var shaqClaimsJSON = []byte(`{
 
 var shaqClaimsPostgres = &Claims{
 	Sex: []Wikidata{
-		Wikidata{
+		{
 			ID: "Q6581097",
 			Labels: map[string]Text{
-				"en": Text{Text: "male", Language: "en"},
+				"en": {Text: "male", Language: "en"},
 			},
 			Claims: &Claims{},
 		},

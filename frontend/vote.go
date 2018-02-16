@@ -25,14 +25,14 @@ func (f *Frontend) voteHandler(w http.ResponseWriter, r *http.Request) *response
 		return fail
 	}
 
-	v := &vote.Vote{}
-	v, fail.err = vote.New(
+	v, err := vote.New(
 		vote.Query(q),
 		vote.URL(u),
 		vote.Value(val),
 	)
 
-	if fail.err != nil {
+	if err != nil {
+		fail.err = err
 		if fail.err == vote.ErrInvalidQuery || fail.err == vote.ErrInvalidURL || fail.err == vote.ErrInvalidVote {
 			fail.status = http.StatusBadRequest
 		}

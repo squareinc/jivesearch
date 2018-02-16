@@ -30,7 +30,7 @@ func TestGet(t *testing.T) {
 				{"https://www.example.com/a-path-to-nowhere", 2},
 			},
 			want: []Result{
-				Result{
+				{
 					URL:   "https://www.example.com/a-path-to-nowhere",
 					Votes: 2,
 				},
@@ -46,11 +46,11 @@ func TestGet(t *testing.T) {
 				{"https://www.example.com/a-path-to-somewhere", -419},
 			},
 			want: []Result{
-				Result{
+				{
 					URL:   "http://example.com/?a=query",
 					Votes: 150,
 				},
-				Result{
+				{
 					URL:   "https://www.example.com/a-path-to-somewhere",
 					Votes: -419,
 				},
@@ -64,10 +64,8 @@ func TestGet(t *testing.T) {
 			}
 			defer db.Close()
 
-			urls := []string{}
 			rows := sqlmock.NewRows([]string{"url", "vote"})
 			for _, u := range c.urls {
-				urls = append(urls, u.url)
 				rows = rows.AddRow(u.url, u.votes)
 			}
 
