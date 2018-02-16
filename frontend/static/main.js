@@ -118,6 +118,8 @@ $(document).ready(function() {
           var img = item.name.toLowerCase().replace(" ", "") + ".ico"; // "Stack Overflow" -> "stackoverflow.ico"
           if (item.name.startsWith("Google ")){ // "Google France", etc.. -> "google.ico"
             img = "google.ico";
+          } else if (item.name.startsWith("Yahoo ")){ // "Yahoo Finance", etc.. -> "yahoo.ico"
+            img = "yahoo.ico";
           }
 
           // Note: below about 600px this doesn't display right.

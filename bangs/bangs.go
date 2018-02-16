@@ -221,6 +221,41 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Yahoo", []string{"y", "yahoo"},
+			map[string]string{
+				def: "https://search.yahoo.com/search?p={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
+			"Yahoo Finance", []string{"yf", "yahoofinance"},
+			map[string]string{
+				def: "https://finance.yahoo.com/quote/{{{term}}}",
+			},
+			[]fn{},
+		},
+		{
+			"Yahoo Finance Charts", []string{"yfc"},
+			map[string]string{
+				def: "https://finance.yahoo.com/chart/{{{term}}}",
+			},
+			[]fn{},
+		},
+		{
+			"Yahoo Finance Profile", []string{"yfp"},
+			map[string]string{
+				def: "https://finance.yahoo.com/quote/{{{term}}}/profile",
+			},
+			[]fn{},
+		},
+		{
+			"Yahoo Finance Stats", []string{"yfs"},
+			map[string]string{
+				def: "https://finance.yahoo.com/quote/{{{term}}}/key-statistics",
+			},
+			[]fn{},
+		},
+		{
 			// I think these need to be mapped to languages, not regions...
 			"Wikipedia", []string{"w", "wikipedia"},
 			map[string]string{
