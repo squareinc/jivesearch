@@ -58,12 +58,19 @@ const height = "height"
 const howTallis = "how tall is"
 const howTallwas = "how tall was"
 
+// weight
+// will fail on "how much does x weigh?"
+const mass = "mass"
+const weigh = "weigh"
+const weight = "weight"
+
 func (w *WikiData) setRegex() answerer {
 	triggers := []string{
 		age, howOldIs,
 		birthday, born,
 		death, died,
 		howTallis, howTallwas, height,
+		mass, weigh, weight,
 	}
 
 	t := strings.Join(triggers, "|")
@@ -132,6 +139,12 @@ func (w *WikiData) setSolution() answerer {
 		}
 
 		w.Solution.Raw = item.Height
+	case mass, weigh, weight:
+		if len(item.Weight) == 0 {
+			return w
+		}
+
+		w.Solution.Raw = item.Weight
 	}
 
 	return w
@@ -217,6 +230,23 @@ func (w *WikiData) tests() []test {
 					Raw: []wikipedia.Quantity{
 						{
 							Amount: "2.16",
+							Unit:   wikipedia.Wikidata{ID: "Q11573"},
+						},
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "shaquille o'neal weight",
+			expected: []Solution{
+				{
+					Type:         typ,
+					Triggered:    true,
+					Contributors: contrib,
+					Raw: []wikipedia.Quantity{
+						{
+							Amount: "147",
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
 						},
 					},

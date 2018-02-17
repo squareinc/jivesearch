@@ -244,10 +244,15 @@ func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.It
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
 						},
 					},
+					Weight: []wikipedia.Quantity{
+						{
+							Amount: "147",
+							Unit:   wikipedia.Wikidata{ID: "Q11573"},
+						},
+					},
 				},
 			},
 		}, nil
-
 	}
 
 	return &wikipedia.Item{}, nil
