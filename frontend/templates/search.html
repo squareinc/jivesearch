@@ -193,19 +193,13 @@
             </div>
 
             {{$now := Now}}
+            {{$birthday := .Wikipedia.Claims.Birthday}}
             {{$death := .Wikipedia.Claims.Death}}
 
             {{range $i, $b := .Wikipedia.Claims.Birthday}}
               {{if eq $i 0}} 
               <div class="pure-u-1 wikipedia_claim">
-                <em>Born:</em> {{WikiDateTime $b}}
-                {{if $death}}
-                  {{range $j, $d := $death}}
-                    {{if eq $j 0}}(Age {{WikiYears $b $d}}){{end}}                
-                  {{end}}
-                {{else}}
-                  (Age {{WikiYears $b $now}})
-                {{end}}
+                <em>Born:</em> {{WikiDateTime $b}}{{if not $death}} (Age {{WikiYears $b $now}}){{end}}
               </div>
               {{end}} 
             {{end}} 
@@ -213,7 +207,7 @@
             {{range $i, $d := .Wikipedia.Claims.Death}}
               {{if eq $i 0}} 
               <div class="pure-u-1 wikipedia_claim">
-                <em>Died:</em> {{WikiDateTime $d}}                
+                <em>Died:</em> {{WikiDateTime $d}}{{range $j, $b := $birthday}}{{if eq $j 0}} (Age {{WikiYears $b $d}}){{end}}{{end}}             
               </div>
               {{end}}
             {{end}}
