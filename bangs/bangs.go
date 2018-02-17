@@ -148,6 +148,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Bing Images", []string{"bi", "bingimages"},
+			map[string]string{
+				def: "https://www.bing.com/images/search?q={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"GitHub", []string{"gh", "git", "github"},
 			map[string]string{
 				def: "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1",

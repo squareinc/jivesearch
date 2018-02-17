@@ -116,7 +116,10 @@ $(document).ready(function() {
 
         if (bang===true){
           var img = item.name.toLowerCase().replace(" ", "") + ".ico"; // "Stack Overflow" -> "stackoverflow.ico"
-          if (item.name.startsWith("Google ")){ // "Google France", etc.. -> "google.ico"
+
+          if (item.name.startsWith("Bing ")){ // "Bing Images", etc.. -> "bing.ico"
+            img = "bing.ico";
+          } else if (item.name.startsWith("Google ")){ // "Google France", etc.. -> "google.ico"
             img = "google.ico";
           } else if (item.name.startsWith("Yahoo ")){ // "Yahoo Finance", etc.. -> "yahoo.ico"
             img = "yahoo.ico";
