@@ -121,9 +121,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/microcosm-cc/bluemonday"
+  packages = ["."]
+  revision = "542fd4642604d0d0c26112396ce5b1a9d01eee0b"
+
+[[projects]]
+  branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "a4e142e9c047c904fa2f1e144d9a84e6133024bc"
+  revision = "00c29f56e2386353d58c599509e8dc3801b0d716"
 
 [[projects]]
   name = "github.com/muesli/smartcrop"
@@ -135,7 +141,7 @@
   branch = "master"
   name = "github.com/nfnt/resize"
   packages = ["."]
-  revision = "891127d8d1b52734debe1b3c3d7e747502b6c366"
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
 
 [[projects]]
   name = "github.com/olivere/elastic"
@@ -144,8 +150,8 @@
     "config",
     "uritemplates"
   ]
-  revision = "9f4560b20fb3bd4bb855fada3e6feea59b26ce66"
-  version = "v6.1.7"
+  revision = "2982cec1ae1eb496c4e6ec43b4136bedb977fec7"
+  version = "v6.1.8"
 
 [[projects]]
   branch = "master"
@@ -271,7 +277,7 @@
     "idna",
     "publicsuffix"
   ]
-  revision = "136a25c244d3019482a795d728110278d6ba09a4"
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]
   branch = "master"
@@ -310,7 +316,7 @@
     "unicode/norm",
     "unicode/rangetable"
   ]
-  revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
+  revision = "9e2b64d659da1afe07ce1c9c1dfefc09d188f21e"
 
 [[projects]]
   name = "gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -342,6 +348,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f85e25ab7dba3e3a016728d17e00087443ccab35e9cad915a85fb3d29cc6e24a"
+  inputs-digest = "be0e88b12042082a20b746327c6ffa4c464f23a5600ea5a39cacf6e64aa1dfb1"
   solver-name = "gps-cdcl"
   solver-version = 1

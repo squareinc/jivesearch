@@ -117,6 +117,10 @@ func source(answer instant.Solution) string {
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "wikiquote":
+		txt, u = "Wikiquote", "https://www.wikiquote.org/"
+		img = `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
 	}
 
@@ -155,6 +159,17 @@ func instantFormatter(raw interface{}, r language.Region) string {
 	case instant.Death:
 		d := raw.(instant.Death)
 		return wikiDateTime(d.Death)
+	case []string: // Wikiquote
+		var s string
+		for i, q := range raw.([]string) {
+			if i > 3 {
+				break
+			}
+
+			s += fmt.Sprintf(`<span style="font-size:14px;font-style:italic;">%v</span></p>`, q)
+		}
+
+		return s
 	default:
 		log.Debug.Printf("unknown type %T\n", raw)
 		return ""

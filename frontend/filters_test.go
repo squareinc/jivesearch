@@ -185,6 +185,15 @@ func TestSource(t *testing.T) {
 			},
 			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
 		},
+		{
+			name: "wikiquote",
+			args: args{
+				instant.Solution{
+					Type: "wikiquote",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := source(tt.args.src)
@@ -299,6 +308,13 @@ func TestInstantFormatter(t *testing.T) {
 				language.English,
 			},
 			want: `May 14, 2015`,
+		},
+		{
+			name: "wikiquote",
+			args: args{
+				[]string{"fantastic quote", "such good quote"}, language.English,
+			},
+			want: `<span style="font-size:14px;font-style:italic;">fantastic quote</span></p><span style="font-size:14px;font-style:italic;">such good quote</span></p>`,
 		},
 		{
 			name: "unknown",

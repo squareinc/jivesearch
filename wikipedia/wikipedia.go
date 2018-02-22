@@ -18,6 +18,7 @@ type Fetcher interface {
 // Item is the text portion of a wikipedia article
 type Item struct {
 	Wikipedia
+	Wikiquote
 	*Wikidata
 }
 
@@ -51,7 +52,7 @@ func (w *Wikipedia) UnmarshalJSON(data []byte) error {
 	w.Text = reParen.ReplaceAllString(w.Text, "")
 	w.Text = strings.Replace(w.Text, "\u00a0", "", -1) // otherwise causes a panic below
 
-	if len(w.Text) > w.truncate { // truncates while preserving words.
+	if w.truncate != -1 && len(w.Text) > w.truncate { // truncates while preserving words.
 		c := strings.Fields(w.Text[:w.truncate+1])
 		w.Text = strings.Join(c[0:len(c)-1], " ")
 		if !strings.HasSuffix(w.Text, ".") {

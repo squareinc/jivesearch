@@ -50,12 +50,28 @@ func setup(v *viper.Viper) (*wikipedia.PostgreSQL, error) {
 func files(v *viper.Viper, supported []language.Tag) ([]*wikipedia.File, error) {
 	files := []*wikipedia.File{}
 
-	if v.GetBool("wikipedia.data") {
-		files = append(files, wikipedia.NewFile(wikipedia.WikiDataURL, language.English))
+	if v.GetBool("wikipedia.wikidata") {
+		f := wikipedia.NewFile(wikipedia.WikiDataURL, wikipedia.WikidataFT, language.English)
+		files = append(files, f)
 	}
 
-	if v.GetBool("wikipedia.text") {
-		f, err := wikipedia.CirrusLinks(supported)
+	var m = map[string]wikipedia.FileType{
+		"wikipedia":  wikipedia.WikipediaFT,
+		"wikiquote":  wikipedia.WikiquoteFT,
+		"wiktionary": wikipedia.WiktionaryFT,
+	}
+
+	var ft = []wikipedia.FileType{}
+
+	for k, val := range m {
+		if !v.GetBool(fmt.Sprintf("wikipedia.%v", k)) {
+			continue
+		}
+		ft = append(ft, val)
+	}
+
+	if len(ft) > 0 {
+		f, err := wikipedia.CirrusLinks(supported, ft)
 		if err != nil {
 			return nil, err
 		}

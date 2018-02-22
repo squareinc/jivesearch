@@ -29,6 +29,7 @@ func TestSetup(t *testing.T) {
 		})
 	}
 }
+
 func TestLanguages(t *testing.T) {
 	type want struct {
 		supported   []language.Tag
@@ -72,7 +73,7 @@ func TestLanguages(t *testing.T) {
 func TestFiles(t *testing.T) {
 	type args struct {
 		wikipedia bool
-		wikidata  bool
+		ft        wikipedia.FileType
 		supported []language.Tag
 	}
 
@@ -84,7 +85,7 @@ func TestFiles(t *testing.T) {
 		{
 			"wikipedia",
 			args{
-				true, false, []language.Tag{language.English},
+				true, wikipedia.WikipediaFT, []language.Tag{language.English},
 			},
 			map[language.Tag]string{
 				language.English: "enwiki-20171218-cirrussearch-content.json.gz",
@@ -93,7 +94,7 @@ func TestFiles(t *testing.T) {
 		{
 			"wikidata",
 			args{
-				false, true, []language.Tag{language.English},
+				false, wikipedia.WikidataFT, []language.Tag{language.English},
 			},
 			map[language.Tag]string{
 				language.English: wikipedia.WikiDataURL.String(),
@@ -122,8 +123,8 @@ func TestFiles(t *testing.T) {
 			httpmock.RegisterResponder("GET", wikipedia.CirrusURL.String(), responder)
 
 			v := viper.New()
-			v.SetDefault("wikipedia.text", tt.args.wikipedia)
-			v.SetDefault("wikipedia.data", tt.args.wikidata)
+			v.SetDefault("wikipedia.wikipedia", tt.args.ft == wikipedia.WikipediaFT)
+			v.SetDefault("wikipedia.wikidata", tt.args.ft == wikipedia.WikidataFT)
 
 			want := []*wikipedia.File{}
 
@@ -133,7 +134,7 @@ func TestFiles(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				want = append(want, wikipedia.NewFile(wikipedia.CirrusURL.ResolveReference(u), k))
+				want = append(want, wikipedia.NewFile(wikipedia.CirrusURL.ResolveReference(u), tt.args.ft, k))
 			}
 
 			got, err := files(v, tt.args.supported)

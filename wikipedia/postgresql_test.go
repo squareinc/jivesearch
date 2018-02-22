@@ -50,6 +50,10 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 					Labels:       shaqLabels,
 					Claims:       shaqClaimsPostgres,
 				},
+				Wikiquote: Wikiquote{
+					Quotes: []string{},
+					//Quotes: shaqQuotes, // not really sure how to test for pq.Array
+				},
 			},
 		},
 	}
@@ -62,12 +66,13 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 			defer db.Close()
 
 			rows := sqlmock.NewRows(
-				[]string{`w."id"`, `w."title"`, `w."text"`, `wd."labels"`, `wd."aliases"`, `wd."descriptions"`, `wd."claims"`},
+				[]string{"id", "title", "text", "quotes", "labels", "aliases", "descriptions", "claims"},
 			)
 			rows = rows.AddRow(
-				"Q169452", tt.args.query, "Shaquille O'Neal is a basketball player",
+				"Q169452", tt.args.query, "Shaquille O'Neal is a basketball player", "{}",
 				[]byte(shaqRawLabels), []byte(shaqRawAliases), []byte(shaqRawDescriptions), shaqClaimsJSON,
 			)
+
 			mock.ExpectQuery("SELECT").WithArgs(tt.args.query).WillReturnRows(rows)
 
 			p := &PostgreSQL{
@@ -92,10 +97,8 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 
 func TestPostgreSQL_Dump(t *testing.T) {
 	type args struct {
-		wikidata bool
-		lang     language.Tag
-		rows     chan interface{}
-		done     chan bool
+		lang language.Tag
+		ft   FileType
 	}
 	tests := []struct {
 		name string
@@ -106,19 +109,23 @@ func TestPostgreSQL_Dump(t *testing.T) {
 			"enwiki",
 			shaqWikipedia,
 			args{
-				wikidata: false,
-				lang:     language.MustParse("en"),
-				rows:     make(chan interface{}),
-				done:     make(chan bool),
+				ft:   WikipediaFT,
+				lang: language.MustParse("en"),
 			},
 		},
 		{
 			"wikidata",
 			shaqWikidata,
 			args{
-				wikidata: true,
-				rows:     make(chan interface{}),
-				done:     make(chan bool),
+				ft: WikidataFT,
+			},
+		},
+		{
+			"enwikiquote",
+			shaqWikiquote,
+			args{
+				ft:   WikiquoteFT,
+				lang: language.MustParse("en"),
 			},
 		},
 	}
@@ -142,22 +149,37 @@ func TestPostgreSQL_Dump(t *testing.T) {
 
 			// create indices
 			mock.ExpectBegin()
-			mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
-			mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
-			if tt.name == "wikidata" {
+
+			switch tt.args.ft {
+			case WikipediaFT:
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikidataFT:
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikiquoteFT:
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
 			}
+
 			mock.ExpectCommit()
 
 			// rename table
 			mock.ExpectBegin()
 			mock.ExpectExec("DROP TABLE").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectExec("ALTER TABLE").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
-			mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
-			mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
-			if tt.name == "wikidata" {
+			switch tt.args.ft {
+			case WikipediaFT:
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikidataFT:
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikiquoteFT:
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			}
 			mock.ExpectCommit()
@@ -166,11 +188,13 @@ func TestPostgreSQL_Dump(t *testing.T) {
 				DB: db,
 			}
 
+			rows := make(chan interface{})
+
 			go func() {
-				tt.args.rows <- tt.row
+				rows <- tt.row
 			}()
 
-			if err := p.Dump(tt.args.wikidata, tt.args.lang, tt.args.rows); err != nil {
+			if err := p.Dump(tt.args.ft, tt.args.lang, rows); err != nil {
 				t.Fatal(err)
 			}
 

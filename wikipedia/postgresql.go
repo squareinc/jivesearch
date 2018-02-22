@@ -20,7 +20,10 @@ type PostgreSQL struct {
 type tableType = string
 
 const wikidataTable tableType = "wikidata"
-const wikiTable tableType = "wiki"
+const wikipediaTable tableType = "wikipedia"
+const wikiquoteTable tableType = "wikiquote"
+
+//const wiktionaryTable tableType = "wiktionary"
 
 type table struct {
 	Type      tableType
@@ -178,21 +181,30 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 	// Note: We cannot build 1 large jsonb_build_object as PostgreSQL has a 100 item limit.
 	sql := fmt.Sprintf(`
 		WITH item AS (
-			SELECT w."id", w."title", w."text", wd."labels", wd."aliases", wd."descriptions", wd."claims" FROM 
+			SELECT 
+				w."id", w."title", w."text", wq."quotes",
+				wd."labels", wd."aliases", wd."descriptions", wd."claims" 
+			FROM 
 			%vwiki w 
+			LEFT JOIN %vwikiquote wq
+			ON w.id = wq.id
 			LEFT JOIN wikidata wd
 			ON w.id = wd.id
-			WHERE LOWER(title) = LOWER($1)
+			WHERE LOWER(w.title) = LOWER($1)
 			AND wd.id IS NOT NULL
 		),
 		%v
 		
 		SELECT
-			item."id", item."title", item."text", item."labels", item."aliases", item."descriptions", %v "claims"
+			item."id", item."title", item."text", item."quotes", 
+			item."labels", item."aliases", item."descriptions", %v "claims"
 		FROM item, %v
-	`, item.Language, strings.Join(stmts, ", "), strings.Join(objects, " || "), strings.Join(tags, ", "))
+	`, item.Wikipedia.Language, item.Wikipedia.Language, strings.Join(stmts, ", "), strings.Join(objects, " || "), strings.Join(tags, ", "))
 
-	err := p.DB.QueryRow(sql, query).Scan(&item.Wikidata.ID, &item.Title, &item.Text, &item.Labels, &item.Aliases, &item.Descriptions, &item.Claims)
+	err := p.DB.QueryRow(sql, query).Scan(
+		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text, pq.Array(&item.Wikiquote.Quotes),
+		&item.Labels, &item.Aliases, &item.Descriptions, &item.Claims,
+	)
 
 	return item, err
 }
@@ -219,20 +231,29 @@ func (p *PostgreSQL) executeTransaction(t transaction) (err error) {
 }
 
 // Dump creates a temporary table and dumps rows via our transaction
-func (p *PostgreSQL) Dump(wikidata bool, lang language.Tag, rows chan interface{}) error {
+func (p *PostgreSQL) Dump(ft FileType, lang language.Tag, rows chan interface{}) error {
 	t := &table{
 		rows: rows,
 	}
 
-	switch wikidata {
-	case true:
+	switch ft {
+	case WikidataFT:
 		t.Type = wikidataTable
 		t.name = wikidataTable
-	default:
-		t.Type = wikiTable
-
+	case WikipediaFT:
+		t.Type = wikipediaTable
 		n := strings.Replace(lang.String(), "-", "_", -1)
-		t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wikiTable) // enwiki, cebwiki, etc...
+		t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wikipediaTable) // enwikipedia, cebwikipedia, etc...
+	case WikiquoteFT:
+		t.Type = wikiquoteTable
+		n := strings.Replace(lang.String(), "-", "_", -1)
+		t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wikiquoteTable) // enwikiquote, cebwikiquote, etc...
+	//case WiktionaryFT:
+	//	t.Type = wiktionaryTable
+	//	n := strings.Replace(lang.String(), "-", "_", -1)
+	//	t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wiktionaryTable) // enwiktionary, cebwiktionary, etc...
+	default:
+		return fmt.Errorf("unknown file type %q", ft)
 	}
 
 	t.temporary = t.name + "_tmp"
@@ -264,12 +285,19 @@ func (t *table) setColumns() error {
 	var err error
 
 	switch t.Type {
-	case wikiTable:
+	case wikipediaTable:
 		t.columns = []column{
 			{"id", "text", true},
 			{"title", "text", true},
 			{"text", "text", false},
 		}
+	case wikiquoteTable:
+		t.columns = []column{
+			{"id", "text", true},
+			{"quotes", "text[]", false},
+		}
+	//case wiktionaryTable:
+
 	case wikidataTable:
 		t.columns = []column{
 			{"id", "text", true},
@@ -305,7 +333,7 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 
 	stmt, err := tx.Prepare(pq.CopyIn(t.temporary, cols...))
 	if err != nil {
-		return err
+		return
 	}
 
 	defer func() {
@@ -328,23 +356,31 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 			// The following are all jsonb columns.
 			val := reflect.ValueOf(w).Elem()
 			for i := 1; i < val.NumField(); i++ {
-				j, err := json.Marshal(val.Field(i).Interface())
-				if err != nil {
-					return err
+				j, e := json.Marshal(val.Field(i).Interface())
+				if e != nil {
+					err = e
+					return
 				}
 
 				r = append(r, string(j))
 			}
+		case *Wikiquote:
+			w := row.(*Wikiquote)
+			if len(w.Quotes) == 0 {
+				continue
+			}
+			r = []interface{}{w.ID, pq.Array(w.Quotes)}
 		default:
-			return fmt.Errorf("unknown datatype for %+v", r)
+			err = fmt.Errorf("unknown datatype for %+v", r)
+			return
 		}
 
 		if _, err = stmt.Exec(r...); err != nil {
-			return err
+			return
 		}
 	}
 
-	return nil
+	return
 }
 
 func (t *table) indexName(tbl, col string) string {

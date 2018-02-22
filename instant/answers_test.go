@@ -253,6 +253,15 @@ func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.It
 				},
 			},
 		}, nil
+	case "michael jordan":
+		return &wikipedia.Item{
+			Wikiquote: wikipedia.Wikiquote{
+				Quotes: []string{
+					"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
+					"ball is life",
+				},
+			},
+		}, nil
 	}
 
 	return &wikipedia.Item{}, nil

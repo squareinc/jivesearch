@@ -64,6 +64,10 @@ const mass = "mass"
 const weigh = "weigh"
 const weight = "weight"
 
+// quotes
+const quote = "quote"
+const quotes = "quotes"
+
 func (w *WikiData) setRegex() answerer {
 	triggers := []string{
 		age, howOldIs,
@@ -71,6 +75,7 @@ func (w *WikiData) setRegex() answerer {
 		death, died,
 		howTallis, howTallwas, height,
 		mass, weigh, weight,
+		quote, quotes,
 	}
 
 	t := strings.Join(triggers, "|")
@@ -145,6 +150,13 @@ func (w *WikiData) setSolution() answerer {
 		}
 
 		w.Solution.Raw = item.Weight
+	case quote, quotes:
+		if len(item.Quotes) == 0 {
+			return w
+		}
+
+		w.Type = "wikiquote"
+		w.Solution.Raw = item.Quotes
 	}
 
 	return w
@@ -249,6 +261,21 @@ func (w *WikiData) tests() []test {
 							Amount: "147",
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
 						},
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "Michael Jordan quotes",
+			expected: []Solution{
+				{
+					Type:         "wikiquote",
+					Triggered:    true,
+					Contributors: contrib,
+					Raw: []string{
+						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
+						"ball is life",
 					},
 					Cache: true,
 				},

@@ -16,11 +16,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-var enwikiFile = &File{
-	language: language.English,
-	Base:     "enwiki-20171218-cirrussearch-content.json.gz",
-}
-
 func TestFile_Download(t *testing.T) {
 	tests := []struct {
 		name string
@@ -72,18 +67,28 @@ func TestFile_Parse(t *testing.T) {
 	tests := []struct {
 		name string
 		path string
+		ft   FileType
 		lang language.Tag
 		args args
 	}{
 		{
 			"enwiki",
 			"enwiki-20171218-cirrussearch-content.json.gz",
+			WikipediaFT,
 			language.English,
 			args{10},
 		},
 		{
 			"wikidata",
 			"latest-all.json.bz2",
+			WikidataFT,
+			language.English,
+			args{},
+		},
+		{
+			"wikiquote",
+			"enwikiquote-20171218-cirrussearch-content.json.gz",
+			WikiquoteFT,
 			language.English,
 			args{},
 		},
@@ -99,7 +104,7 @@ func TestFile_Parse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := NewFile(&url.URL{Path: tt.path}, tt.lang)
+			f := NewFile(&url.URL{Path: tt.path}, tt.ft, tt.lang)
 
 			md := &mockDumper{}
 			f.SetABS("/path/to/nowhere/").SetDumper(md)
@@ -144,6 +149,7 @@ func TestFile_Parse(t *testing.T) {
 func TestCirrusLinks(t *testing.T) {
 	type args struct {
 		supported []language.Tag
+		ft        []FileType
 	}
 
 	tests := []struct {
@@ -153,13 +159,23 @@ func TestCirrusLinks(t *testing.T) {
 		want []*File
 	}{
 		{
-			"basic",
-			args{[]language.Tag{language.English}},
+			"wikipedia",
+			args{[]language.Tag{language.English}, []FileType{WikipediaFT}},
 			[]string{
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwiki-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
 				enwikiFile,
+			},
+		},
+		{
+			"wikiquote",
+			args{[]language.Tag{language.English}, []FileType{WikiquoteFT}},
+			[]string{
+				"https://dumps.wikimedia.org/other/cirrussearch/current/enwikiquote-20171218-cirrussearch-content.json.gz",
+			},
+			[]*File{
+				enwikiQuoteFile,
 			},
 		},
 	}
@@ -177,6 +193,8 @@ func TestCirrusLinks(t *testing.T) {
 					<a href="aawiki-20171218-cirrussearch-general.json.gz">aawiki-20171218-cirrussearch-general.json.gz</a>18-Dec-2017 16:15 164287
 					<a href="enwiki-20171218-cirrussearch-content.json.gz">enwiki-20171218-cirrussearch-content.json.gz</a>19-Dec-2017 10:33 25078247011
 					<a href="enwiki-20171218-cirrussearch-general.json.gz">enwiki-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 43605620413
+					<a href="enwikiquote-20171218-cirrussearch-content.json.gz">enwikiquote-20171218-cirrussearch-content.json.gz</a>19-Dec-2017 10:33 78247011
+					<a href="enwikiquote-20171218-cirrussearch-general.json.gz">enwikiquote-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 5620413
 					<a href="usabilitywiki-20171218-cirrussearch-content.json.gz">usabilitywiki-20171218-cirrussearch-content.jso..&gt;</a>20-Dec-2017 12:56 386462
 					<a href="usabilitywiki-20171218-cirrussearch-general.json.gz">usabilitywiki-20171218-cirrussearch-general.jso..&gt;</a>20-Dec-2017 12:56 813441
 					</body>
@@ -184,7 +202,7 @@ func TestCirrusLinks(t *testing.T) {
 			)
 			httpmock.RegisterResponder("GET", CirrusURL.String(), responder)
 
-			got, err := CirrusLinks(tt.args.supported)
+			got, err := CirrusLinks(tt.args.supported, tt.args.ft)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -197,7 +215,7 @@ func TestCirrusLinks(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Errorf("got %+v, want %+v", got[0], tt.want[0])
 			}
 		})
 	}
@@ -205,8 +223,20 @@ func TestCirrusLinks(t *testing.T) {
 
 type mockDumper struct{}
 
-func (md *mockDumper) Dump(wikidata bool, lang language.Tag, rows chan interface{}) error {
+func (md *mockDumper) Dump(ft FileType, lang language.Tag, rows chan interface{}) error {
 	<-rows
 
 	return nil
+}
+
+var enwikiFile = &File{
+	language: language.English,
+	Base:     "enwiki-20171218-cirrussearch-content.json.gz",
+	Type:     WikipediaFT,
+}
+
+var enwikiQuoteFile = &File{
+	language: language.English,
+	Base:     "enwikiquote-20171218-cirrussearch-content.json.gz",
+	Type:     WikiquoteFT,
 }

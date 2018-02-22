@@ -26,6 +26,20 @@ var CirrusURL, _ = url.Parse("https://dumps.wikimedia.org/other/cirrussearch/cur
 // WikiDataURL comes from a different url (smaller file)...cirrus link is formatted differently.
 var WikiDataURL, _ = url.Parse("https://dumps.wikimedia.org/wikidatawiki/entities/latest-all.json.bz2")
 
+// FileType is a type of Wikipedia file
+type FileType string
+
+const (
+	// WikidataFT is a Wikidata file type
+	WikidataFT FileType = "wikidata"
+	// WikipediaFT is a Wikipedia file type
+	WikipediaFT FileType = "wikipedia"
+	// WikiquoteFT is a Wikiquote file type
+	WikiquoteFT FileType = "wikiquote"
+	// WiktionaryFT is a Wiktionary file type
+	WiktionaryFT FileType = "wiktionary"
+)
+
 // File is a wikipedia/wikidata dump file
 type File struct {
 	URL      *url.URL
@@ -33,6 +47,7 @@ type File struct {
 	Base     string
 	Dir      string
 	ABS      string
+	Type     FileType
 	dumper
 }
 
@@ -41,14 +56,15 @@ var fs = afero.NewOsFs()
 
 // dumper outlines methods to dump raw files to a database
 type dumper interface {
-	Dump(wikidata bool, lang language.Tag, rows chan interface{}) error
+	Dump(ft FileType, lang language.Tag, rows chan interface{}) error
 }
 
 // NewFile returns a new file and sets the URL and Base.
-func NewFile(u *url.URL, l language.Tag) *File {
+func NewFile(u *url.URL, ft FileType, l language.Tag) *File {
 	return &File{
 		URL:      u,
 		language: l,
+		Type:     ft,
 		Base:     path.Base(u.Path),
 	}
 }
@@ -97,11 +113,9 @@ func (f *File) Parse(truncate int) error {
 
 	ext := filepath.Ext(f.ABS)
 	var scanner *bufio.Scanner
-	var wikidata bool
 
 	switch ext {
 	case ".bz2": // wikidata
-		wikidata = true
 		rdr := bzip2.NewReader(ff)
 		scanner = bufio.NewScanner(rdr)
 	case ".gz":
@@ -112,7 +126,7 @@ func (f *File) Parse(truncate int) error {
 		defer rdr.Close()
 		scanner = bufio.NewScanner(rdr)
 	default:
-		return fmt.Errorf("unknown file format %q", ext)
+		return fmt.Errorf("unknown file extension %q", ext)
 	}
 
 	buf := make([]byte, maxCapacity)
@@ -122,7 +136,7 @@ func (f *File) Parse(truncate int) error {
 	done := make(chan error)
 
 	go func() {
-		done <- f.dumper.Dump(wikidata, f.language, rows)
+		done <- f.dumper.Dump(f.Type, f.language, rows)
 	}()
 
 	go func() {
@@ -134,37 +148,44 @@ func (f *File) Parse(truncate int) error {
 
 			l := []byte(line)
 
+			// skip every other line e.g. {"index":{"_type":"page","_id":"17949905"}}
+			tmp := &struct {
+				Index struct {
+					ID string `json:"_id"`
+					T  string `json:"_type"`
+				} `json:"index"`
+			}{}
+
+			if err := json.Unmarshal(l, tmp); err != nil {
+				done <- err
+			}
+
+			if tmp.Index.ID != "" {
+				continue
+			}
+
 			var w interface{}
 
-			switch wikidata {
-			case true:
+			switch f.Type {
+			case WikidataFT:
 				w = &Wikidata{}
 				if err := json.Unmarshal(l, w); err != nil {
 					done <- err
 				}
-			default:
-				tmp := &struct {
-					Index struct {
-						ID string `json:"_id"`
-						T  string `json:"_type"`
-					} `json:"index"`
-				}{}
-
-				if err := json.Unmarshal(l, tmp); err != nil {
-					done <- err
-				}
-
-				// skip every other line e.g. {"index":{"_type":"page","_id":"17949905"}}
-				if tmp.Index.ID != "" {
-					continue
-				}
-
+			case WikipediaFT:
 				// Note: there are some duplicates ID's in the files.
 				// Also some don't have a wikibase_item (w.ID="").
 				w = &Wikipedia{truncate: truncate}
 				if err := json.Unmarshal(l, w); err != nil {
 					done <- err
 				}
+			case WikiquoteFT:
+				w = &Wikiquote{}
+				if err := json.Unmarshal(l, w); err != nil {
+					done <- err
+				}
+			case WiktionaryFT:
+				// not implemented yet
 			}
 
 			rows <- w
@@ -180,12 +201,17 @@ func (f *File) Parse(truncate int) error {
 	return <-done
 }
 
+var reWikipedia = regexp.MustCompile(`^([a-z_]+)wiki-\d{8}-cirrussearch-content.json.gz$`)
+var reWikiquote = regexp.MustCompile(`^([a-z_]+)wikiquote-\d{8}-cirrussearch-content.json.gz$`)
+
+//var reWiktionary = regexp.MustCompile(`^([a-z_]+)wiktionary-\d{8}-cirrussearch-content.json.gz$`)
+
 // CirrusLinks finds the latest cirrus links available from wikipedia.
 // e.g. enwiki-20171009-cirrussearch-content.json.gz
 // Note: Cirrus is their elasticsearch-formatted dump files. The cirrussearch urls
 // for wikipedia includes the wikibase_item and has a more similar
 // layout to their API than the dumps found at https://dumps.wikimedia.org/enwiki/latest/.
-func CirrusLinks(supported []language.Tag) ([]*File, error) {
+func CirrusLinks(supported []language.Tag, fileTypes []FileType) ([]*File, error) {
 	resp, err := http.Get(CirrusURL.String())
 	if err != nil {
 		return nil, err
@@ -196,7 +222,7 @@ func CirrusLinks(supported []language.Tag) ([]*File, error) {
 	z := html.NewTokenizer(resp.Body)
 	var tt html.TokenType
 
-	files := []*File{}
+	var files = []*File{}
 
 	for {
 		tt = z.Next()
@@ -209,22 +235,37 @@ func CirrusLinks(supported []language.Tag) ([]*File, error) {
 			if t.DataAtom == atom.A {
 				for _, a := range t.Attr {
 					if a.Key == "href" {
-						match := reWiki.FindStringSubmatch(a.Val)
+						for _, ft := range fileTypes {
+							var re *regexp.Regexp
 
-						if len(match) != 2 { // e.g. [enwiki-20171023-cirrussearch-content.json.gz en]
-							continue
-						}
-
-						if lang, ok := isSupported(match[1], supported); ok {
-							u, err := url.Parse(a.Val)
-							if err != nil {
-								return nil, err
+							switch ft {
+							case WikipediaFT:
+								re = reWikipedia
+							case WikiquoteFT:
+								re = reWikiquote
+							//case WiktionaryFT:
+							//	re = reWiktionary
+							default:
+								return nil, fmt.Errorf("unknown filetype %q", ft)
 							}
 
-							u = CirrusURL.ResolveReference(u)
+							match := re.FindStringSubmatch(a.Val)
 
-							f := NewFile(u, lang)
-							files = append(files, f)
+							if len(match) != 2 { // e.g. [enwiki-20171023-cirrussearch-content.json.gz en]
+								continue
+							}
+
+							if lang, ok := isSupported(match[1], supported); ok {
+								u, err := url.Parse(a.Val)
+								if err != nil {
+									return nil, err
+								}
+
+								u = CirrusURL.ResolveReference(u)
+
+								f := NewFile(u, ft, lang)
+								files = append(files, f)
+							}
 						}
 					}
 				}
@@ -232,8 +273,6 @@ func CirrusLinks(supported []language.Tag) ([]*File, error) {
 		}
 	}
 }
-
-var reWiki = regexp.MustCompile(`^([a-z_]+)wiki-\d{8}-cirrussearch-content.json.gz$`)
 
 // supported checks to see if the language of the file is supported
 func isSupported(w string, supported []language.Tag) (language.Tag, bool) {

@@ -113,11 +113,17 @@ func SetDefaults(cfg Provider) {
 	cmd.Flags().String("dir", "", "path to save wiki dump files")
 	cfg.BindPFlag("wikipedia.dir", cmd.Flags().Lookup("dir"))
 
-	cmd.Flags().Bool("data", true, "include wikidata")
-	cfg.BindPFlag("wikipedia.data", cmd.Flags().Lookup("data"))
+	cmd.Flags().Bool("wikidata", true, "include wikidata")
+	cfg.BindPFlag("wikipedia.wikipedia", cmd.Flags().Lookup("wikidata"))
 
-	cmd.Flags().Bool("text", true, "include wikipedia")
-	cfg.BindPFlag("wikipedia.text", cmd.Flags().Lookup("text"))
+	cmd.Flags().Bool("wikipedia", true, "include wikipedia")
+	cfg.BindPFlag("wikipedia.wikipedia", cmd.Flags().Lookup("wikipedia"))
+
+	cmd.Flags().Bool("wikiquote", true, "include wikiquote")
+	cfg.BindPFlag("wikipedia.wikiquote", cmd.Flags().Lookup("wikiquote"))
+
+	cmd.Flags().Bool("wiktionary", true, "include wiktionary")
+	cfg.BindPFlag("wikipedia.wiktionary", cmd.Flags().Lookup("wiktionary"))
 
 	cmd.Flags().Int("truncate", truncate, "number of characters to extract from text")
 	cfg.BindPFlag("wikipedia.truncate", cmd.Flags().Lookup("truncate"))
