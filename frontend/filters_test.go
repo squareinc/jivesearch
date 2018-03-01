@@ -194,6 +194,15 @@ func TestSource(t *testing.T) {
 			},
 			want: `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
 		},
+		{
+			name: "wiktionary",
+			args: args{
+				instant.Solution{
+					Type: "wiktionary",
+				},
+			},
+			want: `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/> <a href="https://www.wiktionary.org/">Wiktionary</a>`,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := source(tt.args.src)
@@ -207,7 +216,7 @@ func TestSource(t *testing.T) {
 
 func TestInstantFormatter(t *testing.T) {
 	type args struct {
-		raw interface{}
+		sol instant.Solution
 		l   language.Tag
 	}
 
@@ -219,7 +228,9 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "empty",
 			args: args{
-				[]wikipedia.Quantity{},
+				instant.Solution{
+					Raw: []wikipedia.Quantity{},
+				},
 				language.English,
 			},
 			want: "",
@@ -227,12 +238,14 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "stackoverflow",
 			args: args{
-				instant.StackOverflowAnswer{
-					Question: "A made up question",
-					Link:     "https://stackoverflow.com/questions/90210/a-made-up-question",
-					Answer: instant.SOAnswer{
-						User: "Roger Roger",
-						Text: "A clever answer",
+				instant.Solution{
+					Raw: instant.StackOverflowAnswer{
+						Question: "A made up question",
+						Link:     "https://stackoverflow.com/questions/90210/a-made-up-question",
+						Answer: instant.SOAnswer{
+							User: "Roger Roger",
+							Text: "A clever answer",
+						},
 					},
 				},
 				language.English,
@@ -242,7 +255,9 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "kg",
 			args: args{
-				[]wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				instant.Solution{
+					Raw: []wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				},
 				language.Italian,
 			},
 			want: "147 kg",
@@ -250,11 +265,13 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "age (alive)",
 			args: args{
-				instant.Age{
-					Birthday: instant.Birthday{
-						Birthday: wikipedia.DateTime{
-							Value:    "1972-12-31T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				instant.Solution{
+					Raw: instant.Age{
+						Birthday: instant.Birthday{
+							Birthday: wikipedia.DateTime{
+								Value:    "1972-12-31T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
 					},
 				},
@@ -265,17 +282,19 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "age (at time of death)",
 			args: args{
-				instant.Age{
-					Birthday: instant.Birthday{
-						Birthday: wikipedia.DateTime{
-							Value:    "1956-04-30T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				instant.Solution{
+					Raw: instant.Age{
+						Birthday: instant.Birthday{
+							Birthday: wikipedia.DateTime{
+								Value:    "1956-04-30T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
-					},
-					Death: instant.Death{
-						Death: wikipedia.DateTime{
-							Value:    "1984-03-13T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						Death: instant.Death{
+							Death: wikipedia.DateTime{
+								Value:    "1984-03-13T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
 					},
 				},
@@ -286,10 +305,12 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "birthday",
 			args: args{
-				instant.Birthday{
-					Birthday: wikipedia.DateTime{
-						Value:    "1938-07-31T00:00:00Z",
-						Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				instant.Solution{
+					Raw: instant.Birthday{
+						Birthday: wikipedia.DateTime{
+							Value:    "1938-07-31T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
 					},
 				},
 				language.English,
@@ -299,10 +320,12 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "death",
 			args: args{
-				instant.Death{
-					Death: wikipedia.DateTime{
-						Value:    "2015-05-14T00:00:00Z",
-						Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				instant.Solution{
+					Raw: instant.Death{
+						Death: wikipedia.DateTime{
+							Value:    "2015-05-14T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
 					},
 				},
 				language.English,
@@ -312,13 +335,42 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "wikiquote",
 			args: args{
-				[]string{"fantastic quote", "such good quote"}, language.English,
+				instant.Solution{
+					Raw: []string{"fantastic quote", "such good quote"},
+				},
+				language.English,
 			},
-			want: `<span style="font-size:14px;font-style:italic;">fantastic quote</span></p><span style="font-size:14px;font-style:italic;">such good quote</span></p>`,
+			want: `<p><span style="font-size:14px;font-style:italic;">fantastic quote</span></p><p><span style="font-size:14px;font-style:italic;">such good quote</span></p>`,
+		},
+		{
+			name: "wiktionary",
+			args: args{
+				instant.Solution{
+					Raw: wikipedia.Wiktionary{
+						Title:    "guitar",
+						Language: "en",
+						Definitions: []*wikipedia.Definition{
+							&wikipedia.Definition{
+								Part:    "noun",
+								Meaning: "an instrument",
+								Synonyms: []wikipedia.Synonym{
+									wikipedia.Synonym{
+										Word:     "axe",
+										Language: "en",
+									},
+								},
+							},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<p><span style="font-size:18px;"><em><a href="https://en.wiktionary.org/wiki/guitar" style="color:#333;">guitar</a></em></span></p><span style="font-size:14px;font-style:italic;">noun</span><br><span style="display:inline-block;margin-left:15px;">an instrument</span><br><span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span><a href="https://en.wiktionary.org/wiki/axe" >axe</a><br><br>`,
 		},
 		{
 			name: "unknown",
-			args: args{1, language.English},
+			args: args{
+				instant.Solution{Raw: 1}, language.English},
 			want: "",
 		},
 	} {
@@ -328,7 +380,7 @@ func TestInstantFormatter(t *testing.T) {
 				return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
 			}
 
-			got := instantFormatter(tt.args.raw, r)
+			got := instantFormatter(tt.args.sol, r)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %q, want %q", got, tt.want)

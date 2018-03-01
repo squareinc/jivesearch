@@ -11,27 +11,28 @@ import (
 	"golang.org/x/text/language"
 )
 
-// WikiData is an instant answer
-type WikiData struct {
+// Wikipedia is a Wiki* instant answer,
+// including Wikidata/Wikiquote/Wiktionary
+type Wikipedia struct {
 	wikipedia.Fetcher
 	Answer
 }
 
-func (w *WikiData) setQuery(r *http.Request, qv string) answerer {
+func (w *Wikipedia) setQuery(r *http.Request, qv string) answerer {
 	w.Answer.setQuery(r, qv)
 	return w
 }
 
-func (w *WikiData) setUserAgent(r *http.Request) answerer {
+func (w *Wikipedia) setUserAgent(r *http.Request) answerer {
 	return w
 }
 
-func (w *WikiData) setType() answerer {
-	w.Type = "wikidata"
+func (w *Wikipedia) setType() answerer {
+	w.Type = "wikipedia"
 	return w
 }
 
-func (w *WikiData) setContributors() answerer {
+func (w *Wikipedia) setContributors() answerer {
 	w.Contributors = contributors.Load(
 		[]string{
 			"brentadamson",
@@ -68,7 +69,11 @@ const weight = "weight"
 const quote = "quote"
 const quotes = "quotes"
 
-func (w *WikiData) setRegex() answerer {
+// definitions
+const define = "define"
+const definition = "definition"
+
+func (w *Wikipedia) setRegex() answerer {
 	triggers := []string{
 		age, howOldIs,
 		birthday, born,
@@ -76,6 +81,7 @@ func (w *WikiData) setRegex() answerer {
 		howTallis, howTallwas, height,
 		mass, weigh, weight,
 		quote, quotes,
+		define, definition,
 	}
 
 	t := strings.Join(triggers, "|")
@@ -104,7 +110,7 @@ type Age struct {
 
 // TODO: Return the Title (and perhaps Image???) as
 // confirmation that we fetched the right asset.
-func (w *WikiData) setSolution() answerer {
+func (w *Wikipedia) setSolution() answerer {
 	item, err := w.Fetch(w.remainder, language.English)
 	if err != nil {
 		w.Err = err
@@ -157,18 +163,25 @@ func (w *WikiData) setSolution() answerer {
 
 		w.Type = "wikiquote"
 		w.Solution.Raw = item.Quotes
+	case define, definition:
+		if len(item.Definitions) == 0 {
+			return w
+		}
+
+		w.Type = "wiktionary"
+		w.Solution.Raw = item.Wiktionary
 	}
 
 	return w
 }
 
-func (w *WikiData) setCache() answerer {
+func (w *Wikipedia) setCache() answerer {
 	w.Cache = true
 	return w
 }
 
-func (w *WikiData) tests() []test {
-	typ := "wikidata"
+func (w *Wikipedia) tests() []test {
+	typ := "wikipedia"
 
 	contrib := contributors.Load([]string{"brentadamson"})
 
@@ -276,6 +289,23 @@ func (w *WikiData) tests() []test {
 					Raw: []string{
 						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
 						"ball is life",
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "define guitar",
+			expected: []Solution{
+				{
+					Type:         "wiktionary",
+					Triggered:    true,
+					Contributors: contrib,
+					Raw: wikipedia.Wiktionary{
+						Title: "guitar",
+						Definitions: []*wikipedia.Definition{
+							&wikipedia.Definition{Part: "noun", Meaning: "musical instrument"},
+						},
 					},
 					Cache: true,
 				},

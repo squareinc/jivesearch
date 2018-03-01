@@ -22,8 +22,7 @@ type tableType = string
 const wikidataTable tableType = "wikidata"
 const wikipediaTable tableType = "wikipedia"
 const wikiquoteTable tableType = "wikiquote"
-
-//const wiktionaryTable tableType = "wiktionary"
+const wiktionaryTable tableType = "wiktionary"
 
 type table struct {
 	Type      tableType
@@ -69,6 +68,9 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 		},
 		Wikidata: &Wikidata{
 			Claims: &Claims{},
+		},
+		Wiktionary: Wiktionary{
+			Language: lang.String(),
 		},
 	}
 
@@ -181,31 +183,50 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 	// Note: We cannot build 1 large jsonb_build_object as PostgreSQL has a 100 item limit.
 	sql := fmt.Sprintf(`
 		WITH item AS (
-			SELECT 
-				w."id", w."title", w."text", wq."quotes",
+			SELECT *
+			FROM (
+				SELECT 
+				w."id", w."title", w."text", wq."quotes", 
 				wd."labels", wd."aliases", wd."descriptions", wd."claims" 
-			FROM 
-			%vwiki w 
-			LEFT JOIN %vwikiquote wq
-			ON w.id = wq.id
-			LEFT JOIN wikidata wd
-			ON w.id = wd.id
-			WHERE LOWER(w.title) = LOWER($1)
-			AND wd.id IS NOT NULL
+				FROM %vwiki w
+				LEFT JOIN %vwikiquote wq ON w.id = wq.id
+				LEFT JOIN wikidata wd ON w.id = wd.id			
+				WHERE LOWER(w.title) = LOWER($1)
+				LIMIT 1
+			) w
+			FULL OUTER JOIN (
+				SELECT "title" wktitle, "definitions"
+				FROM %vwiktionary
+				WHERE title = $2
+				LIMIT 1
+			) wk ON LOWER(w.title) = wk.wktitle
 		),
 		%v
-		
 		SELECT
-			item."id", item."title", item."text", item."quotes", 
-			item."labels", item."aliases", item."descriptions", %v "claims"
+			coalesce(item."id", ''), coalesce(item."title", ''), coalesce(item."text", ''),
+			coalesce(item."quotes", '{}'), coalesce(item."wktitle", ''), coalesce(item."definitions", '[]'),
+			coalesce(item."labels", '{}'::jsonb), coalesce(item."aliases", '{}'::jsonb), 
+			coalesce(item."descriptions", '{}'::jsonb), %v "claims"
 		FROM item, %v
-	`, item.Wikipedia.Language, item.Wikipedia.Language, strings.Join(stmts, ", "), strings.Join(objects, " || "), strings.Join(tags, ", "))
+	`, item.Wikipedia.Language, item.Wiktionary.Language, item.Wikipedia.Language,
+		strings.Join(stmts, ", "), strings.Join(objects, " || "), strings.Join(tags, ", "),
+	)
 
-	err := p.DB.QueryRow(sql, query).Scan(
-		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text, pq.Array(&item.Wikiquote.Quotes),
+	//log.Info.Println(sql)
+
+	var definitions string
+
+	err := p.DB.QueryRow(sql, query, query).Scan(
+		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text,
+		pq.Array(&item.Wikiquote.Quotes), &item.Wiktionary.Title, &definitions,
 		&item.Labels, &item.Aliases, &item.Descriptions, &item.Claims,
 	)
 
+	if err != nil {
+		return item, err
+	}
+
+	err = json.Unmarshal([]byte(definitions), &item.Wiktionary.Definitions)
 	return item, err
 }
 
@@ -223,7 +244,9 @@ func (p *PostgreSQL) executeTransaction(t transaction) (err error) {
 			return
 		}
 
-		err = tx.Commit()
+		if e := tx.Commit(); e != nil {
+			err = e
+		}
 	}()
 
 	err = t(tx)
@@ -248,12 +271,12 @@ func (p *PostgreSQL) Dump(ft FileType, lang language.Tag, rows chan interface{})
 		t.Type = wikiquoteTable
 		n := strings.Replace(lang.String(), "-", "_", -1)
 		t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wikiquoteTable) // enwikiquote, cebwikiquote, etc...
-	//case WiktionaryFT:
-	//	t.Type = wiktionaryTable
-	//	n := strings.Replace(lang.String(), "-", "_", -1)
-	//	t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wiktionaryTable) // enwiktionary, cebwiktionary, etc...
+	case WiktionaryFT:
+		t.Type = wiktionaryTable
+		n := strings.Replace(lang.String(), "-", "_", -1)
+		t.name = fmt.Sprintf("%v%v", strings.ToLower(n), wiktionaryTable) // enwiktionary, cebwiktionary, etc...
 	default:
-		return fmt.Errorf("unknown file type %q", ft)
+		return fmt.Errorf("unknown filetype %q", ft)
 	}
 
 	t.temporary = t.name + "_tmp"
@@ -296,8 +319,11 @@ func (t *table) setColumns() error {
 			{"id", "text", true},
 			{"quotes", "text[]", false},
 		}
-	//case wiktionaryTable:
-
+	case wiktionaryTable:
+		t.columns = []column{
+			{"title", "text", true},
+			{"definitions", "jsonb", false},
+		}
 	case wikidataTable:
 		t.columns = []column{
 			{"id", "text", true},
@@ -337,7 +363,9 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 	}
 
 	defer func() {
-		err = stmt.Close()
+		if e := stmt.Close(); err == nil && e != nil {
+			err = e
+		}
 	}()
 
 	// dump the rows
@@ -370,6 +398,18 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 				continue
 			}
 			r = []interface{}{w.ID, pq.Array(w.Quotes)}
+		case *Wiktionary:
+			w := row.(*Wiktionary)
+			r = []interface{}{w.Title}
+
+			// jsonb column
+			j, e := json.Marshal(w.Definitions)
+			if e != nil {
+				err = e
+				return
+			}
+			r = append(r, string(j))
+
 		default:
 			err = fmt.Errorf("unknown datatype for %+v", r)
 			return
@@ -395,7 +435,7 @@ func (t *table) addIndices(tx *sql.Tx) (err error) {
 		}
 
 		col := c.name
-		if c.name == "title" {
+		if t.Type == wikipediaTable && c.name == "title" {
 			col = fmt.Sprintf("LOWER(%v)", col)
 		}
 

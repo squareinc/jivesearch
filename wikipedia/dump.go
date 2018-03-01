@@ -185,7 +185,10 @@ func (f *File) Parse(truncate int) error {
 					done <- err
 				}
 			case WiktionaryFT:
-				// not implemented yet
+				w = &Wiktionary{}
+				if err := json.Unmarshal(l, w); err != nil {
+					done <- err
+				}
 			}
 
 			rows <- w
@@ -203,8 +206,7 @@ func (f *File) Parse(truncate int) error {
 
 var reWikipedia = regexp.MustCompile(`^([a-z_]+)wiki-\d{8}-cirrussearch-content.json.gz$`)
 var reWikiquote = regexp.MustCompile(`^([a-z_]+)wikiquote-\d{8}-cirrussearch-content.json.gz$`)
-
-//var reWiktionary = regexp.MustCompile(`^([a-z_]+)wiktionary-\d{8}-cirrussearch-content.json.gz$`)
+var reWiktionary = regexp.MustCompile(`^([a-z_]+)wiktionary-\d{8}-cirrussearch-content.json.gz$`)
 
 // CirrusLinks finds the latest cirrus links available from wikipedia.
 // e.g. enwiki-20171009-cirrussearch-content.json.gz
@@ -243,8 +245,8 @@ func CirrusLinks(supported []language.Tag, fileTypes []FileType) ([]*File, error
 								re = reWikipedia
 							case WikiquoteFT:
 								re = reWikiquote
-							//case WiktionaryFT:
-							//	re = reWiktionary
+							case WiktionaryFT:
+								re = reWiktionary
 							default:
 								return nil, fmt.Errorf("unknown filetype %q", ft)
 							}

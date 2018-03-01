@@ -14,7 +14,7 @@ var shaqQuotes = []string{"superman rocks"}
 var shaqWikiquote = &Wikiquote{
 	ID:       "Q169452",
 	Language: "en",
-	Text:     "\n== Quotes ==\n\n* superman rocks\n",
+	Source:   "\n== Quotes ==\n\n* superman rocks\n",
 	Quotes:   shaqQuotes,
 }
 

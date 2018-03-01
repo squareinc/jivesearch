@@ -14,7 +14,7 @@ import (
 type Wikiquote struct {
 	ID       string   `json:"wikibase_item,omitempty"`
 	Language string   `json:"language,omitempty"`
-	Text     string   `json:"source_text,omitempty"` // "text" isn't parseable
+	Source   string   `json:"source_text,omitempty"` // "text" isn't parseable
 	Quotes   []string `json:"quotes,omitempty"`
 }
 
@@ -30,7 +30,7 @@ var reLinksNoText = regexp.MustCompile(`\[((news|(ht|f)tp(s?)|irc):\/\/(.+?))\]`
 var reWikiLinks = regexp.MustCompile(`(.*)(\[{2})(.*?)\|(.*?)(\]{2})(.*?)`)                  // "a link to [[w:Pasta|Pasta]] here" => "a link to Pasta here"
 var reBraces = regexp.MustCompile(`{{.*?}}`)                                                 // "{{citation}}" => ""
 var reBrackets = regexp.MustCompile(`\[\[(.*?)\]\]`)                                         // "[[Gratitude]]" => "Gratitude"
-var p = bluemonday.StrictPolicy()
+var sanitizer = bluemonday.StrictPolicy()
 
 // UnmarshalJSON extracts the raw quotes from the source_text
 func (w *Wikiquote) UnmarshalJSON(data []byte) error {
@@ -56,13 +56,13 @@ func (w *Wikiquote) UnmarshalJSON(data []byte) error {
 	// Wikitext cheat sheet: https://en.wikipedia.org/wiki/Help:Cheatsheet
 	// not sure how to capture song lyrics (albums start with "===")
 
-	w.Text = reSubheading.ReplaceAllString(w.Text, `<h2>$1</h2>`) // change "===" so they don't interfere w/ search for "=="
+	w.Source = reSubheading.ReplaceAllString(w.Source, `<h2>$1</h2>`) // change "===" so they don't interfere w/ search for "=="
 	// remove links so that "=" in url params doesn't interfere w/ search for "==")
-	w.Text = reLinks.ReplaceAllString(w.Text, `$6`)
-	w.Text = reLinksWithText.ReplaceAllString(w.Text, `$7`)
-	w.Text = reLinksNoText.ReplaceAllString(w.Text, `$1`)
+	w.Source = reLinks.ReplaceAllString(w.Source, `$6`)
+	w.Source = reLinksWithText.ReplaceAllString(w.Source, `$7`)
+	w.Source = reLinksNoText.ReplaceAllString(w.Source, `$1`)
 
-	for _, m := range re.FindAllStringSubmatch(w.Text, -1) {
+	for _, m := range re.FindAllStringSubmatch(w.Source, -1) {
 		if len(m) < 2 {
 			continue
 		}
@@ -78,7 +78,7 @@ func (w *Wikiquote) UnmarshalJSON(data []byte) error {
 					q = reWikiLinks.ReplaceAllString(q, `$1$4$6`)
 					q = reBraces.ReplaceAllString(q, "")
 					q = reBrackets.ReplaceAllString(q, "$1")
-					q = p.Sanitize(q) // run this AFTER we strip <ref>link</ref> section
+					q = sanitizer.Sanitize(q) // run this AFTER we strip <ref>link</ref> section
 
 					w.Quotes = append(w.Quotes, q)
 				}

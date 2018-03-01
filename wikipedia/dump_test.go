@@ -92,6 +92,13 @@ func TestFile_Parse(t *testing.T) {
 			language.English,
 			args{},
 		},
+		{
+			"wiktionary",
+			"enwiktionary-20171218-cirrussearch-content.json.gz",
+			WiktionaryFT,
+			language.English,
+			args{},
+		},
 	}
 
 	oldFs := fs

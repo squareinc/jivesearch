@@ -121,28 +121,33 @@ func source(answer instant.Solution) string {
 		txt, u = "Wikiquote", "https://www.wikiquote.org/"
 		img = `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "wiktionary":
+		txt, u = "Wiktionary", "https://www.wiktionary.org/"
+		img = `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
+		//log.Info.Printf("unknown instant answer type %q\n", answer.Type)
 	}
 
 	return f
 }
 
-func instantFormatter(raw interface{}, r language.Region) string {
-	switch raw.(type) {
+func instantFormatter(sol instant.Solution, r language.Region) string {
+	switch sol.Raw.(type) {
 	case instant.StackOverflowAnswer:
-		a := raw.(instant.StackOverflowAnswer)
+		a := sol.Raw.(instant.StackOverflowAnswer)
 		return fmt.Sprintf(
 			`<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="%v"><em>%v</em></a><br>%v`,
 			a.Link, a.Question, a.Answer.Text,
 		)
 	case []wikipedia.Quantity: // e.g. height, weight, etc.
-		i := raw.([]wikipedia.Quantity)
+		i := sol.Raw.([]wikipedia.Quantity)
 		if len(i) == 0 {
 			return ""
 		}
 		return wikiAmount(i[0], r)
 	case instant.Age:
-		a := raw.(instant.Age)
+		a := sol.Raw.(instant.Age)
 
 		// alive
 		if reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
@@ -154,24 +159,49 @@ func instantFormatter(raw interface{}, r language.Region) string {
 		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
 			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
 	case instant.Birthday:
-		b := raw.(instant.Birthday)
+		b := sol.Raw.(instant.Birthday)
 		return wikiDateTime(b.Birthday)
 	case instant.Death:
-		d := raw.(instant.Death)
+		d := sol.Raw.(instant.Death)
 		return wikiDateTime(d.Death)
 	case []string: // Wikiquote
 		var s string
-		for i, q := range raw.([]string) {
+		for i, q := range sol.Raw.([]string) {
 			if i > 3 {
 				break
 			}
 
-			s += fmt.Sprintf(`<span style="font-size:14px;font-style:italic;">%v</span></p>`, q)
+			s += fmt.Sprintf(`<p><span style="font-size:14px;font-style:italic;">%v</span></p>`, q)
+		}
+
+		return s
+	case wikipedia.Wiktionary: // Wiktionary
+		createLink := func(lang, word, style string) string {
+			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
+			return fmt.Sprintf(`<a href="https://%v.wiktionary.org/wiki/%v" %v>%v</a>`, lang, word, style, word)
+		}
+
+		def := sol.Raw.(wikipedia.Wiktionary)
+		var s = fmt.Sprintf(`<p><span style="font-size:18px;"><em>%v</em></span></p>`, createLink(def.Language, def.Title, `style="color:#333;"`))
+
+		for _, d := range def.Definitions {
+			s += fmt.Sprintf(`<span style="font-size:14px;font-style:italic;">%v</span><br>`, d.Part)
+			s += fmt.Sprintf(`<span style="display:inline-block;margin-left:15px;">%v</span><br>`, d.Meaning)
+			var syn []string
+			for _, sy := range d.Synonyms {
+				syn = append(syn, createLink(sy.Language, sy.Word, ""))
+			}
+			if len(syn) > 0 {
+				s += fmt.Sprintf(`<span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span>%v<br>`,
+					strings.Join(syn, ", "),
+				)
+			}
+			s += `<br>`
 		}
 
 		return s
 	default:
-		log.Debug.Printf("unknown type %T\n", raw)
+		log.Debug.Printf("unknown raw solution type %T\n", sol.Raw)
 		return ""
 	}
 }

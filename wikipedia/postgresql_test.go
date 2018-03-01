@@ -1,9 +1,12 @@
 package wikipedia
 
 import (
+	"database/sql/driver"
+	"encoding/json"
 	"reflect"
 	"testing"
 
+	"github.com/lib/pq"
 	"golang.org/x/text/language"
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
@@ -24,11 +27,32 @@ var shaqClaimsPostgres = &Claims{
 	},
 }
 
+// we're just gonna pretend there is a wiktionary entry for Shaquille O'Neal
+var shaqWiktionaryJSON = []byte(
+	`[{"part": "noun", "meaning": "friendly person", "synonyms": [{"word": "superman", "language": "en"}]}]`,
+)
+
+var shaqWiktionary = &Wiktionary{
+	Title:    "Shaquille O'Neal",
+	Language: "en",
+	Definitions: []*Definition{
+		&Definition{
+			Part:    "noun",
+			Meaning: "friendly person",
+			Synonyms: []Synonym{
+				Synonym{Language: "en", Word: "superman"},
+			},
+		},
+	},
+}
+
 func TestPostgreSQL_Fetch(t *testing.T) {
 	type args struct {
 		query string
 		lang  language.Tag
+		row   []driver.Value
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -36,7 +60,14 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 	}{
 		{
 			"shaq",
-			args{"Shaquille O'Neal", language.MustParse("en")},
+			args{
+				"Shaquille O'Neal", language.MustParse("en"),
+				[]driver.Value{
+					"Q169452", "Shaquille O'Neal", "Shaquille O'Neal is a basketball player",
+					"{}", "Shaquille O'Neal", shaqWiktionaryJSON,
+					[]byte(shaqRawLabels), []byte(shaqRawAliases), []byte(shaqRawDescriptions), shaqClaimsJSON,
+				},
+			},
 			&Item{
 				Wikipedia: Wikipedia{
 					Language: "en",
@@ -51,12 +82,14 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 					Claims:       shaqClaimsPostgres,
 				},
 				Wikiquote: Wikiquote{
-					Quotes: []string{},
 					//Quotes: shaqQuotes, // not really sure how to test for pq.Array
+					Quotes: []string{},
 				},
+				Wiktionary: *shaqWiktionary,
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			db, mock, err := sqlmock.New()
@@ -66,14 +99,15 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 			defer db.Close()
 
 			rows := sqlmock.NewRows(
-				[]string{"id", "title", "text", "quotes", "labels", "aliases", "descriptions", "claims"},
+				[]string{"id", "title", "text", "quotes", "wktitle", "definitions",
+					"labels", "aliases", "descriptions", "claims",
+				},
 			)
 			rows = rows.AddRow(
-				"Q169452", tt.args.query, "Shaquille O'Neal is a basketball player", "{}",
-				[]byte(shaqRawLabels), []byte(shaqRawAliases), []byte(shaqRawDescriptions), shaqClaimsJSON,
+				tt.args.row...,
 			)
 
-			mock.ExpectQuery("SELECT").WithArgs(tt.args.query).WillReturnRows(rows)
+			mock.ExpectQuery("SELECT").WithArgs(tt.args.query, tt.args.query).WillReturnRows(rows)
 
 			p := &PostgreSQL{
 				DB: db,
@@ -128,6 +162,14 @@ func TestPostgreSQL_Dump(t *testing.T) {
 				lang: language.MustParse("en"),
 			},
 		},
+		{
+			"enwiktionary",
+			guitarWiktionary,
+			args{
+				ft:   WiktionaryFT,
+				lang: language.MustParse("en"),
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -144,7 +186,54 @@ func TestPostgreSQL_Dump(t *testing.T) {
 
 			// insert data
 			mock.ExpectBegin()
-			mock.ExpectPrepare("COPY")
+			switch tt.args.ft {
+			case WikipediaFT:
+				w := tt.row.(*Wikipedia)
+
+				mock.ExpectPrepare("COPY").ExpectExec().
+					WithArgs(w.ID, w.Title, w.Text).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikidataFT:
+				wd := tt.row.(*Wikidata)
+
+				l, err := json.Marshal(wd.Labels)
+				if err != nil {
+					t.Fatal(err)
+				}
+				a, err := json.Marshal(wd.Aliases)
+				if err != nil {
+					t.Fatal(err)
+				}
+				d, err := json.Marshal(wd.Descriptions)
+				if err != nil {
+					t.Fatal(err)
+				}
+				c, err := json.Marshal(wd.Claims)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				mock.ExpectPrepare("COPY").ExpectExec().
+					WithArgs("Q169452", string(l), string(a), string(d), string(c)).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			case WikiquoteFT:
+				wq := tt.row.(*Wikiquote)
+
+				mock.ExpectPrepare("COPY").ExpectExec().
+					WithArgs("Q169452", pq.Array(wq.Quotes)).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			case WiktionaryFT:
+				d, err := json.Marshal(tt.row.(*Wiktionary).Definitions)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				mock.ExpectPrepare("COPY").ExpectExec().
+					WithArgs("guitar", string(d)).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			default:
+				t.Fatalf("unexpected file type %v\n", tt.args.ft)
+			}
 			mock.ExpectCommit()
 
 			// create indices
@@ -160,6 +249,8 @@ func TestPostgreSQL_Dump(t *testing.T) {
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			case WikiquoteFT:
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WiktionaryFT:
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 
 			}
@@ -181,6 +272,8 @@ func TestPostgreSQL_Dump(t *testing.T) {
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			case WikiquoteFT:
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+			case WiktionaryFT:
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			}
 			mock.ExpectCommit()
 
@@ -192,6 +285,7 @@ func TestPostgreSQL_Dump(t *testing.T) {
 
 			go func() {
 				rows <- tt.row
+				close(rows)
 			}()
 
 			if err := p.Dump(tt.args.ft, tt.args.lang, rows); err != nil {

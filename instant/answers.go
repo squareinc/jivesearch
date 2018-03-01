@@ -139,7 +139,7 @@ func (i *Instant) answers() []answerer {
 		&Temperature{},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher}, // put this last as it will trigger "15% f to c"
-		&WikiData{Fetcher: i.WikiDataFetcher},           // seems awkward to do this every call
+		&Wikipedia{Fetcher: i.WikiDataFetcher},          // seems awkward to do this every call
 	}
 }
 

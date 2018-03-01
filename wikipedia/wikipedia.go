@@ -15,11 +15,12 @@ type Fetcher interface {
 	Fetch(query string, lang language.Tag) (*Item, error)
 }
 
-// Item is the text portion of a wikipedia article
+// Item is the contains the complete wiki info for a person, thing or word.
 type Item struct {
 	Wikipedia
-	Wikiquote
 	*Wikidata
+	Wikiquote
+	Wiktionary
 }
 
 // Wikipedia holds the summary text of an article
@@ -91,6 +92,9 @@ func Languages(supported []language.Tag) ([]language.Tag, []language.Tag) {
 
 // Available is a map of all languages that Wikipedia supports.
 // https://en.wikipedia.org/wiki/List_of_Wikipedias
+// There is also a separate entry for Wiktionary and Wikiquote:
+//	 https://en.wiktionary.org/wiki/Wiktionary:List_of_languages
+//	 https://en.wikiquote.org/wiki/Wikiquote:Other_language_Wikiquotes
 // We sort their table by # of Articles descending.
 var Available = map[language.Tag]struct{}{
 	language.MustParse("en"):         {}, // english is fallback

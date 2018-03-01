@@ -44,8 +44,8 @@
     "internal",
     "redis"
   ]
-  revision = "d1ed5c67e5794de818ea85e6b522fda02623a484"
-  version = "v1.5.0"
+  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
+  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -283,7 +283,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
+  revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
 
 [[projects]]
   branch = "master"
@@ -303,6 +303,7 @@
     "encoding/unicode",
     "internal/colltab",
     "internal/gen",
+    "internal/language",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",
@@ -316,7 +317,7 @@
     "unicode/norm",
     "unicode/rangetable"
   ]
-  revision = "9e2b64d659da1afe07ce1c9c1dfefc09d188f21e"
+  revision = "27420a1a391f5504f73155051cd274311bf70883"
 
 [[projects]]
   name = "gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -325,10 +326,10 @@
   version = "v1.3.0"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [[projects]]
   branch = "master"

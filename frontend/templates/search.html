@@ -54,7 +54,7 @@
               {{else if .Instant.Text}}
                 {{.Instant.Text}}
               {{else if .Instant.Raw}}
-                {{InstantFormatter .Instant.Raw $context.Region|SafeHTML}}
+                {{InstantFormatter .Instant $context.Region|SafeHTML}}
               {{end}}
               </div>
               
@@ -303,7 +303,6 @@
               </div>
             </div>
             {{end}}
-
           </div>
         </div>
         {{end}}        
