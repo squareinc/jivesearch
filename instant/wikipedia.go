@@ -304,7 +304,7 @@ func (w *Wikipedia) tests() []test {
 					Raw: wikipedia.Wiktionary{
 						Title: "guitar",
 						Definitions: []*wikipedia.Definition{
-							&wikipedia.Definition{Part: "noun", Meaning: "musical instrument"},
+							{Part: "noun", Meaning: "musical instrument"},
 						},
 					},
 					Cache: true,

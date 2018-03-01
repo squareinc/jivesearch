@@ -36,11 +36,11 @@ var shaqWiktionary = &Wiktionary{
 	Title:    "Shaquille O'Neal",
 	Language: "en",
 	Definitions: []*Definition{
-		&Definition{
+		{
 			Part:    "noun",
 			Meaning: "friendly person",
 			Synonyms: []Synonym{
-				Synonym{Language: "en", Word: "superman"},
+				{Language: "en", Word: "superman"},
 			},
 		},
 	},

@@ -267,7 +267,7 @@ func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.It
 			Wiktionary: wikipedia.Wiktionary{
 				Title: "guitar",
 				Definitions: []*wikipedia.Definition{
-					&wikipedia.Definition{Part: "noun", Meaning: "musical instrument"},
+					{Part: "noun", Meaning: "musical instrument"},
 				},
 			},
 		}, nil

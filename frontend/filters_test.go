@@ -350,11 +350,11 @@ func TestInstantFormatter(t *testing.T) {
 						Title:    "guitar",
 						Language: "en",
 						Definitions: []*wikipedia.Definition{
-							&wikipedia.Definition{
+							{
 								Part:    "noun",
 								Meaning: "an instrument",
 								Synonyms: []wikipedia.Synonym{
-									wikipedia.Synonym{
+									{
 										Word:     "axe",
 										Language: "en",
 									},

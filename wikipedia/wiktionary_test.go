@@ -18,11 +18,11 @@ var guitarWiktionary = &Wiktionary{
 	Title:    "guitar",
 	Language: "en",
 	Definitions: []*Definition{
-		&Definition{
+		{
 			Part:    "noun",
 			Meaning: "musical instrument",
 			Synonyms: []Synonym{
-				Synonym{Language: "en", Word: "axe"},
+				{Language: "en", Word: "axe"},
 			},
 		},
 	},
