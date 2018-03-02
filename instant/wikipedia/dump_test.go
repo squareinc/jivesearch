@@ -25,7 +25,11 @@ func TestFile_Download(t *testing.T) {
 		{
 			"enwiki",
 			"https://dumps.wikimedia.org/other/cirrussearch/current/enwiki-20171218-cirrussearch-content.json.gz",
-			enwikiFile,
+			&File{
+				language: language.English,
+				Base:     "enwiki-20171218-cirrussearch-content.json.gz",
+				Type:     WikipediaFT,
+			},
 		},
 	}
 
@@ -172,7 +176,11 @@ func TestCirrusLinks(t *testing.T) {
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwiki-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
-				enwikiFile,
+				&File{
+					language: language.English,
+					Base:     "enwiki-20171218-cirrussearch-content.json.gz",
+					Type:     WikipediaFT,
+				},
 			},
 		},
 		{
@@ -182,7 +190,25 @@ func TestCirrusLinks(t *testing.T) {
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwikiquote-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
-				enwikiQuoteFile,
+				&File{
+					language: language.English,
+					Base:     "enwikiquote-20171218-cirrussearch-content.json.gz",
+					Type:     WikiquoteFT,
+				},
+			},
+		},
+		{
+			"wiktionary",
+			args{[]language.Tag{language.English}, []FileType{WiktionaryFT}},
+			[]string{
+				"https://dumps.wikimedia.org/other/cirrussearch/current/enwiktionary-20171218-cirrussearch-content.json.gz",
+			},
+			[]*File{
+				&File{
+					language: language.English,
+					Base:     "enwiktionary-20171218-cirrussearch-content.json.gz",
+					Type:     WiktionaryFT,
+				},
 			},
 		},
 	}
@@ -202,6 +228,8 @@ func TestCirrusLinks(t *testing.T) {
 					<a href="enwiki-20171218-cirrussearch-general.json.gz">enwiki-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 43605620413
 					<a href="enwikiquote-20171218-cirrussearch-content.json.gz">enwikiquote-20171218-cirrussearch-content.json.gz</a>19-Dec-2017 10:33 78247011
 					<a href="enwikiquote-20171218-cirrussearch-general.json.gz">enwikiquote-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 5620413
+					<a href="enwiktionary-20171218-cirrussearch-content.json.gz">enwiktionary-20171218-cirrussearch-content.json.gz</a>19-Dec-2017 10:33 78247011
+					<a href="enwiktionary-20171218-cirrussearch-general.json.gz">enwiktionary-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 5620413
 					<a href="usabilitywiki-20171218-cirrussearch-content.json.gz">usabilitywiki-20171218-cirrussearch-content.jso..&gt;</a>20-Dec-2017 12:56 386462
 					<a href="usabilitywiki-20171218-cirrussearch-general.json.gz">usabilitywiki-20171218-cirrussearch-general.jso..&gt;</a>20-Dec-2017 12:56 813441
 					</body>
@@ -234,16 +262,4 @@ func (md *mockDumper) Dump(ft FileType, lang language.Tag, rows chan interface{}
 	<-rows
 
 	return nil
-}
-
-var enwikiFile = &File{
-	language: language.English,
-	Base:     "enwiki-20171218-cirrussearch-content.json.gz",
-	Type:     WikipediaFT,
-}
-
-var enwikiQuoteFile = &File{
-	language: language.English,
-	Base:     "enwikiquote-20171218-cirrussearch-content.json.gz",
-	Type:     WikiquoteFT,
 }

@@ -9,8 +9,9 @@ import (
 	"sync"
 
 	"github.com/jivesearch/jivesearch/config"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )
@@ -149,7 +150,7 @@ func main() {
 			defer wg.Done()
 			for f := range parse {
 				if err := f.Parse(v.GetInt("wikipedia.truncate")); err != nil {
-					panic(err)
+					panic(errors.Wrap(err, f.ABS))
 				}
 			}
 		}()

@@ -277,7 +277,7 @@
     "idna",
     "publicsuffix"
   ]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "22ae77b79946ea320088417e4d50825671d82d57"
 
 [[projects]]
   branch = "master"
@@ -286,7 +286,6 @@
   revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
 
 [[projects]]
-  branch = "master"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -303,7 +302,6 @@
     "encoding/unicode",
     "internal/colltab",
     "internal/gen",
-    "internal/language",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",
@@ -317,7 +315,8 @@
     "unicode/norm",
     "unicode/rangetable"
   ]
-  revision = "27420a1a391f5504f73155051cd274311bf70883"
+  revision = "c4d099d611ac3ded35360abf03581e13d91c828f"
+  version = "v0.2.0"
 
 [[projects]]
   name = "gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -349,6 +348,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "be0e88b12042082a20b746327c6ffa4c464f23a5600ea5a39cacf6e64aa1dfb1"
+  inputs-digest = "4dd7264cd7b974a8828362cabfb4dbb0e77dbe563210ed8f0c9ec3019b97ac8e"
   solver-name = "gps-cdcl"
   solver-version = 1

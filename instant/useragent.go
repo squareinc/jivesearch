@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // UserAgent is an instant answer
@@ -21,6 +22,11 @@ func (u *UserAgent) setQuery(r *http.Request, qv string) answerer {
 
 func (u *UserAgent) setUserAgent(r *http.Request) answerer {
 	u.Answer.userAgent = r.UserAgent()
+	return u
+}
+
+func (u *UserAgent) setLanguage(lang language.Tag) answerer {
+	u.language = lang
 	return u
 }
 
@@ -57,9 +63,8 @@ func (u *UserAgent) setRegex() answerer {
 	return u
 }
 
-func (u *UserAgent) setSolution() answerer {
-	u.Text = u.userAgent
-
+func (u *UserAgent) solve() answerer {
+	u.Solution = u.userAgent
 	return u
 }
 
@@ -78,12 +83,12 @@ func (u *UserAgent) tests() []test {
 		{
 			query:     "user agent",
 			userAgent: "firefox",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "firefox",
+					Solution:     "firefox",
 					Cache:        false,
 				},
 			},
@@ -91,12 +96,12 @@ func (u *UserAgent) tests() []test {
 		{
 			query:     "useragent?",
 			userAgent: "opera",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "opera",
+					Solution:     "opera",
 					Cache:        false,
 				},
 			},
@@ -104,12 +109,12 @@ func (u *UserAgent) tests() []test {
 		{
 			query:     "my user agent",
 			userAgent: "some random ua",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "some random ua",
+					Solution:     "some random ua",
 					Cache:        false,
 				},
 			},
@@ -117,12 +122,12 @@ func (u *UserAgent) tests() []test {
 		{
 			query:     "what's my user agent?",
 			userAgent: "chrome",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "chrome",
+					Solution:     "chrome",
 					Cache:        false,
 				},
 			},
@@ -130,12 +135,12 @@ func (u *UserAgent) tests() []test {
 		{
 			query:     "what is my useragent?",
 			userAgent: "internet explorer",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "internet explorer",
+					Solution:     "internet explorer",
 					Cache:        false,
 				},
 			},

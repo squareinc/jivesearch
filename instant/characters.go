@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Characters is an instant answer
@@ -21,6 +22,11 @@ func (c *Characters) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (c *Characters) setUserAgent(r *http.Request) answerer {
+	return c
+}
+
+func (c *Characters) setLanguage(lang language.Tag) answerer {
+	c.language = lang
 	return c
 }
 
@@ -56,13 +62,13 @@ func (c *Characters) setRegex() answerer {
 	return c
 }
 
-func (c *Characters) setSolution() answerer {
+func (c *Characters) solve() answerer {
 	for _, ch := range []string{`"`, `'`} {
 		c.remainder = strings.TrimPrefix(c.remainder, ch)
 		c.remainder = strings.TrimSuffix(c.remainder, ch)
 	}
 
-	c.Text = strconv.Itoa(len(c.remainder))
+	c.Solution = strconv.Itoa(len(c.remainder))
 
 	return c
 }
@@ -80,236 +86,233 @@ func (c *Characters) tests() []test {
 	tests := []test{
 		{
 			query: `number of chars in "Jimi Hendrix"`,
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "12",
+					Solution:     "12",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "number of chars   in Pink   Floyd",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "10",
+					Solution:     "10",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "Bob Dylan   number of characters in",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "9",
+					Solution:     "9",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "number of characters Janis   Joplin",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "12",
+					Solution:     "12",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "char count Led Zeppelin",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "12",
+					Solution:     "12",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "char count of ' 87 '",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "4",
+					Solution:     "4",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "they're chars count",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "7",
+					Solution:     "7",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "chars count of something",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "9",
+					Solution:     "9",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "Another something chars count of",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "17",
+					Solution:     "17",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "1234567 character count",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "7",
+					Solution:     "7",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "character count of house of cards",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "14",
+					Solution:     "14",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "characters count 50 cent",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "7",
+					Solution:     "7",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "characters count of 1 dollar",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "8",
+					Solution:     "8",
 					Cache:        true,
 				},
 			},
 		},
-		{
-			query: "chars in saved by the bell",
-			expected: []Solution{
-				{},
+		/*
+			Skip this until we implement Tv & Movie characters in Wikipedia Instant Answers
+			{
+				query: "chars in saved by the bell",
+				expected: []Data{
+					{},
+				},
 			},
-		},
-		{
-			query: "chars 21 jump street",
-			expected: []Solution{
-				{},
+			{
+				query: "chars 21 jump street",
+				expected: []Data{
+					{},
+				},
 			},
-		},
-		{
-			query: "characters in house of cards",
-			expected: []Solution{
-				{},
+			{
+				query: "characters in house of cards",
+				expected: []Data{
+					{},
+				},
 			},
-		},
-		{
-			query: "characters beavis and butthead",
-			expected: []Solution{
-				{},
+			{
+				query: "characters beavis and butthead",
+				expected: []Data{
+					{},
+				},
 			},
-		},
+		*/
 		{
 			query: "char count equity",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "6",
+					Solution:     "6",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "characters count seal",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "4",
+					Solution:     "4",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "length in chars lion",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "4",
+					Solution:     "4",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "length in characters mountain",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "8",
+					Solution:     "8",
 					Cache:        true,
 				},
-			},
-		},
-		{
-			query: "length of 1 meter",
-			expected: []Solution{
-				{},
 			},
 		},
 	}

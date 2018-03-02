@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Coin is an instant answer
@@ -21,6 +22,11 @@ func (c *Coin) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (c *Coin) setUserAgent(r *http.Request) answerer {
+	return c
+}
+
+func (c *Coin) setLanguage(lang language.Tag) answerer {
+	c.language = lang
 	return c
 }
 
@@ -49,10 +55,10 @@ func (c *Coin) setRegex() answerer {
 	return c
 }
 
-func (c *Coin) setSolution() answerer {
+func (c *Coin) solve() answerer {
 	choices := []string{"Heads", "Tails"}
 
-	c.Text = choices[rand.Intn(2)]
+	c.Solution = choices[rand.Intn(2)]
 
 	return c
 }
@@ -70,19 +76,19 @@ func (c *Coin) tests() []test {
 	for _, q := range []string{"flip a coin", "heads or tails", "Coin Toss"} {
 		tst := test{
 			query: q,
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         "coin toss",
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Heads",
+					Solution:     "Heads",
 					Cache:        false,
 				},
 				{
 					Type:         "coin toss",
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Tails",
+					Solution:     "Tails",
 					Cache:        false,
 				},
 			},

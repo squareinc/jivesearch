@@ -114,7 +114,7 @@ func SetDefaults(cfg Provider) {
 	cfg.BindPFlag("wikipedia.dir", cmd.Flags().Lookup("dir"))
 
 	cmd.Flags().Bool("wikidata", true, "include wikidata")
-	cfg.BindPFlag("wikipedia.wikipedia", cmd.Flags().Lookup("wikidata"))
+	cfg.BindPFlag("wikipedia.wikidata", cmd.Flags().Lookup("wikidata"))
 
 	cmd.Flags().Bool("wikipedia", true, "include wikipedia")
 	cfg.BindPFlag("wikipedia.wikipedia", cmd.Flags().Lookup("wikipedia"))

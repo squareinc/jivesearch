@@ -14,8 +14,9 @@ import (
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
 )
 
 type cfg struct {
@@ -25,7 +26,7 @@ type cfg struct {
 func (c *cfg) handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	sol := c.Instant.Detect(r)
+	sol := c.Instant.Detect(r, language.English)
 
 	if err := json.NewEncoder(w).Encode(sol); err != nil {
 		http.Error(w, http.StatusText(500), 500)
@@ -83,10 +84,14 @@ func main() {
 					Timeout: 5 * time.Second,
 				},
 			},
-			WikiDataFetcher: &wikipedia.PostgreSQL{
+			WikipediaFetcher: &wikipedia.PostgreSQL{
 				DB: db,
 			},
 		},
+	}
+
+	if err := c.Instant.WikipediaFetcher.Setup(); err != nil {
+		panic(err)
 	}
 
 	port := 8000

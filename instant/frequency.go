@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 var reFrequency *regexp.Regexp
@@ -23,6 +24,11 @@ func (f *Frequency) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (f *Frequency) setUserAgent(r *http.Request) answerer {
+	return f
+}
+
+func (f *Frequency) setLanguage(lang language.Tag) answerer {
+	f.language = lang
 	return f
 }
 
@@ -47,11 +53,11 @@ func (f *Frequency) setRegex() answerer {
 
 	t := strings.Join(triggers, "|")
 	f.regex = append(f.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
-	//f.regex = append(f.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t))) // not implemented yet
+	f.regex = append(f.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t))) // not implemented yet
 	return f
 }
 
-func (f *Frequency) setSolution() answerer {
+func (f *Frequency) solve() answerer {
 	var char string
 	var wrd string
 
@@ -68,7 +74,7 @@ func (f *Frequency) setSolution() answerer {
 				cnt++
 			}
 		}
-		f.Text = strconv.Itoa(cnt)
+		f.Solution = strconv.Itoa(cnt)
 	}
 
 	return f
@@ -87,60 +93,60 @@ func (f *Frequency) tests() []test {
 	tests := []test{
 		{
 			query: "a in abracadabra frequency of",
-			expected: []Solution{
-				{},
-			},
-		},
-		{
-			query: "frequency of",
-			expected: []Solution{
-				{},
-			},
-		},
-		{
-			query: "frequency of a in abracadabra",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "5",
+					Solution:     "5",
+					Cache:        true,
+				},
+			},
+		},
+		{
+			query: "frequency of a in abracadabra",
+			expected: []Data{
+				{
+					Type:         typ,
+					Triggered:    true,
+					Contributors: contrib,
+					Solution:     "5",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "frequency of o in cooler",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "2",
+					Solution:     "2",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "frequency of s in jimi hendrix",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "0",
+					Solution:     "0",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "frequency of e in fred astaire",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "2",
+					Solution:     "2",
 					Cache:        true,
 				},
 			},

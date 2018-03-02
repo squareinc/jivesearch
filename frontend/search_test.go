@@ -8,10 +8,12 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/contributors"
+	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
 	"github.com/jivesearch/jivesearch/search/vote"
-	"github.com/jivesearch/jivesearch/wikipedia"
 	"golang.org/x/text/language"
 )
 
@@ -152,6 +154,16 @@ func TestSearchHandler(t *testing.T) {
 						Page:      1,
 					},
 					Results: Results{
+						Instant: instant.Data{
+							Type:      "wikipedia",
+							Triggered: true,
+							Contributors: []contributors.Contributor{
+								{Name: "Brent Adamson", Github: "brentadamson", Twitter: "thebrentadamson"},
+							},
+							Solution: &wikipedia.Item{},
+							Err:      nil,
+							Cache:    true,
+						},
 						Search: &search.Results{
 							Count:      int64(25),
 							Page:       "1",
@@ -161,7 +173,6 @@ func TestSearchHandler(t *testing.T) {
 							Pagination: []string{"1"},
 							Documents:  []*document.Document{},
 						},
-						Wikipedia: &wikipedia.Item{},
 					},
 				},
 			},
@@ -181,6 +192,16 @@ func TestSearchHandler(t *testing.T) {
 						Page:      1,
 					},
 					Results: Results{
+						Instant: instant.Data{
+							Type:      "wikipedia",
+							Triggered: true,
+							Contributors: []contributors.Contributor{
+								{Name: "Brent Adamson", Github: "brentadamson", Twitter: "thebrentadamson"},
+							},
+							Solution: &wikipedia.Item{},
+							Err:      nil,
+							Cache:    true,
+						},
 						Search: &search.Results{
 							Count:      int64(25),
 							Page:       "1",
@@ -190,7 +211,6 @@ func TestSearchHandler(t *testing.T) {
 							Pagination: []string{"1"},
 							Documents:  []*document.Document{},
 						},
-						Wikipedia: &wikipedia.Item{},
 					},
 				},
 			},
@@ -217,13 +237,13 @@ func TestSearchHandler(t *testing.T) {
 				},
 				Bangs: bangs.New(),
 				Instant: &instant.Instant{
-					QueryVar: "q",
+					WikipediaFetcher:     &mockWikipediaFetcher{},
+					StackOverflowFetcher: &mockStackOverflowFetcher{},
 				},
 				Suggest: &mockSuggester{},
 				Search:  &mockSearch{},
 				Wikipedia: Wikipedia{
 					Matcher: matcher,
-					Fetcher: &mockWikipedia{},
 				},
 				Vote: &mockVoter{},
 			}
@@ -263,12 +283,21 @@ func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, 
 	return r, nil
 }
 
-type mockWikipedia struct{}
+// mock Stack Overflow Fetcher
+type mockStackOverflowFetcher struct{}
 
-func (w *mockWikipedia) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
-	return &wikipedia.Item{}, nil
+func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackoverflow.Response, error) {
+	return stackoverflow.Response{}, nil
 }
 
-func (w *mockWikipedia) Setup() error {
+// mock Wikipedia Fetcher
+type mockWikipediaFetcher struct{}
+
+func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
+	return &wikipedia.Item{}, nil
+
+}
+
+func (mf *mockWikipediaFetcher) Setup() error {
 	return nil
 }

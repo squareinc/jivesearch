@@ -8,25 +8,18 @@ import (
 	"testing"
 
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
 
 // TestDetect runs the test cases for each instant answer.
 func TestDetect(t *testing.T) {
-	cases := []test{
-		{
-			query: "testing an empty answer here",
-			expected: []Solution{
-				{},
-			},
-		},
-	}
+	cases := []test{}
 
 	i := Instant{
 		QueryVar:             "q",
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
-		WikiDataFetcher:      &mockWikiFetcher{},
+		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
 
 	for j, ia := range i.answers() {
@@ -50,7 +43,7 @@ func TestDetect(t *testing.T) {
 
 			r.Header.Set("User-Agent", c.userAgent)
 
-			got := i.Detect(r)
+			got := i.Detect(r, language.English)
 
 			var solved bool
 
@@ -190,10 +183,10 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 	return resp, nil
 }
 
-// mock Wikidata Fetcher
-type mockWikiFetcher struct{}
+// mock Wikipedia Fetcher
+type mockWikipediaFetcher struct{}
 
-func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
+func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
 	switch query {
 	case "bob marley":
 		return &wikipedia.Item{
@@ -278,6 +271,6 @@ func (mf *mockWikiFetcher) Fetch(query string, lang language.Tag) (*wikipedia.It
 
 }
 
-func (mf *mockWikiFetcher) Setup() error {
+func (mf *mockWikipediaFetcher) Setup() error {
 	return nil
 }

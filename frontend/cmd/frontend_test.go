@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/jivesearch/jivesearch/frontend"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // CamelCase is an instant answer
@@ -20,6 +21,11 @@ func (c *CamelCase) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (c *CamelCase) setUserAgent(r *http.Request) answerer {
+	return c
+}
+
+func (c *CamelCase) setLanguage(lang language.Tag) answerer {
+	c.language = lang
 	return c
 }
 
@@ -50,13 +56,13 @@ func (c *CamelCase) setRegex() answerer {
 	return c
 }
 
-func (c *CamelCase) setSolution() answerer {
+func (c *CamelCase) solve() answerer {
 	titled := []string{}
 	for _, w := range strings.Fields(c.remainder) {
 		titled = append(titled, strings.Title(w))
 	}
 
-	c.Text = strings.Join(titled, "")
+	c.Solution = strings.Join(titled, "")
 
 	return c
 }
@@ -74,36 +80,36 @@ func (c *CamelCase) tests() []test {
 	tests := []test{
 		{
 			query: "camelcase metallica rocks",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "MetallicaRocks",
+					Solution:     "MetallicaRocks",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "aliCE in chAins Is better camel case",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "AliceInChainsIsBetter",
+					Solution:     "AliceInChainsIsBetter",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "camel case O'doyle ruLES",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "O'DoyleRules",
+					Solution:     "O'DoyleRules",
 					Cache:        true,
 				},
 			},

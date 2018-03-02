@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
 
@@ -149,7 +149,7 @@ func TestHMACKey(t *testing.T) {
 
 func TestSource(t *testing.T) {
 	type args struct {
-		src instant.Solution
+		src instant.Data
 	}
 
 	for _, tt := range []struct {
@@ -159,15 +159,15 @@ func TestSource(t *testing.T) {
 	}{
 		{
 			name: "empty",
-			args: args{instant.Solution{}},
+			args: args{instant.Data{}},
 			want: "",
 		},
 		{
 			name: "stackoverflow",
 			args: args{
-				instant.Solution{
+				instant.Data{
 					Type: "stackoverflow",
-					Raw: instant.StackOverflowAnswer{
+					Solution: instant.StackOverflowAnswer{
 						Answer: instant.SOAnswer{
 							User: "bob",
 						},
@@ -179,7 +179,7 @@ func TestSource(t *testing.T) {
 		{
 			name: "wikidata",
 			args: args{
-				instant.Solution{
+				instant.Data{
 					Type: "wikidata",
 				},
 			},
@@ -188,7 +188,7 @@ func TestSource(t *testing.T) {
 		{
 			name: "wikiquote",
 			args: args{
-				instant.Solution{
+				instant.Data{
 					Type: "wikiquote",
 				},
 			},
@@ -197,7 +197,7 @@ func TestSource(t *testing.T) {
 		{
 			name: "wiktionary",
 			args: args{
-				instant.Solution{
+				instant.Data{
 					Type: "wiktionary",
 				},
 			},
@@ -216,7 +216,7 @@ func TestSource(t *testing.T) {
 
 func TestInstantFormatter(t *testing.T) {
 	type args struct {
-		sol instant.Solution
+		sol instant.Data
 		l   language.Tag
 	}
 
@@ -228,18 +228,28 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "empty",
 			args: args{
-				instant.Solution{
-					Raw: []wikipedia.Quantity{},
+				instant.Data{
+					Solution: []wikipedia.Quantity{},
 				},
 				language.English,
 			},
 			want: "",
 		},
 		{
+			name: "string",
+			args: args{
+				instant.Data{
+					Solution: "basic string",
+				},
+				language.English,
+			},
+			want: `basic string`,
+		},
+		{
 			name: "stackoverflow",
 			args: args{
-				instant.Solution{
-					Raw: instant.StackOverflowAnswer{
+				instant.Data{
+					Solution: instant.StackOverflowAnswer{
 						Question: "A made up question",
 						Link:     "https://stackoverflow.com/questions/90210/a-made-up-question",
 						Answer: instant.SOAnswer{
@@ -255,8 +265,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "kg",
 			args: args{
-				instant.Solution{
-					Raw: []wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				instant.Data{
+					Solution: []wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
 				},
 				language.Italian,
 			},
@@ -265,8 +275,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "age (alive)",
 			args: args{
-				instant.Solution{
-					Raw: instant.Age{
+				instant.Data{
+					Solution: instant.Age{
 						Birthday: instant.Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1972-12-31T00:00:00Z",
@@ -282,8 +292,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "age (at time of death)",
 			args: args{
-				instant.Solution{
-					Raw: instant.Age{
+				instant.Data{
+					Solution: instant.Age{
 						Birthday: instant.Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1956-04-30T00:00:00Z",
@@ -305,8 +315,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "birthday",
 			args: args{
-				instant.Solution{
-					Raw: instant.Birthday{
+				instant.Data{
+					Solution: instant.Birthday{
 						Birthday: wikipedia.DateTime{
 							Value:    "1938-07-31T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -320,8 +330,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "death",
 			args: args{
-				instant.Solution{
-					Raw: instant.Death{
+				instant.Data{
+					Solution: instant.Death{
 						Death: wikipedia.DateTime{
 							Value:    "2015-05-14T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -335,8 +345,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "wikiquote",
 			args: args{
-				instant.Solution{
-					Raw: []string{"fantastic quote", "such good quote"},
+				instant.Data{
+					Solution: []string{"fantastic quote", "such good quote"},
 				},
 				language.English,
 			},
@@ -345,8 +355,8 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "wiktionary",
 			args: args{
-				instant.Solution{
-					Raw: wikipedia.Wiktionary{
+				instant.Data{
+					Solution: wikipedia.Wiktionary{
 						Title:    "guitar",
 						Language: "en",
 						Definitions: []*wikipedia.Definition{
@@ -370,7 +380,7 @@ func TestInstantFormatter(t *testing.T) {
 		{
 			name: "unknown",
 			args: args{
-				instant.Solution{Raw: 1}, language.English},
+				instant.Data{Solution: 1}, language.English},
 			want: "",
 		},
 	} {
@@ -386,6 +396,20 @@ func TestInstantFormatter(t *testing.T) {
 				t.Errorf("got %q, want %q", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestWikipediaItem(t *testing.T) {
+	want := &wikipedia.Item{}
+
+	d := instant.Data{
+		Solution: &wikipedia.Item{},
+	}
+
+	got := wikipediaItem(d)
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
 	}
 }
 

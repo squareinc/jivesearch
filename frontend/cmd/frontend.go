@@ -17,12 +17,12 @@ import (
 	"github.com/jivesearch/jivesearch/frontend"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
-	"github.com/jivesearch/jivesearch/wikipedia"
 	"github.com/lib/pq"
 	"github.com/olivere/elastic"
 	"github.com/spf13/viper"
@@ -150,9 +150,13 @@ func main() {
 				Timeout: 5 * time.Second,
 			},
 		},
-		WikiDataFetcher: &wikipedia.PostgreSQL{
+		WikipediaFetcher: &wikipedia.PostgreSQL{
 			DB: db,
 		},
+	}
+
+	if err := f.Instant.WikipediaFetcher.Setup(); err != nil {
+		panic(err)
 	}
 
 	// Voting
@@ -179,13 +183,6 @@ func main() {
 	}
 
 	f.Wikipedia.Matcher = language.NewMatcher(supported)
-	f.Wikipedia.Fetcher = &wikipedia.PostgreSQL{
-		DB: db,
-	}
-
-	if err := f.Wikipedia.Setup(); err != nil {
-		panic(err)
-	}
 
 	// see notes on customizing languages in search/document/document.go
 	f.Document.Languages = document.Languages(supported)

@@ -11,7 +11,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
 
@@ -19,32 +19,28 @@ func TestHandler(t *testing.T) {
 	for _, c := range []struct {
 		query     string
 		userAgent string
-		want      *instant.Solution
+		want      *instant.Data
 	}{
 		{
 			query: "january birthstone",
-			want: &instant.Solution{
+			want: &instant.Data{
 				Type:         "birthstone",
 				Triggered:    true,
 				Contributors: contributors.Load([]string{"brentadamson"}),
-				Text:         "Garnet",
+				Solution:     "Garnet",
 				Cache:        true,
 			},
 		},
 		{
 			query:     "user agent",
 			userAgent: "firefox",
-			want: &instant.Solution{
+			want: &instant.Data{
 				Type:         "user agent",
 				Triggered:    true,
 				Contributors: contributors.Load([]string{"brentadamson"}),
-				Text:         "firefox",
+				Solution:     "firefox",
 				Cache:        false,
 			},
-		},
-		{
-			query: "not an instant answer",
-			want:  &instant.Solution{},
 		},
 	} {
 		t.Run(c.query, func(t *testing.T) {
@@ -62,7 +58,7 @@ func TestHandler(t *testing.T) {
 				&instant.Instant{
 					QueryVar:             "q",
 					StackOverflowFetcher: &mockStackOverflowFetcher{},
-					WikiDataFetcher:      &mockWikiFetcher{},
+					WikipediaFetcher:     &mockWikiFetcher{},
 				},
 			}
 
@@ -74,7 +70,7 @@ func TestHandler(t *testing.T) {
 					http.StatusOK, status)
 			}
 
-			got := &instant.Solution{}
+			got := &instant.Data{}
 
 			if err := json.NewDecoder(rr.Body).Decode(got); err != nil {
 				t.Fatal(err)

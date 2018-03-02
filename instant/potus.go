@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Potus is an instant answer
@@ -40,6 +41,11 @@ func (p *Potus) setUserAgent(r *http.Request) answerer {
 	return p
 }
 
+func (p *Potus) setLanguage(lang language.Tag) answerer {
+	p.language = lang
+	return p
+}
+
 func (p *Potus) setType() answerer {
 	p.Type = "potus"
 	return p
@@ -66,11 +72,11 @@ func (p *Potus) setRegex() answerer {
 	return p
 }
 
-func (p *Potus) setSolution() answerer {
+func (p *Potus) solve() answerer {
 	// maybe a better solution is to have
 	// a set of non-trigger funcs???
 	if strings.Contains(p.query, "vice") {
-		p.Solution = Solution{}
+		p.Data = Data{}
 		return p
 	}
 
@@ -94,11 +100,11 @@ func (p *Potus) setSolution() answerer {
 	// then we'll just do this.
 	data, found := presidents(i)
 	if !found {
-		p.Solution = Solution{}
+		p.Data = Data{}
 		return p
 	}
 
-	p.Text = data.President.Name
+	p.Solution = data.President.Name
 
 	return p
 }
@@ -119,25 +125,25 @@ func (p *Potus) tests() []test {
 	tests := []test{
 		{
 			query: "current POTUS",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Donald Trump",
+					Solution:     "Donald Trump",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "46th POTUS",
-			expected: []Solution{
+			expected: []Data{
 				{},
 			},
 		},
 		{
 			query: "32nd vice POTUS",
-			expected: []Solution{
+			expected: []Data{
 				{},
 			},
 		},
@@ -197,12 +203,12 @@ func (p *Potus) tests() []test {
 		} {
 			t := test{
 				query: fmt.Sprintf(q, i+1),
-				expected: []Solution{
+				expected: []Data{
 					{
 						Type:         typ,
 						Triggered:    true,
 						Contributors: contrib,
-						Text:         pres,
+						Solution:     pres,
 						Cache:        true,
 					},
 				},

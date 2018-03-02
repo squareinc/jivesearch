@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Stats is an instant answer that
@@ -25,6 +26,11 @@ func (s *Stats) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (s *Stats) setUserAgent(r *http.Request) answerer {
+	return s
+}
+
+func (s *Stats) setLanguage(lang language.Tag) answerer {
+	s.language = lang
 	return s
 }
 
@@ -54,7 +60,7 @@ func (s *Stats) setRegex() answerer {
 	return s
 }
 
-func (s *Stats) setSolution() answerer {
+func (s *Stats) solve() answerer {
 	// get all the numbers..this regexp will correctly grab e notation
 	numbersStrings := reStats.FindAllString(s.remainder, -1)
 	numbers := []float64{}
@@ -80,7 +86,7 @@ func (s *Stats) setSolution() answerer {
 		ans = sum(numbers)
 	}
 
-	s.Text = txt + strconv.FormatFloat(ans, 'f', -1, 64)
+	s.Solution = txt + strconv.FormatFloat(ans, 'f', -1, 64)
 
 	return s
 }
@@ -98,72 +104,72 @@ func (s *Stats) tests() []test {
 	tests := []test{
 		{
 			query: "avg 3 4e6",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Average: 2000001.5",
+					Solution:     "Average: 2000001.5",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "11 18 -142 Average",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Average: -37.666666666666664",
+					Solution:     "Average: -37.666666666666664",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "6 3 -5 23 Median",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Median: 4.5",
+					Solution:     "Median: 4.5",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "median 17 12 -18",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Median: 12",
+					Solution:     "Median: 12",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "58 96 -41 sum",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Sum: 113",
+					Solution:     "Sum: 113",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "Total -17 3 87 -476",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "Sum: -403",
+					Solution:     "Sum: -403",
 					Cache:        true,
 				},
 			},

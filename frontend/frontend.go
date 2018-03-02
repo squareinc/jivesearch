@@ -16,7 +16,6 @@ import (
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
-	"github.com/jivesearch/jivesearch/wikipedia"
 	"github.com/oxtoacart/bpool"
 	"golang.org/x/text/language"
 )
@@ -44,7 +43,6 @@ type Document struct {
 // document due to available languages Wikipedia supports
 type Wikipedia struct {
 	language.Matcher
-	wikipedia.Fetcher
 }
 
 var (
@@ -86,7 +84,8 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			switch rsp.template {
 			case "json":
 				w.Header().Set("Content-Type", "application/json") // the default for json is utf-8
-				if err := json.NewEncoder(buf).Encode(rsp.data); err != nil {
+				err := json.NewEncoder(buf).Encode(rsp.data)
+				if err != nil {
 					rsp.status, rsp.err = http.StatusInternalServerError, err
 					errHandler(w, rsp)
 					return

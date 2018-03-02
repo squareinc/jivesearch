@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
-	"github.com/jivesearch/jivesearch/wikipedia"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
 
@@ -27,8 +27,13 @@ func (w *Wikipedia) setUserAgent(r *http.Request) answerer {
 	return w
 }
 
+func (w *Wikipedia) setLanguage(lang language.Tag) answerer {
+	w.language = lang
+	return w
+}
+
 func (w *Wikipedia) setType() answerer {
-	w.Type = "wikipedia"
+	w.Type = "wiki"
 	return w
 }
 
@@ -87,6 +92,7 @@ func (w *Wikipedia) setRegex() answerer {
 	t := strings.Join(triggers, "|")
 	w.regex = append(w.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
 	w.regex = append(w.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
+	w.regex = append(w.regex, regexp.MustCompile(`^(?P<remainder>.*)$`)) // this needs to be last regex here
 
 	return w
 }
@@ -110,8 +116,8 @@ type Age struct {
 
 // TODO: Return the Title (and perhaps Image???) as
 // confirmation that we fetched the right asset.
-func (w *Wikipedia) setSolution() answerer {
-	item, err := w.Fetch(w.remainder, language.English)
+func (w *Wikipedia) solve() answerer {
+	item, err := w.Fetch(w.remainder, w.language)
 	if err != nil {
 		w.Err = err
 		return w
@@ -123,6 +129,7 @@ func (w *Wikipedia) setSolution() answerer {
 			return w
 		}
 
+		w.Type = "wikidata"
 		b := Birthday{item.Birthday[0]}
 
 		if w.triggerWord == "age" || w.triggerWord == "how old is" {
@@ -134,42 +141,48 @@ func (w *Wikipedia) setSolution() answerer {
 				a.Death = Death{item.Death[0]}
 			}
 
-			w.Solution.Raw = a
+			w.Data.Solution = a
 
 			return w
 		}
 
-		w.Solution.Raw = b
+		w.Data.Solution = b
 	case death, died:
 		if len(item.Death) > 0 {
-			w.Solution.Raw = Death{item.Death[0]}
+			w.Type = "wikidata"
+			w.Data.Solution = Death{item.Death[0]}
 		}
 	case howTallis, howTallwas, height:
 		if len(item.Height) == 0 {
 			return w
 		}
 
-		w.Solution.Raw = item.Height
+		w.Type = "wikidata"
+		w.Data.Solution = item.Height
 	case mass, weigh, weight:
 		if len(item.Weight) == 0 {
 			return w
 		}
 
-		w.Solution.Raw = item.Weight
+		w.Type = "wikidata"
+		w.Data.Solution = item.Weight
 	case quote, quotes:
 		if len(item.Quotes) == 0 {
 			return w
 		}
 
 		w.Type = "wikiquote"
-		w.Solution.Raw = item.Quotes
+		w.Data.Solution = item.Quotes
 	case define, definition:
 		if len(item.Definitions) == 0 {
 			return w
 		}
 
 		w.Type = "wiktionary"
-		w.Solution.Raw = item.Wiktionary
+		w.Data.Solution = item.Wiktionary
+	default: // full Wikipedia box
+		w.Type = "wikipedia"
+		w.Data.Solution = item
 	}
 
 	return w
@@ -181,19 +194,17 @@ func (w *Wikipedia) setCache() answerer {
 }
 
 func (w *Wikipedia) tests() []test {
-	typ := "wikipedia"
-
 	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
 		{
 			query: "Bob Marley age",
-			expected: []Solution{
+			expected: []Data{
 				{
-					Type:         typ,
+					Type:         "wikidata",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: Age{
+					Solution: Age{
 						Birthday: Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1945-02-06T00:00:00Z",
@@ -213,12 +224,12 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "Jimi hendrix birthday",
-			expected: []Solution{
+			expected: []Data{
 				{
-					Type:         typ,
+					Type:         "wikidata",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: Birthday{
+					Solution: Birthday{
 						Birthday: wikipedia.DateTime{
 							Value:    "1942-11-27T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -230,12 +241,12 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "death jimi hendrix",
-			expected: []Solution{
+			expected: []Data{
 				{
-					Type:         typ,
+					Type:         "wikidata",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: Death{
+					Solution: Death{
 						Death: wikipedia.DateTime{
 							Value:    "1970-09-18T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -247,12 +258,12 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "shaquille o'neal height",
-			expected: []Solution{
+			expected: []Data{
 				{
-					Type:         typ,
+					Type:         "wikidata",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: []wikipedia.Quantity{
+					Solution: []wikipedia.Quantity{
 						{
 							Amount: "2.16",
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
@@ -264,12 +275,12 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "shaquille o'neal weight",
-			expected: []Solution{
+			expected: []Data{
 				{
-					Type:         typ,
+					Type:         "wikidata",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: []wikipedia.Quantity{
+					Solution: []wikipedia.Quantity{
 						{
 							Amount: "147",
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
@@ -281,12 +292,12 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "Michael Jordan quotes",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         "wikiquote",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: []string{
+					Solution: []string{
 						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
 						"ball is life",
 					},
@@ -296,15 +307,44 @@ func (w *Wikipedia) tests() []test {
 		},
 		{
 			query: "define guitar",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         "wiktionary",
 					Triggered:    true,
 					Contributors: contrib,
-					Raw: wikipedia.Wiktionary{
+					Solution: wikipedia.Wiktionary{
 						Title: "guitar",
 						Definitions: []*wikipedia.Definition{
 							{Part: "noun", Meaning: "musical instrument"},
+						},
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "jimi hendrix",
+			expected: []Data{
+				{
+					Type:         "wikipedia",
+					Triggered:    true,
+					Contributors: contrib,
+					Solution: &wikipedia.Item{
+						Wikidata: &wikipedia.Wikidata{
+							Claims: &wikipedia.Claims{
+								Birthday: []wikipedia.DateTime{
+									{
+										Value:    "1942-11-27T00:00:00Z",
+										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+									},
+								},
+								Death: []wikipedia.DateTime{
+									{
+										Value:    "1970-09-18T00:00:00Z",
+										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+									},
+								},
+							},
 						},
 					},
 					Cache: true,

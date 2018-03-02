@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Prime is an instant answer
@@ -24,6 +25,11 @@ func (p *Prime) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (p *Prime) setUserAgent(r *http.Request) answerer {
+	return p
+}
+
+func (p *Prime) setLanguage(lang language.Tag) answerer {
+	p.language = lang
 	return p
 }
 
@@ -53,7 +59,7 @@ func (p *Prime) setRegex() answerer {
 	return p
 }
 
-func (p *Prime) setSolution() answerer {
+func (p *Prime) solve() answerer {
 	var start, end int
 
 	matches := rePrime.FindStringSubmatch(p.remainder)
@@ -66,7 +72,7 @@ func (p *Prime) setSolution() answerer {
 
 		primes := p.calculatePrimes(start, end)
 		if len(primes) > 0 {
-			p.Text = strings.Join(primes, ", ")
+			p.Solution = strings.Join(primes, ", ")
 		}
 	}
 
@@ -86,48 +92,48 @@ func (p *Prime) tests() []test {
 	tests := []test{
 		{
 			query: "prime numbers between 5 and 121",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113",
+					Solution:     "5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "prime number between 614 and 537",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607",
+					Solution:     "541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "prime between -484 and 87",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83",
+					Solution:     "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "prime between 999764 and 1000351", // tests our max
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
+					Solution:     "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
 					Err:          fmt.Errorf("Prime numbers greater than %d not returned", max),
 					Cache:        true,
 				},

@@ -21,7 +21,7 @@ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/fronten
 #### Wikipedia Dump File
 Requires PostgreSQL.
 ```
-cd $GOPATH/src/github.com/jivesearch/jivesearch/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
+cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
 
 # **Roadmap** (in no particular order)

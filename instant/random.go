@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Random is an instant answer
@@ -24,6 +25,11 @@ func (r *Random) setQuery(req *http.Request, qv string) answerer {
 }
 
 func (r *Random) setUserAgent(req *http.Request) answerer {
+	return r
+}
+
+func (r *Random) setLanguage(lang language.Tag) answerer {
+	r.language = lang
 	return r
 }
 
@@ -53,7 +59,7 @@ func (r *Random) setRegex() answerer {
 	return r
 }
 
-func (r *Random) setSolution() answerer {
+func (r *Random) solve() answerer {
 	matches := make(map[string]int)
 	matches["min"], matches["max"] = 1, 100 // if no range specified
 
@@ -73,7 +79,7 @@ func (r *Random) setSolution() answerer {
 		}
 	}
 
-	r.Text = strconv.Itoa(rand.Intn(matches["max"]+1-matches["min"]) + matches["min"])
+	r.Solution = strconv.Itoa(rand.Intn(matches["max"]+1-matches["min"]) + matches["min"])
 
 	return r
 }
@@ -90,16 +96,16 @@ func (r *Random) tests() []test {
 
 	tests := []test{}
 
-	solutions := func(choices []string) []Solution {
-		sol := []Solution{}
+	solutions := func(choices []string) []Data {
+		sol := []Data{}
 
 		for _, c := range choices {
 			sol = append(sol,
-				Solution{
+				Data{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         c,
+					Solution:     c,
 					Cache:        false,
 				},
 			)

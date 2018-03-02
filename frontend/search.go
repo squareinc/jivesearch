@@ -1,7 +1,6 @@
 package frontend
 
 import (
-	"database/sql"
 	"net/http"
 	"strconv"
 	"strings"
@@ -10,7 +9,6 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
-	"github.com/jivesearch/jivesearch/wikipedia"
 	"github.com/pkg/errors"
 	"golang.org/x/text/language"
 )
@@ -30,10 +28,9 @@ type Context struct {
 
 // Results is the results from search, instant, wikipedia, etc
 type Results struct {
-	Alternative string           `json:"alternative"`
-	Instant     instant.Solution `json:"instant"`
-	Search      *search.Results  `json:"search"`
-	Wikipedia   *wikipedia.Item  `json:"wikipedia"`
+	Alternative string          `json:"alternative"`
+	Instant     instant.Data    `json:"instant"`
+	Search      *search.Results `json:"search"`
 }
 
 type data struct {
@@ -96,11 +93,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		},
 		Results{
 			Search: &search.Results{},
-			Wikipedia: &wikipedia.Item{
-				Wikidata: &wikipedia.Wikidata{
-					Claims: &wikipedia.Claims{},
-				},
-			},
 		},
 	}
 
@@ -144,33 +136,29 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	channels := 1
 	sc := make(chan *search.Results)
 	var ac chan error
-	var ic chan instant.Solution
-	var wc chan *wikipedia.Item
+	var ic chan instant.Data
 
 	strt := time.Now() // we already have total response time in nginx...we want the breakdown
 
 	if d.Context.Page == 1 {
-		channels += 3
+		channels += 2
 
 		ac = make(chan error)
-		ic = make(chan instant.Solution)
-		wc = make(chan *wikipedia.Item)
+		ic = make(chan instant.Data)
 
 		go func(q string, ch chan error) {
 			ch <- f.addQuery(q)
 		}(d.Context.Q, ac)
 
 		go func(r *http.Request) {
-			ic <- f.Instant.Detect(r)
+			lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
+			ic <- f.Instant.Detect(r, lang)
+			/*
+				if err != nil && err != sql.ErrNoRows {
+					log.Info.Println(err)
+				}
+			*/
 		}(r)
-
-		go func(d data) {
-			w, err := f.wikiHandler(d.Context.Q, d.Context.Preferred)
-			if err != nil && err != sql.ErrNoRows {
-				log.Info.Println(err)
-			}
-			wc <- w
-		}(d)
 	}
 
 	go func(d data, lang language.Tag, region language.Region) {
@@ -201,7 +189,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	stats := struct {
 		autocomplete time.Duration
 		instant      time.Duration
-		wikipedia    time.Duration
 		search       time.Duration
 	}{}
 
@@ -212,8 +199,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 				log.Info.Println(d.Instant.Err)
 			}
 			stats.instant = time.Since(strt).Round(time.Microsecond)
-		case d.Wikipedia = <-wc:
-			stats.wikipedia = time.Since(strt).Round(time.Millisecond)
 		case d.Search = <-sc:
 			stats.search = time.Since(strt).Round(time.Millisecond)
 		case err := <-ac:
@@ -228,7 +213,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
-	log.Info.Printf("ac:%v, instant:%v, search:%v, wiki:%v\n", stats.autocomplete, stats.instant, stats.search, stats.wikipedia)
+	log.Info.Printf("ac:%v, instant:%v, search:%v\n", stats.autocomplete, stats.instant, stats.search)
 
 	if r.FormValue("o") == "json" {
 		resp.template = r.FormValue("o")
@@ -236,9 +221,4 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	resp.data = d
 	return resp
-}
-
-func (f *Frontend) wikiHandler(query string, preferred []language.Tag) (*wikipedia.Item, error) {
-	lang, _, _ := f.Wikipedia.Matcher.Match(preferred...)
-	return f.Wikipedia.Fetch(query, lang)
 }

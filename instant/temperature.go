@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"golang.org/x/text/language"
 )
 
 // Temperature is an instant answer
@@ -21,6 +22,11 @@ func (t *Temperature) setQuery(r *http.Request, qv string) answerer {
 }
 
 func (t *Temperature) setUserAgent(r *http.Request) answerer {
+	return t
+}
+
+func (t *Temperature) setLanguage(lang language.Tag) answerer {
+	t.language = lang
 	return t
 }
 
@@ -50,7 +56,7 @@ func (t *Temperature) setRegex() answerer {
 	return t
 }
 
-func (t *Temperature) setSolution() answerer {
+func (t *Temperature) solve() answerer {
 	matches := make(map[string]float64)
 	combos := [][]string{
 		{"<f>fahrenheit", "<c>celsius"},
@@ -87,8 +93,8 @@ func (t *Temperature) setSolution() answerer {
 				text = "%.1f degrees Celsius is %s degrees Fahrenheit"
 			}
 
-			t.Text = fmt.Sprintf("%.1f", converted)
-			t.Text = fmt.Sprintf(text, matches["temp"], t.Text)
+			t.Solution = fmt.Sprintf("%.1f", converted)
+			t.Solution = fmt.Sprintf(text, matches["temp"], t.Solution)
 			break
 		}
 	}
@@ -109,48 +115,48 @@ func (t *Temperature) tests() []test {
 	tests := []test{
 		{
 			query: "17 degrees c to f",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "17.0 degrees Celsius is 62.6 degrees Fahrenheit",
+					Solution:     "17.0 degrees Celsius is 62.6 degrees Fahrenheit",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "79.9 f to c",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "79.9 degrees Fahrenheit is 26.6 degrees Celsius",
+					Solution:     "79.9 degrees Fahrenheit is 26.6 degrees Celsius",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "107.9 fahrenheit to celsius",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "107.9 degrees Fahrenheit is 42.2 degrees Celsius",
+					Solution:     "107.9 degrees Fahrenheit is 42.2 degrees Celsius",
 					Cache:        true,
 				},
 			},
 		},
 		{
 			query: "-9.3 celsius to fahrenheit",
-			expected: []Solution{
+			expected: []Data{
 				{
 					Type:         typ,
 					Triggered:    true,
 					Contributors: contrib,
-					Text:         "-9.3 degrees Celsius is 15.3 degrees Fahrenheit",
+					Solution:     "-9.3 degrees Celsius is 15.3 degrees Fahrenheit",
 					Cache:        true,
 				},
 			},
