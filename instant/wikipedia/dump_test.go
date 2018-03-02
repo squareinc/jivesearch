@@ -176,7 +176,7 @@ func TestCirrusLinks(t *testing.T) {
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwiki-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
-				&File{
+				{
 					language: language.English,
 					Base:     "enwiki-20171218-cirrussearch-content.json.gz",
 					Type:     WikipediaFT,
@@ -190,7 +190,7 @@ func TestCirrusLinks(t *testing.T) {
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwikiquote-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
-				&File{
+				{
 					language: language.English,
 					Base:     "enwikiquote-20171218-cirrussearch-content.json.gz",
 					Type:     WikiquoteFT,
@@ -204,7 +204,7 @@ func TestCirrusLinks(t *testing.T) {
 				"https://dumps.wikimedia.org/other/cirrussearch/current/enwiktionary-20171218-cirrussearch-content.json.gz",
 			},
 			[]*File{
-				&File{
+				{
 					language: language.English,
 					Base:     "enwiktionary-20171218-cirrussearch-content.json.gz",
 					Type:     WiktionaryFT,
