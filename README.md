@@ -31,15 +31,20 @@ Marked items indicate progress has been made in that category. There is much mor
 - [x] Privacy
 - [x] !Bangs
 - [x] Core Search Results & Distributed Crawler
+    - [x] Language & Region
+    - [ ] Advanced Search (exact phrase, dogs OR cats,  -cats, site/domain search, etc.)
+    - [ ] Filetype
+    - [ ] SafeSearch        
+    - [ ] Time (past year/month/day/hour, etc.
 - [x] Autocomplete
 - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
-- [x] Wikipedia / Wikidata Entry
 - [x] Instant Answers
     - [x] Wikipedia / Wikidata
     - [x] Wikiquote
     - [x] Wiktionary
     - [x] Stack Overflow
     - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, temperature, user agent 
+    - [ ] Mortgage, financial and other calculators (probably in JavaScript)
     - [ ] Many more instant answers (including from 3rd party APIs)
     - [ ] Translate trigger words and answers to other languages
 - [ ] Maps
