@@ -213,7 +213,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
-	log.Info.Printf("ac:%v, instant:%v, search:%v\n", stats.autocomplete, stats.instant, stats.search)
+	log.Info.Printf("ac:%v, instant (%v):%v, search:%v\n", stats.autocomplete, d.Instant.Type, stats.instant, stats.search)
 
 	if r.FormValue("o") == "json" {
 		resp.template = r.FormValue("o")
