@@ -119,17 +119,16 @@ func (f *Frontend) addQuery(q string) error {
 func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
 	d := data{
 		Context{
-			Q: strings.TrimSpace(r.FormValue("q")),
-			L: strings.TrimSpace(r.FormValue("l")),
-			N: strings.TrimSpace(r.FormValue("n")),
-			R: strings.TrimSpace(r.FormValue("r")),
+			Q:           strings.TrimSpace(r.FormValue("q")),
+			L:           strings.TrimSpace(r.FormValue("l")),
+			N:           strings.TrimSpace(r.FormValue("n")),
+			R:           strings.TrimSpace(r.FormValue("r")),
+			DefaultBang: f.defaultBang(r),
 		},
 		Results{
 			Search: &search.Results{},
 		},
 	}
-
-	d.Context.DefaultBang = f.defaultBang(r)
 
 	resp := &response{
 		status:   http.StatusOK,
