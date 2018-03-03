@@ -221,7 +221,7 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
-			"Twitter", []string{"tw", "twitter"},
+			"Twitter", []string{"t", "tw", "twitter"},
 			map[string]string{
 				def: "https://twitter.com/search?q={{{term}}}",
 			},
