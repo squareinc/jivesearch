@@ -17,6 +17,63 @@ import (
 	"golang.org/x/text/language"
 )
 
+func TestDefaultBang(t *testing.T) {
+	var google bangs.Bang
+	var bing bangs.Bang
+
+	bngs := bangs.New()
+
+	for _, b := range bngs.Bangs {
+		if b.Name == "Google" {
+			google = b
+		} else if b.Name == "Bing" {
+			bing = b
+		}
+	}
+
+	for k, v := range map[string]bangs.Bang{"Google": google, "Bing": bing} {
+		var empty bangs.Bang
+		if reflect.DeepEqual(v, empty) {
+			t.Fatalf("could not find !bang for %q", k)
+		}
+	}
+
+	for _, c := range []struct {
+		name string
+		bang string
+		args string
+		want DefaultBang
+	}{
+		{
+			"default", "Google", "", DefaultBang{"g", google},
+		},
+		{
+			"bing", "Bing", "b", DefaultBang{"b", bing},
+		},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			f := &Frontend{
+				Bangs: bangs.New(),
+			}
+
+			req, err := http.NewRequest("GET", "/", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			q := req.URL.Query()
+			q.Add("b", c.args)
+			req.URL.RawQuery = q.Encode()
+
+			got := f.defaultBang(req)
+
+			if !reflect.DeepEqual(got, c.want) {
+				t.Fatalf("got %+v; want %+v", got, c.want)
+			}
+		})
+	}
+}
+
 func TestDetectLanguage(t *testing.T) {
 	for _, c := range []struct {
 		name           string
@@ -124,6 +181,16 @@ func TestDetectRegion(t *testing.T) {
 }
 
 func TestSearchHandler(t *testing.T) {
+	// get the default !bang
+	var bng bangs.Bang
+	bngs := bangs.New()
+
+	for _, b := range bngs.Bangs {
+		if b.Name == "Google" {
+			bng = b
+		}
+	}
+
 	for _, c := range []struct {
 		name     string
 		language string
@@ -146,12 +213,13 @@ func TestSearchHandler(t *testing.T) {
 				template: "search",
 				data: data{
 					Context: Context{
-						Q:         "some query",
-						L:         "en",
-						Preferred: []language.Tag{language.MustParse("en")},
-						Region:    language.MustParseRegion("US"),
-						Number:    25,
-						Page:      1,
+						Q:           "some query",
+						L:           "en",
+						DefaultBang: DefaultBang{"g", bng},
+						Preferred:   []language.Tag{language.MustParse("en")},
+						Region:      language.MustParseRegion("US"),
+						Number:      25,
+						Page:        1,
 					},
 					Results: Results{
 						Instant: instant.Data{
@@ -184,12 +252,13 @@ func TestSearchHandler(t *testing.T) {
 				template: "json",
 				data: data{
 					Context: Context{
-						Q:         "some query",
-						L:         "en",
-						Preferred: []language.Tag{language.MustParse("en")},
-						Region:    language.MustParseRegion("US"),
-						Number:    25,
-						Page:      1,
+						Q:           "some query",
+						L:           "en",
+						DefaultBang: DefaultBang{"g", bng},
+						Preferred:   []language.Tag{language.MustParse("en")},
+						Region:      language.MustParseRegion("US"),
+						Number:      25,
+						Page:        1,
 					},
 					Results: Results{
 						Instant: instant.Data{

@@ -17,6 +17,11 @@ $(document).ready(function() {
     $(value).html(c.join(" "));
   });
 
+  // redirect to the default !bang
+  $(document).on('click', '#bang_submit', function(){
+    window.location.href = window.location.pathname + replaceQueryParam(queryString(), 'q', $(this).data('location'));
+  });
+
   // voting
   // TODO: HMAC key
   $(document).on('click', '.arrow', function(){

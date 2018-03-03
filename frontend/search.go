@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
@@ -16,14 +17,21 @@ import (
 // Context holds a user's request context so we can pass it to our template's form.
 // Query, Language, and Region are the RAW query string variables.
 type Context struct {
-	Q         string          `json:"query"`
-	L         string          `json:"-"`
-	R         string          `json:"-"`
-	N         string          `json:"-"`
-	Preferred []language.Tag  `json:"-"`
-	Region    language.Region `json:"-"`
-	Number    int             `json:"-"`
-	Page      int             `json:"-"`
+	Q           string `json:"query"`
+	L           string `json:"-"`
+	R           string `json:"-"`
+	N           string `json:"-"`
+	DefaultBang `json:"-"`
+	Preferred   []language.Tag  `json:"-"`
+	Region      language.Region `json:"-"`
+	Number      int             `json:"-"`
+	Page        int             `json:"-"`
+}
+
+// DefaultBang is the user's preffered !bang
+type DefaultBang struct {
+	Trigger string
+	bangs.Bang
 }
 
 // Results is the results from search, instant, wikipedia, etc
@@ -36,6 +44,31 @@ type Results struct {
 type data struct {
 	Context `json:"-"`
 	Results
+}
+
+// we should probably let users pass in a few bangs? &b=g,so,imdb,etc...
+func (f *Frontend) defaultBang(r *http.Request) DefaultBang {
+	var bng DefaultBang
+
+	db := r.FormValue("b")
+	if db != "" {
+		for _, b := range f.Bangs.Bangs {
+			for _, t := range b.Triggers {
+				if t == db {
+					bng = DefaultBang{db, b}
+				}
+			}
+		}
+		return bng
+	}
+
+	for _, b := range f.Bangs.Bangs {
+		if b.Name == "Google" {
+			bng = DefaultBang{"g", b}
+		}
+	}
+
+	return bng
 }
 
 // Detect the user's preferred language(s).
@@ -95,6 +128,8 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			Search: &search.Results{},
 		},
 	}
+
+	d.Context.DefaultBang = f.defaultBang(r)
 
 	resp := &response{
 		status:   http.StatusOK,
