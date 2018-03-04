@@ -1,0 +1,1 @@
+/*global module*/(function () {"use strict";var today=20170423;module.exports=today;}());

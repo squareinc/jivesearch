@@ -133,6 +133,7 @@ func (i *Instant) answers() []answerer {
 		&Characters{},
 		&Coin{},
 		&Frequency{},
+		&Minify{},
 		&Potus{},
 		&Prime{},
 		&Random{},
