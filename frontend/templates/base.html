@@ -34,20 +34,21 @@
     <script src="/static/main.js"></script>
     {{if .Instant}}
       {{if eq .Instant.Type "minify"}}
-      <script src="/static/instant/minify/prettydiff/lib/global.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/language.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/options.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/finalFile.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/safeSort.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/ace/ace.js" type="application/javascript"></script> 
-      <script src="/static/instant/minify/prettydiff/api/dom.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/csspretty.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/csvpretty.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/diffview.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/jspretty.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/lib/markuppretty.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/prettydiff/prettydiff.js" type="application/javascript"></script>
-      <script src="/static/instant/minify/minify.js" type="application/javascript"></script>
+      <!-- another option is to use https://github.com/prettier/prettier -->
+      <script src="/static/instant/minify/prettydiff/lib/global.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/language.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/options.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/finalFile.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/safeSort.js"></script>
+      <script src="/static/instant/minify/prettydiff/ace/ace.js"></script> 
+      <script src="/static/instant/minify/prettydiff/api/dom.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/csspretty.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/csvpretty.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/diffview.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/jspretty.js"></script>
+      <script src="/static/instant/minify/prettydiff/lib/markuppretty.js"></script>
+      <script src="/static/instant/minify/prettydiff/prettydiff.js"></script>
+      <script src="/static/instant/minify/minify.js"></script>
       {{end}}
     {{end}}
   </body>

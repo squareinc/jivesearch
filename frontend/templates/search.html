@@ -54,8 +54,8 @@
               {{if eq .Instant.Type "minify"}}
               <textarea id="code_input" rows="20" cols="60" tabindex="4" style="width:99%" placeholder="Paste code here..."></textarea>
               <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
-              <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background: rgb(112, 234, 157);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255, 255, 255);">Minify</a>
-              <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background: rgb(112, 234, 157);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255, 255, 255);">Prettify</a>
+              <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
+              <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Prettify</a>
               {{else if .Instant.Solution}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">
@@ -85,8 +85,8 @@
                 </div>
               </div>
               {{end}}
+            </div>
           {{end}}
-          </div>
         {{end}}
         {{if eq .Instant.Type "wikipedia"}}
           {{$wikipedia := .Instant|WikipediaItem}}
