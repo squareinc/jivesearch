@@ -169,6 +169,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Genius", []string{"genius"},
+			map[string]string{
+				def: "https://genius.com/search?q={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"Google", []string{"g", "google"},
 			map[string]string{
 				def:  "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
