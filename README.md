@@ -44,7 +44,9 @@ Marked items indicate progress has been made in that category. There is much mor
     - [x] Wiktionary
     - [x] Stack Overflow
     - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, temperature, user agent 
-    - [ ] Mortgage, financial and other calculators (probably in JavaScript)
+    - [x] JavaScript-based answers
+        - [ ] Mortgage, financial and other calculators (probably in JavaScript)
+        - [x] CSS/JavaScript/JSON/etc minifier and prettifier
     - [ ] Many more instant answers (including from 3rd party APIs)
     - [ ] Translate trigger words and answers to other languages
 - [ ] Maps
