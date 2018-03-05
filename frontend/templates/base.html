@@ -15,6 +15,10 @@
     {{"<!--<![endif]-->" | SafeHTML}}
     <link rel="stylesheet" href="/static/fonts/css/fonts.css">
     <link rel="stylesheet" href="/static/fontello/css/fontello.css">
+    <link rel="stylesheet" href="/static/base.css">
+    {{if .Context.Q}}
+    <link rel="stylesheet" href="/static/search.css">
+    {{end}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!--https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html-->
@@ -22,10 +26,6 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/167x167.png">
     <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/180x180.png">
-
-    <style>
-      {{template "css" .}}
-    </style>
   </head>
   <body>
     {{template "content" .}}

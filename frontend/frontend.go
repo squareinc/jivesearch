@@ -195,7 +195,6 @@ var ParseTemplates = func() {
 			Funcs(funcMap).
 			ParseFiles(
 				"templates/base.html",
-				"templates/main.css",
 				"templates/search.html",
 			),
 	)
