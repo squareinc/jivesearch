@@ -34,20 +34,14 @@
     <script src="/static/main.js"></script>
     {{if .Instant}}
       {{if eq .Instant.Type "minify"}}
+      <!-- 
+        prettydiff.js combines prettydiff barebones example files to 1: 
+        https://github.com/prettydiff/prettydiff/blob/master/test/barebones/barebones.xhtml#L27 
+        If you don't combine them then you'll have to enable "unsafe-eval" in Content Security Policy header in nginx.conf
+        as pagespeed_ngx will turn some of those .js files to inline code.
+      -->
       <!-- another option is to use https://github.com/prettier/prettier -->
-      <script src="/static/instant/minify/prettydiff/lib/global.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/language.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/options.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/finalFile.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/safeSort.js"></script>
-      <script src="/static/instant/minify/prettydiff/ace/ace.js"></script> 
-      <script src="/static/instant/minify/prettydiff/api/dom.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/csspretty.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/csvpretty.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/diffview.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/jspretty.js"></script>
-      <script src="/static/instant/minify/prettydiff/lib/markuppretty.js"></script>
-      <script src="/static/instant/minify/prettydiff/prettydiff.js"></script>
+      <script src="/static/instant/minify/prettydiff.js"></script>
       <script src="/static/instant/minify/minify.js"></script>
       {{end}}
     {{end}}

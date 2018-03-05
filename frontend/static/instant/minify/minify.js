@@ -7,9 +7,7 @@ $(document).ready(function() {
         var options = {
             source: $("#code_input").val(),
             mode: $(this).data("value"),
-            lang: "auto",
-            inchar: "\t",
-            insize: 1
+            lang: "auto"
         };
         
         $("#code_output").val(global.prettydiff.prettydiff(options));
