@@ -56,6 +56,45 @@
               <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
               <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
               <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Prettify</a>
+              {{else if eq .Instant.Type "calculator"}}
+              <div id="calculator">
+                <div id="result" tabindex="4"></div>
+                <div id="main">
+                  <div id="first-row">
+                    <button id="clear" class="del-bg">C</button>
+                    <button class="btn-style operator opera-bg fall-back" value="%">%</button>
+                    <button class="btn-style opera-bg align operator" value="/">/</button>
+                  </div>
+                    
+                  <div class="rows">
+                    <button class="btn-style num-bg number first-child" value="7">7</button>
+                    <button class="btn-style num-bg number" value="8">8</button>
+                    <button class="btn-style num-bg number" value="9">9</button>
+                    <button class="btn-style opera-bg operator" value="*">x</button>
+                  </div>
+                    
+                  <div class="rows">
+                    <button class="btn-style num-bg number first-child" value="4">4</button>
+                    <button class="btn-style num-bg number" value="5">5</button>
+                    <button class="btn-style num-bg number" value="6">6</button>
+                    <button class="btn-style opera-bg operator" value="-">-</button>
+                  </div>
+                    
+                  <div class="rows">
+                    <button class="btn-style num-bg number first-child" value="1">1</button>
+                    <button class="btn-style num-bg number" value="2">2</button>
+                    <button class="btn-style num-bg number" value="3">3</button>
+                    <button class="btn-style opera-bg operator" value="+">+</button>
+                  </div>
+                    
+                  <div class="rows">
+                    <button id="zero" class="num-bg zero" value="0">0</button>
+                    <button class="btn-style num-bg period fall-back" value=".">.</button>
+                    <button id="eqn-bg" class="eqn align" value="=">=</button>
+                  </div>
+                </div>
+              </div>
+        
               {{else if .Instant.Solution}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">

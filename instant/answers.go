@@ -129,6 +129,7 @@ type test struct {
 func (i *Instant) answers() []answerer {
 	return []answerer{
 		&BirthStone{},
+		&Calculator{},
 		&CamelCase{},
 		&Characters{},
 		&Coin{},
