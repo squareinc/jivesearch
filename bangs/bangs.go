@@ -214,6 +214,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Instagram", []string{"instagram", "ig"},
+			map[string]string{
+				def: "https://www.instagram.com/explore/tags/{{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"Reddit", []string{"reddit"},
 			map[string]string{
 				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
