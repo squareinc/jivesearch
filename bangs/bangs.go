@@ -277,6 +277,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Youtube", []string{"yt", "youtube"},
+			map[string]string{
+				def: "https://www.youtube.com/results?search_query={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			// I think these need to be mapped to languages, not regions...
 			"Wikipedia", []string{"w", "wikipedia"},
 			map[string]string{
