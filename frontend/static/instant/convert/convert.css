@@ -1,5 +1,6 @@
 #digital_storage .box{
     height: 60px;
+    margin-bottom: 15px;
 }
 #digital_storage input{
     height:45px;
