@@ -1,0 +1,11 @@
+#digital_storage .box{
+    height: 60px;
+}
+#digital_storage input{
+    height:45px;
+    text-align:right;
+}
+#digital_storage select{
+    background-color:#f7f7f7;
+    height:35px;
+}

@@ -28,6 +28,51 @@
   {{end}}
 {{end}}
 
+{{define "digital_storage"}}
+<form class="pure-form digital_storage">
+  <input class="pure-input-1"/>
+  <select class="pure-input-1">
+    <!--
+      https://en.wikipedia.org/wiki/Bit
+      https://en.wikipedia.org/wiki/Byte
+      1 byte = 8 bits
+      Kilobit = 1000 bits
+      Kilobyte = 1000 bytes
+      Kibibit = 1024 bits
+      Kibibyte = 1024 bytes
+      ...
+    -->
+    <option text="Bit" value="1">Bit</option>
+    <option text="Byte" value="8">Byte</option>
+
+    <option text="Kilobit" value="1000">Kilobit</option>
+    <option text="Kibibit" value="1024">Kibibit</option>
+    <option text="Kilobyte" value="8000">Kilobyte</option>
+    <option text="Kibibyte" value="8192">Kibibyte</option>
+
+    <option text="Megabit" value="1000000">Megabit</option>
+    <option text="Mebibit" value="1048576">Mebibit</option>
+    <option text="Megabyte" value="8000000">Megabyte</option>
+    <option text="Mebibyte" value="8388608">Mebibyte</option>
+
+    <option text="Gigabit" value="1000000000">Gigabit</option>
+    <option text="Gibibit" value="1073741824">Gibibit</option>
+    <option text="Gigabyte" value="8000000000">Gigabyte</option>
+    <option text="Gibibyte" value="8589934592">Gibibyte</option>
+
+    <option text="Terabit" value="1000000000000">Terabit</option>
+    <option text="Tebibit" value="1099511627776">Tebibit</option>
+    <option text="Terabyte" value="8000000000000">Terabyte</option>
+    <option text="Tebibyte" value="8796093022208">Tebibyte</option>
+
+    <option text="Petabit" value="1000000000000000">Petabit</option>
+    <option text="Pebibit" value="1125899906842624">Pebibit</option>
+    <option text="Petabyte" value="8000000000000000">Petabyte</option>
+    <option text="Pebibyte" value="9007199254740990">Pebibyte</option>
+  </select>
+</form>
+{{end}}
+
 {{define "content"}}
 {{$context := .Context}}
 
@@ -56,6 +101,23 @@
               <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
               <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
               <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Prettify</a>
+              {{else if eq .Instant.Type "convert"}}
+                <div id="digital_storage" class="pure-u-18-24">
+                  <div class="pure-u-1" style="margin-bottom:15px;">
+                    <form class="pure-form pure-g">
+                      <div class="pure-u-1">
+                        <select class="pure-input-1">
+                          <option text="Digital Storage">Digital Storage</option>
+                        </select>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="pure-g">
+                    <div class="pure-u-11-24 box">{{template "digital_storage" .}}</div>
+                    <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
+                    <div class="pure-u-11-24 box">{{template "digital_storage" .}}</div>
+                  </div>
+                </div>
               {{else if eq .Instant.Type "calculator"}}
               <div id="calculator">
                 <div id="result" tabindex="4"></div>

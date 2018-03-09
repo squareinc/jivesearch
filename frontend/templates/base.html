@@ -21,6 +21,8 @@
       {{if .Instant}}
         {{if eq .Instant.Type "calculator"}}
         <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
+        {{else if eq .Instant.Type "convert"}}
+        <link rel="stylesheet" href="/static/instant/convert/convert.css">
         {{end}}
       {{end}}
     {{end}}
@@ -40,6 +42,8 @@
     {{if .Instant}}
       {{if eq .Instant.Type "calculator"}}
       <script src="/static/instant/calculator/calculator.js"></script>
+      {{else if eq .Instant.Type "convert"}}
+      <script src="/static/instant/convert/convert.js"></script>
       {{else if eq .Instant.Type "minify"}}
       <!-- 
         prettydiff.js combines prettydiff barebones example files to 1: 

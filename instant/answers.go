@@ -133,6 +133,7 @@ func (i *Instant) answers() []answerer {
 		&CamelCase{},
 		&Characters{},
 		&Coin{},
+		&Convert{},
 		&Frequency{},
 		&Minify{},
 		&Potus{},
