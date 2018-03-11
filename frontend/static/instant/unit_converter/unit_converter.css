@@ -1,12 +1,11 @@
-#digital_storage .box{
+#unit_converter .unit{
     height: 60px;
-    margin-bottom: 15px;
 }
-#digital_storage input{
+#unit_converter .unit input{
     height:45px;
     text-align:right;
 }
-#digital_storage select{
+#unit_converter .unit select{
     background-color:#f7f7f7;
     height:35px;
 }
