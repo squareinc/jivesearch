@@ -207,6 +207,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Hulu", []string{"hulu"},
+			map[string]string{
+				def: "https://www.hulu.com/search?query={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"IMDb", []string{"imdb"},
 			map[string]string{
 				def: "http://www.imdb.com/find?q={{{term}}}&s=all",
