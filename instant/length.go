@@ -105,6 +105,10 @@ func (l *Length) tests() []test {
 			expected: []Data{d},
 		},
 		{
+			query:    "cm to m",
+			expected: []Data{d},
+		},
+		{
 			query:    "inches to cm",
 			expected: []Data{d},
 		},

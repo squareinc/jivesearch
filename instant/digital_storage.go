@@ -82,7 +82,7 @@ func (d *DigitalStorage) solve() answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	// TODO: pass the remainder to our html template so that "50gb to mb" prefills the form with "50", "gb", and "mb"
 	// Note: Combining the digital storage, length and other unit converters would then require us to make
-	// sense of the regexp remainder and that seems like a hassle. We could put unit converters in a subpackage, though.
+	// sense of the regexp remainder. We could put unit converters in a subpackage, though.
 	d.Solution = "digital storage"
 	return d
 }
