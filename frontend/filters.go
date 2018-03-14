@@ -145,6 +145,41 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		}
 
 		return s
+	case instant.PackageResponse:
+		a := sol.Solution.(instant.PackageResponse)
+		h := fmt.Sprintf(
+			`<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
+			a.URL, a.TrackingNumber,
+		)
+		h += fmt.Sprintf(`<p><span style="font-weight:bold;font-size:20px;">%v: %v</span></p>`, a.Expected.Delivery, a.Expected.Date.Format("Monday, January 2, 2006"))
+		if len(a.Updates) > 0 {
+			h += `<div class="pure-u-1" style="margin-bottom:5px;">`
+			h += `<div class="pure-u-7-24" style="font-weight:bold;">DATE</div>`
+			h += `<div class="pure-u-9-24" style="font-weight:bold;">LOCATION</div>`
+			h += `<div class="pure-u-8-24" style="font-weight:bold;">STATUS</div>`
+			h += `</div>`
+		}
+
+		for _, u := range a.Updates {
+			var loc = []string{}
+			if u.Location.City != "" {
+				loc = append(loc, u.Location.City)
+			}
+			if u.Location.State != "" {
+				loc = append(loc, u.Location.State)
+			}
+			if u.Location.Country != "" {
+				loc = append(loc, u.Location.Country)
+			}
+
+			h += `<div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">`
+			h += fmt.Sprintf(`<div class="pure-u-7-24">%v</div>`, u.DateTime.Format("Mon, 02 Jan 3:04PM"))
+			h += fmt.Sprintf(`<div class="pure-u-9-24">%v</div>`, strings.Join(loc, ", "))
+			h += fmt.Sprintf(`<div class="pure-u-8-24">%v</div>`, u.Status)
+			h += `</div>`
+		}
+
+		return h
 	case wikipedia.Wiktionary: // Wiktionary
 		createLink := func(lang, word, style string) string {
 			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
@@ -171,7 +206,7 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 
 		return s
 	default:
-		//log.Debug.Printf("unknown raw solution type %T\n", sol.Raw)
+		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
 		return ""
 	}
 }
@@ -190,6 +225,10 @@ func source(answer instant.Data) string {
 		user := answer.Solution.(instant.StackOverflowAnswer).Answer.User
 		img = `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/>`
 		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
+	case "ups":
+		txt, u = "UPS", "https://www.ups.com"
+		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/ups.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "wikidata":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`

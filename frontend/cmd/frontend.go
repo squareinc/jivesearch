@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/ups"
+
 	"time"
 
 	"github.com/abursavich/nett"
@@ -135,20 +137,28 @@ func main() {
 	db.SetMaxIdleConns(0)
 
 	// Instant Answers
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			Dial: (&nett.Dialer{
+				Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
+				IPFilter: nett.DualStack,
+			}).Dial,
+			DisableKeepAlives: true,
+		},
+		Timeout: 5 * time.Second,
+	}
+
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
 		StackOverflowFetcher: &stackoverflow.API{
-			Key: v.GetString("stackoverflow.key"),
-			HTTPClient: &http.Client{
-				Transport: &http.Transport{
-					Dial: (&nett.Dialer{
-						Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
-						IPFilter: nett.DualStack,
-					}).Dial,
-					DisableKeepAlives: true,
-				},
-				Timeout: 5 * time.Second,
-			},
+			HTTPClient: httpClient,
+			Key:        v.GetString("stackoverflow.key"),
+		},
+		UPSFetcher: &ups.API{
+			HTTPClient: httpClient,
+			User:       v.GetString("ups.user"),
+			Password:   v.GetString("ups.password"),
+			Key:        v.GetString("ups.key"),
 		},
 		WikipediaFetcher: &wikipedia.PostgreSQL{
 			DB: db,

@@ -1,13 +1,16 @@
 package instant
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/ups"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -18,6 +21,7 @@ func TestDetect(t *testing.T) {
 
 	i := Instant{
 		QueryVar:             "q",
+		UPSFetcher:           &mockUPSFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
 		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
@@ -181,6 +185,20 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 	}
 
 	return resp, nil
+}
+
+// mock UPS Fetcher
+type mockUPSFetcher struct{}
+
+func (u *mockUPSFetcher) Fetch(trackingNumber string) (ups.Response, error) {
+	tn := strings.ToUpper(trackingNumber)
+	j := fmt.Sprintf(`{"TrackResponse":{"Response":{"ResponseStatus":{"Code":"1", "Description":"Success"}, "TransactionReference":{"CustomerContext":"Your Test Case Summary Description"}}, "Shipment":{"InquiryNumber":{"Code":"01", "Description":"ShipmentIdentificationNumber", "Value":"%v"}, "ShipperNumber":"", "ShipmentAddress":[{"Type":{"Code":"01", "Description":"Shipper Address"}, "Address":{"AddressLine":["1 Main", "Unit 12"], "City":"Some City", "StateProvinceCode":"ID", "PostalCode":"90210", "CountryCode":"US"}}, {"Type":{"Code":"02", "Description":"ShipTo Address"}, "Address":{"City":"Another City", "StateProvinceCode":"KS", "PostalCode":"90211", "CountryCode":"US"}}], "ShipmentWeight":{"UnitOfMeasurement":{"Code":"LBS"}, "Weight":"17.50"}, "Service":{"Code":"003", "Description":"UPS GROUND"}, "ReferenceNumber":[{"Code":"01", "Value":""}, {"Code":"01", "Value":""}], "DeliveryDetail":{"Type":{"Code":"03", "Description":"Scheduled Delivery"}, "Date":"20180311"}, "Package":{"TrackingNumber":"%v", "PackageServiceOption":{"Type":{"Code":"024", "Description":"ARS"}}, "Activity":[{"ActivityLocation":{"Address":{"City":"Banahana", "StateProvinceCode":"ID", "CountryCode":"US"}}, "Status":{"Type":"I", "Description":"Departure Scan", "Code":"DP"}, "Date":"20180311", "Time":"023800"}], "Message":{"Code":"01", "Description":"On Time"}, "PackageWeight":{"UnitOfMeasurement":{"Code":"LBS"}, "Weight":"17.50"}, "ReferenceNumber":[{"Code":"01", "Value":""}, {"Code":"01", "Value":""}]}}, "Disclaimer":"You are using UPS tracking service on..."}}`,
+		tn, tn,
+	)
+
+	r := ups.Response{}
+	err := json.Unmarshal([]byte(j), &r)
+	return r, err
 }
 
 // mock Wikipedia Fetcher

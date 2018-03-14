@@ -10,6 +10,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/ups"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -19,6 +20,7 @@ import (
 type Instant struct {
 	QueryVar             string
 	StackOverflowFetcher stackoverflow.Fetcher
+	UPSFetcher           ups.Fetcher
 	WikipediaFetcher     wikipedia.Fetcher
 }
 
@@ -62,8 +64,7 @@ type Data struct {
 // Necessary to use goroutines??? setSolution called only when triggered.
 func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
 	for _, ia := range i.answers() {
-		ia.setUserAgent(r)
-		ia.setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
+		ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
 		if triggered := ia.trigger(); triggered {
 			ia.setType().
 				setContributors().
@@ -143,6 +144,7 @@ func (i *Instant) answers() []answerer {
 		&Reverse{},
 		&Stats{},
 		&Temperature{},
+		&UPS{Fetcher: i.UPSFetcher},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
 		&Wikipedia{Fetcher: i.WikipediaFetcher}, // always keep this last so that Wikipedia Box will trigger if none other

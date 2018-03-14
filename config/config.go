@@ -91,6 +91,11 @@ func SetDefaults(cfg Provider) {
 	// stackoverflow API settings
 	cfg.SetDefault("stackoverflow.key", "app key") // https://stackapps.com/apps/oauth/
 
+	// UPS package tracking API settings
+	cfg.SetDefault("ups.user", "user")
+	cfg.SetDefault("ups.password", "password")
+	cfg.SetDefault("ups.key", "key")
+
 	// wikipedia settings
 	truncate := 250
 	cfg.SetDefault("wikipedia.truncate", truncate) // chars

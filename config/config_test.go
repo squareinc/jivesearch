@@ -71,6 +71,11 @@ func TestSetDefaults(t *testing.T) {
 		// stackoverflow API settings
 		{"stackoverflow.key", "app key"},
 
+		// UPS package tracking API settings
+		{"ups.user", "user"},
+		{"ups.password", "password"},
+		{"ups.key", "key"},
+
 		// wikipedia settings
 		{"wikipedia.truncate", 250},
 	}

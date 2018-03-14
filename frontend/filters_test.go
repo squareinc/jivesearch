@@ -147,73 +147,6 @@ func TestHMACKey(t *testing.T) {
 	}
 }
 
-func TestSource(t *testing.T) {
-	type args struct {
-		src instant.Data
-	}
-
-	for _, tt := range []struct {
-		name string
-		args
-		want string
-	}{
-		{
-			name: "empty",
-			args: args{instant.Data{}},
-			want: "",
-		},
-		{
-			name: "stackoverflow",
-			args: args{
-				instant.Data{
-					Type: "stackoverflow",
-					Solution: instant.StackOverflowAnswer{
-						Answer: instant.SOAnswer{
-							User: "bob",
-						},
-					},
-				},
-			},
-			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
-		},
-		{
-			name: "wikidata",
-			args: args{
-				instant.Data{
-					Type: "wikidata",
-				},
-			},
-			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
-		},
-		{
-			name: "wikiquote",
-			args: args{
-				instant.Data{
-					Type: "wikiquote",
-				},
-			},
-			want: `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
-		},
-		{
-			name: "wiktionary",
-			args: args{
-				instant.Data{
-					Type: "wiktionary",
-				},
-			},
-			want: `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/> <a href="https://www.wiktionary.org/">Wiktionary</a>`,
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := source(tt.args.src)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestInstantFormatter(t *testing.T) {
 	type args struct {
 		sol instant.Data
@@ -383,6 +316,34 @@ func TestInstantFormatter(t *testing.T) {
 				instant.Data{Solution: 1}, language.English},
 			want: "",
 		},
+		{
+			name: "ups",
+			args: args{
+				instant.Data{
+					Solution: instant.PackageResponse{
+						TrackingNumber: "90210",
+						Updates: []instant.Update{
+							{
+								DateTime: time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
+								Location: instant.Location{
+									City:    "Armadillo",
+									State:   "TX",
+									Country: "US",
+								},
+								Status: "Departure Scan",
+							},
+						},
+						Expected: instant.Expected{
+							Delivery: "Scheduled Delivery",
+							Date:     time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
+						},
+						URL: "https://www.ups.com/some/random/url?and=query",
+					},
+				},
+				language.English,
+			},
+			want: `<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="https://www.ups.com/some/random/url?and=query"><em>90210</em></a><br><p><span style="font-weight:bold;font-size:20px;">Scheduled Delivery: Thursday, February 2, 2017</span></p><div class="pure-u-1" style="margin-bottom:5px;"><div class="pure-u-7-24" style="font-weight:bold;">DATE</div><div class="pure-u-9-24" style="font-weight:bold;">LOCATION</div><div class="pure-u-8-24" style="font-weight:bold;">STATUS</div></div><div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;"><div class="pure-u-7-24">Thu, 02 Feb 3:34PM</div><div class="pure-u-9-24">Armadillo, TX, US</div><div class="pure-u-8-24">Departure Scan</div></div>`,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			r, _ := tt.args.l.Region()
@@ -394,6 +355,82 @@ func TestInstantFormatter(t *testing.T) {
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSource(t *testing.T) {
+	type args struct {
+		src instant.Data
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "empty",
+			args: args{instant.Data{}},
+			want: "",
+		},
+		{
+			name: "stackoverflow",
+			args: args{
+				instant.Data{
+					Type: "stackoverflow",
+					Solution: instant.StackOverflowAnswer{
+						Answer: instant.SOAnswer{
+							User: "bob",
+						},
+					},
+				},
+			},
+			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
+		},
+		{
+			name: "ups",
+			args: args{
+				instant.Data{
+					Type: "ups",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/ups.ico"/> <a href="https://www.ups.com">UPS</a>`,
+		},
+		{
+			name: "wikidata",
+			args: args{
+				instant.Data{
+					Type: "wikidata",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
+		},
+		{
+			name: "wikiquote",
+			args: args{
+				instant.Data{
+					Type: "wikiquote",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
+		},
+		{
+			name: "wiktionary",
+			args: args{
+				instant.Data{
+					Type: "wiktionary",
+				},
+			},
+			want: `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/> <a href="https://www.wiktionary.org/">Wiktionary</a>`,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := source(tt.args.src)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
