@@ -97,9 +97,8 @@ func (u *UPS) setRegex() answerer {
 	// There is also an undocumented checksum. Email from UPS would not provide me how to calculate it but a couple of hints:
 	// https://github.com/jkeen/tracking_number_data/blob/70065359c64996e1537c46efc5d0638b24df105b/couriers/ups.json
 	// (old) https://www.codeproject.com/Articles/21224/Calculating-the-UPS-Tracking-Number-Check-Digit
-	// Probably only necessary if it triggers other IA's accidentally.
+	// Probably only necessary if it triggers other IA's accidentally???
 
-	//u.regex = append(u.regex, regexp.MustCompile(`(?i)\b(?P<trigger>(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|[\dT]\d\d\d ?\d\d\d\d ?\d\d\d|\d{22}))\b`))
 	u.regex = append(u.regex, regexp.MustCompile(`(?i)\b(?P<trigger>(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|T\d{3} ?\d{4} ?\d{3}|\d{22}))\b`))
 	return u
 }
@@ -219,7 +218,7 @@ func (u *UPS) tests() []test {
 					Solution: PackageResponse{
 						TrackingNumber: strings.ToUpper(n),
 						Updates: []Update{
-							Update{
+							{
 								DateTime: time.Date(2018, 3, 11, 2, 38, 0, 0, time.UTC),
 								Location: Location{
 									City: "Banahana", State: "ID", Country: "US",
