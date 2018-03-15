@@ -151,7 +151,16 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 			`<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
 			a.URL, a.TrackingNumber,
 		)
-		h += fmt.Sprintf(`<p><span style="font-weight:bold;font-size:20px;">%v: %v</span></p>`, a.Expected.Delivery, a.Expected.Date.Format("Monday, January 2, 2006"))
+
+		ed := a.Expected.Date.Format("Monday, January 2, 2006")
+
+		// If the package is delivered and Expected Delivery is empty use the last location (e.g. UPS)
+		if a.Expected.Delivery == "" && a.Expected.Date.IsZero() && len(a.Updates) > 0 {
+			last := a.Updates[0]
+			a.Expected.Delivery = last.Status
+			ed = last.DateTime.Format("Monday, January 2, 2006 3:04PM")
+		}
+		h += fmt.Sprintf(`<p><span style="font-weight:bold;font-size:20px;">%v: %v</span></p>`, a.Expected.Delivery, ed)
 		if len(a.Updates) > 0 {
 			h += `<div class="pure-u-1" style="margin-bottom:5px;">`
 			h += `<div class="pure-u-7-24" style="font-weight:bold;">DATE</div>`
