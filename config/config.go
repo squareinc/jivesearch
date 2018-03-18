@@ -91,6 +91,12 @@ func SetDefaults(cfg Provider) {
 	// stackoverflow API settings
 	cfg.SetDefault("stackoverflow.key", "app key") // https://stackapps.com/apps/oauth/
 
+	// FedEx package tracking API settings
+	cfg.SetDefault("fedex.account", "account")
+	cfg.SetDefault("fedex.password", "password")
+	cfg.SetDefault("fedex.key", "key")
+	cfg.SetDefault("fedex.meter", "meter")
+
 	// UPS package tracking API settings
 	cfg.SetDefault("ups.user", "user")
 	cfg.SetDefault("ups.password", "password")

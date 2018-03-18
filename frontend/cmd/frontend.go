@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/ups"
-
 	"time"
 
 	"github.com/abursavich/nett"
@@ -18,6 +16,7 @@ import (
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/frontend"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
@@ -150,11 +149,17 @@ func main() {
 
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
+		FedExFetcher: &parcel.FedEx{
+			Account:  v.GetString("fedex.account"),
+			Password: v.GetString("fedex.password"),
+			Key:      v.GetString("fedex.key"),
+			Meter:    v.GetString("fedex.meter"),
+		},
 		StackOverflowFetcher: &stackoverflow.API{
 			HTTPClient: httpClient,
 			Key:        v.GetString("stackoverflow.key"),
 		},
-		UPSFetcher: &ups.API{
+		UPSFetcher: &parcel.UPS{
 			HTTPClient: httpClient,
 			User:       v.GetString("ups.user"),
 			Password:   v.GetString("ups.password"),

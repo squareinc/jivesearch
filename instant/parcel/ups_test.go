@@ -1,15 +1,17 @@
-package ups
+package parcel
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 )
 
-func TestUPSAPIFetch(t *testing.T) {
+func TestUPSFetch(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -28,7 +30,7 @@ func TestUPSAPIFetch(t *testing.T) {
 			responder := httpmock.NewStringResponder(200, tt.resp)
 			httpmock.RegisterResponder("POST", tt.u, responder)
 
-			a := &API{
+			a := &UPS{
 				HTTPClient: &http.Client{},
 			}
 			got, err := a.Fetch(tt.name)
@@ -36,9 +38,22 @@ func TestUPSAPIFetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			want := Response{}
-			if err := json.Unmarshal([]byte(tt.resp), &want); err != nil {
-				t.Fatal(err)
+			want := Response{
+				TrackingNumber: strings.ToUpper(tt.name),
+				Updates: []Update{
+					{
+						DateTime: time.Date(2018, 3, 11, 2, 38, 0, 0, time.UTC),
+						Location: Location{
+							City: "Banahana", State: "ID", Country: "US",
+						},
+						Status: "Departure Scan",
+					},
+				},
+				Expected: Expected{
+					Delivery: "Scheduled Delivery",
+					Date:     time.Date(2018, 3, 11, 0, 0, 0, 0, time.UTC),
+				},
+				URL: fmt.Sprintf("https://wwwapps.ups.com/WebTracking/processInputRequest?AgreeToTermsAndConditions=yes&InquiryNumber1=%v&TypeOfInquiryNumber=T&error_carried=true&loc=en-us&sort_by=status&tracknums_displayed=1", strings.ToUpper(tt.name)),
 			}
 
 			if !reflect.DeepEqual(got, want) {

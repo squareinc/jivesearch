@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/parcel"
+
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
@@ -320,12 +322,13 @@ func TestInstantFormatter(t *testing.T) {
 			name: "tracking package",
 			args: args{
 				instant.Data{
-					Solution: instant.PackageResponse{
+					Type: "ups",
+					Solution: parcel.Response{
 						TrackingNumber: "90210",
-						Updates: []instant.Update{
+						Updates: []parcel.Update{
 							{
 								DateTime: time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
-								Location: instant.Location{
+								Location: parcel.Location{
 									City:    "Armadillo",
 									State:   "TX",
 									Country: "US",
@@ -333,7 +336,7 @@ func TestInstantFormatter(t *testing.T) {
 								Status: "Departure Scan",
 							},
 						},
-						Expected: instant.Expected{
+						Expected: parcel.Expected{
 							Delivery: "Scheduled Delivery",
 							Date:     time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
 						},
@@ -348,12 +351,13 @@ func TestInstantFormatter(t *testing.T) {
 			name: "delivered package",
 			args: args{
 				instant.Data{
-					Solution: instant.PackageResponse{
+					Type: "ups",
+					Solution: parcel.Response{
 						TrackingNumber: "SomeTrackingNumber",
-						Updates: []instant.Update{
+						Updates: []parcel.Update{
 							{
 								DateTime: time.Date(2017, 2, 3, 15, 34, 45, 1, time.UTC),
-								Location: instant.Location{
+								Location: parcel.Location{
 									City:    "Final Destination Yo!",
 									State:   "UT",
 									Country: "US",
@@ -362,7 +366,7 @@ func TestInstantFormatter(t *testing.T) {
 							},
 							{
 								DateTime: time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
-								Location: instant.Location{
+								Location: parcel.Location{
 									City:    "Armadillo",
 									State:   "TX",
 									Country: "US",
@@ -370,7 +374,7 @@ func TestInstantFormatter(t *testing.T) {
 								Status: "Departure Scan",
 							},
 						},
-						Expected: instant.Expected{},
+						Expected: parcel.Expected{},
 						URL:      "https://www.ups.com/some/random/url?and=query",
 					},
 				},
@@ -410,6 +414,15 @@ func TestSource(t *testing.T) {
 			want: "",
 		},
 		{
+			name: "fedex",
+			args: args{
+				instant.Data{
+					Type: "fedex",
+				},
+			},
+			want: `<img width="12" height="12" alt="fedex" src="/static/favicons/fedex.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
+		},
+		{
 			name: "stackoverflow",
 			args: args{
 				instant.Data{
@@ -430,7 +443,7 @@ func TestSource(t *testing.T) {
 					Type: "ups",
 				},
 			},
-			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/ups.ico"/> <a href="https://www.ups.com">UPS</a>`,
+			want: `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/> <a href="https://www.ups.com">UPS</a>`,
 		},
 		{
 			name: "wikidata",

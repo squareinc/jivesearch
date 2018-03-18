@@ -1,28 +1,27 @@
-// Package ups fetches ups tracking data
-package ups
+package parcel
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"time"
+
+	"github.com/jivesearch/jivesearch/log"
 )
 
-// Fetcher retrieves package info from the UPS API
-type Fetcher interface {
-	Fetch(number string) (Response, error)
-}
-
-// API holds settings for the UPS API
-type API struct {
+// UPS holds settings for the UPS API
+type UPS struct {
 	HTTPClient *http.Client
 	User       string
 	Password   string
 	Key        string
 }
 
-// Response is UPS's raw json response
-type Response struct {
+// UPSResponse is UPS's raw JSON response
+type UPSResponse struct {
+	Response
 	TrackResponse struct {
 		Response struct {
 			ResponseStatus struct {
@@ -118,7 +117,48 @@ type Response struct {
 	} `json:"TrackResponse"`
 }
 
-func (a *API) buildRequest(number string) (*http.Request, error) {
+// UnmarshalJSON sets the Response fields
+func (r *UPSResponse) UnmarshalJSON(b []byte) error {
+	type alias UPSResponse
+	raw := &alias{}
+
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	r.Response.TrackingNumber = raw.TrackResponse.Shipment.Package.TrackingNumber
+
+	for _, a := range raw.TrackResponse.Shipment.Package.Activity {
+		d := a.Date + a.Time
+		dt, err := time.Parse("20060102150405", d)
+		if err != nil {
+			log.Debug.Println(err) // this isn't serious enough to warrant a return
+		}
+
+		up := Update{
+			DateTime: dt,
+			Status:   a.Status.Description,
+		}
+
+		up.Location.City = a.ActivityLocation.Address.City
+		up.Location.State = a.ActivityLocation.Address.StateProvinceCode
+		up.Location.Country = a.ActivityLocation.Address.CountryCode
+		r.Response.Updates = append(r.Response.Updates, up)
+	}
+
+	r.Response.Expected.Delivery = raw.TrackResponse.Shipment.DeliveryDetail.Type.Description
+	if raw.TrackResponse.Shipment.DeliveryDetail.Date != "" {
+		r.Response.Expected.Date, err = time.Parse("20060102", raw.TrackResponse.Shipment.DeliveryDetail.Date)
+		if err != nil {
+			return err
+		}
+	}
+
+	return r.buildURL()
+}
+
+func (u *UPS) buildRequest(number string) (*http.Request, error) {
 	// test url := "https://wwwcie.ups.com/rest/Track"
 	url := "https://onlinetools.ups.com/rest/Track"
 
@@ -141,7 +181,7 @@ func (a *API) buildRequest(number string) (*http.Request, error) {
 			},
 			"InquiryNumber": "%v"
 		}
-	}`, a.User, a.Password, a.Key, number))
+	}`, u.User, u.Password, u.Key, number))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
@@ -156,21 +196,44 @@ func (a *API) buildRequest(number string) (*http.Request, error) {
 	return req, err
 }
 
-// Fetch retrieves a UPS API response
-func (a *API) Fetch(trackingNumber string) (Response, error) {
-	r := Response{}
+// Fetch retrieves from the UPS API
+func (u *UPS) Fetch(trackingNumber string) (Response, error) {
+	r := UPSResponse{}
 
-	req, err := a.buildRequest(trackingNumber)
+	req, err := u.buildRequest(trackingNumber)
 	if err != nil {
-		return r, err
+		return r.Response, err
 	}
 
-	resp, err := a.HTTPClient.Do(req)
+	resp, err := u.HTTPClient.Do(req)
 	if err != nil {
-		return r, err
+		return r.Response, err
 	}
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&r)
-	return r, err
+	if err != nil {
+		return r.Response, err
+	}
+
+	return r.Response, err
+}
+
+func (r *UPSResponse) buildURL() error {
+	u, err := url.Parse("https://wwwapps.ups.com/WebTracking/processInputRequest")
+	if err != nil {
+		return err
+	}
+
+	q := u.Query()
+	q.Set("sort_by", "status")
+	q.Set("error_carried", "true")
+	q.Set("tracknums_displayed", "1")
+	q.Set("TypeOfInquiryNumber", "T")
+	q.Set("loc", "en-us")
+	q.Set("InquiryNumber1", r.Response.TrackingNumber)
+	q.Set("AgreeToTermsAndConditions", "yes")
+	u.RawQuery = q.Encode()
+	r.Response.URL = u.String()
+	return nil
 }

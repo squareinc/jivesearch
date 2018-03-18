@@ -71,6 +71,12 @@ func TestSetDefaults(t *testing.T) {
 		// stackoverflow API settings
 		{"stackoverflow.key", "app key"},
 
+		// FedEx package tracking API settings
+		{"fedex.account", "account"},
+		{"fedex.password", "password"},
+		{"fedex.key", "key"},
+		{"fedex.meter", "meter"},
+
 		// UPS package tracking API settings
 		{"ups.user", "user"},
 		{"ups.password", "password"},

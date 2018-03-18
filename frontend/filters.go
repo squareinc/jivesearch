@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -145,11 +146,11 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		}
 
 		return s
-	case instant.PackageResponse:
-		a := sol.Solution.(instant.PackageResponse)
+	case parcel.Response:
+		a := sol.Solution.(parcel.Response)
 		h := fmt.Sprintf(
-			`<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
-			a.URL, a.TrackingNumber,
+			`<img width="18" height="18" alt="ups" src="/static/favicons/%v.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
+			sol.Type, a.URL, a.TrackingNumber,
 		)
 
 		ed := a.Expected.Date.Format("Monday, January 2, 2006")
@@ -228,6 +229,10 @@ func source(answer instant.Data) string {
 	var f string
 
 	switch answer.Type {
+	case "fedex":
+		txt, u = "FedEx", "https://www.fedex.com"
+		img = `<img width="12" height="12" alt="fedex" src="/static/favicons/fedex.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
 		// Can select one or the other but not both in their filter.
@@ -236,7 +241,7 @@ func source(answer instant.Data) string {
 		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
 	case "ups":
 		txt, u = "UPS", "https://www.ups.com"
-		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/ups.ico"/>`
+		img = `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "wikidata":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"

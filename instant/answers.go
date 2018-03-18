@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/contributors"
+	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
-	"github.com/jivesearch/jivesearch/instant/ups"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -20,7 +20,8 @@ import (
 type Instant struct {
 	QueryVar             string
 	StackOverflowFetcher stackoverflow.Fetcher
-	UPSFetcher           ups.Fetcher
+	FedExFetcher         parcel.Fetcher
+	UPSFetcher           parcel.Fetcher
 	WikipediaFetcher     wikipedia.Fetcher
 }
 
@@ -135,6 +136,7 @@ func (i *Instant) answers() []answerer {
 		&Characters{},
 		&Coin{},
 		&DigitalStorage{},
+		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
 		&Length{},
 		&Minify{},
