@@ -92,6 +92,6 @@ func (a *API) Fetch(query string, tags []string) (Response, error) {
 
 	defer resp.Body.Close()
 
-	json.NewDecoder(resp.Body).Decode(&r)
-	return r, nil
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	return r, err
 }

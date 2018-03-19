@@ -212,10 +212,6 @@ func (u *UPS) Fetch(trackingNumber string) (Response, error) {
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&r)
-	if err != nil {
-		return r.Response, err
-	}
-
 	return r.Response, err
 }
 

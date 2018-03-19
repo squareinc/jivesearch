@@ -128,9 +128,5 @@ func (u *USPS) Fetch(trackingNumber string) (Response, error) {
 	defer resp.Body.Close()
 
 	err = xml.NewDecoder(resp.Body).Decode(&r)
-	if err != nil {
-		return r.Response, err
-	}
-
 	return r.Response, err
 }
