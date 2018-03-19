@@ -43,12 +43,14 @@ Marked items indicate progress has been made in that category. There is much mor
     - [x] Wikiquote
     - [x] Wiktionary
     - [x] Stack Overflow
-    - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, temperature, user agent 
+    - [x] Package Tracking (UPS, FedEx, USPS, etc...)
+    - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent 
     - [x] JavaScript-based answers
         - [ ] Mortgage, financial and other calculators (probably in JavaScript)
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
+        - [x] Converters (meters to feet, pounds to kilograms, etc...)
     - [ ] Many more instant answers (including from 3rd party APIs)
-    - [ ] Translate trigger words and answers to other languages
+    - [ ] Translate trigger words and answers to other languages?
 - [ ] Maps
 - [ ] Image Search
 - [ ] Video Search
