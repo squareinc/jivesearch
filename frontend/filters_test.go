@@ -446,6 +446,15 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/> <a href="https://www.ups.com">UPS</a>`,
 		},
 		{
+			name: "usps",
+			args: args{
+				instant.Data{
+					Type: "usps",
+				},
+			},
+			want: `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/> <a href="https://www.usps.com">USPS</a>`,
+		},
+		{
 			name: "wikidata",
 			args: args{
 				instant.Data{

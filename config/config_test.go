@@ -82,6 +82,10 @@ func TestSetDefaults(t *testing.T) {
 		{"ups.password", "password"},
 		{"ups.key", "key"},
 
+		// USPS package tracking API settings
+		{"usps.user", "user"},
+		{"usps.password", "password"},
+
 		// wikipedia settings
 		{"wikipedia.truncate", 250},
 	}

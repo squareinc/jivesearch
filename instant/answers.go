@@ -22,6 +22,7 @@ type Instant struct {
 	StackOverflowFetcher stackoverflow.Fetcher
 	FedExFetcher         parcel.Fetcher
 	UPSFetcher           parcel.Fetcher
+	USPSFetcher          parcel.Fetcher
 	WikipediaFetcher     wikipedia.Fetcher
 }
 
@@ -146,6 +147,7 @@ func (i *Instant) answers() []answerer {
 		&Reverse{},
 		&Stats{},
 		&Temperature{},
+		&USPS{Fetcher: i.USPSFetcher},
 		&UPS{Fetcher: i.UPSFetcher},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},

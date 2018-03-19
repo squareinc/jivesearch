@@ -165,6 +165,11 @@ func main() {
 			Password:   v.GetString("ups.password"),
 			Key:        v.GetString("ups.key"),
 		},
+		USPSFetcher: &parcel.USPS{
+			HTTPClient: httpClient,
+			User:       v.GetString("usps.user"),
+			Password:   v.GetString("usps.password"),
+		},
 		WikipediaFetcher: &wikipedia.PostgreSQL{
 			DB: db,
 		},

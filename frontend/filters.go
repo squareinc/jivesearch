@@ -149,13 +149,13 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 	case parcel.Response:
 		a := sol.Solution.(parcel.Response)
 		h := fmt.Sprintf(
-			`<img width="18" height="18" alt="ups" src="/static/favicons/%v.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
-			sol.Type, a.URL, a.TrackingNumber,
+			`<img width="18" height="18" alt="%v" src="/static/favicons/%v.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
+			sol.Type, sol.Type, a.URL, a.TrackingNumber,
 		)
 
 		ed := a.Expected.Date.Format("Monday, January 2, 2006")
 
-		// If the package is delivered and Expected Delivery is empty use the last location (e.g. UPS)
+		// If the package is delivered and Expected Delivery is empty use the last location (e.g. UPS && USPS)
 		if a.Expected.Delivery == "" && a.Expected.Date.IsZero() && len(a.Updates) > 0 {
 			last := a.Updates[0]
 			a.Expected.Delivery = last.Status
@@ -242,6 +242,10 @@ func source(answer instant.Data) string {
 	case "ups":
 		txt, u = "UPS", "https://www.ups.com"
 		img = `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "usps":
+		txt, u = "USPS", "https://www.usps.com"
+		img = `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "wikidata":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"

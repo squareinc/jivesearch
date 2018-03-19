@@ -102,6 +102,10 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("ups.password", "password")
 	cfg.SetDefault("ups.key", "key")
 
+	// USPS package tracking API settings
+	cfg.SetDefault("usps.user", "user")
+	cfg.SetDefault("usps.password", "password")
+
 	// wikipedia settings
 	truncate := 250
 	cfg.SetDefault("wikipedia.truncate", truncate) // chars

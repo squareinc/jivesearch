@@ -22,8 +22,9 @@ func TestDetect(t *testing.T) {
 	i := Instant{
 		QueryVar:             "q",
 		FedExFetcher:         &mockFedExFetcher{},
-		UPSFetcher:           &mockUPSFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
+		UPSFetcher:           &mockUPSFetcher{},
+		USPSFetcher:          &mockUSPSFetcher{},
 		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
 
@@ -240,6 +241,41 @@ func (u *mockUPSFetcher) Fetch(trackingNumber string) (parcel.Response, error) {
 			Date:     time.Date(2018, 3, 11, 0, 0, 0, 0, time.UTC),
 		},
 		URL: fmt.Sprintf("https://wwwapps.ups.com/WebTracking/processInputRequest?AgreeToTermsAndConditions=yes&InquiryNumber1=%v&TypeOfInquiryNumber=T&error_carried=true&loc=en-us&sort_by=status&tracknums_displayed=1", strings.ToUpper(trackingNumber)),
+	}
+
+	return r, nil
+}
+
+// mock USPS Fetcher
+type mockUSPSFetcher struct{}
+
+func (u *mockUSPSFetcher) Fetch(trackingNumber string) (parcel.Response, error) {
+	r := parcel.Response{
+		TrackingNumber: strings.ToUpper(trackingNumber),
+		Updates: []parcel.Update{
+			{
+				DateTime: time.Date(2018, 3, 12, 13, 57, 0, 0, time.UTC),
+				Location: parcel.Location{
+					City: "Some City", State: "ID", Country: "",
+				},
+				Status: "Delivered",
+			},
+			{
+				DateTime: time.Date(2018, 3, 14, 8, 13, 0, 0, time.UTC),
+				Location: parcel.Location{
+					City: "Close to Some City", State: "ID", Country: "",
+				},
+				Status: "Out for Delivery",
+			},
+			{
+				DateTime: time.Date(2018, 3, 14, 7, 11, 0, 0, time.UTC),
+				Location: parcel.Location{
+					City: "Almost", State: "ID", Country: "",
+				},
+				Status: "Almost there dude",
+			},
+		},
+		URL: fmt.Sprintf("https://tools.usps.com/go/TrackConfirmAction?origTrackNum=%v", strings.ToUpper(trackingNumber)),
 	}
 
 	return r, nil
