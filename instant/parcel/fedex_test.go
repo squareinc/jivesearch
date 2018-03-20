@@ -42,14 +42,14 @@ func TestFedExFetch(t *testing.T) {
 				TrackingNumber: strings.ToUpper(tt.name),
 				Updates: []Update{
 					{
-						DateTime: time.Date(2018, 1, 3, 11, 12, 45, 0, time.Local),
+						DateTime: parseDT("2018-01-03T11:12:45-07:00"),
 						Location: Location{
 							City: "Kandy", State: "ID", Country: "United States",
 						},
 						Status: "Delivered",
 					},
 					{
-						DateTime: time.Date(2018, 1, 3, 10, 10, 35, 0, time.Local),
+						DateTime: parseDT("2018-01-03T10:10:35-07:00"),
 						Location: Location{
 							City: "Almost Kandy", State: "ID", Country: "United States",
 						},
@@ -70,4 +70,10 @@ func TestFedExFetch(t *testing.T) {
 	}
 
 	httpmock.Reset()
+}
+
+func parseDT(s string) time.Time {
+	d, _ := time.Parse("2006-01-02T15:04:05-07:00", s)
+
+	return d
 }
