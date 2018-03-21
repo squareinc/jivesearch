@@ -58,7 +58,7 @@ type Data struct {
 	Triggered    bool                       `json:"triggered"`
 	Contributors []contributors.Contributor `json:"contributors,omitempty"`
 	Solution     interface{}                `json:"answer,omitempty"`
-	Err          error                      `json:"error,omitempty"`
+	Err          error                      `json:"-"`
 	Cache        bool                       `json:"cache,omitempty"`
 }
 
