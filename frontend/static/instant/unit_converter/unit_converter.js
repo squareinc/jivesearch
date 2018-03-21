@@ -11,7 +11,7 @@ window.onload = function() {
         // load the new options
         var idx = $("#unit_converter #selector option:selected").index();
         var options = [
-            data_storage, volume
+            data_storage, volume, temperature
         ]        
 
         $(".unit > select").each(function(i) {
@@ -49,13 +49,30 @@ window.onload = function() {
     });
 
     function convert(i){
-        var val = inputs[i].value;
+        var val = inputs[i].value; // value we are converting FROM
         var units = selects[i].value; // units we are converting FROM
         
         var j = ((i===0) ? 1 : 0);
         var units2 = selects[j].value; // units we are converting TO
 
-        return (val * units) / units2;
+        var val2;
+
+        // since f to c is a formula need to treat it differently than others
+        if (units === "fahrenheit"){
+            val2 = val;
+            if (units2 === "celsius"){
+                val2 = (val - 32) * 5/9;
+            }
+        }else if (units === "celsius"){
+            val2 = val;
+            if (units2 === "fahrenheit"){
+                val2 = (val * 9/5) + 32;
+            }
+        }else{
+            val2 = (val * units) / units2;
+        }
+
+        return val2;
     }
 }
 
@@ -110,4 +127,10 @@ var volume = {
     "Meter":         "1000000000",
     "Kilometer":     "1000000000000",   
     "Nautical Mile": "1852300000000", // Is this as precise as it gets for this one???
+}
+
+// Units below are in celsius
+var temperature = {
+    "Fahrenheit":          "fahrenheit",
+    "Celsius":          "celsius",     
 }
