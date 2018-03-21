@@ -120,7 +120,7 @@ $(document).ready(function() {
         var formatted = "<a>" + r + "</a>";
 
         if (bang===true){
-          var img = item.name.toLowerCase().replace(" ", "") + ".ico"; // "Stack Overflow" -> "stackoverflow.ico"
+          var img = item.name.toLowerCase().replace(/\s/g, "") + ".ico"; // "Wall Street Journal" -> "wallstreetjournal.ico"
 
           if (item.name.startsWith("Bing ")){ // "Bing Images", etc.. -> "bing.ico"
             img = "bing.ico";

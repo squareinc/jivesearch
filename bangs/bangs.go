@@ -249,6 +249,24 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Wall Street Journal", []string{"wsj", "wallstreetjournal"},
+			map[string]string{
+				def: "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire",
+			},
+			[]fn{},
+		},
+		{
+			// I think these need to be mapped to languages, not regions...
+			"Wikipedia", []string{"w", "wikipedia"},
+			map[string]string{
+				def:  "https://en.wikipedia.org/wiki/{{{term}}}",
+				"es": "https://es.wikipedia.org/wiki/{{{term}}}",
+				"de": "https://de.wikipedia.org/wiki/{{{term}}}",
+				"fr": "https://fr.wikipedia.org/wiki/{{{term}}}",
+			},
+			[]fn{wikipediaCanonical},
+		},
+		{
 			"Yahoo", []string{"y", "yahoo"},
 			map[string]string{
 				def: "https://search.yahoo.com/search?p={{{term}}}",
@@ -289,17 +307,6 @@ func New() *Bangs {
 				def: "https://www.youtube.com/results?search_query={{{term}}}",
 			},
 			[]fn{},
-		},
-		{
-			// I think these need to be mapped to languages, not regions...
-			"Wikipedia", []string{"w", "wikipedia"},
-			map[string]string{
-				def:  "https://en.wikipedia.org/wiki/{{{term}}}",
-				"es": "https://es.wikipedia.org/wiki/{{{term}}}",
-				"de": "https://de.wikipedia.org/wiki/{{{term}}}",
-				"fr": "https://fr.wikipedia.org/wiki/{{{term}}}",
-			},
-			[]fn{wikipediaCanonical},
 		},
 	}
 
