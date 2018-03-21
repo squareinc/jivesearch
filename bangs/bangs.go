@@ -228,6 +228,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"New York Times", []string{"nyt", "nytimes", "newyorktimes"},
+			map[string]string{
+				def: "http://query.nytimes.com/search/sitesearch/#/{{{term}}}/",
+			},
+			[]fn{},
+		},
+		{
 			"Reddit", []string{"reddit"},
 			map[string]string{
 				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
