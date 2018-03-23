@@ -11,7 +11,7 @@ window.onload = function() {
         // load the new options
         var idx = $("#unit_converter #selector option:selected").index();
         var options = [
-            data_storage, volume, temperature
+            data_storage, length, speed, temperature
         ]        
 
         $(".unit > select").each(function(i) {
@@ -115,7 +115,7 @@ var data_storage = {
 };
 
 // Units below are in Nanometers
-var volume = {
+var length = {
     "Inch":          "25400000",
     "Feet":          "304800000",
     "Yard":          "914400000",
@@ -127,6 +127,15 @@ var volume = {
     "Meter":         "1000000000",
     "Kilometer":     "1000000000000",   
     "Nautical Mile": "1852300000000", // Is this as precise as it gets for this one???
+}
+
+// Units below are in Mach
+var speed = {
+    "Feet/Second":     "1.09728", // 3.6*.3048
+    "Miles/Hour":      "1.609344", // 1.609344
+    "Meters/Second":   "3.6", // 1*60*60/1000
+    "Kilometers/Hour": "1",
+    "Knot":            "1.852",
 }
 
 // Units below are in celsius

@@ -133,6 +133,7 @@ func (i *Instant) answers() []answerer {
 		&DigitalStorage{},
 		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
+		&Speed{}, // trigger "miles per hour" b/f "miles"
 		&Length{},
 		&Minify{},
 		&Potus{},
