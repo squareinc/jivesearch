@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -35,15 +34,6 @@ func (p *Prime) setLanguage(lang language.Tag) answerer {
 
 func (p *Prime) setType() answerer {
 	p.Type = "prime"
-	return p
-}
-
-func (p *Prime) setContributors() answerer {
-	p.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return p
 }
 
@@ -87,18 +77,15 @@ func (p *Prime) setCache() answerer {
 func (p *Prime) tests() []test {
 	typ := "prime"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "prime numbers between 5 and 121",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113",
+					Cache:     true,
 				},
 			},
 		},
@@ -106,11 +93,10 @@ func (p *Prime) tests() []test {
 			query: "prime number between 614 and 537",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607",
+					Cache:     true,
 				},
 			},
 		},
@@ -118,11 +104,10 @@ func (p *Prime) tests() []test {
 			query: "prime between -484 and 87",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83",
+					Cache:     true,
 				},
 			},
 		},
@@ -130,12 +115,11 @@ func (p *Prime) tests() []test {
 			query: "prime between 999764 and 1000351", // tests our max
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
-					Err:          fmt.Errorf("Prime numbers greater than %d not returned", max),
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
+					Err:       fmt.Errorf("Prime numbers greater than %d not returned", max),
+					Cache:     true,
 				},
 			},
 		},

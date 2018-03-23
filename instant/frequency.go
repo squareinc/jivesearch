@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -34,15 +33,6 @@ func (f *Frequency) setLanguage(lang language.Tag) answerer {
 
 func (f *Frequency) setType() answerer {
 	f.Type = "frequency"
-	return f
-}
-
-func (f *Frequency) setContributors() answerer {
-	f.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return f
 }
 
@@ -88,18 +78,15 @@ func (f *Frequency) setCache() answerer {
 func (f *Frequency) tests() []test {
 	typ := "frequency"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "a in abracadabra frequency of",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "5",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "5",
+					Cache:     true,
 				},
 			},
 		},
@@ -107,11 +94,10 @@ func (f *Frequency) tests() []test {
 			query: "frequency of a in abracadabra",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "5",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "5",
+					Cache:     true,
 				},
 			},
 		},
@@ -119,11 +105,10 @@ func (f *Frequency) tests() []test {
 			query: "frequency of o in cooler",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "2",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "2",
+					Cache:     true,
 				},
 			},
 		},
@@ -131,11 +116,10 @@ func (f *Frequency) tests() []test {
 			query: "frequency of s in jimi hendrix",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "0",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "0",
+					Cache:     true,
 				},
 			},
 		},
@@ -143,11 +127,10 @@ func (f *Frequency) tests() []test {
 			query: "frequency of e in fred astaire",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "2",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "2",
+					Cache:     true,
 				},
 			},
 		},

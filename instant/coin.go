@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -32,15 +31,6 @@ func (c *Coin) setLanguage(lang language.Tag) answerer {
 
 func (c *Coin) setType() answerer {
 	c.Type = "coin toss"
-	return c
-}
-
-func (c *Coin) setContributors() answerer {
-	c.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return c
 }
 
@@ -69,8 +59,6 @@ func (c *Coin) setCache() answerer {
 }
 
 func (c *Coin) tests() []test {
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{}
 
 	for _, q := range []string{"flip a coin", "heads or tails", "Coin Toss"} {
@@ -78,18 +66,16 @@ func (c *Coin) tests() []test {
 			query: q,
 			expected: []Data{
 				{
-					Type:         "coin toss",
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Heads",
-					Cache:        false,
+					Type:      "coin toss",
+					Triggered: true,
+					Solution:  "Heads",
+					Cache:     false,
 				},
 				{
-					Type:         "coin toss",
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Tails",
-					Cache:        false,
+					Type:      "coin toss",
+					Triggered: true,
+					Solution:  "Tails",
+					Cache:     false,
 				},
 			},
 		}

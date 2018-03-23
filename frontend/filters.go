@@ -260,7 +260,7 @@ func source(answer instant.Data) string {
 		img = `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
-		//log.Info.Printf("unknown instant answer type %q\n", answer.Type)
+		f = ""
 	}
 
 	return f

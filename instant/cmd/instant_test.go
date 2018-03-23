@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/jivesearch/jivesearch/instant"
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
@@ -24,22 +23,20 @@ func TestHandler(t *testing.T) {
 		{
 			query: "january birthstone",
 			want: &instant.Data{
-				Type:         "birthstone",
-				Triggered:    true,
-				Contributors: contributors.Load([]string{"brentadamson"}),
-				Solution:     "Garnet",
-				Cache:        true,
+				Type:      "birthstone",
+				Triggered: true,
+				Solution:  "Garnet",
+				Cache:     true,
 			},
 		},
 		{
 			query:     "user agent",
 			userAgent: "firefox",
 			want: &instant.Data{
-				Type:         "user agent",
-				Triggered:    true,
-				Contributors: contributors.Load([]string{"brentadamson"}),
-				Solution:     "firefox",
-				Cache:        false,
+				Type:      "user agent",
+				Triggered: true,
+				Solution:  "firefox",
+				Cache:     false,
 			},
 		},
 	} {

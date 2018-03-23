@@ -8,7 +8,6 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/search"
@@ -225,12 +224,9 @@ func TestSearchHandler(t *testing.T) {
 						Instant: instant.Data{
 							Type:      "wikipedia",
 							Triggered: true,
-							Contributors: []contributors.Contributor{
-								{Name: "Brent Adamson", Github: "brentadamson", Twitter: "thebrentadamson"},
-							},
-							Solution: &wikipedia.Item{},
-							Err:      nil,
-							Cache:    true,
+							Solution:  &wikipedia.Item{},
+							Err:       nil,
+							Cache:     true,
 						},
 						Search: &search.Results{
 							Count:      int64(25),
@@ -264,12 +260,9 @@ func TestSearchHandler(t *testing.T) {
 						Instant: instant.Data{
 							Type:      "wikipedia",
 							Triggered: true,
-							Contributors: []contributors.Contributor{
-								{Name: "Brent Adamson", Github: "brentadamson", Twitter: "thebrentadamson"},
-							},
-							Solution: &wikipedia.Item{},
-							Err:      nil,
-							Cache:    true,
+							Solution:  &wikipedia.Item{},
+							Err:       nil,
+							Cache:     true,
 						},
 						Search: &search.Results{
 							Count:      int64(25),

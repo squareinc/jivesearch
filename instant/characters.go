@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -32,15 +31,6 @@ func (c *Characters) setLanguage(lang language.Tag) answerer {
 
 func (c *Characters) setType() answerer {
 	c.Type = "characters"
-	return c
-}
-
-func (c *Characters) setContributors() answerer {
-	c.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return c
 }
 
@@ -81,18 +71,15 @@ func (c *Characters) setCache() answerer {
 func (c *Characters) tests() []test {
 	typ := "characters"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: `number of chars in "Jimi Hendrix"`,
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "12",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "12",
+					Cache:     true,
 				},
 			},
 		},
@@ -100,11 +87,10 @@ func (c *Characters) tests() []test {
 			query: "number of chars   in Pink   Floyd",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "10",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "10",
+					Cache:     true,
 				},
 			},
 		},
@@ -112,11 +98,10 @@ func (c *Characters) tests() []test {
 			query: "Bob Dylan   number of characters in",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "9",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "9",
+					Cache:     true,
 				},
 			},
 		},
@@ -124,11 +109,10 @@ func (c *Characters) tests() []test {
 			query: "number of characters Janis   Joplin",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "12",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "12",
+					Cache:     true,
 				},
 			},
 		},
@@ -136,11 +120,10 @@ func (c *Characters) tests() []test {
 			query: "char count Led Zeppelin",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "12",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "12",
+					Cache:     true,
 				},
 			},
 		},
@@ -148,11 +131,10 @@ func (c *Characters) tests() []test {
 			query: "char count of ' 87 '",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "4",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "4",
+					Cache:     true,
 				},
 			},
 		},
@@ -160,11 +142,10 @@ func (c *Characters) tests() []test {
 			query: "they're chars count",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "7",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "7",
+					Cache:     true,
 				},
 			},
 		},
@@ -172,11 +153,10 @@ func (c *Characters) tests() []test {
 			query: "chars count of something",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "9",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "9",
+					Cache:     true,
 				},
 			},
 		},
@@ -184,11 +164,10 @@ func (c *Characters) tests() []test {
 			query: "Another something chars count of",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "17",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "17",
+					Cache:     true,
 				},
 			},
 		},
@@ -196,11 +175,10 @@ func (c *Characters) tests() []test {
 			query: "1234567 character count",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "7",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "7",
+					Cache:     true,
 				},
 			},
 		},
@@ -208,11 +186,10 @@ func (c *Characters) tests() []test {
 			query: "character count of house of cards",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "14",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "14",
+					Cache:     true,
 				},
 			},
 		},
@@ -220,11 +197,10 @@ func (c *Characters) tests() []test {
 			query: "characters count 50 cent",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "7",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "7",
+					Cache:     true,
 				},
 			},
 		},
@@ -232,50 +208,21 @@ func (c *Characters) tests() []test {
 			query: "characters count of 1 dollar",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "8",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "8",
+					Cache:     true,
 				},
 			},
 		},
-		/*
-			Skip this until we implement Tv & Movie characters in Wikipedia Instant Answers
-			{
-				query: "chars in saved by the bell",
-				expected: []Data{
-					{},
-				},
-			},
-			{
-				query: "chars 21 jump street",
-				expected: []Data{
-					{},
-				},
-			},
-			{
-				query: "characters in house of cards",
-				expected: []Data{
-					{},
-				},
-			},
-			{
-				query: "characters beavis and butthead",
-				expected: []Data{
-					{},
-				},
-			},
-		*/
 		{
 			query: "char count equity",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "6",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "6",
+					Cache:     true,
 				},
 			},
 		},
@@ -283,11 +230,10 @@ func (c *Characters) tests() []test {
 			query: "characters count seal",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "4",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "4",
+					Cache:     true,
 				},
 			},
 		},
@@ -295,11 +241,10 @@ func (c *Characters) tests() []test {
 			query: "length in chars lion",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "4",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "4",
+					Cache:     true,
 				},
 			},
 		},
@@ -307,11 +252,10 @@ func (c *Characters) tests() []test {
 			query: "length in characters mountain",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "8",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "8",
+					Cache:     true,
 				},
 			},
 		},

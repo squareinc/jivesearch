@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (c *CamelCase) setLanguage(lang language.Tag) answerer {
 
 func (c *CamelCase) setType() answerer {
 	c.Type = "camelcase"
-	return c
-}
-
-func (c *CamelCase) setContributors() answerer {
-	c.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return c
 }
 
@@ -75,18 +65,15 @@ func (c *CamelCase) setCache() answerer {
 func (c *CamelCase) tests() []test {
 	typ := "camelcase"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "camelcase metallica rocks",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "MetallicaRocks",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "MetallicaRocks",
+					Cache:     true,
 				},
 			},
 		},
@@ -94,11 +81,10 @@ func (c *CamelCase) tests() []test {
 			query: "aliCE in chAins Is better camel case",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "AliceInChainsIsBetter",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "AliceInChainsIsBetter",
+					Cache:     true,
 				},
 			},
 		},
@@ -106,11 +92,10 @@ func (c *CamelCase) tests() []test {
 			query: "camel case O'doyle ruLES",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "O'DoyleRules",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "O'DoyleRules",
+					Cache:     true,
 				},
 			},
 		},

@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (m *Minify) setLanguage(lang language.Tag) answerer {
 
 func (m *Minify) setType() answerer {
 	m.Type = "minify"
-	return m
-}
-
-func (m *Minify) setContributors() answerer {
-	m.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return m
 }
 
@@ -69,13 +59,10 @@ func (m *Minify) setCache() answerer {
 func (m *Minify) tests() []test {
 	typ := "minify"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	d := Data{
-		Type:         typ,
-		Triggered:    true,
-		Contributors: contrib,
-		Cache:        true,
+		Type:      typ,
+		Triggered: true,
+		Cache:     true,
 	}
 
 	tests := []test{

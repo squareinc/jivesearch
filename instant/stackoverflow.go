@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"golang.org/x/text/language"
 )
@@ -47,15 +46,6 @@ func (s *StackOverflow) setLanguage(lang language.Tag) answerer {
 
 func (s *StackOverflow) setType() answerer {
 	s.Type = "stackoverflow"
-	return s
-}
-
-func (s *StackOverflow) setContributors() answerer {
-	s.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return s
 }
 
@@ -150,16 +140,14 @@ func (s *StackOverflow) setCache() answerer {
 
 func (s *StackOverflow) tests() []test {
 	typ := "stackoverflow"
-	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
 		{
 			query: "php loop",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      typ,
+					Triggered: true,
 					Solution: StackOverflowAnswer{
 						Question: "How does PHP &#39;foreach&#39; actually work?",
 						Link:     "https://stackoverflow.com/questions/10057671/how-does-php-foreach-actually-work",
@@ -176,9 +164,8 @@ func (s *StackOverflow) tests() []test {
 			query: "loop c++",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      typ,
+					Triggered: true,
 					Solution: StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/c++-loop",
@@ -195,9 +182,8 @@ func (s *StackOverflow) tests() []test {
 			query: "golang loop",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      typ,
+					Triggered: true,
 					Solution: StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/go-loop",
@@ -214,9 +200,8 @@ func (s *StackOverflow) tests() []test {
 			query: "mac os loop",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      typ,
+					Triggered: true,
 					Solution: StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/macos-loop",
@@ -233,9 +218,8 @@ func (s *StackOverflow) tests() []test {
 			query: "regexp loop",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      typ,
+					Triggered: true,
 					Solution: StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/regex-loop",

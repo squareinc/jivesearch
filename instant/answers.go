@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -32,7 +31,6 @@ type answerer interface {
 	setUserAgent(r *http.Request) answerer
 	setLanguage(lang language.Tag) answerer
 	setType() answerer
-	setContributors() answerer
 	setRegex() answerer
 	trigger() bool
 	solve() answerer
@@ -54,12 +52,11 @@ type Answer struct {
 
 // Data holds the returned data of an answer
 type Data struct {
-	Type         string                     `json:"type,omitempty"`
-	Triggered    bool                       `json:"triggered"`
-	Contributors []contributors.Contributor `json:"contributors,omitempty"`
-	Solution     interface{}                `json:"answer,omitempty"`
-	Err          error                      `json:"-"`
-	Cache        bool                       `json:"cache,omitempty"`
+	Type      string      `json:"type,omitempty"`
+	Triggered bool        `json:"triggered"`
+	Solution  interface{} `json:"answer,omitempty"`
+	Err       error       `json:"-"`
+	Cache     bool        `json:"cache,omitempty"`
 }
 
 // Detect loops through all instant answers to find a solution
@@ -68,10 +65,7 @@ func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
 	for _, ia := range i.answers() {
 		ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
 		if triggered := ia.trigger(); triggered {
-			ia.setType().
-				setContributors().
-				setCache().
-				solve()
+			ia.setType().setCache().solve()
 			return ia.solution()
 		}
 	}

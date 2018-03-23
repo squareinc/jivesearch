@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (d *DigitalStorage) setLanguage(lang language.Tag) answerer {
 
 func (d *DigitalStorage) setType() answerer {
 	d.Type = "unit converter"
-	return d
-}
-
-func (d *DigitalStorage) setContributors() answerer {
-	d.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return d
 }
 
@@ -95,14 +85,11 @@ func (d *DigitalStorage) setCache() answerer {
 func (d *DigitalStorage) tests() []test {
 	typ := "unit converter"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	dd := Data{
-		Type:         typ,
-		Triggered:    true,
-		Contributors: contrib,
-		Solution:     "digital storage",
-		Cache:        true,
+		Type:      typ,
+		Triggered: true,
+		Solution:  "digital storage",
+		Cache:     true,
 	}
 
 	tests := []test{

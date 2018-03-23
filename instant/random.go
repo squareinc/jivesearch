@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -35,15 +34,6 @@ func (r *Random) setLanguage(lang language.Tag) answerer {
 
 func (r *Random) setType() answerer {
 	r.Type = "random"
-	return r
-}
-
-func (r *Random) setContributors() answerer {
-	r.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return r
 }
 
@@ -92,8 +82,6 @@ func (r *Random) setCache() answerer {
 func (r *Random) tests() []test {
 	typ := "random"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{}
 
 	solutions := func(choices []string) []Data {
@@ -102,11 +90,10 @@ func (r *Random) tests() []test {
 		for _, c := range choices {
 			sol = append(sol,
 				Data{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     c,
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  c,
+					Cache:     false,
 				},
 			)
 		}

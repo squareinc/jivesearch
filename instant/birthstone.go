@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (b *BirthStone) setLanguage(lang language.Tag) answerer {
 
 func (b *BirthStone) setType() answerer {
 	b.Type = "birthstone"
-	return b
-}
-
-func (b *BirthStone) setContributors() answerer {
-	b.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return b
 }
 
@@ -97,18 +87,15 @@ func (b *BirthStone) setCache() answerer {
 func (b *BirthStone) tests() []test {
 	typ := "birthstone"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "January birthstone",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Garnet",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Garnet",
+					Cache:     true,
 				},
 			},
 		},
@@ -116,11 +103,10 @@ func (b *BirthStone) tests() []test {
 			query: "birthstone february",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Amethyst",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Amethyst",
+					Cache:     true,
 				},
 			},
 		},
@@ -128,11 +114,10 @@ func (b *BirthStone) tests() []test {
 			query: "march birth stone",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Aquamarine, Bloodstone",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Aquamarine, Bloodstone",
+					Cache:     true,
 				},
 			},
 		},
@@ -140,11 +125,10 @@ func (b *BirthStone) tests() []test {
 			query: "birth stone April",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Diamond",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Diamond",
+					Cache:     true,
 				},
 			},
 		},
@@ -152,11 +136,10 @@ func (b *BirthStone) tests() []test {
 			query: "birth stones may",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Emerald",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Emerald",
+					Cache:     true,
 				},
 			},
 		},
@@ -164,11 +147,10 @@ func (b *BirthStone) tests() []test {
 			query: "birthstones June",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Pearl, Moonstone, Alexandrite",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Pearl, Moonstone, Alexandrite",
+					Cache:     true,
 				},
 			},
 		},
@@ -176,11 +158,10 @@ func (b *BirthStone) tests() []test {
 			query: "July Birth Stones",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Ruby",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Ruby",
+					Cache:     true,
 				},
 			},
 		},
@@ -188,11 +169,10 @@ func (b *BirthStone) tests() []test {
 			query: "birthstones August",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Peridot, Spinel",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Peridot, Spinel",
+					Cache:     true,
 				},
 			},
 		},
@@ -200,11 +180,10 @@ func (b *BirthStone) tests() []test {
 			query: "september birthstones",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Sapphire",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Sapphire",
+					Cache:     true,
 				},
 			},
 		},
@@ -212,11 +191,10 @@ func (b *BirthStone) tests() []test {
 			query: "October birthstone",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Opal, Tourmaline",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Opal, Tourmaline",
+					Cache:     true,
 				},
 			},
 		},
@@ -224,11 +202,10 @@ func (b *BirthStone) tests() []test {
 			query: "birthstone November",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Topaz, Citrine",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Topaz, Citrine",
+					Cache:     true,
 				},
 			},
 		},
@@ -236,11 +213,10 @@ func (b *BirthStone) tests() []test {
 			query: "December birthstone",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Turquoise, Zircon, Tanzanite",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Turquoise, Zircon, Tanzanite",
+					Cache:     true,
 				},
 			},
 		},

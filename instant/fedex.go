@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"golang.org/x/text/language"
 )
@@ -34,15 +33,6 @@ func (f *FedEx) setLanguage(lang language.Tag) answerer {
 
 func (f *FedEx) setType() answerer {
 	f.Type = "fedex"
-	return f
-}
-
-func (f *FedEx) setContributors() answerer {
-	f.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return f
 }
 
@@ -111,9 +101,8 @@ func (f *FedEx) tests() []test {
 			query: n,
 			expected: []Data{
 				{
-					Type:         "fedex",
-					Triggered:    true,
-					Contributors: contributors.Load([]string{"brentadamson"}),
+					Type:      "fedex",
+					Triggered: true,
 					Solution: parcel.Response{
 						TrackingNumber: strings.ToUpper(n),
 						Updates: []parcel.Update{

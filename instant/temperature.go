@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (t *Temperature) setLanguage(lang language.Tag) answerer {
 
 func (t *Temperature) setType() answerer {
 	t.Type = "unit converter"
-	return t
-}
-
-func (t *Temperature) setContributors() answerer {
-	t.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return t
 }
 
@@ -73,14 +63,11 @@ func (t *Temperature) setCache() answerer {
 func (t *Temperature) tests() []test {
 	typ := "unit converter"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	d := Data{
-		Type:         typ,
-		Triggered:    true,
-		Contributors: contrib,
-		Solution:     "temperature",
-		Cache:        true,
+		Type:      typ,
+		Triggered: true,
+		Solution:  "temperature",
+		Cache:     true,
 	}
 
 	tests := []test{

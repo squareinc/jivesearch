@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -32,16 +31,6 @@ func (u *UserAgent) setLanguage(lang language.Tag) answerer {
 
 func (u *UserAgent) setType() answerer {
 	u.Type = "user agent"
-	return u
-}
-
-func (u *UserAgent) setContributors() answerer {
-	u.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
-
 	return u
 }
 
@@ -77,19 +66,16 @@ func (u *UserAgent) setCache() answerer {
 func (u *UserAgent) tests() []test {
 	typ := "user agent"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query:     "user agent",
 			userAgent: "firefox",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "firefox",
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "firefox",
+					Cache:     false,
 				},
 			},
 		},
@@ -98,11 +84,10 @@ func (u *UserAgent) tests() []test {
 			userAgent: "opera",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "opera",
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "opera",
+					Cache:     false,
 				},
 			},
 		},
@@ -111,11 +96,10 @@ func (u *UserAgent) tests() []test {
 			userAgent: "some random ua",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "some random ua",
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "some random ua",
+					Cache:     false,
 				},
 			},
 		},
@@ -124,11 +108,10 @@ func (u *UserAgent) tests() []test {
 			userAgent: "chrome",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "chrome",
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "chrome",
+					Cache:     false,
 				},
 			},
 		},
@@ -137,11 +120,10 @@ func (u *UserAgent) tests() []test {
 			userAgent: "internet explorer",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "internet explorer",
-					Cache:        false,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "internet explorer",
+					Cache:     false,
 				},
 			},
 		},

@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"golang.org/x/text/language"
 )
@@ -34,15 +33,6 @@ func (u *UPS) setLanguage(lang language.Tag) answerer {
 
 func (u *UPS) setType() answerer {
 	u.Type = "ups"
-	return u
-}
-
-func (u *UPS) setContributors() answerer {
-	u.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return u
 }
 
@@ -120,9 +110,8 @@ func (u *UPS) tests() []test {
 			query: n,
 			expected: []Data{
 				{
-					Type:         "ups",
-					Triggered:    true,
-					Contributors: contributors.Load([]string{"brentadamson"}),
+					Type:      "ups",
+					Triggered: true,
 					Solution: parcel.Response{
 						TrackingNumber: strings.ToUpper(n),
 						Updates: []parcel.Update{

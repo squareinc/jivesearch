@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -48,15 +47,6 @@ func (p *Potus) setLanguage(lang language.Tag) answerer {
 
 func (p *Potus) setType() answerer {
 	p.Type = "potus"
-	return p
-}
-
-func (p *Potus) setContributors() answerer {
-	p.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return p
 }
 
@@ -120,18 +110,15 @@ func (p *Potus) tests() []test {
 	// numbers spelled out ("first", "second", etc.)
 	typ := "potus"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "current POTUS",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Donald Trump",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Donald Trump",
+					Cache:     true,
 				},
 			},
 		},
@@ -205,11 +192,10 @@ func (p *Potus) tests() []test {
 				query: fmt.Sprintf(q, i+1),
 				expected: []Data{
 					{
-						Type:         typ,
-						Triggered:    true,
-						Contributors: contrib,
-						Solution:     pres,
-						Cache:        true,
+						Type:      typ,
+						Triggered: true,
+						Solution:  pres,
+						Cache:     true,
 					},
 				},
 			}

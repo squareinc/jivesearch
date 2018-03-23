@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -34,15 +33,6 @@ func (w *Wikipedia) setLanguage(lang language.Tag) answerer {
 
 func (w *Wikipedia) setType() answerer {
 	w.Type = "wiki"
-	return w
-}
-
-func (w *Wikipedia) setContributors() answerer {
-	w.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return w
 }
 
@@ -194,16 +184,14 @@ func (w *Wikipedia) setCache() answerer {
 }
 
 func (w *Wikipedia) tests() []test {
-	contrib := contributors.Load([]string{"brentadamson"})
 
 	tests := []test{
 		{
 			query: "Bob Marley age",
 			expected: []Data{
 				{
-					Type:         "wikidata",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikidata",
+					Triggered: true,
 					Solution: Age{
 						Birthday: Birthday{
 							Birthday: wikipedia.DateTime{
@@ -226,9 +214,8 @@ func (w *Wikipedia) tests() []test {
 			query: "Jimi hendrix birthday",
 			expected: []Data{
 				{
-					Type:         "wikidata",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikidata",
+					Triggered: true,
 					Solution: Birthday{
 						Birthday: wikipedia.DateTime{
 							Value:    "1942-11-27T00:00:00Z",
@@ -243,9 +230,8 @@ func (w *Wikipedia) tests() []test {
 			query: "death jimi hendrix",
 			expected: []Data{
 				{
-					Type:         "wikidata",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikidata",
+					Triggered: true,
 					Solution: Death{
 						Death: wikipedia.DateTime{
 							Value:    "1970-09-18T00:00:00Z",
@@ -260,9 +246,8 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal height",
 			expected: []Data{
 				{
-					Type:         "wikidata",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikidata",
+					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{
 							Amount: "2.16",
@@ -277,9 +262,8 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal weight",
 			expected: []Data{
 				{
-					Type:         "wikidata",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikidata",
+					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{
 							Amount: "147",
@@ -294,9 +278,8 @@ func (w *Wikipedia) tests() []test {
 			query: "Michael Jordan quotes",
 			expected: []Data{
 				{
-					Type:         "wikiquote",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikiquote",
+					Triggered: true,
 					Solution: []string{
 						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
 						"ball is life",
@@ -309,9 +292,8 @@ func (w *Wikipedia) tests() []test {
 			query: "define guitar",
 			expected: []Data{
 				{
-					Type:         "wiktionary",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wiktionary",
+					Triggered: true,
 					Solution: wikipedia.Wiktionary{
 						Title: "guitar",
 						Definitions: []*wikipedia.Definition{
@@ -326,9 +308,8 @@ func (w *Wikipedia) tests() []test {
 			query: "jimi hendrix",
 			expected: []Data{
 				{
-					Type:         "wikipedia",
-					Triggered:    true,
-					Contributors: contrib,
+					Type:      "wikipedia",
+					Triggered: true,
 					Solution: &wikipedia.Item{
 						Wikidata: &wikipedia.Wikidata{
 							Claims: &wikipedia.Claims{

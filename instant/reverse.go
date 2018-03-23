@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -31,15 +30,6 @@ func (r *Reverse) setLanguage(lang language.Tag) answerer {
 
 func (r *Reverse) setType() answerer {
 	r.Type = "reverse"
-	return r
-}
-
-func (r *Reverse) setContributors() answerer {
-	r.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return r
 }
 
@@ -87,18 +77,15 @@ func (r *Reverse) setCache() answerer {
 func (r *Reverse) tests() []test {
 	typ := "reverse"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "reverse ahh lights....ahh see 'em",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "me' ees hha....sthgil hha",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "me' ees hha....sthgil hha",
+					Cache:     true,
 				},
 			},
 		},
@@ -106,11 +93,10 @@ func (r *Reverse) tests() []test {
 			query: "reverse 私日本語は話せません",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "んせませ話は語本日私",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "んせませ話は語本日私",
+					Cache:     true,
 				},
 			},
 		},
@@ -118,11 +104,10 @@ func (r *Reverse) tests() []test {
 			query: `reverse "ahh yeah"`,
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "haey hha",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "haey hha",
+					Cache:     true,
 				},
 			},
 		},

@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/contributors"
 	"golang.org/x/text/language"
 )
 
@@ -36,15 +35,6 @@ func (s *Stats) setLanguage(lang language.Tag) answerer {
 
 func (s *Stats) setType() answerer {
 	s.Type = "stats"
-	return s
-}
-
-func (s *Stats) setContributors() answerer {
-	s.Contributors = contributors.Load(
-		[]string{
-			"brentadamson",
-		},
-	)
 	return s
 }
 
@@ -99,18 +89,15 @@ func (s *Stats) setCache() answerer {
 func (s *Stats) tests() []test {
 	typ := "stats"
 
-	contrib := contributors.Load([]string{"brentadamson"})
-
 	tests := []test{
 		{
 			query: "avg 3 4e6",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Average: 2000001.5",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Average: 2000001.5",
+					Cache:     true,
 				},
 			},
 		},
@@ -118,11 +105,10 @@ func (s *Stats) tests() []test {
 			query: "11 18 -142 Average",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Average: -37.666666666666664",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Average: -37.666666666666664",
+					Cache:     true,
 				},
 			},
 		},
@@ -130,11 +116,10 @@ func (s *Stats) tests() []test {
 			query: "6 3 -5 23 Median",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Median: 4.5",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Median: 4.5",
+					Cache:     true,
 				},
 			},
 		},
@@ -142,11 +127,10 @@ func (s *Stats) tests() []test {
 			query: "median 17 12 -18",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Median: 12",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Median: 12",
+					Cache:     true,
 				},
 			},
 		},
@@ -154,11 +138,10 @@ func (s *Stats) tests() []test {
 			query: "58 96 -41 sum",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Sum: 113",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Sum: 113",
+					Cache:     true,
 				},
 			},
 		},
@@ -166,11 +149,10 @@ func (s *Stats) tests() []test {
 			query: "Total -17 3 87 -476",
 			expected: []Data{
 				{
-					Type:         typ,
-					Triggered:    true,
-					Contributors: contrib,
-					Solution:     "Sum: -403",
-					Cache:        true,
+					Type:      typ,
+					Triggered: true,
+					Solution:  "Sum: -403",
+					Cache:     true,
 				},
 			},
 		},
