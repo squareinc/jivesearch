@@ -149,7 +149,7 @@ and (max-width: 48em) { /* <768px */
 
 @media screen 
 and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */
-    #spacer {
+    .spacer {
         width: 115px;
     }
     #results_container {

@@ -1,21 +1,36 @@
-{{define "search_form"}}
-<div id="search_container">
-  <div class="ui-widget">
-    <form id="form" name="x" method="GET" action="/" role="search">
-      {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
-      {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
-      {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
-      <!--don't set 'p' param...always force it back to page 1-->
-    	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
-          autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
-      <button id="search_submit" type="submit" tabindex="2"><i class="icon-search" aria-hidden="true"></i></button>
-      {{if .Context.DefaultBang}}
-      <a id="bang_submit" class="pure-button pure-button-primary" tabindex="3" style="font-size:20px;"
-        data-location="!{{.Context.DefaultBang.Trigger}} {{.Context.Q}}">!{{.Context.DefaultBang.Trigger}}</a>
+{{define "title"}}{{if .Context.Q}}{{.Context.Q}} - {{end}}Jive Search{{end}}
+
+{{define "css"}}
+  {{if .Context.Q}}
+    <link rel="stylesheet" href="/static/search.css">
+    {{if .Instant}}
+      {{if eq .Instant.Type "calculator"}}
+      <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
+      {{else if eq .Instant.Type "unit converter"}}
+      <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
       {{end}}
-    </form>
-  </div>
-</div>
+    {{end}}
+  {{end}}
+{{end}}
+
+{{define "javascript"}}
+  {{if .Instant}}
+    {{if eq .Instant.Type "calculator"}}
+    <script src="/static/instant/calculator/calculator.js"></script>
+    {{else if eq .Instant.Type "unit converter"}}
+    <script src="/static/instant/unit_converter/unit_converter.js"></script>
+    {{else if eq .Instant.Type "minify"}}
+    <!-- 
+      prettydiff.js combines prettydiff barebones example files to 1: 
+      https://github.com/prettydiff/prettydiff/blob/master/test/barebones/barebones.xhtml#L27 
+      If you don't combine them then you'll have to enable "unsafe-eval" in Content Security Policy header in nginx.conf
+      as pagespeed_ngx will turn some of those .js files to inline code.
+    -->
+    <!-- another option is to use https://github.com/prettier/prettier -->
+    <script src="/static/instant/minify/prettydiff.js"></script>
+    <script src="/static/instant/minify/minify.js"></script>
+    {{end}}
+  {{end}}
 {{end}}
 
 {{define "did_you_mean"}}
@@ -33,13 +48,7 @@
 
 {{if $context.Q}}
   <div id="container" class="pure-g">
-    <div id="spacer" class="pure-u-1 pure-u-xl-2-24" style="text-align:center;">
-      <a href="/">
-        <svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
-          <g><text id="logo" x="7" y="37">Jive Search</text></g>
-        </svg>
-      </a>
-    </div>
+    {{template "small_logo"}}
     <div class="pure-u-1 pure-u-xl-22-24">
       {{template "search_form" .}}
       {{if .Search.Count}}
@@ -438,7 +447,7 @@
           </svg>
           {{template "search_form" .}}
           <br>
-          <span id="tagline">The little search engine that could</span>
+          <span id="tagline">The little search engine that could. <a href="/about">About Us.</a></span>
         </div>
       </div>
     </div>

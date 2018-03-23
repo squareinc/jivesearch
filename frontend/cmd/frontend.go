@@ -147,6 +147,10 @@ func main() {
 		Timeout: 5 * time.Second,
 	}
 
+	f.GitHub = frontend.GitHub{
+		HTTPClient: httpClient,
+	}
+
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
 		FedExFetcher: &parcel.FedEx{

@@ -30,6 +30,7 @@ type Frontend struct {
 	Search  search.Fetcher
 	Wikipedia
 	Vote vote.Voter
+	GitHub
 }
 
 // Document has the languages we support
@@ -195,7 +196,17 @@ var ParseTemplates = func() {
 			Funcs(funcMap).
 			ParseFiles(
 				"templates/base.html",
+				"templates/search_form.html",
 				"templates/search.html",
+			),
+	)
+	templates["about"] = template.Must(
+		template.New("base.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/base.html",
+				"templates/search_form.html",
+				"templates/about.html",
 			),
 	)
 }

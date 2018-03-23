@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>{{if .Context.Q}}{{.Context.Q}} - {{end}}Jive Search</title>
+    <title>{{template "title" .}}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="referrer" content="origin"><!--Don't send search query when clicking on a link-->
     <meta name="description" content="The little search engine that could">
@@ -16,16 +16,7 @@
     <link rel="stylesheet" href="/static/fonts/css/fonts.css">
     <link rel="stylesheet" href="/static/fontello/css/fontello.css">
     <link rel="stylesheet" href="/static/base.css">
-    {{if .Context.Q}}
-      <link rel="stylesheet" href="/static/search.css">
-      {{if .Instant}}
-        {{if eq .Instant.Type "calculator"}}
-        <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
-        {{else if eq .Instant.Type "unit converter"}}
-        <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
-        {{end}}
-      {{end}}
-    {{end}}
+    {{template "css" .}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!--https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html-->
@@ -39,22 +30,6 @@
     <script src="/static/jquery-1.12.2.min.js"></script>
     <script src="/static/jqueryui-1.11.4.min.js"></script>
     <script src="/static/main.js"></script>
-    {{if .Instant}}
-      {{if eq .Instant.Type "calculator"}}
-      <script src="/static/instant/calculator/calculator.js"></script>
-      {{else if eq .Instant.Type "unit converter"}}
-      <script src="/static/instant/unit_converter/unit_converter.js"></script>
-      {{else if eq .Instant.Type "minify"}}
-      <!-- 
-        prettydiff.js combines prettydiff barebones example files to 1: 
-        https://github.com/prettydiff/prettydiff/blob/master/test/barebones/barebones.xhtml#L27 
-        If you don't combine them then you'll have to enable "unsafe-eval" in Content Security Policy header in nginx.conf
-        as pagespeed_ngx will turn some of those .js files to inline code.
-      -->
-      <!-- another option is to use https://github.com/prettier/prettier -->
-      <script src="/static/instant/minify/prettydiff.js"></script>
-      <script src="/static/instant/minify/minify.js"></script>
-      {{end}}
-    {{end}}
+    {{template "javascript" .}}
   </body>
 </html>

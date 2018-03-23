@@ -1,0 +1,29 @@
+{{define "small_logo"}}
+<div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
+    <a href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
+        <g><text id="logo" x="7" y="37">Jive Search</text></g>
+        </svg>
+    </a>
+</div>
+{{end}}
+
+{{define "search_form"}}
+<div id="search_container">
+  <div class="ui-widget">
+    <form id="form" name="x" method="GET" action="/" role="search">
+      {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
+      {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
+      {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
+      <!--don't set 'p' param...always force it back to page 1-->
+    	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
+          autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
+      <button id="search_submit" type="submit" tabindex="2"><i class="icon-search" aria-hidden="true"></i></button>
+      {{if and .Context.DefaultBang .Context.DefaultBang.Trigger}}
+      <a id="bang_submit" class="pure-button pure-button-primary" tabindex="3" style="font-size:20px;"
+        data-location="!{{.Context.DefaultBang.Trigger}} {{.Context.Q}}">!{{.Context.DefaultBang.Trigger}}</a>
+      {{end}}
+    </form>
+  </div>
+</div>
+{{end}}
