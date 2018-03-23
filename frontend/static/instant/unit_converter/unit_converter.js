@@ -129,7 +129,7 @@ var length = {
     "Nautical Mile": "1852300000000", // Is this as precise as it gets for this one???
 }
 
-// Units below are in Mach
+// Units below are in Kilometers/Hour
 var speed = {
     "Feet/Second":     "1.09728", // 3.6*.3048
     "Miles/Hour":      "1.609344", // 1.609344
