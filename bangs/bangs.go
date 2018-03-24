@@ -207,6 +207,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Google Translate", []string{"gt", "googletranslate"},
+			map[string]string{
+				def: "https://translate.google.com/#auto/en/{{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"Hulu", []string{"hulu"},
 			map[string]string{
 				def: "https://www.hulu.com/search?query={{{term}}}",
