@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/stock"
 
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -319,6 +320,27 @@ func TestInstantFormatter(t *testing.T) {
 			want: "",
 		},
 		{
+			name: "stock quote",
+			args: args{
+				instant.Data{
+					Type: "stock quote",
+					Solution: &stock.Quote{
+						Ticker:   "TCKR",
+						Name:     "Some Company",
+						Exchange: stock.NYSE,
+						Last: stock.Last{
+							Price:         12.43,
+							Time:          time.Date(2018, 3, 3, 9, 45, 42, 0, time.UTC),
+							Change:        -.423,
+							ChangePercent: -.0103,
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<div class="pure-u-1"><div class="pure-u-1" style="font-size:20px;">Some Company</div><div class="pure-u-1" style="font-size:14px;">NYSE: TCKR <span id="quote_time" style="font-size:12px;">March 3, 2018 9:45 AM UTC</span></div></div><div class="pure-u-1" style="font-size:40px;">12.43 <span style="font-size:22px;"><span class="quote-arrow quote-arrow-down"></span><span style="color:#C80000;"> -0.42 (-1.03%)</span></span></div>`,
+		},
+		{
 			name: "tracking package",
 			args: args{
 				instant.Data{
@@ -435,6 +457,18 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
+		},
+		{
+			name: "stock quote",
+			args: args{
+				instant.Data{
+					Type: "stock quote",
+					Solution: &stock.Quote{
+						Provider: stock.IEXProvider,
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="iex" src="/static/favicons/iex.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
 		},
 		{
 			name: "ups",

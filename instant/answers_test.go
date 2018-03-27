@@ -11,6 +11,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -23,6 +24,7 @@ func TestDetect(t *testing.T) {
 		QueryVar:             "q",
 		FedExFetcher:         &mockFedExFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
+		StockQuoteFetcher:    &mockStockQuoteFetcher{},
 		UPSFetcher:           &mockUPSFetcher{},
 		USPSFetcher:          &mockUSPSFetcher{},
 		WikipediaFetcher:     &mockWikipediaFetcher{},
@@ -219,6 +221,35 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 	}
 
 	return resp, nil
+}
+
+// mock stock quote Fetcher
+type mockStockQuoteFetcher struct{}
+
+func (s *mockStockQuoteFetcher) Fetch(ticker string) (*stock.Quote, error) {
+	location, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		return nil, err
+	}
+
+	q := &stock.Quote{
+		Ticker:   "AAPL",
+		Name:     "Apple Inc.",
+		Exchange: stock.NASDAQ,
+		Last: stock.Last{
+			Price:         171.42,
+			Time:          time.Unix(1522090355062/1000, 0).In(location),
+			Change:        6.48,
+			ChangePercent: 0.03929,
+		},
+		History: []stock.EOD{
+			{Date: time.Date(2013, 3, 26, 0, 0, 0, 0, time.UTC), Open: 60.5276, Close: 59.9679, High: 60.5797, Low: 59.8891, Volume: 73428208},
+			{Date: time.Date(2013, 3, 27, 0, 0, 0, 0, time.UTC), Open: 59.3599, Close: 58.7903, High: 59.4041, Low: 58.6147, Volume: 81854409},
+		},
+		Provider: stock.IEXProvider,
+	}
+
+	return q, nil
 }
 
 // mock UPS Fetcher

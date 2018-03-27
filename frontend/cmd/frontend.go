@@ -18,6 +18,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
@@ -162,6 +163,9 @@ func main() {
 		StackOverflowFetcher: &stackoverflow.API{
 			HTTPClient: httpClient,
 			Key:        v.GetString("stackoverflow.key"),
+		},
+		StockQuoteFetcher: &stock.IEX{
+			HTTPClient: httpClient,
 		},
 		UPSFetcher: &parcel.UPS{
 			HTTPClient: httpClient,

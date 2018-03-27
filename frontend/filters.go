@@ -15,6 +15,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -190,6 +191,39 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		}
 
 		return h
+	case *stock.Quote:
+		q := sol.Solution.(*stock.Quote)
+
+		quote := fmt.Sprintf(`<div class="pure-u-1">
+			<div class="pure-u-1" style="font-size:20px;">%v</div>
+			<div class="pure-u-1" style="font-size:14px;">%v: %v <span id="quote_time" style="font-size:12px;">%v</span></div>
+		</div>`, q.Name, q.Exchange, q.Ticker, q.Time.Format("January 2, 2006 3:04 PM MST"))
+
+		arrow := "quote-arrow-up"
+		changeColor := "#006D21"
+		if q.Last.Change < 0 {
+			arrow = "quote-arrow-down"
+			changeColor = "#C80000"
+		}
+
+		change := strconv.FormatFloat(q.Last.Change, 'f', 2, 64)
+		percent := strconv.FormatFloat(q.Last.ChangePercent*100, 'f', 2, 64)
+
+		quote += fmt.Sprintf(
+			`<div class="pure-u-1" style="font-size:40px;">%v 
+				<span style="font-size:22px;">
+					<span class="quote-arrow %v"></span>
+					<span style="color:%v;"> %v (%v%%)</span>
+				</span>
+			</div>`,
+			q.Last.Price, arrow, changeColor, change, percent,
+		)
+
+		quote = strings.Replace(quote, "\t", "", -1)
+		quote = strings.Replace(quote, "\n", "", -1)
+
+		return quote
+
 	case wikipedia.Wiktionary: // Wiktionary
 		createLink := func(lang, word, style string) string {
 			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
@@ -239,6 +273,15 @@ func source(answer instant.Data) string {
 		user := answer.Solution.(instant.StackOverflowAnswer).Answer.User
 		img = `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/>`
 		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
+	case "stock quote":
+		q := answer.Solution.(*stock.Quote)
+		switch q.Provider {
+		case stock.IEXProvider:
+			img = `<img width="12" height="12" alt="iex" src="/static/favicons/iex.ico"/>`
+			f = fmt.Sprintf(`%v Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`, img) // MUST say "Data provided for free by <a href="https://iextrading.com/developer">IEX</a>."
+		default:
+			log.Debug.Printf("unknown stock quote provider %v\n", q.Provider)
+		}
 	case "ups":
 		txt, u = "UPS", "https://www.ups.com"
 		img = `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/>`
@@ -260,6 +303,7 @@ func source(answer instant.Data) string {
 		img = `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
+		log.Debug.Printf("unknown instant answer type %v\n", answer.Type)
 		f = ""
 	}
 

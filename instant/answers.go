@@ -10,6 +10,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -18,8 +19,9 @@ import (
 // Instant holds config information for the instant answers
 type Instant struct {
 	QueryVar             string
-	StackOverflowFetcher stackoverflow.Fetcher
 	FedExFetcher         parcel.Fetcher
+	StackOverflowFetcher stackoverflow.Fetcher
+	StockQuoteFetcher    stock.Fetcher
 	UPSFetcher           parcel.Fetcher
 	USPSFetcher          parcel.Fetcher
 	WikipediaFetcher     wikipedia.Fetcher
@@ -141,6 +143,7 @@ func (i *Instant) answers() []answerer {
 		&Random{},
 		&Reverse{},
 		&Stats{},
+		&StockQuote{Fetcher: i.StockQuoteFetcher},
 		&Temperature{},
 		&USPS{Fetcher: i.USPSFetcher},
 		&UPS{Fetcher: i.UPSFetcher},

@@ -6,6 +6,8 @@
     {{if .Instant}}
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
+      {{else if eq .Instant.Type "stock quote"}}
+      <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
       {{end}}
