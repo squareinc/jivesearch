@@ -19,6 +19,9 @@
   {{if .Instant}}
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
+    {{else if eq .Instant.Type "stock quote"}}
+    <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
+    <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
     {{else if eq .Instant.Type "unit converter"}}
     <script src="/static/instant/unit_converter/unit_converter.js"></script>
     {{else if eq .Instant.Type "minify"}}

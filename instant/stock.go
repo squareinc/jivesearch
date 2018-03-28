@@ -46,7 +46,7 @@ func (s *StockQuote) setRegex() answerer {
 	}
 
 	t := strings.Join(triggers, "|")
-	ticker := `[\$]?[a-zA-Z]{1,5}`
+	ticker := `[\$]?[a-zA-Z\.]{1,6}` // e.g. BRK.A
 
 	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)?\s?(?P<remainder>%s)$`, t, ticker)))
 	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>%s)\s(?P<trigger>%s)?$`, ticker, t)))
@@ -81,7 +81,7 @@ func (s *StockQuote) tests() []test {
 
 	tests := []test{
 		{
-			query: `AAPL quote`,
+			query: "AAPL quote",
 			expected: []Data{
 				{
 					Type:      typ,
@@ -90,6 +90,32 @@ func (s *StockQuote) tests() []test {
 						Ticker:   "AAPL",
 						Name:     "Apple Inc.",
 						Exchange: stock.NASDAQ,
+						Last: stock.Last{
+							Price:         171.42,
+							Time:          time.Unix(1522090355062/1000, 0).In(location),
+							Change:        6.48,
+							ChangePercent: 0.03929,
+						},
+						History: []stock.EOD{
+							{Date: time.Date(2013, 3, 26, 0, 0, 0, 0, time.UTC), Open: 60.5276, Close: 59.9679, High: 60.5797, Low: 59.8891, Volume: 73428208},
+							{Date: time.Date(2013, 3, 27, 0, 0, 0, 0, time.UTC), Open: 59.3599, Close: 58.7903, High: 59.4041, Low: 58.6147, Volume: 81854409},
+						},
+						Provider: stock.IEXProvider,
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "brk.a", // test for lowercase and has "."
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution: &stock.Quote{
+						Ticker:   "BRK.A",
+						Name:     "Berkshire Hathaway",
+						Exchange: stock.NYSE,
 						Last: stock.Last{
 							Price:         171.42,
 							Time:          time.Unix(1522090355062/1000, 0).In(location),

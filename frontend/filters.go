@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"math"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -216,8 +218,18 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 					<span style="color:%v;"> %v (%v%%)</span>
 				</span>
 			</div>`,
-			q.Last.Price, arrow, changeColor, change, percent,
+			humanize.Commaf(q.Last.Price), arrow, changeColor, change, percent,
 		)
+
+		quote += `<div id="stock_chart" class="pure-u-1"></div>`
+
+		if len(q.History) > 0 {
+			b, err := json.Marshal(q.History)
+			if err != nil {
+				fmt.Println("error:", err)
+			}
+			quote += fmt.Sprintf(`<script>var data = %v</script>`, string(b))
+		}
 
 		quote = strings.Replace(quote, "\t", "", -1)
 		quote = strings.Replace(quote, "\n", "", -1)

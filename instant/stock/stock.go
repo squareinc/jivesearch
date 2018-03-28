@@ -42,12 +42,12 @@ type Last struct {
 
 // EOD is an end of day stock quote
 type EOD struct {
-	Date   time.Time
-	Open   float64 `json:"open"`
-	Close  float64 `json:"close"`
-	High   float64 `json:"high"`
-	Low    float64 `json:"low"`
-	Volume int     `json:"volume"`
+	Date   time.Time `json:"date"`
+	Open   float64   `json:"open"`
+	Close  float64   `json:"close"`
+	High   float64   `json:"high"`
+	Low    float64   `json:"low"`
+	Volume int       `json:"volume"`
 }
 
 // get the Stock Exchange from a string
