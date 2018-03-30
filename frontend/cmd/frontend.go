@@ -184,7 +184,7 @@ func main() {
 	}
 
 	if err := f.Instant.WikipediaFetcher.Setup(); err != nil {
-		panic(err)
+		log.Info.Println(err)
 	}
 
 	// Voting
