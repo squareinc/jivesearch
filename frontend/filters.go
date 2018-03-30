@@ -222,13 +222,23 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		)
 
 		quote += `<div id="stock_chart" class="pure-u-1"></div>`
+		quote += `<div class="pure-u-1">
+			<div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;">
+				<button id="day" class="pure-button">Day</button>&nbsp;&nbsp;
+				<button id="week" class="pure-button">Week</button>&nbsp;&nbsp;
+				<button id="month" class="pure-button">Month</button>&nbsp;&nbsp;
+				<button id="ytd" class="pure-button">YTD</button>&nbsp;&nbsp;
+				<button id="1yr" class="pure-button">1 Year</button>&nbsp;&nbsp;
+				<button id="5yr" class="pure-button">5 Year</button>
+			</div>
+		</div>`
 
 		if len(q.History) > 0 {
 			b, err := json.Marshal(q.History)
 			if err != nil {
 				fmt.Println("error:", err)
 			}
-			quote += fmt.Sprintf(`<script>var data = %v</script>`, string(b))
+			quote += fmt.Sprintf(`<script>var data = %v;</script>`, string(b))
 		}
 
 		quote = strings.Replace(quote, "\t", "", -1)
