@@ -188,7 +188,7 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 				SELECT 
 				w."id", w."title", w."text", wq."quotes", 
 				wd."labels", wd."aliases", wd."descriptions", wd."claims" 
-				FROM %vwiki w
+				FROM %vwikipedia w
 				LEFT JOIN %vwikiquote wq ON w.id = wq.id
 				LEFT JOIN wikidata wd ON w.id = wd.id			
 				WHERE LOWER(w.title) = LOWER($1)
