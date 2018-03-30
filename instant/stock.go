@@ -46,7 +46,7 @@ func (s *StockQuote) setRegex() answerer {
 	}
 
 	t := strings.Join(triggers, "|")
-	ticker := `[\$]?[a-zA-Z\.]{1,6}` // e.g. BRK.A
+	ticker := `^[\$]?[a-zA-Z]{1,5}[\.]?[a-zA-Z]?` // e.g. BRK.A
 
 	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)?\s?(?P<remainder>%s)$`, t, ticker)))
 	s.regex = append(s.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>%s)\s(?P<trigger>%s)?$`, ticker, t)))
