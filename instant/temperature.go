@@ -35,16 +35,24 @@ func (t *Temperature) setType() answerer {
 
 func (t *Temperature) setRegex() answerer {
 	// a query for "convert" will result in a DigitalStorage answer
+	patterns := []string{
+		`[0-9]*\s?[cf] to [0-9]*\s?[cf]`,
+	}
+
 	triggers := []string{
-		"celsius", "c", "fahrenheit", "f", "temperature converter",
-		"temp", "temperature", // when we get weather this should trigger the current weather
+		"celsius", "fahrenheit", "temperature converter",
+		"temp", "temperature", // when we get weather these 2 should trigger the current weather
 	}
 
 	tr := strings.Join(triggers, "|")
-	tt := fmt.Sprintf("[0-9 ]*?%v to [0-9 ]*?%v", tr, tr)
+	patterns = append(patterns, fmt.Sprintf(`[0-9]*\s?%v to [0-9]*\s?%v`, tr, tr))
 
-	t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)(?P<remainder>.*)$`, tt)))
-	t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, tt)))
+	for _, p := range patterns {
+		t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)(?P<remainder>.*)$`, p)))
+		t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, p)))
+	}
+
+	fmt.Println(patterns)
 
 	return t
 }
