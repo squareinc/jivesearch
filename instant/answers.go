@@ -139,6 +139,7 @@ func (i *Instant) answers() []answerer {
 		&Length{},
 		&Minify{},
 		&Potus{},
+		&Power{},
 		&Prime{},
 		&Random{},
 		&Reverse{},

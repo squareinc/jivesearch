@@ -11,7 +11,7 @@ window.onload = function() {
         // load the new options
         var idx = $("#unit_converter #selector option:selected").index();
         var options = [
-            data_storage, length, speed, temperature
+            data_storage, length, power, speed, temperature
         ]        
 
         $(".unit > select").each(function(i) {
@@ -127,6 +127,18 @@ var length = {
     "Meter":         "1000000000",
     "Kilometer":     "1000000000000",   
     "Nautical Mile": "1852300000000", // Is this as precise as it gets for this one???
+}
+
+// Units below are in Watts
+var power = {
+    "Watt":       "1", 
+    "Kilowatt":   "1000", 
+    "Megawatt":   "1000000", 
+    "Gigawatt":   "1000000000",
+    "Terawatt":   "1000000000000",
+    "Petawatt":   "1000000000000000",
+    "Exawatt":    "1000000000000000000",
+    "Horsepower": "745.69987158227022",
 }
 
 // Units below are in Kilometers/Hour

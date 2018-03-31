@@ -35,12 +35,7 @@ func (p *Power) setType() answerer {
 
 func (p *Power) setRegex() answerer {
 	u := []string{
-		"mile", "yard", "foot", "feet", "inch", "nautical mile",
-		"ft", "in",
-		// https://en.wikipedia.org/wiki/Metre (use the common units that are in boldface)
-		"centimeter", "millimeter", "micrometer", "nanometer", "meter", "kilometer",
-		"centimetre", "millimetre", "micrometre", "nanometre", "metre", "kilometre",
-		"cm", "mm", "nm", "km", //"m", // triggers other instant answers and causes tests to fail
+		"watt", "kilowatt", "megawatt", "gigawatt", "terawatt", "petawatt", "exawatt", "horsepower", "hp",
 	}
 
 	for i, ll := range u {
@@ -59,13 +54,13 @@ func (p *Power) setRegex() answerer {
 
 func (p *Power) solve() answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
-	l.Solution = "length"
-	return l
+	p.Solution = "power"
+	return p
 }
 
 func (p *Power) setCache() answerer {
-	l.Cache = true
-	return l
+	p.Cache = true
+	return p
 }
 
 func (p *Power) tests() []test {
@@ -74,33 +69,21 @@ func (p *Power) tests() []test {
 	d := Data{
 		Type:      typ,
 		Triggered: true,
-		Solution:  "length",
+		Solution:  "power",
 		Cache:     true,
 	}
 
 	tests := []test{
 		{
-			query:    "ins to cms",
+			query:    "horsepower to watt",
 			expected: []Data{d},
 		},
 		{
-			query:    "convert 1 meter to feet",
+			query:    "megawatt to kilowatt",
 			expected: []Data{d},
 		},
 		{
-			query:    "10 meters to foot",
-			expected: []Data{d},
-		},
-		{
-			query:    "cm to m",
-			expected: []Data{d},
-		},
-		{
-			query:    "inches to cm",
-			expected: []Data{d},
-		},
-		{
-			query:    "nm to feets", // why not
+			query:    "terawatt to hp",
 			expected: []Data{d},
 		},
 	}
