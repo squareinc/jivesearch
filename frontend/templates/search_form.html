@@ -19,10 +19,6 @@
     	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
           autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
       <button id="search_submit" type="submit" tabindex="2"><i class="icon-search" aria-hidden="true"></i></button>
-      {{if and .Context.DefaultBang .Context.DefaultBang.Trigger}}
-      <a id="bang_submit" class="pure-button pure-button-primary" tabindex="3" style="font-size:20px;"
-        data-location="!{{.Context.DefaultBang.Trigger}} {{.Context.Q}}">!{{.Context.DefaultBang.Trigger}}</a>
-      {{end}}
     </form>
   </div>
 </div>

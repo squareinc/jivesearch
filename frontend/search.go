@@ -17,15 +17,15 @@ import (
 // Context holds a user's request context so we can pass it to our template's form.
 // Query, Language, and Region are the RAW query string variables.
 type Context struct {
-	Q           string `json:"query"`
-	L           string `json:"-"`
-	R           string `json:"-"`
-	N           string `json:"-"`
-	DefaultBang `json:"-"`
-	Preferred   []language.Tag  `json:"-"`
-	Region      language.Region `json:"-"`
-	Number      int             `json:"-"`
-	Page        int             `json:"-"`
+	Q            string          `json:"query"`
+	L            string          `json:"-"`
+	R            string          `json:"-"`
+	N            string          `json:"-"`
+	DefaultBangs []DefaultBang   `json:"-"`
+	Preferred    []language.Tag  `json:"-"`
+	Region       language.Region `json:"-"`
+	Number       int             `json:"-"`
+	Page         int             `json:"-"`
 }
 
 // DefaultBang is the user's preffered !bang
@@ -46,29 +46,41 @@ type data struct {
 	Results
 }
 
-// we should probably let users pass in a few bangs? &b=g,so,imdb,etc...
-func (f *Frontend) defaultBang(r *http.Request) DefaultBang {
-	var bng DefaultBang
+func (f *Frontend) defaultBangs(r *http.Request) []DefaultBang {
+	var bngs []DefaultBang
 
-	db := r.FormValue("b")
-	if db != "" {
+	for _, db := range strings.Split(strings.TrimSpace(r.FormValue("b")), ",") {
 		for _, b := range f.Bangs.Bangs {
 			for _, t := range b.Triggers {
 				if t == db {
-					bng = DefaultBang{db, b}
+					bngs = append(bngs, DefaultBang{db, b})
 				}
 			}
 		}
-		return bng
 	}
 
-	for _, b := range f.Bangs.Bangs {
-		if b.Name == "Google" {
-			bng = DefaultBang{"g", b}
+	if len(bngs) > 0 {
+		return bngs
+	}
+
+	// defaults if no valid params passed
+	for _, b := range []struct {
+		trigger string
+		name    string
+	}{
+		{"g", "Google"},
+		{"b", "Bing"},
+		{"a", "Amazon"},
+		{"yt", "Youtube"},
+	} {
+		for _, bng := range f.Bangs.Bangs {
+			if bng.Name == b.name {
+				bngs = append(bngs, DefaultBang{b.trigger, bng})
+			}
 		}
 	}
 
-	return bng
+	return bngs
 }
 
 // Detect the user's preferred language(s).
@@ -119,11 +131,11 @@ func (f *Frontend) addQuery(q string) error {
 func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
 	d := data{
 		Context{
-			Q:           strings.TrimSpace(r.FormValue("q")),
-			L:           strings.TrimSpace(r.FormValue("l")),
-			N:           strings.TrimSpace(r.FormValue("n")),
-			R:           strings.TrimSpace(r.FormValue("r")),
-			DefaultBang: f.defaultBang(r),
+			Q:            strings.TrimSpace(r.FormValue("q")),
+			L:            strings.TrimSpace(r.FormValue("l")),
+			N:            strings.TrimSpace(r.FormValue("n")),
+			R:            strings.TrimSpace(r.FormValue("r")),
+			DefaultBangs: f.defaultBangs(r),
 		},
 		Results{
 			Search: &search.Results{},

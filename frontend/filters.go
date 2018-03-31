@@ -24,6 +24,7 @@ import (
 )
 
 var funcMap = template.FuncMap{
+	"Add":              add,
 	"Commafy":          commafy,
 	"SafeHTML":         safeHTML,
 	"Truncate":         truncate,
@@ -38,6 +39,10 @@ var funcMap = template.FuncMap{
 	"WikiLabel":        wikiLabel,
 	"WikiJoin":         wikiJoin,
 	"WikiAmount":       wikiAmount,
+}
+
+func add(x, y int) int {
+	return x + y
 }
 
 // where did this come from?

@@ -14,6 +14,37 @@ import (
 	"golang.org/x/text/language"
 )
 
+func TestAdd(t *testing.T) {
+	type args struct {
+		x int
+		y int
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want int
+	}{
+		{
+			name: "1+1",
+			args: args{1, 1},
+			want: 2,
+		},
+		{
+			name: "103+873",
+			args: args{103, 873},
+			want: 976,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := add(tt.args.x, tt.args.y)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCommafy(t *testing.T) {
 	for _, tt := range []struct {
 		number int64

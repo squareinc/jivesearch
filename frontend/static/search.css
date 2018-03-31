@@ -4,26 +4,6 @@
 #logo {
     font-size: 20px;
 }
-#bang_submit {
-    color: #fff;
-    bottom: 0;
-    right: -55px;
-    cursor: pointer;
-    display: inline-block;
-    position: absolute;
-    z-index: 2;
-    align-items: flex-start;
-    border: 0;
-    outline: 0;
-    height: 38px;
-    width: 45px;
-    font-size: 22px;
-    padding: 7px;
-}
-#bang_submit:hover {
-    text-decoration: none;
-}
-
 #search_container {
     margin-left: 0;
 }

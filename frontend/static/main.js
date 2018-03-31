@@ -18,7 +18,7 @@ $(document).ready(function() {
   });
 
   // redirect to the default !bang
-  $(document).on('click', '#bang_submit', function(){
+  $(document).on('click', '.bang_submit', function(){
     window.location.href = window.location.pathname + replaceQueryParam(queryString(), 'q', $(this).data('location'));
   });
 

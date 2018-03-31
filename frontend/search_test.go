@@ -16,38 +16,55 @@ import (
 	"golang.org/x/text/language"
 )
 
-func TestDefaultBang(t *testing.T) {
-	var google bangs.Bang
-	var bing bangs.Bang
-
+func getDefaultBangs() []DefaultBang {
 	bngs := bangs.New()
+
+	var m = map[string]bangs.Bang{}
 
 	for _, b := range bngs.Bangs {
 		if b.Name == "Google" {
-			google = b
-		} else if b.Name == "Bing" {
-			bing = b
+			m["g"] = b
+		}
+		if b.Name == "Bing" {
+			m["b"] = b
+		}
+		if b.Name == "Amazon" {
+			m["a"] = b
+		}
+		if b.Name == "Youtube" {
+			m["yt"] = b
 		}
 	}
 
-	for k, v := range map[string]bangs.Bang{"Google": google, "Bing": bing} {
-		var empty bangs.Bang
-		if reflect.DeepEqual(v, empty) {
-			t.Fatalf("could not find !bang for %q", k)
+	return []DefaultBang{
+		{"g", m["g"]}, {"b", m["b"]}, {"a", m["a"]}, {"yt", m["yt"]},
+	}
+}
+
+func TestDefaultBangs(t *testing.T) {
+	var bing = DefaultBang{}
+	var so = DefaultBang{}
+	bngs := bangs.New()
+
+	for _, b := range bngs.Bangs {
+		if b.Name == "Bing" {
+			bing = DefaultBang{"b", b}
+		}
+		if b.Name == "Stack Overflow" {
+			so = DefaultBang{"so", b}
 		}
 	}
 
 	for _, c := range []struct {
 		name string
-		bang string
 		args string
-		want DefaultBang
+		want []DefaultBang
 	}{
 		{
-			"default", "Google", "", DefaultBang{"g", google},
+			"default", "", getDefaultBangs(),
 		},
 		{
-			"bing", "Bing", "b", DefaultBang{"b", bing},
+			"custom", "b,so", []DefaultBang{bing, so},
 		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
@@ -64,7 +81,7 @@ func TestDefaultBang(t *testing.T) {
 			q.Add("b", c.args)
 			req.URL.RawQuery = q.Encode()
 
-			got := f.defaultBang(req)
+			got := f.defaultBangs(req)
 
 			if !reflect.DeepEqual(got, c.want) {
 				t.Fatalf("got %+v; want %+v", got, c.want)
@@ -180,15 +197,7 @@ func TestDetectRegion(t *testing.T) {
 }
 
 func TestSearchHandler(t *testing.T) {
-	// get the default !bang
-	var bng bangs.Bang
-	bngs := bangs.New()
-
-	for _, b := range bngs.Bangs {
-		if b.Name == "Google" {
-			bng = b
-		}
-	}
+	db := getDefaultBangs()
 
 	for _, c := range []struct {
 		name     string
@@ -212,13 +221,13 @@ func TestSearchHandler(t *testing.T) {
 				template: "search",
 				data: data{
 					Context: Context{
-						Q:           "some query",
-						L:           "en",
-						DefaultBang: DefaultBang{"g", bng},
-						Preferred:   []language.Tag{language.MustParse("en")},
-						Region:      language.MustParseRegion("US"),
-						Number:      25,
-						Page:        1,
+						Q:            "some query",
+						L:            "en",
+						DefaultBangs: db,
+						Preferred:    []language.Tag{language.MustParse("en")},
+						Region:       language.MustParseRegion("US"),
+						Number:       25,
+						Page:         1,
 					},
 					Results: Results{
 						Instant: instant.Data{
@@ -248,13 +257,13 @@ func TestSearchHandler(t *testing.T) {
 				template: "json",
 				data: data{
 					Context: Context{
-						Q:           "some query",
-						L:           "en",
-						DefaultBang: DefaultBang{"g", bng},
-						Preferred:   []language.Tag{language.MustParse("en")},
-						Region:      language.MustParseRegion("US"),
-						Number:      25,
-						Page:        1,
+						Q:            "some query",
+						L:            "en",
+						DefaultBangs: db,
+						Preferred:    []language.Tag{language.MustParse("en")},
+						Region:       language.MustParseRegion("US"),
+						Number:       25,
+						Page:         1,
 					},
 					Results: Results{
 						Instant: instant.Data{

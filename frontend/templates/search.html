@@ -56,6 +56,22 @@
     {{template "small_logo"}}
     <div class="pure-u-1 pure-u-xl-22-24">
       {{template "search_form" .}}
+
+      {{if .Context.DefaultBangs}}
+      <div class="pure-u-1 pure-u-xl-22-24">
+        <div class="pure-u-1 pure-u-xl-15-24">
+          <div class="pure-u-1">
+            <div class="pure-button-group" role="group" aria-label="bang select" style="margin-bottom:10px;">
+            {{range $i, $bng := .Context.DefaultBangs}}
+              <button class="pure-button bang_submit" tabindex="{{Add $i 3}}" 
+                data-location="!{{$bng.Trigger}} {{$context.Q}}">!{{$bng.Trigger}}<br>{{$bng.Name}}</button>
+            {{end}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {{end}}
+
       {{if .Search.Count}}
       <div id="count" class="pure-u-1 pure-u-xl-22-24">
         {{.Search.Count | Commafy}} results
