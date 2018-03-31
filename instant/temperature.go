@@ -52,8 +52,6 @@ func (t *Temperature) setRegex() answerer {
 		t.regex = append(t.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, p)))
 	}
 
-	fmt.Println(patterns)
-
 	return t
 }
 
