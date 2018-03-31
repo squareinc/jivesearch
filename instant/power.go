@@ -9,31 +9,31 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Length is an instant answer
-type Length struct {
+// Power is an instant answer
+type Power struct {
 	Answer
 }
 
-func (l *Length) setQuery(req *http.Request, q string) answerer {
-	l.Answer.setQuery(req, q)
-	return l
+func (p *Power) setQuery(req *http.Request, q string) answerer {
+	p.Answer.setQuery(req, q)
+	return p
 }
 
-func (l *Length) setUserAgent(req *http.Request) answerer {
-	return l
+func (p *Power) setUserAgent(req *http.Request) answerer {
+	return p
 }
 
-func (l *Length) setLanguage(lang language.Tag) answerer {
-	l.language = lang
-	return l
+func (p *Power) setLanguage(lang language.Tag) answerer {
+	p.language = lang
+	return p
 }
 
-func (l *Length) setType() answerer {
-	l.Type = "unit converter"
-	return l
+func (p *Power) setType() answerer {
+	p.Type = "unit converter"
+	return p
 }
 
-func (l *Length) setRegex() answerer {
+func (p *Power) setRegex() answerer {
 	u := []string{
 		"mile", "yard", "foot", "feet", "inch", "nautical mile",
 		"ft", "in",
@@ -51,24 +51,24 @@ func (l *Length) setRegex() answerer {
 
 	t := fmt.Sprintf(`[0-9]*\s?%v to [0-9]*\s?%v`, lll, lll)
 
-	l.regex = append(l.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)(?P<remainder>.*)$`, t)))
-	l.regex = append(l.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, t)))
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)(?P<remainder>.*)$`, t)))
+	p.regex = append(p.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, t)))
 
-	return l
+	return p
 }
 
-func (l *Length) solve() answerer {
+func (p *Power) solve() answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	l.Solution = "length"
 	return l
 }
 
-func (l *Length) setCache() answerer {
+func (p *Power) setCache() answerer {
 	l.Cache = true
 	return l
 }
 
-func (l *Length) tests() []test {
+func (p *Power) tests() []test {
 	typ := "unit converter"
 
 	d := Data{
