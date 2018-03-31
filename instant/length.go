@@ -44,12 +44,12 @@ func (l *Length) setRegex() answerer {
 	}
 
 	for i, ll := range u {
-		u[i] = ll + "[s]?"
+		u[i] = fmt.Sprintf(`%v[s]{0,1}\b`, ll)
 	}
 
 	lll := strings.Join(u, "|")
 
-	t := fmt.Sprintf("[0-9 ]*?%v to [0-9 ]*?%v", lll, lll)
+	t := fmt.Sprintf(`[0-9]*\s?%v to [0-9]*\s?%v`, lll, lll)
 
 	l.regex = append(l.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)(?P<remainder>.*)$`, t)))
 	l.regex = append(l.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*)(?P<trigger>%s)$`, t)))
@@ -58,6 +58,7 @@ func (l *Length) setRegex() answerer {
 }
 
 func (l *Length) solve() answerer {
+	fmt.Println(l.remainder)
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	l.Solution = "length"
 	return l
