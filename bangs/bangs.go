@@ -214,6 +214,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Hacker News", []string{"hn", "hackernews"},
+			map[string]string{
+				def: "https://hn.algolia.com/?query={{{term}}}&sort=byPopularity&prefix&page=0&dateRange=all&type=story",
+			},
+			[]fn{},
+		},
+		{
 			"Hulu", []string{"hulu"},
 			map[string]string{
 				def: "https://www.hulu.com/search?query={{{term}}}",
