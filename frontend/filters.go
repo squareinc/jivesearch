@@ -18,6 +18,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -250,7 +251,77 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		quote = strings.Replace(quote, "\n", "", -1)
 
 		return quote
+	case *weather.Weather:
+		w := sol.Solution.(*weather.Weather)
 
+		var icon string
+		switch w.Today.Code {
+		case weather.Clear:
+			icon = "icon-sun"
+		case weather.LightClouds:
+			icon = "icon-cloud-sun"
+		case weather.ScatteredClouds:
+			icon = "icon-cloud"
+		case weather.OvercastClouds:
+			icon = "icon-cloud-inv"
+		case weather.Extreme:
+			icon = "icon-cloud-flash-inv"
+		case weather.Rain:
+			icon = "icon-rain"
+		case weather.Snow:
+			icon = "icon-snow"
+		case weather.ThunderStorm:
+			icon = "icon-cloud-flash"
+		case weather.Windy:
+			icon = "icon-windy"
+		default:
+			icon = "icon-sun"
+		}
+
+		var rain = ""
+		if w.Today.Rain > 0 {
+			rain = fmt.Sprintf(`em>Rain:</em> %f<hr style="opacity:0;">`, w.Today.Rain)
+		}
+		var snow = ""
+		if w.Today.Snow > 0 {
+			snow = fmt.Sprintf(`<em>Snow:</em> %f<hr style="opacity:0;">`, w.Today.Snow)
+		}
+
+		weather := fmt.Sprintf(`<div class="pure-u-1">
+			<div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">%v</div>
+			<div class="pure-u-1" style="vertical-align:top;">
+				<i class="%v icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align: top;"></i>
+				<span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">%v</span>
+				<span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
+					<i class="icon-fahrenheit" aria-hidden="true"></i>
+					<hr style="display:none;">
+					<i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
+				</span>
+				<span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;">
+					<em>H</em> %v&deg;
+					<hr style="opacity:0;">
+					<em>L</em> %v&deg;
+				</span>
+				<span style="display:inline-block;vertical-align:top;margin-left:25px;">
+					%v
+					%v
+					<hr style="opacity:0;">
+					<em>Wind:</em> %v MPH
+					<hr style="opacity:0;">
+					<em>Humidity:</em> %v%%
+					<hr style="opacity:0;">
+					<em>Clouds:</em> %v%%
+				</span>
+			</div>			
+		</div>`,
+			w.City, icon, w.Today.Temperature, w.Today.High, w.Today.Low,
+			rain, snow, w.Today.Wind, w.Today.Humidity, w.Today.Clouds,
+		)
+
+		weather = strings.Replace(weather, "\t", "", -1)
+		weather = strings.Replace(weather, "\n", "", -1)
+
+		return weather
 	case wikipedia.Wiktionary: // Wiktionary
 		createLink := func(lang, word, style string) string {
 			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
@@ -317,6 +388,17 @@ func source(answer instant.Data) string {
 		txt, u = "USPS", "https://www.usps.com"
 		img = `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "weather":
+		w := answer.Solution.(*weather.Weather)
+		switch w.Provider {
+		case weather.OpenWeatherMapProvider:
+			txt, u = "OpenWeatherMap", "http://openweathermap.org"
+			img = `<img width="12" height="12" alt="openweathermap" src="/static/favicons/openweathermap.ico"/>`
+			f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		default:
+			log.Debug.Printf("unknown weather provider %v\n", w.Provider)
+		}
+
 	case "wikidata":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`

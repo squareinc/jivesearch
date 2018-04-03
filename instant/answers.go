@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/weather"
+
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -24,6 +26,7 @@ type Instant struct {
 	StockQuoteFetcher    stock.Fetcher
 	UPSFetcher           parcel.Fetcher
 	USPSFetcher          parcel.Fetcher
+	WeatherFetcher       weather.Fetcher
 	WikipediaFetcher     wikipedia.Fetcher
 }
 
@@ -150,6 +153,7 @@ func (i *Instant) answers() []answerer {
 		&UPS{Fetcher: i.UPSFetcher},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
+		&Weather{Fetcher: i.WeatherFetcher},
 		&Wikipedia{Fetcher: i.WikipediaFetcher}, // always keep this last so that Wikipedia Box will trigger if none other
 	}
 }

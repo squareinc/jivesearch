@@ -8,6 +8,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
 
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -375,6 +376,32 @@ func TestInstantFormatter(t *testing.T) {
 			want: `<div class="pure-u-1"><div class="pure-u-1" style="font-size:20px;">Some Company</div><div class="pure-u-1" style="font-size:14px;">NYSE: TCKR <span id="quote_time" style="font-size:12px;">March 3, 2018 9:45 AM UTC</span></div></div><div class="pure-u-1" style="font-size:40px;">12.43 <span style="font-size:22px;"><span class="quote-arrow quote-arrow-down"></span><span style="color:#C80000;"> -0.42 (-1.03%)</span></span></div><div id="stock_chart" class="pure-u-1"></div><div class="pure-u-1"><div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;"><button id="day" class="pure-button" disabled>Day</button>&nbsp;&nbsp;<button id="week" class="pure-button">Week</button>&nbsp;&nbsp;<button id="month" class="pure-button">Month</button>&nbsp;&nbsp;<button id="ytd" class="pure-button">YTD</button>&nbsp;&nbsp;<button id="1yr" class="pure-button">1 Year</button>&nbsp;&nbsp;<button id="5yr" class="pure-button">5 Year</button></div></div><script>var data = [{"date":"2013-03-26T00:00:00Z","open":60.5276,"close":59.9679,"high":60.5797,"low":59.8891,"volume":73428208}];</script>`,
 		},
 		{
+			name: "weather",
+			args: args{
+				instant.Data{
+					Type: "weather",
+					Solution: &weather.Weather{
+						City: "Centerville",
+						Today: weather.Today{
+							Code:        weather.ScatteredClouds,
+							Temperature: 59,
+							Wind:        4.7,
+							Clouds:      40,
+							Rain:        0,
+							Snow:        0,
+							Pressure:    1014,
+							Humidity:    33,
+							Low:         55.4,
+							High:        62.6,
+						},
+						Provider: weather.OpenWeatherMapProvider,
+					},
+				},
+				language.English,
+			},
+			want: `<div class="pure-u-1"><div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">Centerville</div><div class="pure-u-1" style="vertical-align:top;"><i class="icon-cloud icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align: top;"></i><span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">59</span><span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;"><i class="icon-fahrenheit" aria-hidden="true"></i><hr style="display:none;"><i class="icon-celsius" aria-hidden="true" style="display:none;"></i></span><span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;"><em>H</em> 62.6&deg;<hr style="opacity:0;"><em>L</em> 55.4&deg;</span><span style="display:inline-block;vertical-align:top;margin-left:25px;"><hr style="opacity:0;"><em>Wind:</em> 4.7 MPH<hr style="opacity:0;"><em>Humidity:</em> 33%<hr style="opacity:0;"><em>Clouds:</em> 40%</span></div></div>`,
+		},
+		{
 			name: "tracking package",
 			args: args{
 				instant.Data{
@@ -521,6 +548,18 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/> <a href="https://www.usps.com">USPS</a>`,
+		},
+		{
+			name: "weather",
+			args: args{
+				instant.Data{
+					Type: "weather",
+					Solution: &weather.Weather{
+						Provider: weather.OpenWeatherMapProvider,
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="openweathermap" src="/static/favicons/openweathermap.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
 		},
 		{
 			name: "wikidata",

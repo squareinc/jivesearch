@@ -10,6 +10,8 @@
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
+      {{else if eq .Instant.Type "weather"}}
+      <link rel="stylesheet" href="/static/instant/weather/weather.css">
       {{end}}
     {{end}}
   {{end}}

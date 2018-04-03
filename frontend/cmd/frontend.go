@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/weather"
+
 	"time"
 
 	"github.com/abursavich/nett"
@@ -177,6 +179,10 @@ func main() {
 			HTTPClient: httpClient,
 			User:       v.GetString("usps.user"),
 			Password:   v.GetString("usps.password"),
+		},
+		WeatherFetcher: &weather.OpenWeatherMap{
+			HTTPClient: httpClient,
+			Key:        v.GetString("openweathermap.key"),
 		},
 		WikipediaFetcher: &wikipedia.PostgreSQL{
 			DB: db,

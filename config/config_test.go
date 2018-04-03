@@ -86,6 +86,9 @@ func TestSetDefaults(t *testing.T) {
 		{"usps.user", "user"},
 		{"usps.password", "password"},
 
+		// OpenWeatherMap API settings
+		{"openweathermap.key", "key"},
+
 		// wikipedia settings
 		{"wikipedia.truncate", 250},
 	}

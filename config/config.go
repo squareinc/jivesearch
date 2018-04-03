@@ -106,6 +106,9 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("usps.user", "user")
 	cfg.SetDefault("usps.password", "password")
 
+	// OpenWeatherMap API settings
+	cfg.SetDefault("openweathermap.key", "key")
+
 	// wikipedia settings
 	truncate := 250
 	cfg.SetDefault("wikipedia.truncate", truncate) // chars

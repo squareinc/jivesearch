@@ -12,6 +12,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
 )
@@ -27,6 +28,7 @@ func TestDetect(t *testing.T) {
 		StockQuoteFetcher:    &mockStockQuoteFetcher{},
 		UPSFetcher:           &mockUPSFetcher{},
 		USPSFetcher:          &mockUSPSFetcher{},
+		WeatherFetcher:       &mockWeatherFetcher{},
 		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
 
@@ -318,6 +320,30 @@ func (u *mockUSPSFetcher) Fetch(trackingNumber string) (parcel.Response, error) 
 	}
 
 	return r, nil
+}
+
+// mock weather Fetcher
+type mockWeatherFetcher struct{}
+
+func (m *mockWeatherFetcher) FetchByZip(zip int) (*weather.Weather, error) {
+	w := &weather.Weather{
+		City: "Centerville",
+		Today: weather.Today{
+			Code:        weather.ScatteredClouds,
+			Temperature: 59,
+			Wind:        4.7,
+			Clouds:      40,
+			Rain:        0,
+			Snow:        0,
+			Pressure:    1014,
+			Humidity:    33,
+			Low:         55.4,
+			High:        62.6,
+		},
+		Provider: weather.OpenWeatherMapProvider,
+	}
+
+	return w, nil
 }
 
 // mock Wikipedia Fetcher
