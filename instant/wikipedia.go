@@ -106,7 +106,7 @@ type Age struct {
 
 // TODO: Return the Title (and perhaps Image???) as
 // confirmation that we fetched the right asset.
-func (w *Wikipedia) solve() answerer {
+func (w *Wikipedia) solve(r *http.Request) answerer {
 	item, err := w.Fetch(w.remainder, w.language)
 	if err != nil {
 		w.Err = err

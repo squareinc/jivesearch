@@ -48,7 +48,7 @@ func (b *BirthStone) setRegex() answerer {
 	return b
 }
 
-func (b *BirthStone) solve() answerer {
+func (b *BirthStone) solve(r *http.Request) answerer {
 	switch b.remainder {
 	case "january":
 		b.Solution = "Garnet"

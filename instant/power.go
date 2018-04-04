@@ -52,7 +52,7 @@ func (p *Power) setRegex() answerer {
 	return p
 }
 
-func (p *Power) solve() answerer {
+func (p *Power) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	p.Solution = "power"
 	return p

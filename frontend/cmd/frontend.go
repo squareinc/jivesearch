@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/weather"
 
 	"time"
@@ -156,6 +157,9 @@ func main() {
 
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
+		LocationFetcher: &location.MaxMind{
+			DB: v.GetString("maxmind.database"),
+		},
 		FedExFetcher: &parcel.FedEx{
 			Account:  v.GetString("fedex.account"),
 			Password: v.GetString("fedex.password"),

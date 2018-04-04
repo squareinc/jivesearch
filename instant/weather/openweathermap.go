@@ -30,7 +30,7 @@ type openWeatherMapResponse struct {
 	Base string `json:"base"`
 	Main struct {
 		Temp     float64 `json:"temp"`
-		Pressure int     `json:"pressure"`
+		Pressure float64 `json:"pressure"`
 		Humidity int     `json:"humidity"`
 		TempMin  float64 `json:"temp_min"`
 		TempMax  float64 `json:"temp_max"`
@@ -100,12 +100,27 @@ func (r *openWeatherMapResponse) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// FetchByLatLong retrieves weather for a latitude/longitude location from the OpenWeatherMap api
+func (o *OpenWeatherMap) FetchByLatLong(lat, long float64) (*Weather, error) {
+	w := openWeatherMapResponse{}
+
+	u := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?APPID=%v&lat=%v&lon=%v&units=imperial", o.Key, lat, long)
+
+	resp, err := o.HTTPClient.Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&w)
+	return w.Weather, err
+}
+
 // FetchByZip retrieves weather for a zipcode from the OpenWeatherMap api
 func (o *OpenWeatherMap) FetchByZip(zip int) (*Weather, error) {
 	w := openWeatherMapResponse{}
 
 	u := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?APPID=%v&zip=%d,us&units=imperial", o.Key, zip)
-	fmt.Println(u)
 
 	resp, err := o.HTTPClient.Get(u)
 	if err != nil {

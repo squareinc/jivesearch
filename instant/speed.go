@@ -67,7 +67,7 @@ func (s *Speed) setRegex() answerer {
 	return s
 }
 
-func (s *Speed) solve() answerer {
+func (s *Speed) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	s.Solution = "speed"
 	return s

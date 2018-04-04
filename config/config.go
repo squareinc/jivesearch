@@ -97,6 +97,9 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("fedex.key", "key")
 	cfg.SetDefault("fedex.meter", "meter")
 
+	// MaxMind geolocation DB
+	cfg.SetDefault("maxmind.database", "/usr/share/GeoIP/GeoLite2-City.mmdb")
+
 	// UPS package tracking API settings
 	cfg.SetDefault("ups.user", "user")
 	cfg.SetDefault("ups.password", "password")

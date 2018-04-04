@@ -49,7 +49,7 @@ func (r *Random) setRegex() answerer {
 	return r
 }
 
-func (r *Random) solve() answerer {
+func (r *Random) solve(req *http.Request) answerer {
 	matches := make(map[string]int)
 	matches["min"], matches["max"] = 1, 100 // if no range specified
 

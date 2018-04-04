@@ -45,7 +45,7 @@ func (r *Reverse) setRegex() answerer {
 	return r
 }
 
-func (r *Reverse) solve() answerer {
+func (r *Reverse) solve(req *http.Request) answerer {
 	for _, c := range []string{`"`, `'`} {
 		r.remainder = strings.TrimPrefix(r.remainder, c)
 		r.remainder = strings.TrimSuffix(r.remainder, c)

@@ -47,7 +47,7 @@ func (f *Frequency) setRegex() answerer {
 	return f
 }
 
-func (f *Frequency) solve() answerer {
+func (f *Frequency) solve(r *http.Request) answerer {
 	var char string
 	var wrd string
 

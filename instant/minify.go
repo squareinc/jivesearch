@@ -46,7 +46,7 @@ func (m *Minify) setRegex() answerer {
 	return m
 }
 
-func (m *Minify) solve() answerer {
+func (m *Minify) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	return m
 }

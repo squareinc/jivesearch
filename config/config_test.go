@@ -77,6 +77,9 @@ func TestSetDefaults(t *testing.T) {
 		{"fedex.key", "key"},
 		{"fedex.meter", "meter"},
 
+		// MaxMind geolocation DB
+		{"maxmind.database", "/usr/share/GeoIP/GeoLite2-City.mmdb"},
+
 		// UPS package tracking API settings
 		{"ups.user", "user"},
 		{"ups.password", "password"},

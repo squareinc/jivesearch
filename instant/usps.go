@@ -46,7 +46,7 @@ func (u *USPS) setRegex() answerer {
 	return u
 }
 
-func (u *USPS) solve() answerer {
+func (u *USPS) solve(req *http.Request) answerer {
 	tn := strings.ToUpper(u.triggerWord)
 
 	r, err := u.Fetch(tn)

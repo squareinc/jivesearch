@@ -54,7 +54,7 @@ func (s *StockQuote) setRegex() answerer {
 	return s
 }
 
-func (s *StockQuote) solve() answerer {
+func (s *StockQuote) solve(r *http.Request) answerer {
 	ticker := strings.ToUpper(strings.Replace(s.remainder, "$", "", -1))
 
 	resp, err := s.Fetcher.Fetch(ticker)

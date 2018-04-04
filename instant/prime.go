@@ -49,7 +49,7 @@ func (p *Prime) setRegex() answerer {
 	return p
 }
 
-func (p *Prime) solve() answerer {
+func (p *Prime) solve(r *http.Request) answerer {
 	var start, end int
 
 	matches := rePrime.FindStringSubmatch(p.remainder)

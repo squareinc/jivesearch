@@ -3,6 +3,7 @@ package weather
 
 // Fetcher retrieves the current and forecasted weather
 type Fetcher interface {
+	FetchByLatLong(lat, long float64) (*Weather, error)
 	FetchByZip(zip int) (*Weather, error)
 }
 

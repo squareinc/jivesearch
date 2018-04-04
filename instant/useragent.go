@@ -52,7 +52,7 @@ func (u *UserAgent) setRegex() answerer {
 	return u
 }
 
-func (u *UserAgent) solve() answerer {
+func (u *UserAgent) solve(r *http.Request) answerer {
 	u.Solution = u.userAgent
 	return u
 }

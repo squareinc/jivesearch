@@ -45,7 +45,7 @@ func (f *FedEx) setRegex() answerer {
 	return f
 }
 
-func (f *FedEx) solve() answerer {
+func (f *FedEx) solve(req *http.Request) answerer {
 	r, err := f.Fetch(f.triggerWord)
 	if err != nil {
 		f.Err = err

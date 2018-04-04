@@ -101,7 +101,7 @@ func tagger(txt string) string {
 	return tag
 }
 
-func (s *StackOverflow) solve() answerer {
+func (s *StackOverflow) solve(r *http.Request) answerer {
 	a := StackOverflowAnswer{}
 
 	resp, err := s.Fetch(s.remainder, []string{tagger(s.triggerWord)})

@@ -52,7 +52,7 @@ func (c *Characters) setRegex() answerer {
 	return c
 }
 
-func (c *Characters) solve() answerer {
+func (c *Characters) solve(r *http.Request) answerer {
 	for _, ch := range []string{`"`, `'`} {
 		c.remainder = strings.TrimPrefix(c.remainder, ch)
 		c.remainder = strings.TrimSuffix(c.remainder, ch)

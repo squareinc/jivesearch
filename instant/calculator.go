@@ -46,7 +46,7 @@ func (c *Calculator) setRegex() answerer {
 	return c
 }
 
-func (c *Calculator) solve() answerer {
+func (c *Calculator) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	return c
 }

@@ -45,7 +45,7 @@ func (c *Coin) setRegex() answerer {
 	return c
 }
 
-func (c *Coin) solve() answerer {
+func (c *Coin) solve(r *http.Request) answerer {
 	choices := []string{"Heads", "Tails"}
 
 	c.Solution = choices[rand.Intn(2)]

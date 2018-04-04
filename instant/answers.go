@@ -2,17 +2,19 @@
 package instant
 
 import (
+	"errors"
 	"math/rand"
+	"net"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/weather"
-
+	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -22,6 +24,7 @@ import (
 type Instant struct {
 	QueryVar             string
 	FedExFetcher         parcel.Fetcher
+	LocationFetcher      location.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher
 	StockQuoteFetcher    stock.Fetcher
 	UPSFetcher           parcel.Fetcher
@@ -38,7 +41,7 @@ type answerer interface {
 	setType() answerer
 	setRegex() answerer
 	trigger() bool
-	solve() answerer
+	solve(r *http.Request) answerer
 	setCache() answerer
 	solution() Data
 	tests() []test
@@ -70,7 +73,7 @@ func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
 	for _, ia := range i.answers() {
 		ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
 		if triggered := ia.trigger(); triggered {
-			ia.setType().setCache().solve()
+			ia.setType().setCache().solve(r)
 			return ia.solution()
 		}
 	}
@@ -79,12 +82,57 @@ func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
 }
 
 // setQuery sets the query field
-// If future answers need custom setQuery methods we
-// could implement same model as we do for setTriggerFuncs()
 func (a *Answer) setQuery(r *http.Request, qv string) {
 	q := strings.ToLower(strings.TrimSpace(r.FormValue(qv)))
 	q = strings.Trim(q, "?")
 	a.query = strings.Join(strings.Fields(q), " ") // Replace multiple whitespace w/ single whitespace
+}
+
+func getIPAddress(r *http.Request) net.IP {
+	maxCidrBlocks := []string{
+		"127.0.0.1/8", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16",
+		"169.254.0.0/16", "::1/128", "fc00::/7", "fe80::/10",
+	}
+
+	cidrs := make([]*net.IPNet, len(maxCidrBlocks))
+	for i, maxCidrBlock := range maxCidrBlocks {
+		_, cidr, _ := net.ParseCIDR(maxCidrBlock)
+		cidrs[i] = cidr
+	}
+
+	isPrivateAddress := func(address string) (bool, error) {
+		ipAddress := net.ParseIP(address)
+		if ipAddress == nil {
+			return false, errors.New("is private address")
+		}
+
+		for i := range cidrs {
+			if cidrs[i].Contains(ipAddress) {
+				return true, nil
+			}
+		}
+
+		return false, nil
+	}
+
+	// Check X-Forward-For and X-Real-IP first
+	var ip string
+	for _, h := range []string{"X-Forwarded-For", "X-Real-IP"} {
+		for _, address := range strings.Split(r.Header.Get(h), ",") {
+			ip = strings.TrimSpace(address)
+			isPrivate, err := isPrivateAddress(ip)
+			if !isPrivate && err == nil {
+				return net.ParseIP(ip)
+			}
+		}
+	}
+
+	ip = r.RemoteAddr
+	if strings.ContainsRune(r.RemoteAddr, ':') {
+		ip, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
+
+	return net.ParseIP(ip)
 }
 
 // trigger executes the regex for an instant answer
@@ -123,6 +171,7 @@ func (a *Answer) solution() Data {
 type test struct {
 	query     string
 	userAgent string
+	ip        net.IP
 	expected  []Data
 }
 
@@ -153,7 +202,7 @@ func (i *Instant) answers() []answerer {
 		&UPS{Fetcher: i.UPSFetcher},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
-		&Weather{Fetcher: i.WeatherFetcher},
+		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
 		&Wikipedia{Fetcher: i.WikipediaFetcher}, // always keep this last so that Wikipedia Box will trigger if none other
 	}
 }

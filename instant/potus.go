@@ -62,7 +62,7 @@ func (p *Potus) setRegex() answerer {
 	return p
 }
 
-func (p *Potus) solve() answerer {
+func (p *Potus) solve(r *http.Request) answerer {
 	// maybe a better solution is to have
 	// a set of non-trigger funcs???
 	if strings.Contains(p.query, "vice") {

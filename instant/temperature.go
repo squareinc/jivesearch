@@ -55,7 +55,7 @@ func (t *Temperature) setRegex() answerer {
 	return t
 }
 
-func (t *Temperature) solve() answerer {
+func (t *Temperature) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	t.Solution = "temperature"
 	return t

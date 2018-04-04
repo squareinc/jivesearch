@@ -50,7 +50,7 @@ func (s *Stats) setRegex() answerer {
 	return s
 }
 
-func (s *Stats) solve() answerer {
+func (s *Stats) solve(r *http.Request) answerer {
 	// get all the numbers..this regexp will correctly grab e notation
 	numbersStrings := reStats.FindAllString(s.remainder, -1)
 	numbers := []float64{}

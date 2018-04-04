@@ -57,7 +57,7 @@ func (l *Length) setRegex() answerer {
 	return l
 }
 
-func (l *Length) solve() answerer {
+func (l *Length) solve(r *http.Request) answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	l.Solution = "length"
 	return l

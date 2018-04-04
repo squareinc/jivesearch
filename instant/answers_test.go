@@ -2,6 +2,7 @@ package instant
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -9,11 +10,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
+	geoip2 "github.com/oschwald/geoip2-golang"
 	"golang.org/x/text/language"
 )
 
@@ -24,6 +27,7 @@ func TestDetect(t *testing.T) {
 	i := Instant{
 		QueryVar:             "q",
 		FedExFetcher:         &mockFedExFetcher{},
+		LocationFetcher:      &mockLocationFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
 		StockQuoteFetcher:    &mockStockQuoteFetcher{},
 		UPSFetcher:           &mockUPSFetcher{},
@@ -52,6 +56,7 @@ func TestDetect(t *testing.T) {
 			}
 
 			r.Header.Set("User-Agent", c.userAgent)
+			r.Header.Set("X-Forwarded-For", c.ip.String())
 
 			got := i.Detect(r, language.English)
 
@@ -73,6 +78,67 @@ func TestDetect(t *testing.T) {
 				}
 				t.FailNow()
 			}
+		})
+	}
+}
+
+func TestGetIPAddress(t *testing.T) {
+	type args struct {
+		remoteAddr    string
+		xRealIP       string
+		xForwardedFor []string
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want net.IP
+	}{
+		{
+			"no header",
+			args{remoteAddr: "161.59.224.138"},
+			net.ParseIP("161.59.224.138"),
+		},
+		{
+			"x-real-ip",
+			args{xRealIP: "161.59.224.139"},
+			net.ParseIP("161.59.224.139"),
+		},
+		{
+			"x-forwarded-for",
+			args{xForwardedFor: []string{"161.59.224.140"}},
+			net.ParseIP("161.59.224.140"),
+		},
+		{
+			"remote addr and x-forwarded-for",
+			args{remoteAddr: "161.59.224.138", xForwardedFor: []string{"161.59.224.140"}},
+			net.ParseIP("161.59.224.140"),
+		},
+		{
+			"multiple x-forwarded-for",
+			args{xForwardedFor: []string{"161.59.224.140", "161.59.224.141"}},
+			net.ParseIP("161.59.224.140"),
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			h := http.Header{}
+
+			h.Set("X-Real-IP", tt.args.xRealIP)
+			for _, address := range tt.args.xForwardedFor {
+				h.Add("X-Forwarded-For", address)
+			}
+
+			r := &http.Request{
+				RemoteAddr: tt.args.remoteAddr,
+				Header:     h,
+			}
+
+			got := getIPAddress(r)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+
 		})
 	}
 }
@@ -107,6 +173,15 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 	}
 
 	return r, nil
+}
+
+// mock location fetcher
+type mockLocationFetcher struct{}
+
+func (l *mockLocationFetcher) Fetch(ip net.IP) (*geoip2.City, error) {
+	c := &geoip2.City{}
+	c.City.Names = map[string]string{"en": "Someville"}
+	return c, nil
 }
 
 // mock Stack Overflow Fetcher
@@ -323,7 +398,30 @@ func (u *mockUSPSFetcher) Fetch(trackingNumber string) (parcel.Response, error) 
 }
 
 // mock weather Fetcher
-type mockWeatherFetcher struct{}
+type mockWeatherFetcher struct {
+	location.Fetcher
+}
+
+func (m *mockWeatherFetcher) FetchByLatLong(lat, long float64) (*weather.Weather, error) {
+	w := &weather.Weather{
+		City: "Someville",
+		Today: weather.Today{
+			Code:        weather.ScatteredClouds,
+			Temperature: 59,
+			Wind:        4.7,
+			Clouds:      40,
+			Rain:        0,
+			Snow:        0,
+			Pressure:    1014,
+			Humidity:    33,
+			Low:         55.4,
+			High:        62.6,
+		},
+		Provider: weather.OpenWeatherMapProvider,
+	}
+
+	return w, nil
+}
 
 func (m *mockWeatherFetcher) FetchByZip(zip int) (*weather.Weather, error) {
 	w := &weather.Weather{

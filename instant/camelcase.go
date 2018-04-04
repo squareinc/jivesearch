@@ -46,7 +46,7 @@ func (c *CamelCase) setRegex() answerer {
 	return c
 }
 
-func (c *CamelCase) solve() answerer {
+func (c *CamelCase) solve(r *http.Request) answerer {
 	titled := []string{}
 	for _, w := range strings.Fields(c.remainder) {
 		titled = append(titled, strings.Title(w))
