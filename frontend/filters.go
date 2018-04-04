@@ -290,7 +290,7 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		weather := fmt.Sprintf(`<div class="pure-u-1">
 			<div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">%v</div>
 			<div class="pure-u-1" style="vertical-align:top;">
-				<i class="%v icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align: top;"></i>
+				<i class="%v icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;margin-right:10px;"></i>
 				<span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">%v</span>
 				<span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
 					<i class="icon-fahrenheit" aria-hidden="true"></i>
