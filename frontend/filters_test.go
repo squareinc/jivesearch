@@ -214,23 +214,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: `basic string`,
 		},
 		{
-			name: "stackoverflow",
-			args: args{
-				instant.Data{
-					Solution: instant.StackOverflowAnswer{
-						Question: "A made up question",
-						Link:     "https://stackoverflow.com/questions/90210/a-made-up-question",
-						Answer: instant.SOAnswer{
-							User: "Roger Roger",
-							Text: "A clever answer",
-						},
-					},
-				},
-				language.English,
-			},
-			want: `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/questions/90210/a-made-up-question"><em>A made up question</em></a><br>A clever answer`,
-		},
-		{
 			name: "kg",
 			args: args{
 				instant.Data{

@@ -114,12 +114,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 	switch sol.Solution.(type) {
 	case string:
 		return sol.Solution.(string)
-	case instant.StackOverflowAnswer:
-		a := sol.Solution.(instant.StackOverflowAnswer)
-		return fmt.Sprintf(
-			`<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="%v"><em>%v</em></a><br>%v`,
-			a.Link, a.Question, a.Answer.Text,
-		)
 	case []wikipedia.Quantity: // e.g. height, weight, etc.
 		i := sol.Solution.([]wikipedia.Quantity)
 		if len(i) == 0 {
@@ -413,7 +407,6 @@ func source(answer instant.Data) string {
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
 		log.Debug.Printf("unknown instant answer type %v\n", answer.Type)
-		f = ""
 	}
 
 	return f
