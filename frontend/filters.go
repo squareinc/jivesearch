@@ -138,17 +138,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 	case instant.Death:
 		d := sol.Solution.(instant.Death)
 		return wikiDateTime(d.Death)
-	case []string: // Wikiquote
-		var s string
-		for i, q := range sol.Solution.([]string) {
-			if i > 3 {
-				break
-			}
-
-			s += fmt.Sprintf(`<p><span style="font-size:14px;font-style:italic;">%v</span></p>`, q)
-		}
-
-		return s
 	case parcel.Response:
 		a := sol.Solution.(parcel.Response)
 		h := fmt.Sprintf(

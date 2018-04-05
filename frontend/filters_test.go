@@ -294,16 +294,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: `May 14, 2015`,
 		},
 		{
-			name: "wikiquote",
-			args: args{
-				instant.Data{
-					Solution: []string{"fantastic quote", "such good quote"},
-				},
-				language.English,
-			},
-			want: `<p><span style="font-size:14px;font-style:italic;">fantastic quote</span></p><p><span style="font-size:14px;font-style:italic;">such good quote</span></p>`,
-		},
-		{
 			name: "wiktionary",
 			args: args{
 				instant.Data{

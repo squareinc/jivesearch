@@ -175,6 +175,17 @@
                 </div>
                 {{template "source" .}}
               </div>
+              {{else if eq .Instant.Type "wikiquote"}}
+              <div id="answer" class="pure-u-1">
+                <div style="margin:15px;margin-bottom:5px;">
+                {{range $i, $q := .Instant.Solution}}
+                  {{if le $i 3}}
+                  <p><span style="font-size:14px;font-style:italic;">{{$q}}</span></p>
+                  {{end}}
+                {{end}}
+                </div>
+                {{template "source" .}}
+              </div>
               {{else if .Instant.Solution}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">
