@@ -27,10 +27,12 @@ import (
 var funcMap = template.FuncMap{
 	"Add":              add,
 	"Commafy":          commafy,
+	"Percent":          percent,
 	"SafeHTML":         safeHTML,
 	"Truncate":         truncate,
 	"HMACKey":          hmacKey,
 	"InstantFormatter": instantFormatter,
+	"JSONMarshal":      jsonMarshal,
 	"Source":           source,
 	"Now":              now,
 	"WikipediaItem":    wikipediaItem,
@@ -47,29 +49,20 @@ func add(x, y int) int {
 }
 
 // where did this come from?
-func commafy(v int64) string {
-	sign := ""
-	if v < 0 {
-		sign = "-"
-		v = 0 - v
+func commafy(v interface{}) string {
+	switch v.(type) {
+	case int64:
+		return humanize.Comma(v.(int64))
+	case float64:
+		return humanize.Commaf(v.(float64))
+	default:
+		log.Debug.Printf("unknown type %T\n", reflect.TypeOf(v))
+		return ""
 	}
-	parts := []string{"", "", "", "", "", "", ""}
-	j := len(parts) - 1
+}
 
-	for v > 999 {
-		parts[j] = strconv.FormatInt(v%1000, 10)
-
-		switch len(parts[j]) {
-		case 2:
-			parts[j] = "0" + parts[j]
-		case 1:
-			parts[j] = "00" + parts[j]
-		}
-		v = v / 1000
-		j--
-	}
-	parts[j] = strconv.Itoa(int(v))
-	return sign + strings.Join(parts[j:], ",")
+func percent(v float64) string {
+	return strconv.FormatFloat(v*100, 'f', 2, 64) + "%"
 }
 
 func safeHTML(value string) template.HTML {
@@ -182,58 +175,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		}
 
 		return h
-	case *stock.Quote:
-		q := sol.Solution.(*stock.Quote)
-
-		quote := fmt.Sprintf(`<div class="pure-u-1">
-			<div class="pure-u-1" style="font-size:20px;">%v</div>
-			<div class="pure-u-1" style="font-size:14px;">%v: %v <span id="quote_time" style="font-size:12px;">%v</span></div>
-		</div>`, q.Name, q.Exchange, q.Ticker, q.Time.Format("January 2, 2006 3:04 PM MST"))
-
-		arrow := "quote-arrow-up"
-		changeColor := "#006D21"
-		if q.Last.Change < 0 {
-			arrow = "quote-arrow-down"
-			changeColor = "#C80000"
-		}
-
-		change := strconv.FormatFloat(q.Last.Change, 'f', 2, 64)
-		percent := strconv.FormatFloat(q.Last.ChangePercent*100, 'f', 2, 64)
-
-		quote += fmt.Sprintf(
-			`<div class="pure-u-1" style="font-size:40px;">%v 
-				<span style="font-size:22px;">
-					<span class="quote-arrow %v"></span>
-					<span style="color:%v;"> %v (%v%%)</span>
-				</span>
-			</div>`,
-			humanize.Commaf(q.Last.Price), arrow, changeColor, change, percent,
-		)
-
-		quote += `<div id="stock_chart" class="pure-u-1"></div>`
-		quote += `<div class="pure-u-1">
-			<div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;">
-				<button id="day" class="pure-button" disabled>Day</button>&nbsp;&nbsp;
-				<button id="week" class="pure-button">Week</button>&nbsp;&nbsp;
-				<button id="month" class="pure-button">Month</button>&nbsp;&nbsp;
-				<button id="ytd" class="pure-button">YTD</button>&nbsp;&nbsp;
-				<button id="1yr" class="pure-button">1 Year</button>&nbsp;&nbsp;
-				<button id="5yr" class="pure-button">5 Year</button>
-			</div>
-		</div>`
-
-		if len(q.History) > 0 {
-			b, err := json.Marshal(q.History)
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-			quote += fmt.Sprintf(`<script>var data = %v;</script>`, string(b))
-		}
-
-		quote = strings.Replace(quote, "\t", "", -1)
-		quote = strings.Replace(quote, "\n", "", -1)
-
-		return quote
 	case *weather.Weather:
 		w := sol.Solution.(*weather.Weather)
 
@@ -334,6 +275,14 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
 		return ""
 	}
+}
+
+func jsonMarshal(v interface{}) template.JS {
+	b, err := json.Marshal(v)
+	if err != nil {
+		log.Debug.Println("error:", err)
+	}
+	return template.JS(b)
 }
 
 // source will show the source of an instant answer if data comes from a 3rd party

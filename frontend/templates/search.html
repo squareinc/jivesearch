@@ -175,6 +175,46 @@
                 </div>
                 {{template "source" .}}
               </div>
+              {{else if eq .Instant.Type "stock quote"}}
+                {{if .Instant.Solution}}
+                <div id="answer" class="pure-u-1">
+                  <div style="margin:15px;margin-bottom:5px;">
+                    <div class="pure-u-1">
+                      <div class="pure-u-1" style="font-size:20px;">{{.Instant.Solution.Name}}</div>
+                      <div class="pure-u-1" style="font-size:14px;">
+                        {{.Instant.Solution.Exchange}}: {{.Instant.Solution.Ticker}} 
+                        <span id="quote_time" style="font-size:12px;">{{.Instant.Solution.Time.Format "January 2, 2006 3:04 PM MST"}}</span>
+                      </div>
+                    </div>
+                    <div class="pure-u-1" style="font-size:40px;">{{.Instant.Solution.Last.Price|Commafy}} 
+                      <span style="font-size:22px;">
+                        {{if ge .Instant.Solution.Last.Change 0.0}}
+                          <span class="quote-arrow quote-arrow-up"></span>
+                          <span style="color:#006D21;"> 
+                        {{else}}
+                          <span class="quote-arrow quote-arrow-down"></span>
+                          <span style="color:#C80000;"> 
+                        {{end}}
+                            {{.Instant.Solution.Last.Change}} ({{.Instant.Solution.Last.ChangePercent|Percent}})
+                          </span>
+                      </span>
+                    </div>
+                    <div id="stock_chart" class="pure-u-1"></div>
+                    <div class="pure-u-1">
+                      <div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;">
+                        <button id="day" class="pure-button" disabled>Day</button>&nbsp;
+                        <button id="week" class="pure-button">Week</button>&nbsp;
+                        <button id="month" class="pure-button">Month</button>&nbsp;
+                        <button id="ytd" class="pure-button">YTD</button>&nbsp;
+                        <button id="1yr" class="pure-button">1 Year</button>&nbsp;
+                        <button id="5yr" class="pure-button">5 Year</button>
+                      </div>
+                    </div>
+                  </div>
+                  <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
+                  {{template "source" .}}
+                </div>
+                {{end}}
               {{else if eq .Instant.Type "wikiquote"}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">

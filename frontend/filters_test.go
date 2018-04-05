@@ -325,30 +325,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: "",
 		},
 		{
-			name: "stock quote",
-			args: args{
-				instant.Data{
-					Type: "stock quote",
-					Solution: &stock.Quote{
-						Ticker:   "TCKR",
-						Name:     "Some Company",
-						Exchange: stock.NYSE,
-						Last: stock.Last{
-							Price:         12.43,
-							Time:          time.Date(2018, 3, 3, 9, 45, 42, 0, time.UTC),
-							Change:        -.423,
-							ChangePercent: -.0103,
-						},
-						History: []stock.EOD{
-							{Date: time.Date(2013, 3, 26, 0, 0, 0, 0, time.UTC), Open: 60.5276, Close: 59.9679, High: 60.5797, Low: 59.8891, Volume: 73428208},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `<div class="pure-u-1"><div class="pure-u-1" style="font-size:20px;">Some Company</div><div class="pure-u-1" style="font-size:14px;">NYSE: TCKR <span id="quote_time" style="font-size:12px;">March 3, 2018 9:45 AM UTC</span></div></div><div class="pure-u-1" style="font-size:40px;">12.43 <span style="font-size:22px;"><span class="quote-arrow quote-arrow-down"></span><span style="color:#C80000;"> -0.42 (-1.03%)</span></span></div><div id="stock_chart" class="pure-u-1"></div><div class="pure-u-1"><div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;"><button id="day" class="pure-button" disabled>Day</button>&nbsp;&nbsp;<button id="week" class="pure-button">Week</button>&nbsp;&nbsp;<button id="month" class="pure-button">Month</button>&nbsp;&nbsp;<button id="ytd" class="pure-button">YTD</button>&nbsp;&nbsp;<button id="1yr" class="pure-button">1 Year</button>&nbsp;&nbsp;<button id="5yr" class="pure-button">5 Year</button></div></div><script>var data = [{"date":"2013-03-26T00:00:00Z","open":60.5276,"close":59.9679,"high":60.5797,"low":59.8891,"volume":73428208}];</script>`,
-		},
-		{
 			name: "weather",
 			args: args{
 				instant.Data{
