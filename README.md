@@ -35,20 +35,25 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Advanced Search (exact phrase, dogs OR cats,  -cats, site/domain search, etc.)
     - [ ] Filetype
     - [ ] SafeSearch        
-    - [ ] Time (past year/month/day/hour, etc.
+    - [ ] Time Search (past year/month/day/hour, etc.
 - [x] Autocomplete
 - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
 - [x] Instant Answers
-    - [x] Wikipedia / Wikidata
+    - [x] Wikipedia
+    - [x] Wikidata
+        - [x] Wikidata partial answers (how tall is, birthday, etc.)
     - [x] Wikiquote
     - [x] Wiktionary
     - [x] Stack Overflow
+    - [x] Stock Quotes & Charts
     - [x] Package Tracking (UPS, FedEx, USPS, etc...)
+    - [x] Weather
     - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent 
     - [x] JavaScript-based answers
-        - [ ] Mortgage, financial and other calculators (probably in JavaScript)
+        - [x] Basic calculator
+            - [ ] Mortgage, financial and other calculators
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
-        - [x] Converters (meters to feet, pounds to kilograms, etc...)
+        - [x] Converters (meters to feet, mb to gb, etc...)
     - [ ] Many more instant answers (including from 3rd party APIs)
     - [ ] Translate trigger words and answers to other languages?
 - [ ] Maps
@@ -56,8 +61,6 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Video Search
 - [ ] Flight Info & Status
 - [ ] News
-- [ ] Weather
-- [ ] Stock Quotes & Charts
 - [ ] Shopping
 - [ ] Custom Themes
 
