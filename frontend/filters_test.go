@@ -325,32 +325,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: "",
 		},
 		{
-			name: "weather",
-			args: args{
-				instant.Data{
-					Type: "weather",
-					Solution: &weather.Weather{
-						City: "Centerville",
-						Today: weather.Today{
-							Code:        weather.ScatteredClouds,
-							Temperature: 59,
-							Wind:        4.7,
-							Clouds:      40,
-							Rain:        0,
-							Snow:        0,
-							Pressure:    1014,
-							Humidity:    33,
-							Low:         55.4,
-							High:        62.6,
-						},
-						Provider: weather.OpenWeatherMapProvider,
-					},
-				},
-				language.English,
-			},
-			want: `<div class="pure-u-1"><div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">Centerville</div><div class="pure-u-1" style="vertical-align:top;"><i class="icon-cloud icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;margin-right:10px;"></i><span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">59</span><span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;"><i class="icon-fahrenheit" aria-hidden="true"></i><hr style="display:none;"><i class="icon-celsius" aria-hidden="true" style="display:none;"></i></span><span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;"><em>H</em> 62.6&deg;<hr style="opacity:0;"><em>L</em> 55.4&deg;</span><span style="display:inline-block;vertical-align:top;margin-left:25px;"><hr style="opacity:0;"><em>Wind:</em> 4.7 MPH<hr style="opacity:0;"><em>Humidity:</em> 33%<hr style="opacity:0;"><em>Clouds:</em> 40%</span></div></div>`,
-		},
-		{
 			name: "tracking package",
 			args: args{
 				instant.Data{

@@ -168,13 +168,15 @@
                 </div>
               </div>
               {{else if eq .Instant.Type "stackoverflow"}}
-              <!-- I wasn't able to get both the User's display name and link to their profile or id. Can select one or the other but not both in their filter. -->
-              <div id="answer" class="pure-u-1">
-                <div style="margin:15px;margin-bottom:5px;">
-                  <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="{{.Instant.Solution.Link|SafeHTML}}"><em>{{.Instant.Solution.Question|SafeHTML}}</em></a><br>{{.Instant.Solution.Answer.Text|SafeHTML}}
+                {{if .Instant.Solution}}
+                <!-- I wasn't able to get both the User's display name and link to their profile or id. Can select one or the other but not both in their filter. -->
+                <div id="answer" class="pure-u-1">
+                  <div style="margin:15px;margin-bottom:5px;">
+                    <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="{{.Instant.Solution.Link|SafeHTML}}"><em>{{.Instant.Solution.Question|SafeHTML}}</em></a><br>{{.Instant.Solution.Answer.Text|SafeHTML}}
+                  </div>
+                  {{template "source" .}}
                 </div>
-                {{template "source" .}}
-              </div>
+                {{end}}
               {{else if eq .Instant.Type "stock quote"}}
                 {{if .Instant.Solution}}
                 <div id="answer" class="pure-u-1">
@@ -212,6 +214,49 @@
                     </div>
                   </div>
                   <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
+                  {{template "source" .}}
+                </div>
+                {{end}}
+              {{else if eq .Instant.Type "weather"}}
+                {{if .Instant.Solution}}
+                <div id="answer" class="pure-u-1">
+                  <div style="margin:15px;margin-bottom:5px;">
+                    <div class="pure-u-1">
+                      <div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">
+                        {{.Instant.Solution.City}}
+                      </div>
+                      <div class="pure-u-1" style="vertical-align:top;">
+                        <i class="{{.Instant.Solution.Today.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i>
+                        <span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">{{.Instant.Solution.Today.Temperature}}</span>
+                        <span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
+                          <i class="icon-fahrenheit" aria-hidden="true"></i>
+                          <hr style="display:none;">
+                          <i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
+                        </span>
+                        <span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;">
+                          <em>H</em> {{.Instant.Solution.Today.High}}&deg;
+                          <hr style="opacity:0;">
+                          <em>L</em> {{.Instant.Solution.Today.Low}}&deg;
+                        </span>
+                        <span style="display:inline-block;vertical-align:top;margin-left:25px;">
+                          {{if .Instant.Solution.Today.Rain}}
+                            <em>Rain: </em>{{.Instant.Solution.Today.Rain}}
+                            <hr style="opacity:0;">
+                          {{end}}
+                          {{if .Instant.Solution.Today.Snow}}
+                            <em>Snow: </em>{{.Instant.Solution.Today.Snow}}
+                            <hr style="opacity:0;">
+                          {{end}}
+                          <hr style="opacity:0;">
+                          <em>Wind:</em> {{.Instant.Solution.Today.Wind}} MPH
+                          <hr style="opacity:0;">
+                          <em>Humidity:</em> {{.Instant.Solution.Today.Humidity}}%%
+                          <hr style="opacity:0;">
+                          <em>Clouds:</em> {{.Instant.Solution.Today.Clouds}}%%
+                        </span>
+                      </div>			
+                    </div>
+                  </div>
                   {{template "source" .}}
                 </div>
                 {{end}}

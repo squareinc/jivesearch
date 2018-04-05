@@ -35,6 +35,7 @@ var funcMap = template.FuncMap{
 	"JSONMarshal":      jsonMarshal,
 	"Source":           source,
 	"Now":              now,
+	"WeatherCode":      weatherCode,
 	"WikipediaItem":    wikipediaItem,
 	"WikiCanonical":    wikiCanonical,
 	"WikiDateTime":     wikiDateTime,
@@ -175,77 +176,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		}
 
 		return h
-	case *weather.Weather:
-		w := sol.Solution.(*weather.Weather)
-
-		var icon string
-		switch w.Today.Code {
-		case weather.Clear:
-			icon = "icon-sun"
-		case weather.LightClouds:
-			icon = "icon-cloud-sun"
-		case weather.ScatteredClouds:
-			icon = "icon-cloud"
-		case weather.OvercastClouds:
-			icon = "icon-cloud-inv"
-		case weather.Extreme:
-			icon = "icon-cloud-flash-inv"
-		case weather.Rain:
-			icon = "icon-rain"
-		case weather.Snow:
-			icon = "icon-snow"
-		case weather.ThunderStorm:
-			icon = "icon-cloud-flash"
-		case weather.Windy:
-			icon = "icon-windy"
-		default:
-			icon = "icon-sun"
-		}
-
-		var rain = ""
-		if w.Today.Rain > 0 {
-			rain = fmt.Sprintf(`em>Rain:</em> %f<hr style="opacity:0;">`, w.Today.Rain)
-		}
-		var snow = ""
-		if w.Today.Snow > 0 {
-			snow = fmt.Sprintf(`<em>Snow:</em> %f<hr style="opacity:0;">`, w.Today.Snow)
-		}
-
-		weather := fmt.Sprintf(`<div class="pure-u-1">
-			<div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">%v</div>
-			<div class="pure-u-1" style="vertical-align:top;">
-				<i class="%v icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;margin-right:10px;"></i>
-				<span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">%v</span>
-				<span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
-					<i class="icon-fahrenheit" aria-hidden="true"></i>
-					<hr style="display:none;">
-					<i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
-				</span>
-				<span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;">
-					<em>H</em> %v&deg;
-					<hr style="opacity:0;">
-					<em>L</em> %v&deg;
-				</span>
-				<span style="display:inline-block;vertical-align:top;margin-left:25px;">
-					%v
-					%v
-					<hr style="opacity:0;">
-					<em>Wind:</em> %v MPH
-					<hr style="opacity:0;">
-					<em>Humidity:</em> %v%%
-					<hr style="opacity:0;">
-					<em>Clouds:</em> %v%%
-				</span>
-			</div>			
-		</div>`,
-			w.City, icon, w.Today.Temperature, w.Today.High, w.Today.Low,
-			rain, snow, w.Today.Wind, w.Today.Humidity, w.Today.Clouds,
-		)
-
-		weather = strings.Replace(weather, "\t", "", -1)
-		weather = strings.Replace(weather, "\n", "", -1)
-
-		return weather
 	case wikipedia.Wiktionary: // Wiktionary
 		createLink := func(lang, word, style string) string {
 			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
@@ -351,6 +281,35 @@ func source(answer instant.Data) string {
 }
 
 var now = func() time.Time { return time.Now().UTC() }
+
+func weatherCode(c weather.Description) string {
+	var icon string
+
+	switch c {
+	case weather.Clear:
+		icon = "icon-sun"
+	case weather.LightClouds:
+		icon = "icon-cloud-sun"
+	case weather.ScatteredClouds:
+		icon = "icon-cloud"
+	case weather.OvercastClouds:
+		icon = "icon-cloud-inv"
+	case weather.Extreme:
+		icon = "icon-cloud-flash-inv"
+	case weather.Rain:
+		icon = "icon-rain"
+	case weather.Snow:
+		icon = "icon-snow"
+	case weather.ThunderStorm:
+		icon = "icon-cloud-flash"
+	case weather.Windy:
+		icon = "icon-windy"
+	default:
+		icon = "icon-sun"
+	}
+
+	return icon
+}
 
 func wikipediaItem(sol instant.Data) *wikipedia.Item {
 	return sol.Solution.(*wikipedia.Item)

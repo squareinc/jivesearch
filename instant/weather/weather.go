@@ -19,7 +19,7 @@ type Weather struct {
 
 // Today is the today's weather
 type Today struct {
-	Code        weatherCode
+	Code        Description
 	Temperature int
 	Wind        float64
 	Clouds      float64
@@ -31,31 +31,32 @@ type Today struct {
 	High        float64
 }
 
-type weatherCode string
+// Description is a standardized weather description
+type Description string
 
 // Clear indicates clear skies
-const Clear weatherCode = ""
+const Clear Description = ""
 
 // LightClouds indicate some clouds
-const LightClouds weatherCode = "Few Clouds"
+const LightClouds Description = "Few Clouds"
 
 // ScatteredClouds indicates scattered clouds
-const ScatteredClouds weatherCode = "Scattered Clouds"
+const ScatteredClouds Description = "Scattered Clouds"
 
 // OvercastClouds indicates heavy clouds
-const OvercastClouds weatherCode = "Overcast"
+const OvercastClouds Description = "Overcast"
 
 // Extreme indicates an extreme event
-const Extreme weatherCode = "Extreme"
+const Extreme Description = "Extreme"
 
 // Rain indicates rain
-const Rain weatherCode = "Rain"
+const Rain Description = "Rain"
 
 // Snow indicates snow
-const Snow weatherCode = "Snow"
+const Snow Description = "Snow"
 
 // ThunderStorm indicates a thunderstorm
-const ThunderStorm weatherCode = "Thunderstorm"
+const ThunderStorm Description = "Thunderstorm"
 
 // Windy indicates winds
-const Windy weatherCode = "Windy"
+const Windy Description = "Windy"

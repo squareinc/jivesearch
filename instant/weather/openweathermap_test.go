@@ -135,7 +135,7 @@ func TestConvertCode(t *testing.T) {
 
 	for _, tt := range []struct {
 		c    int
-		want weatherCode
+		want Description
 	}{
 		{200, ThunderStorm},
 		{300, Rain},
