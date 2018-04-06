@@ -196,7 +196,7 @@
                         {{end}}
                         <div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">
                           <div class="pure-u-7-24">{{$u.DateTime.Format "Mon, 02 Jan 3:04PM"}}</div>
-                          <div class="pure-u-8-24">{{$u.Location.City}}</div>
+                          <div class="pure-u-8-24">{{JoinLocation $u.Location.City $u.Location.State $u.Location.Country}}</div>
                           <div class="pure-u-8-24">{{$u.Status}}</div>
                         </div>
                       {{end}}

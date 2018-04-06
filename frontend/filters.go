@@ -31,6 +31,7 @@ var funcMap = template.FuncMap{
 	"Truncate":         truncate,
 	"HMACKey":          hmacKey,
 	"InstantFormatter": instantFormatter,
+	"JoinLocation":     joinLocation,
 	"JSONMarshal":      jsonMarshal,
 	"Source":           source,
 	"Now":              now,
@@ -135,6 +136,22 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
 		return ""
 	}
+}
+
+// joinLocation is a function to comma-separate the locatoin of a package
+func joinLocation(city, state, country string) string {
+	var loc = []string{}
+	if city != "" {
+		loc = append(loc, city)
+	}
+	if state != "" {
+		loc = append(loc, state)
+	}
+	if country != "" {
+		loc = append(loc, country)
+	}
+
+	return strings.Join(loc, ", ")
 }
 
 func jsonMarshal(v interface{}) template.JS {
