@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"encoding/json"
 	"html/template"
 	"reflect"
 	"testing"
@@ -47,7 +48,7 @@ func TestAdd(t *testing.T) {
 
 func TestCommafy(t *testing.T) {
 	for _, tt := range []struct {
-		number int64
+		number interface{}
 		want   string
 	}{
 		{
@@ -67,8 +68,8 @@ func TestCommafy(t *testing.T) {
 			want:   "-120",
 		},
 		{
-			number: 999000,
-			want:   "999,000",
+			number: 999000.01,
+			want:   "999,000.01",
 		},
 		{
 			number: 48915619813218,
@@ -77,69 +78,6 @@ func TestCommafy(t *testing.T) {
 	} {
 		t.Run(tt.want, func(t *testing.T) {
 			got := commafy(tt.number)
-			if got != tt.want {
-				t.Fatalf("got %q; want %q", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestSafeHTML(t *testing.T) {
-	for _, tt := range []struct {
-		arg  string
-		want template.HTML
-	}{
-		{
-			arg:  "<!--[if lte IE 8]>",
-			want: "<!--[if lte IE 8]>",
-		},
-		{
-			arg:  "<!--[if gt IE 8]><!-->",
-			want: "<!--[if gt IE 8]><!-->",
-		},
-		{
-			arg:  "<script>some nasty javascript</script>",
-			want: "<script>some nasty javascript</script>",
-		},
-	} {
-		t.Run(tt.arg, func(t *testing.T) {
-			got := safeHTML(tt.arg)
-
-			if got != tt.want {
-				t.Fatalf("got %q; want %q", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestTruncate(t *testing.T) {
-	for _, tt := range []struct {
-		s    string
-		len  int
-		p    bool
-		want string
-	}{
-		{
-			s:    "This sentence should be truncated here and not go on and on and on and more on.",
-			len:  39,
-			p:    true,
-			want: "This sentence should be truncated here ...",
-		},
-		{
-			s:    "This sentence should be truncated here and not go on and on and on and more on.",
-			len:  30,
-			p:    false,
-			want: "This sentence should be trunca...",
-		},
-		{
-			s:    "This no truncate",
-			len:  25,
-			p:    true,
-			want: "This no truncate",
-		},
-	} {
-		t.Run(tt.want, func(t *testing.T) {
-			got := truncate(tt.s, tt.len, tt.p)
 			if got != tt.want {
 				t.Fatalf("got %q; want %q", got, tt.want)
 			}
@@ -181,124 +119,103 @@ func TestHMACKey(t *testing.T) {
 	}
 }
 
-func TestWikiData(t *testing.T) {
-	type args struct {
-		sol instant.Data
-		l   language.Tag
-	}
-
+func TestJSONMarshall(t *testing.T) {
 	for _, tt := range []struct {
 		name string
-		args
-		want string
+		arg  interface{}
 	}{
 		{
-			name: "empty",
-			args: args{
-				instant.Data{
-					Solution: []wikipedia.Quantity{},
-				},
-				language.English,
-			},
-			want: "",
-		},
-		{
-			name: "kg",
-			args: args{
-				instant.Data{
-					Solution: []wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
-				},
-				language.Italian,
-			},
-			want: "147 kg",
-		},
-		{
-			name: "age (alive)",
-			args: args{
-				instant.Data{
-					Solution: instant.Age{
-						Birthday: instant.Birthday{
-							Birthday: wikipedia.DateTime{
-								Value:    "1972-12-31T00:00:00Z",
-								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-							},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `<em>Age:</em> 45 Years<br><span style="color:#666;">December 31, 1972</span>`,
-		},
-		{
-			name: "age (at time of death)",
-			args: args{
-				instant.Data{
-					Solution: instant.Age{
-						Birthday: instant.Birthday{
-							Birthday: wikipedia.DateTime{
-								Value:    "1956-04-30T00:00:00Z",
-								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-							},
-						},
-						Death: instant.Death{
-							Death: wikipedia.DateTime{
-								Value:    "1984-03-13T00:00:00Z",
-								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-							},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `<em>Age at Death:</em> 27 Years<br><span style="color:#666;">April 30, 1956 - March 13, 1984</span>`,
-		},
-		{
-			name: "birthday",
-			args: args{
-				instant.Data{
-					Solution: instant.Birthday{
-						Birthday: wikipedia.DateTime{
-							Value:    "2001-05-14T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `May 14, 2001`,
-		},
-		{
-			name: "death",
-			args: args{
-				instant.Data{
-					Solution: instant.Death{
-						Death: wikipedia.DateTime{
-							Value:    "2015-05-14T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `May 14, 2015`,
-		},
-		{
-			name: "unknown",
-			args: args{
-				instant.Data{Solution: 1}, language.English},
-			want: "",
+			"json object", `{"name":"bob"}`,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			r, _ := tt.args.l.Region()
-			now = func() time.Time {
-				return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
+			b, err := json.Marshal(tt.arg)
+			if err != nil {
+				t.Fatal(err)
 			}
+			want := template.JS(b)
 
-			got := wikidata(tt.args.sol, r)
+			got := jsonMarshal(tt.arg)
+			if got != want {
+				t.Fatalf("got %q; want %q", got, want)
+			}
+		})
+	}
+}
 
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %q, want %q", got, tt.want)
+func TestJoinLocation(t *testing.T) {
+	for _, tt := range []struct {
+		sl   []string
+		want string
+	}{
+		{
+			sl:   []string{"salt lake city", "utah", ""},
+			want: "salt lake city, utah",
+		},
+		{
+			sl:   []string{"boston", "MA", "US"},
+			want: "boston, MA, US",
+		},
+	} {
+		t.Run(tt.want, func(t *testing.T) {
+			got := joinLocation(tt.sl[0], tt.sl[1], tt.sl[2])
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPercent(t *testing.T) {
+	for _, tt := range []struct {
+		number float64
+		want   string
+	}{
+		{
+			number: .2357,
+			want:   "23.57%",
+		},
+		{
+			number: .01527,
+			want:   "1.53%",
+		},
+		{
+			number: -1.0,
+			want:   "-100.00%",
+		},
+	} {
+		t.Run(tt.want, func(t *testing.T) {
+			got := percent(tt.number)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSafeHTML(t *testing.T) {
+	for _, tt := range []struct {
+		arg  string
+		want template.HTML
+	}{
+		{
+			arg:  "<!--[if lte IE 8]>",
+			want: "<!--[if lte IE 8]>",
+		},
+		{
+			arg:  "<!--[if gt IE 8]><!-->",
+			want: "<!--[if gt IE 8]><!-->",
+		},
+		{
+			arg:  "<script>some nasty javascript</script>",
+			want: "<script>some nasty javascript</script>",
+		},
+	} {
+		t.Run(tt.arg, func(t *testing.T) {
+			got := safeHTML(tt.arg)
+
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
 			}
 		})
 	}
@@ -422,241 +339,81 @@ func TestSource(t *testing.T) {
 	}
 }
 
-func TestWikipediaItem(t *testing.T) {
-	want := &wikipedia.Item{}
-
-	d := instant.Data{
-		Solution: &wikipedia.Item{},
-	}
-
-	got := wikipediaItem(d)
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %+v, want %+v", got, want)
-	}
-}
-
-func TestWikiCanonical(t *testing.T) {
-	type args struct {
-		title string
-	}
-
+func TestWeatherCode(t *testing.T) {
 	for _, tt := range []struct {
-		name string
-		args
+		arg  weather.Description
 		want string
 	}{
 		{
-			name: "basic",
-			args: args{"jimi hendrix was here"},
-			want: "jimi_hendrix_was_here",
+			weather.Clear, "icon-sun",
+		},
+		{
+			weather.LightClouds, "icon-cloud-sun",
+		},
+		{
+			weather.ScatteredClouds, "icon-cloud",
+		},
+		{
+			weather.OvercastClouds, "icon-cloud-inv",
+		},
+		{
+			weather.Extreme, "icon-cloud-flash-inv",
+		},
+		{
+			weather.Rain, "icon-rain",
+		},
+		{
+			weather.Snow, "icon-snow",
+		},
+		{
+			weather.ThunderStorm, "icon-cloud-flash",
+		},
+		{
+			weather.Windy, "icon-windy",
+		},
+		{
+			"", "icon-sun",
 		},
 	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := wikiCanonical(tt.args.title)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+		t.Run(tt.want, func(t *testing.T) {
+			got := weatherCode(tt.arg)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestWikiDateTime(t *testing.T) {
-	type args struct {
-		dt wikipedia.DateTime
-	}
-
+func TestTruncate(t *testing.T) {
 	for _, tt := range []struct {
-		name string
-		args
+		s    string
+		len  int
+		p    bool
 		want string
 	}{
 		{
-			name: "birthday",
-			args: args{
-				wikipedia.DateTime{
-					Value:    "1972-12-31T00:00:00Z",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-			},
-			want: "December 31, 1972",
+			s:    "This sentence should be truncated here and not go on and on and on and more on.",
+			len:  39,
+			p:    true,
+			want: "This sentence should be truncated here ...",
 		},
 		{
-			name: "year",
-			args: args{
-				wikipedia.DateTime{
-					Value:    "1987",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-			},
-			want: "1987",
+			s:    "This sentence should be truncated here and not go on and on and on and more on.",
+			len:  30,
+			p:    false,
+			want: "This sentence should be trunca...",
+		},
+		{
+			s:    "This no truncate",
+			len:  25,
+			p:    true,
+			want: "This no truncate",
 		},
 	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := wikiDateTime(tt.args.dt)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestWikiYears(t *testing.T) {
-	type args struct {
-		start interface{}
-		end   interface{}
-	}
-
-	for _, tt := range []struct {
-		name string
-		args
-		want int
-	}{
-		{
-			name: "zero",
-			args: args{
-				time.Time{},
-				time.Time{},
-			},
-			want: 0,
-		},
-		{
-			name: "basic",
-			args: args{
-				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
-				time.Date(2017, 11, 18, 20, 34, 58, 651387237, time.UTC),
-			},
-			want: 42,
-		},
-		{
-			name: "almost 42",
-			args: args{
-				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
-				time.Date(2017, 11, 16, 20, 34, 58, 651387237, time.UTC),
-			},
-			want: 41,
-		},
-		{
-			name: "wikiDateTime",
-			args: args{
-				wikipedia.DateTime{
-					Value:    "1854-12-31T00:00:00Z",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-				wikipedia.DateTime{
-					Value:    "1912-04-30T00:00:00Z",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-			},
-			want: 57,
-		},
-		{
-			name: "wikiDateTime year",
-			args: args{
-				wikipedia.DateTime{
-					Value:    "1794",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-				wikipedia.DateTime{
-					Value:    "1954-02-14T00:00:00Z",
-					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-				},
-			},
-			want: 160,
-		},
-		{
-			name: "wrong type",
-			args: args{5, 12},
-			want: 0,
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := wikiYears(tt.args.start, tt.args.end)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestWikiLabel(t *testing.T) {
-	type args struct {
-		labels    map[string]wikipedia.Text
-		preferred []language.Tag
-	}
-
-	for _, tt := range []struct {
-		name string
-		args
-		want string
-	}{
-		{
-			name: "basic",
-			args: args{
-				map[string]wikipedia.Text{
-					"en":    {Text: "english language", Language: "en"},
-					"de":    {Text: "german language", Language: "de"},
-					"sr-el": {Text: "this doesn't parse language", Language: "sr-el"},
-				},
-				[]language.Tag{
-					language.English, language.French, language.German,
-				},
-			},
-			want: "english language",
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := wikiLabel(tt.args.labels, tt.args.preferred)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestWikiJoin(t *testing.T) {
-	type args struct {
-		items     []wikipedia.Wikidata
-		preferred []language.Tag
-	}
-
-	for _, tt := range []struct {
-		name string
-		args
-		want string
-	}{
-		{
-			name: "basic",
-			args: args{
-				[]wikipedia.Wikidata{
-					{ID: "1", Labels: map[string]wikipedia.Text{
-						"fr": {Text: "rock in french", Language: "fr"},
-						"en": {Text: "rock", Language: "en"},
-					}},
-					{ID: "1", Labels: map[string]wikipedia.Text{
-						"en": {Text: "rap", Language: "en"},
-						"de": {Text: "rap in german", Language: "de"},
-					}},
-					{ID: "1", Labels: map[string]wikipedia.Text{
-						"en": {Text: "country", Language: "en"},
-					}},
-				},
-				[]language.Tag{
-					language.English, language.French, language.German,
-				},
-			},
-			want: "rock, rap, country",
-		},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			got := wikiJoin(tt.args.items, tt.args.preferred)
-
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+		t.Run(tt.want, func(t *testing.T) {
+			got := truncate(tt.s, tt.len, tt.p)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
 			}
 		})
 	}
@@ -734,6 +491,369 @@ func TestWikiAmount(t *testing.T) {
 			r, _ := tt.args.l.Region()
 
 			got := wikiAmount(tt.args.quantity, r)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiCanonical(t *testing.T) {
+	type args struct {
+		title string
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "basic",
+			args: args{"jimi hendrix was here"},
+			want: "jimi_hendrix_was_here",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiCanonical(tt.args.title)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiData(t *testing.T) {
+	type args struct {
+		sol instant.Data
+		l   language.Tag
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "empty",
+			args: args{
+				instant.Data{
+					Solution: []wikipedia.Quantity{},
+				},
+				language.English,
+			},
+			want: "",
+		},
+		{
+			name: "kg",
+			args: args{
+				instant.Data{
+					Solution: []wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				},
+				language.Italian,
+			},
+			want: "147 kg",
+		},
+		{
+			name: "age (alive)",
+			args: args{
+				instant.Data{
+					Solution: instant.Age{
+						Birthday: instant.Birthday{
+							Birthday: wikipedia.DateTime{
+								Value:    "1972-12-31T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<em>Age:</em> 45 Years<br><span style="color:#666;">December 31, 1972</span>`,
+		},
+		{
+			name: "age (at time of death)",
+			args: args{
+				instant.Data{
+					Solution: instant.Age{
+						Birthday: instant.Birthday{
+							Birthday: wikipedia.DateTime{
+								Value:    "1956-04-30T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
+						},
+						Death: instant.Death{
+							Death: wikipedia.DateTime{
+								Value:    "1984-03-13T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `<em>Age at Death:</em> 27 Years<br><span style="color:#666;">April 30, 1956 - March 13, 1984</span>`,
+		},
+		{
+			name: "birthday",
+			args: args{
+				instant.Data{
+					Solution: instant.Birthday{
+						Birthday: wikipedia.DateTime{
+							Value:    "2001-05-14T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `May 14, 2001`,
+		},
+		{
+			name: "death",
+			args: args{
+				instant.Data{
+					Solution: instant.Death{
+						Death: wikipedia.DateTime{
+							Value:    "2015-05-14T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `May 14, 2015`,
+		},
+		{
+			name: "unknown",
+			args: args{
+				instant.Data{Solution: 1}, language.English},
+			want: "",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			r, _ := tt.args.l.Region()
+			now = func() time.Time {
+				return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
+			}
+
+			got := wikiData(tt.args.sol, r)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiDateTime(t *testing.T) {
+	type args struct {
+		dt wikipedia.DateTime
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "birthday",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1972-12-31T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: "December 31, 1972",
+		},
+		{
+			name: "year",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1987",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: "1987",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiDateTime(tt.args.dt)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiJoin(t *testing.T) {
+	type args struct {
+		items     []wikipedia.Wikidata
+		preferred []language.Tag
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "basic",
+			args: args{
+				[]wikipedia.Wikidata{
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"fr": {Text: "rock in french", Language: "fr"},
+						"en": {Text: "rock", Language: "en"},
+					}},
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"en": {Text: "rap", Language: "en"},
+						"de": {Text: "rap in german", Language: "de"},
+					}},
+					{ID: "1", Labels: map[string]wikipedia.Text{
+						"en": {Text: "country", Language: "en"},
+					}},
+				},
+				[]language.Tag{
+					language.English, language.French, language.German,
+				},
+			},
+			want: "rock, rap, country",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiJoin(tt.args.items, tt.args.preferred)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikiLabel(t *testing.T) {
+	type args struct {
+		labels    map[string]wikipedia.Text
+		preferred []language.Tag
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want string
+	}{
+		{
+			name: "basic",
+			args: args{
+				map[string]wikipedia.Text{
+					"en":    {Text: "english language", Language: "en"},
+					"de":    {Text: "german language", Language: "de"},
+					"sr-el": {Text: "this doesn't parse language", Language: "sr-el"},
+				},
+				[]language.Tag{
+					language.English, language.French, language.German,
+				},
+			},
+			want: "english language",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiLabel(tt.args.labels, tt.args.preferred)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWikipediaItem(t *testing.T) {
+	want := &wikipedia.Item{}
+
+	d := instant.Data{
+		Solution: &wikipedia.Item{},
+	}
+
+	got := wikipediaItem(d)
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
+	}
+}
+
+func TestWikiYears(t *testing.T) {
+	type args struct {
+		start interface{}
+		end   interface{}
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want int
+	}{
+		{
+			name: "zero",
+			args: args{
+				time.Time{},
+				time.Time{},
+			},
+			want: 0,
+		},
+		{
+			name: "basic",
+			args: args{
+				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
+				time.Date(2017, 11, 18, 20, 34, 58, 651387237, time.UTC),
+			},
+			want: 42,
+		},
+		{
+			name: "almost 42",
+			args: args{
+				time.Date(1975, 11, 17, 20, 34, 58, 651387237, time.UTC),
+				time.Date(2017, 11, 16, 20, 34, 58, 651387237, time.UTC),
+			},
+			want: 41,
+		},
+		{
+			name: "wikiDateTime",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1854-12-31T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+				wikipedia.DateTime{
+					Value:    "1912-04-30T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: 57,
+		},
+		{
+			name: "wikiDateTime year",
+			args: args{
+				wikipedia.DateTime{
+					Value:    "1794",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+				wikipedia.DateTime{
+					Value:    "1954-02-14T00:00:00Z",
+					Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+				},
+			},
+			want: 160,
+		},
+		{
+			name: "wrong type",
+			args: args{5, 12},
+			want: 0,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wikiYears(tt.args.start, tt.args.end)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)

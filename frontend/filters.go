@@ -35,54 +35,30 @@ var funcMap = template.FuncMap{
 	"Source":        source,
 	"Now":           now,
 	"WeatherCode":   weatherCode,
-	"Wikidata":      wikidata,
-	"WikipediaItem": wikipediaItem,
-	"WikiCanonical": wikiCanonical,
-	"WikiDateTime":  wikiDateTime,
-	"WikiYears":     wikiYears,
-	"WikiLabel":     wikiLabel,
-	"WikiJoin":      wikiJoin,
 	"WikiAmount":    wikiAmount,
+	"WikiCanonical": wikiCanonical,
+	"WikiData":      wikiData,
+	"WikiDateTime":  wikiDateTime,
+	"WikiJoin":      wikiJoin,
+	"WikiLabel":     wikiLabel,
+	"WikipediaItem": wikipediaItem,
+	"WikiYears":     wikiYears,
 }
 
 func add(x, y int) int {
 	return x + y
 }
 
-// where did this come from?
 func commafy(v interface{}) string {
 	switch v.(type) {
-	case int64:
-		return humanize.Comma(v.(int64))
+	case int:
+		return humanize.Comma(int64(v.(int)))
 	case float64:
 		return humanize.Commaf(v.(float64))
 	default:
 		log.Debug.Printf("unknown type %T\n", reflect.TypeOf(v))
 		return ""
 	}
-}
-
-func percent(v float64) string {
-	return strconv.FormatFloat(v*100, 'f', 2, 64) + "%"
-}
-
-func safeHTML(value string) template.HTML {
-	return template.HTML(value)
-}
-
-// Preserving words is a crude translation from the python answer:
-// http://stackoverflow.com/questions/250357/truncate-a-string-without-ending-in-the-middle-of-a-word
-func truncate(txt string, max int, preserve bool) string {
-	if len(txt) <= max {
-		return txt
-	}
-
-	if preserve {
-		c := strings.Fields(txt[:max+1])
-		return strings.Join(c[0:len(c)-1], " ") + " ..."
-	}
-
-	return txt[:max] + "..."
 }
 
 var hmacSecret = func() string {
@@ -102,38 +78,6 @@ func hmacKey(u string) string {
 	}
 
 	return base64.URLEncoding.EncodeToString(h.Sum(nil))
-}
-
-func wikidata(sol instant.Data, r language.Region) string {
-	switch sol.Solution.(type) {
-	case []wikipedia.Quantity: // e.g. height, weight, etc.
-		i := sol.Solution.([]wikipedia.Quantity)
-		if len(i) == 0 {
-			return ""
-		}
-		return wikiAmount(i[0], r)
-	case instant.Age:
-		a := sol.Solution.(instant.Age)
-
-		// alive
-		if reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
-			return fmt.Sprintf(`<em>Age:</em> %d Years<br><span style="color:#666;">%v</span>`,
-				wikiYears(a.Birthday.Birthday, now()), wikiDateTime(a.Birthday.Birthday))
-		}
-
-		// dead
-		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
-			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
-	case instant.Birthday:
-		b := sol.Solution.(instant.Birthday)
-		return wikiDateTime(b.Birthday)
-	case instant.Death:
-		d := sol.Solution.(instant.Death)
-		return wikiDateTime(d.Death)
-	default:
-		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
-		return ""
-	}
 }
 
 // joinLocation is a function to comma-separate the locatoin of a package
@@ -158,6 +102,16 @@ func jsonMarshal(v interface{}) template.JS {
 		log.Debug.Println("error:", err)
 	}
 	return template.JS(b)
+}
+
+var now = func() time.Time { return time.Now().UTC() }
+
+func percent(v float64) string {
+	return strconv.FormatFloat(v*100, 'f', 2, 64) + "%"
+}
+
+func safeHTML(value string) template.HTML {
+	return template.HTML(value)
 }
 
 // source will show the source of an instant answer if data comes from a 3rd party
@@ -225,7 +179,20 @@ func source(answer instant.Data) string {
 	return f
 }
 
-var now = func() time.Time { return time.Now().UTC() }
+// Preserving words is a crude translation from the python answer:
+// http://stackoverflow.com/questions/250357/truncate-a-string-without-ending-in-the-middle-of-a-word
+func truncate(txt string, max int, preserve bool) string {
+	if len(txt) <= max {
+		return txt
+	}
+
+	if preserve {
+		c := strings.Fields(txt[:max+1])
+		return strings.Join(c[0:len(c)-1], " ") + " ..."
+	}
+
+	return txt[:max] + "..."
+}
 
 func weatherCode(c weather.Description) string {
 	var icon string
@@ -254,114 +221,6 @@ func weatherCode(c weather.Description) string {
 	}
 
 	return icon
-}
-
-func wikipediaItem(sol instant.Data) *wikipedia.Item {
-	return sol.Solution.(*wikipedia.Item)
-}
-
-// wikiCanonical returns the canonical form of a wikipedia title.
-// if this breaks Wikidata dumps have "sitelinks"
-func wikiCanonical(t string) string {
-	return strings.Replace(t, " ", "_", -1)
-}
-
-// wikiDateTime formats a date with optional time.
-// We assume Gregorian calendar below. (Julian calendar TODO).
-// Note: Wikidata only uses Gregorian and Julian calendars.
-func wikiDateTime(dt wikipedia.DateTime) string {
-	// we loop through the formats until one is found
-	// starting with most specific and ending with most general order
-	for j, f := range []string{time.RFC3339Nano, "2006"} {
-		var ff string
-
-		switch j {
-		case 1:
-			dt.Value = dt.Value[:4]
-			ff = f
-		default:
-			ff = "January 2, 2006"
-		}
-
-		t, err := time.Parse(f, dt.Value)
-		if err != nil {
-			log.Debug.Println(err)
-			continue
-		}
-
-		return t.Format(ff)
-	}
-
-	return ""
-}
-
-// wikiYears calculates the number of years (rounded down) betwee two dates.
-// e.g. a person's age
-func wikiYears(start, end interface{}) int {
-	var parseDateTime = func(d interface{}) time.Time {
-		switch d.(type) {
-		case wikipedia.DateTime:
-			dt := d.(wikipedia.DateTime)
-			for j, f := range []string{time.RFC3339Nano, "2006"} {
-				if j == 1 {
-					dt.Value = dt.Value[:4]
-				}
-				t, err := time.Parse(f, dt.Value)
-				if err != nil {
-					log.Debug.Println(err)
-					continue
-				}
-				return t
-			}
-
-		case time.Time:
-			return d.(time.Time)
-		default:
-			log.Debug.Printf("unknown type %T\n", d)
-		}
-		return time.Time{}
-	}
-
-	s := parseDateTime(start)
-	e := parseDateTime(end)
-
-	years := e.Year() - s.Year()
-	if e.YearDay() < s.YearDay() {
-		years--
-	}
-
-	return years
-}
-
-// wikiLabel extracts the closest label for a Wikipedia Item using a language matcher
-func wikiLabel(labels map[string]wikipedia.Text, preferred []language.Tag) string {
-	// create a matcher based on the available labels
-	langs := []language.Tag{}
-
-	for k := range labels {
-		t, err := language.Parse(k)
-		if err != nil { // sr-el doesn't parse
-			continue
-		}
-
-		langs = append(langs, t)
-	}
-
-	m := language.NewMatcher(langs)
-	lang, _, _ := m.Match(preferred...)
-
-	label := labels[lang.String()]
-	return label.Text
-}
-
-// wikiJoin joins a slice of Wikidata items
-func wikiJoin(items []wikipedia.Wikidata, preferred []language.Tag) string {
-	sl := []string{}
-	for _, item := range items {
-		sl = append(sl, wikiLabel(item.Labels, preferred))
-	}
-
-	return strings.Join(sl, ", ")
 }
 
 // wikiAmount displays a unit in meters, feet, etc depending on user's region
@@ -416,4 +275,144 @@ func wikiAmount(q wikipedia.Quantity, r language.Region) string {
 	}
 
 	return f
+}
+
+// wikiCanonical returns the canonical form of a wikipedia title.
+// if this breaks Wikidata dumps have "sitelinks"
+func wikiCanonical(t string) string {
+	return strings.Replace(t, " ", "_", -1)
+}
+
+func wikiData(sol instant.Data, r language.Region) string {
+	switch sol.Solution.(type) {
+	case []wikipedia.Quantity: // e.g. height, weight, etc.
+		i := sol.Solution.([]wikipedia.Quantity)
+		if len(i) == 0 {
+			return ""
+		}
+		return wikiAmount(i[0], r)
+	case instant.Age:
+		a := sol.Solution.(instant.Age)
+
+		// alive
+		if reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
+			return fmt.Sprintf(`<em>Age:</em> %d Years<br><span style="color:#666;">%v</span>`,
+				wikiYears(a.Birthday.Birthday, now()), wikiDateTime(a.Birthday.Birthday))
+		}
+
+		// dead
+		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
+			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
+	case instant.Birthday:
+		b := sol.Solution.(instant.Birthday)
+		return wikiDateTime(b.Birthday)
+	case instant.Death:
+		d := sol.Solution.(instant.Death)
+		return wikiDateTime(d.Death)
+	default:
+		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
+		return ""
+	}
+}
+
+// wikiDateTime formats a date with optional time.
+// We assume Gregorian calendar below. (Julian calendar TODO).
+// Note: Wikidata only uses Gregorian and Julian calendars.
+func wikiDateTime(dt wikipedia.DateTime) string {
+	// we loop through the formats until one is found
+	// starting with most specific and ending with most general order
+	for j, f := range []string{time.RFC3339Nano, "2006"} {
+		var ff string
+
+		switch j {
+		case 1:
+			dt.Value = dt.Value[:4]
+			ff = f
+		default:
+			ff = "January 2, 2006"
+		}
+
+		t, err := time.Parse(f, dt.Value)
+		if err != nil {
+			log.Debug.Println(err)
+			continue
+		}
+
+		return t.Format(ff)
+	}
+
+	return ""
+}
+
+func wikipediaItem(sol instant.Data) *wikipedia.Item {
+	return sol.Solution.(*wikipedia.Item)
+}
+
+// wikiJoin joins a slice of Wikidata items
+func wikiJoin(items []wikipedia.Wikidata, preferred []language.Tag) string {
+	sl := []string{}
+	for _, item := range items {
+		sl = append(sl, wikiLabel(item.Labels, preferred))
+	}
+
+	return strings.Join(sl, ", ")
+}
+
+// wikiLabel extracts the closest label for a Wikipedia Item using a language matcher
+func wikiLabel(labels map[string]wikipedia.Text, preferred []language.Tag) string {
+	// create a matcher based on the available labels
+	langs := []language.Tag{}
+
+	for k := range labels {
+		t, err := language.Parse(k)
+		if err != nil { // sr-el doesn't parse
+			continue
+		}
+
+		langs = append(langs, t)
+	}
+
+	m := language.NewMatcher(langs)
+	lang, _, _ := m.Match(preferred...)
+
+	label := labels[lang.String()]
+	return label.Text
+}
+
+// wikiYears calculates the number of years (rounded down) betwee two dates.
+// e.g. a person's age
+func wikiYears(start, end interface{}) int {
+	var parseDateTime = func(d interface{}) time.Time {
+		switch d.(type) {
+		case wikipedia.DateTime:
+			dt := d.(wikipedia.DateTime)
+			for j, f := range []string{time.RFC3339Nano, "2006"} {
+				if j == 1 {
+					dt.Value = dt.Value[:4]
+				}
+				t, err := time.Parse(f, dt.Value)
+				if err != nil {
+					log.Debug.Println(err)
+					continue
+				}
+				return t
+			}
+
+		case time.Time:
+			return d.(time.Time)
+		default:
+			log.Debug.Printf("unknown type %T\n", d)
+		}
+		return time.Time{}
+	}
+
+	s := parseDateTime(start)
+	e := parseDateTime(end)
+
+	years := e.Year() - s.Year()
+	if e.YearDay() < s.YearDay() {
+		years--
+	}
+
+	return years
 }
