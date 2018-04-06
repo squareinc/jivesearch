@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 
@@ -323,70 +322,6 @@ func TestInstantFormatter(t *testing.T) {
 			args: args{
 				instant.Data{Solution: 1}, language.English},
 			want: "",
-		},
-		{
-			name: "tracking package",
-			args: args{
-				instant.Data{
-					Type: "ups",
-					Solution: parcel.Response{
-						TrackingNumber: "90210",
-						Updates: []parcel.Update{
-							{
-								DateTime: time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
-								Location: parcel.Location{
-									City:    "Armadillo",
-									State:   "TX",
-									Country: "US",
-								},
-								Status: "Departure Scan",
-							},
-						},
-						Expected: parcel.Expected{
-							Delivery: "Scheduled Delivery",
-							Date:     time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
-						},
-						URL: "https://www.ups.com/some/random/url?and=query",
-					},
-				},
-				language.English,
-			},
-			want: `<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="https://www.ups.com/some/random/url?and=query"><em>90210</em></a><br><p><span style="font-weight:bold;font-size:20px;">Scheduled Delivery: Thursday, February 2, 2017</span></p><div class="pure-u-1" style="margin-bottom:5px;"><div class="pure-u-7-24" style="font-weight:bold;">DATE</div><div class="pure-u-9-24" style="font-weight:bold;">LOCATION</div><div class="pure-u-8-24" style="font-weight:bold;">STATUS</div></div><div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;"><div class="pure-u-7-24">Thu, 02 Feb 3:34PM</div><div class="pure-u-9-24">Armadillo, TX, US</div><div class="pure-u-8-24">Departure Scan</div></div>`,
-		},
-		{
-			name: "delivered package",
-			args: args{
-				instant.Data{
-					Type: "ups",
-					Solution: parcel.Response{
-						TrackingNumber: "SomeTrackingNumber",
-						Updates: []parcel.Update{
-							{
-								DateTime: time.Date(2017, 2, 3, 15, 34, 45, 1, time.UTC),
-								Location: parcel.Location{
-									City:    "Final Destination Yo!",
-									State:   "UT",
-									Country: "US",
-								},
-								Status: "Delivered",
-							},
-							{
-								DateTime: time.Date(2017, 2, 2, 15, 34, 59, 1, time.UTC),
-								Location: parcel.Location{
-									City:    "Armadillo",
-									State:   "TX",
-									Country: "US",
-								},
-								Status: "Departure Scan",
-							},
-						},
-						Expected: parcel.Expected{},
-						URL:      "https://www.ups.com/some/random/url?and=query",
-					},
-				},
-				language.English,
-			},
-			want: `<img width="18" height="18" alt="ups" src="/static/favicons/ups.ico" style="vertical-align:middle"/> <a href="https://www.ups.com/some/random/url?and=query"><em>SomeTrackingNumber</em></a><br><p><span style="font-weight:bold;font-size:20px;">Delivered: Friday, February 3, 2017 3:34PM</span></p><div class="pure-u-1" style="margin-bottom:5px;"><div class="pure-u-7-24" style="font-weight:bold;">DATE</div><div class="pure-u-9-24" style="font-weight:bold;">LOCATION</div><div class="pure-u-8-24" style="font-weight:bold;">STATUS</div></div><div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;"><div class="pure-u-7-24">Fri, 03 Feb 3:34PM</div><div class="pure-u-9-24">Final Destination Yo!, UT, US</div><div class="pure-u-8-24">Delivered</div></div><div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;"><div class="pure-u-7-24">Thu, 02 Feb 3:34PM</div><div class="pure-u-9-24">Armadillo, TX, US</div><div class="pure-u-8-24">Departure Scan</div></div>`,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

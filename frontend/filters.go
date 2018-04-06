@@ -16,7 +16,6 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
-	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -132,50 +131,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 	case instant.Death:
 		d := sol.Solution.(instant.Death)
 		return wikiDateTime(d.Death)
-	case parcel.Response:
-		a := sol.Solution.(parcel.Response)
-		h := fmt.Sprintf(
-			`<img width="18" height="18" alt="%v" src="/static/favicons/%v.ico" style="vertical-align:middle"/> <a href="%v"><em>%v</em></a><br>`,
-			sol.Type, sol.Type, a.URL, a.TrackingNumber,
-		)
-
-		ed := a.Expected.Date.Format("Monday, January 2, 2006")
-
-		// If the package is delivered and Expected Delivery is empty use the last location (e.g. UPS && USPS)
-		if a.Expected.Delivery == "" && a.Expected.Date.IsZero() && len(a.Updates) > 0 {
-			last := a.Updates[0]
-			a.Expected.Delivery = last.Status
-			ed = last.DateTime.Format("Monday, January 2, 2006 3:04PM")
-		}
-		h += fmt.Sprintf(`<p><span style="font-weight:bold;font-size:20px;">%v: %v</span></p>`, a.Expected.Delivery, ed)
-		if len(a.Updates) > 0 {
-			h += `<div class="pure-u-1" style="margin-bottom:5px;">`
-			h += `<div class="pure-u-7-24" style="font-weight:bold;">DATE</div>`
-			h += `<div class="pure-u-9-24" style="font-weight:bold;">LOCATION</div>`
-			h += `<div class="pure-u-8-24" style="font-weight:bold;">STATUS</div>`
-			h += `</div>`
-		}
-
-		for _, u := range a.Updates {
-			var loc = []string{}
-			if u.Location.City != "" {
-				loc = append(loc, u.Location.City)
-			}
-			if u.Location.State != "" {
-				loc = append(loc, u.Location.State)
-			}
-			if u.Location.Country != "" {
-				loc = append(loc, u.Location.Country)
-			}
-
-			h += `<div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">`
-			h += fmt.Sprintf(`<div class="pure-u-7-24">%v</div>`, u.DateTime.Format("Mon, 02 Jan 3:04PM"))
-			h += fmt.Sprintf(`<div class="pure-u-9-24">%v</div>`, strings.Join(loc, ", "))
-			h += fmt.Sprintf(`<div class="pure-u-8-24">%v</div>`, u.Status)
-			h += `</div>`
-		}
-
-		return h
 	case wikipedia.Wiktionary: // Wiktionary
 		createLink := func(lang, word, style string) string {
 			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.

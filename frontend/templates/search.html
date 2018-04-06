@@ -167,6 +167,43 @@
                   </div>
                 </div>
               </div>
+              {{else if (or (eq .Instant.Type "fedex") (eq .Instant.Type "ups") (eq .Instant.Type "usps"))}}
+                {{if .Instant.Solution}}
+                <div id="answer" class="pure-u-1">
+                  <div style="margin:15px;margin-bottom:5px;">
+                      <img width="18" height="18" alt="{{.Instant.Type}}" src="/static/favicons/{{.Instant.Type}}.ico" style="vertical-align:middle"/> 
+                      <a href="{{.Instant.Solution.URL}}"><em>{{.Instant.Solution.TrackingNumber}}</em></a><br>
+                      <p>
+                        <span style="font-weight:bold;font-size:20px;">
+                          {{if and .Instant.Solution.Expected.Delivery .Instant.Solution.Expected.Date}}
+                            {{.Instant.Solution.Expected.Delivery}}: {{.Instant.Solution.Expected.Date.Format "Monday, January 2, 2006"}}
+                          {{else}}
+                            {{range $i, $u := .Instant.Solution.Updates}}
+                              {{if eq $i 0}}
+                                {{$u.Status}}: {{$u.DateTime.Format "Monday, January 2, 2006 3:04PM"}}
+                              {{end}}
+                            {{end}}
+                          {{end}}
+                        </span>
+                      </p>
+                      {{range $i, $u := .Instant.Solution.Updates}}
+                        {{if eq $i 0}}
+                          <div class="pure-u-1" style="margin-bottom:5px;">
+                            <div class="pure-u-7-24" style="font-weight:bold;">DATE</div>
+                            <div class="pure-u-8-24" style="font-weight:bold;">LOCATION</div>
+                            <div class="pure-u-8-24" style="font-weight:bold;">STATUS</div>
+                          </div>
+                        {{end}}
+                        <div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">
+                          <div class="pure-u-7-24">{{$u.DateTime.Format "Mon, 02 Jan 3:04PM"}}</div>
+                          <div class="pure-u-8-24">{{$u.Location.City}}</div>
+                          <div class="pure-u-8-24">{{$u.Status}}</div>
+                        </div>
+                      {{end}}
+                  </div>
+                  {{template "source" .}}
+                </div>
+                {{end}}
               {{else if eq .Instant.Type "stackoverflow"}}
                 {{if .Instant.Solution}}
                 <!-- I wasn't able to get both the User's display name and link to their profile or id. Can select one or the other but not both in their filter. -->
