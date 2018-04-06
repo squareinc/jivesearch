@@ -131,31 +131,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 	case instant.Death:
 		d := sol.Solution.(instant.Death)
 		return wikiDateTime(d.Death)
-	case wikipedia.Wiktionary: // Wiktionary
-		createLink := func(lang, word, style string) string {
-			// if this breaks the dump file has the "wiki" key in their json e.g. "enwiktionary", etc.
-			return fmt.Sprintf(`<a href="https://%v.wiktionary.org/wiki/%v" %v>%v</a>`, lang, word, style, word)
-		}
-
-		def := sol.Solution.(wikipedia.Wiktionary)
-		var s = fmt.Sprintf(`<p><span style="font-size:18px;"><em>%v</em></span></p>`, createLink(def.Language, def.Title, `style="color:#333;"`))
-
-		for _, d := range def.Definitions {
-			s += fmt.Sprintf(`<span style="font-size:14px;font-style:italic;">%v</span><br>`, d.Part)
-			s += fmt.Sprintf(`<span style="display:inline-block;margin-left:15px;">%v</span><br>`, d.Meaning)
-			var syn []string
-			for _, sy := range d.Synonyms {
-				syn = append(syn, createLink(sy.Language, sy.Word, ""))
-			}
-			if len(syn) > 0 {
-				s += fmt.Sprintf(`<span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span>%v<br>`,
-					strings.Join(syn, ", "),
-				)
-			}
-			s += `<br>`
-		}
-
-		return s
 	default:
 		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)
 		return ""

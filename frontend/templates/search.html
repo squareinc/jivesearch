@@ -308,6 +308,29 @@
                 </div>
                 {{template "source" .}}
               </div>
+              {{else if eq .Instant.Type "wiktionary"}}
+              <div id="answer" class="pure-u-1">
+                <div style="margin:15px;margin-bottom:5px;">
+                  <p>
+                    <span style="font-size:18px;">
+                      <em><a href="https://{{.Instant.Solution.Language}}.wiktionary.org/wiki/{{.Instant.Solution.Title}}" style="color:#333;">{{.Instant.Solution.Title}}</a></em>
+                    </span>
+                  </p>
+                  {{range $i, $d := .Instant.Solution.Definitions}}
+                  <span style="font-size:14px;font-style:italic;">{{$d.Part}}</span><br>
+                  <span style="display:inline-block;margin-left:15px;">{{$d.Meaning}}</span><br>
+                  {{if $d.Synonyms}}
+                    <span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span>
+                    {{- range $j, $s := $d.Synonyms -}}
+                    <a href="https://{{$s.Language}}.wiktionary.org/wiki/{{$s.Word}}">{{if $j}}, {{end}}{{$s.Word}}</a>
+                    {{- end -}}
+                    <br>
+                  {{end}}
+                  <br>
+                  {{end}}
+                </div>
+                {{template "source" .}}
+              </div>
               {{else if .Instant.Solution}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">

@@ -293,31 +293,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: `May 14, 2015`,
 		},
 		{
-			name: "wiktionary",
-			args: args{
-				instant.Data{
-					Solution: wikipedia.Wiktionary{
-						Title:    "guitar",
-						Language: "en",
-						Definitions: []*wikipedia.Definition{
-							{
-								Part:    "noun",
-								Meaning: "an instrument",
-								Synonyms: []wikipedia.Synonym{
-									{
-										Word:     "axe",
-										Language: "en",
-									},
-								},
-							},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `<p><span style="font-size:18px;"><em><a href="https://en.wiktionary.org/wiki/guitar" style="color:#333;">guitar</a></em></span></p><span style="font-size:14px;font-style:italic;">noun</span><br><span style="display:inline-block;margin-left:15px;">an instrument</span><br><span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span><a href="https://en.wiktionary.org/wiki/axe" >axe</a><br><br>`,
-		},
-		{
 			name: "unknown",
 			args: args{
 				instant.Data{Solution: 1}, language.English},
