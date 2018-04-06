@@ -24,25 +24,25 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"Add":              add,
-	"Commafy":          commafy,
-	"Percent":          percent,
-	"SafeHTML":         safeHTML,
-	"Truncate":         truncate,
-	"HMACKey":          hmacKey,
-	"InstantFormatter": instantFormatter,
-	"JoinLocation":     joinLocation,
-	"JSONMarshal":      jsonMarshal,
-	"Source":           source,
-	"Now":              now,
-	"WeatherCode":      weatherCode,
-	"WikipediaItem":    wikipediaItem,
-	"WikiCanonical":    wikiCanonical,
-	"WikiDateTime":     wikiDateTime,
-	"WikiYears":        wikiYears,
-	"WikiLabel":        wikiLabel,
-	"WikiJoin":         wikiJoin,
-	"WikiAmount":       wikiAmount,
+	"Add":           add,
+	"Commafy":       commafy,
+	"Percent":       percent,
+	"SafeHTML":      safeHTML,
+	"Truncate":      truncate,
+	"HMACKey":       hmacKey,
+	"JoinLocation":  joinLocation,
+	"JSONMarshal":   jsonMarshal,
+	"Source":        source,
+	"Now":           now,
+	"WeatherCode":   weatherCode,
+	"Wikidata":      wikidata,
+	"WikipediaItem": wikipediaItem,
+	"WikiCanonical": wikiCanonical,
+	"WikiDateTime":  wikiDateTime,
+	"WikiYears":     wikiYears,
+	"WikiLabel":     wikiLabel,
+	"WikiJoin":      wikiJoin,
+	"WikiAmount":    wikiAmount,
 }
 
 func add(x, y int) int {
@@ -104,10 +104,8 @@ func hmacKey(u string) string {
 	return base64.URLEncoding.EncodeToString(h.Sum(nil))
 }
 
-func instantFormatter(sol instant.Data, r language.Region) string {
+func wikidata(sol instant.Data, r language.Region) string {
 	switch sol.Solution.(type) {
-	case string:
-		return sol.Solution.(string)
 	case []wikipedia.Quantity: // e.g. height, weight, etc.
 		i := sol.Solution.([]wikipedia.Quantity)
 		if len(i) == 0 {
@@ -126,6 +124,9 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		// dead
 		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
 			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
+	case instant.Birthday:
+		b := sol.Solution.(instant.Birthday)
+		return wikiDateTime(b.Birthday)
 	case instant.Death:
 		d := sol.Solution.(instant.Death)
 		return wikiDateTime(d.Death)

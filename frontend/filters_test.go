@@ -181,7 +181,7 @@ func TestHMACKey(t *testing.T) {
 	}
 }
 
-func TestInstantFormatter(t *testing.T) {
+func TestWikiData(t *testing.T) {
 	type args struct {
 		sol instant.Data
 		l   language.Tag
@@ -201,16 +201,6 @@ func TestInstantFormatter(t *testing.T) {
 				language.English,
 			},
 			want: "",
-		},
-		{
-			name: "string",
-			args: args{
-				instant.Data{
-					Solution: "basic string",
-				},
-				language.English,
-			},
-			want: `basic string`,
 		},
 		{
 			name: "kg",
@@ -263,6 +253,21 @@ func TestInstantFormatter(t *testing.T) {
 			want: `<em>Age at Death:</em> 27 Years<br><span style="color:#666;">April 30, 1956 - March 13, 1984</span>`,
 		},
 		{
+			name: "birthday",
+			args: args{
+				instant.Data{
+					Solution: instant.Birthday{
+						Birthday: wikipedia.DateTime{
+							Value:    "2001-05-14T00:00:00Z",
+							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						},
+					},
+				},
+				language.English,
+			},
+			want: `May 14, 2001`,
+		},
+		{
 			name: "death",
 			args: args{
 				instant.Data{
@@ -290,7 +295,7 @@ func TestInstantFormatter(t *testing.T) {
 				return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
 			}
 
-			got := instantFormatter(tt.args.sol, r)
+			got := wikidata(tt.args.sol, r)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %q, want %q", got, tt.want)
