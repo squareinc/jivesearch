@@ -126,9 +126,6 @@ func instantFormatter(sol instant.Data, r language.Region) string {
 		// dead
 		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
 			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
-	case instant.Birthday:
-		b := sol.Solution.(instant.Birthday)
-		return wikiDateTime(b.Birthday)
 	case instant.Death:
 		d := sol.Solution.(instant.Death)
 		return wikiDateTime(d.Death)

@@ -297,6 +297,17 @@
                   {{template "source" .}}
                 </div>
                 {{end}}
+              {{else if eq .Instant.Type "wikidata"}}
+                {{if .Instant.Solution}}
+                <div id="answer" class="pure-u-1">
+                  <div style="margin:15px;margin-bottom:5px;">
+                  {{if .Instant.Solution.Birthday}}
+                    {{.Instant.Solution.Birthday | WikiDateTime}}
+                  {{end}}
+                  </div>
+                  {{template "source" .}}
+                </div>
+                {{end}}
               {{else if eq .Instant.Type "wikiquote"}}
               <div id="answer" class="pure-u-1">
                 <div style="margin:15px;margin-bottom:5px;">

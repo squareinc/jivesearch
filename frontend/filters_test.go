@@ -263,21 +263,6 @@ func TestInstantFormatter(t *testing.T) {
 			want: `<em>Age at Death:</em> 27 Years<br><span style="color:#666;">April 30, 1956 - March 13, 1984</span>`,
 		},
 		{
-			name: "birthday",
-			args: args{
-				instant.Data{
-					Solution: instant.Birthday{
-						Birthday: wikipedia.DateTime{
-							Value:    "1938-07-31T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-						},
-					},
-				},
-				language.English,
-			},
-			want: `July 31, 1938`,
-		},
-		{
 			name: "death",
 			args: args{
 				instant.Data{
