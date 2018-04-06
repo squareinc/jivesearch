@@ -30,7 +30,7 @@ var funcMap = template.FuncMap{
 	"SafeHTML":      safeHTML,
 	"Truncate":      truncate,
 	"HMACKey":       hmacKey,
-	"JoinLocation":  joinLocation,
+	"Join":          join,
 	"JSONMarshal":   jsonMarshal,
 	"Source":        source,
 	"Now":           now,
@@ -80,20 +80,16 @@ func hmacKey(u string) string {
 	return base64.URLEncoding.EncodeToString(h.Sum(nil))
 }
 
-// joinLocation is a function to comma-separate the locatoin of a package
-func joinLocation(city, state, country string) string {
-	var loc = []string{}
-	if city != "" {
-		loc = append(loc, city)
-	}
-	if state != "" {
-		loc = append(loc, state)
-	}
-	if country != "" {
-		loc = append(loc, country)
+// join joins items in a slice
+func join(sl ...string) string {
+	var s []string
+	for _, item := range sl {
+		if item != "" {
+			s = append(s, item)
+		}
 	}
 
-	return strings.Join(loc, ", ")
+	return strings.Join(s, ", ")
 }
 
 func jsonMarshal(v interface{}) template.JS {

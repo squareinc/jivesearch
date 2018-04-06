@@ -143,7 +143,7 @@ func TestJSONMarshall(t *testing.T) {
 	}
 }
 
-func TestJoinLocation(t *testing.T) {
+func TestJoin(t *testing.T) {
 	for _, tt := range []struct {
 		sl   []string
 		want string
@@ -158,7 +158,7 @@ func TestJoinLocation(t *testing.T) {
 		},
 	} {
 		t.Run(tt.want, func(t *testing.T) {
-			got := joinLocation(tt.sl[0], tt.sl[1], tt.sl[2])
+			got := join(tt.sl[0], tt.sl[1], tt.sl[2])
 			if got != tt.want {
 				t.Fatalf("got %q; want %q", got, tt.want)
 			}
