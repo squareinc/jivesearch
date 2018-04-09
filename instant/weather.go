@@ -59,6 +59,7 @@ func (w *Weather) solve(r *http.Request) answerer {
 			if err != nil {
 				w.Err = err
 			}
+			w.Cache = true
 			return w
 		}
 	}
@@ -81,7 +82,7 @@ func (w *Weather) solve(r *http.Request) answerer {
 }
 
 func (w *Weather) setCache() answerer {
-	w.Cache = true
+	// caching is set in solve()
 	return w
 }
 
@@ -112,7 +113,7 @@ func (w *Weather) tests() []test {
 						},
 						Provider: weather.OpenWeatherMapProvider,
 					},
-					Cache: true,
+					Cache: false,
 				},
 			},
 		},
