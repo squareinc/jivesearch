@@ -15,9 +15,11 @@ import (
 	"time"
 
 	"github.com/abursavich/nett"
+	"github.com/garyburd/redigo/redis"
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/config"
 	"github.com/jivesearch/jivesearch/frontend"
+	"github.com/jivesearch/jivesearch/frontend/cache"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
@@ -121,6 +123,32 @@ func main() {
 	if err := f.Bangs.Suggester.Setup(f.Bangs.Bangs); err != nil {
 		panic(err)
 	}
+
+	// cache
+	rds := &cache.Redis{
+		RedisPool: &redis.Pool{
+			MaxIdle:     1,
+			MaxActive:   1,
+			IdleTimeout: 10 * time.Second,
+			Wait:        true,
+			Dial: func() (redis.Conn, error) {
+				cl, err := redis.Dial("tcp", fmt.Sprintf("%v:%v", v.GetString("redis.host"), v.GetString("redis.port")))
+				if err != nil {
+					return nil, err
+				}
+				return cl, err
+			},
+		},
+	}
+
+	defer rds.RedisPool.Close()
+
+	f.Cache.Cacher = rds
+	if err != nil {
+		panic(err)
+	}
+	f.Cache.Instant = v.GetDuration("cache.instant")
+	f.Cache.Search = v.GetDuration("cache.search")
 
 	// The database needs to be setup beforehand.
 	db, err := sql.Open("postgres",

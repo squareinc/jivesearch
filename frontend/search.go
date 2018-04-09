@@ -1,13 +1,20 @@
 package frontend
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
+	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/pkg/errors"
@@ -39,6 +46,11 @@ type Results struct {
 	Alternative string          `json:"alternative"`
 	Instant     instant.Data    `json:"instant"`
 	Search      *search.Results `json:"search"`
+}
+
+// Instant is a wrapper to facilitate custom unmarshalling
+type Instant struct {
+	instant.Data
 }
 
 type data struct {
@@ -198,16 +210,56 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 		go func(r *http.Request) {
 			lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
-			ic <- f.Instant.Detect(r, lang)
-			/*
-				if err != nil && err != sql.ErrNoRows {
+			key := cacheKey("instant", lang, f.detectRegion(lang, r), r.URL)
+
+			v, err := f.Cache.Get(key)
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			if v != nil {
+				ir := &Instant{
+					instant.Data{},
+				}
+
+				if err := json.Unmarshal(v.([]byte), &ir); err != nil {
 					log.Info.Println(err)
 				}
-			*/
+
+				ic <- ir.Data
+				return
+			}
+
+			res := f.Instant.Detect(r, lang)
+
+			if res.Cache {
+				if err := f.Cache.Put(key, res, f.Cache.Instant); err != nil {
+					log.Info.Println(err)
+				}
+			}
+
+			ic <- res
 		}(r)
 	}
 
 	go func(d data, lang language.Tag, region language.Region) {
+		key := cacheKey("search", lang, region, r.URL)
+
+		v, err := f.Cache.Get(key)
+		if err != nil {
+			log.Info.Println(err)
+		}
+
+		if v != nil {
+			sr := &search.Results{}
+			if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+				log.Info.Println(err)
+			}
+
+			sc <- sr
+			return
+		}
+
 		// get the votes
 		offset := d.Context.Page*d.Context.Number - d.Context.Number
 		votes, err := f.Vote.Get(d.Context.Q, d.Context.Number*10) // get votes for first 10 pages
@@ -215,12 +267,12 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			log.Info.Println(err)
 		}
 
-		res, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset, votes)
+		sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset, votes)
 		if err != nil {
 			log.Info.Println(err)
 		}
 
-		for _, doc := range res.Documents {
+		for _, doc := range sr.Documents {
 			for _, v := range votes {
 				if doc.ID == v.URL {
 					doc.Votes = v.Votes
@@ -228,8 +280,13 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			}
 		}
 
-		res = res.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
-		sc <- res
+		sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
+
+		if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
+			log.Info.Println(err)
+		}
+
+		sc <- sr
 	}(d, lang, d.Context.Region)
 
 	stats := struct {
@@ -267,4 +324,75 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	resp.data = d
 	return resp
+}
+
+func cacheKey(item string, lang language.Tag, region language.Region, u *url.URL) string {
+	// language and region might be different than what is pass as l & r params
+	// ::search::en-US::US::/?q=reverse+%22this%22
+	// ::instant::en-US::US::/?q=reverse+%22this%22
+	return fmt.Sprintf("::%v::%v::%v::%v", item, lang.String(), region.String(), u.String())
+}
+
+// UnmarshalJSON unmarshals an instant answer to the correct data structure
+func (d *Instant) UnmarshalJSON(b []byte) error {
+	type alias Instant
+	raw := &alias{}
+
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	j, err := json.Marshal(raw.Solution)
+	if err != nil {
+		return err
+	}
+
+	d.Data = raw.Data
+	d.Solution = raw.Solution
+
+	s := detectType(raw.Type)
+	if s == nil { // a string
+		return nil
+	}
+
+	d.Solution = s
+	return json.Unmarshal(j, d.Solution)
+}
+
+// detectType returns the proper data structure for an instant answer type
+func detectType(t string) interface{} {
+	var v interface{}
+
+	switch t {
+	case "fedex", "ups", "usps":
+		v = &parcel.Response{}
+	case "stackoverflow":
+		v = &instant.StackOverflowAnswer{}
+	case "stock quote":
+		v = &stock.Quote{}
+	case "weather":
+		v = &weather.Weather{}
+	case "wikipedia":
+		v = &wikipedia.Item{}
+	case "wikidata age":
+		v = &instant.Age{
+			Birthday: &instant.Birthday{},
+			Death:    &instant.Death{},
+		}
+	case "wikidata birthday":
+		v = &instant.Birthday{}
+	case "wikidata death":
+		v = &instant.Death{}
+	case "wikidata height", "wikidata weight":
+		v = &[]wikipedia.Quantity{}
+	case "wikiquote":
+		v = &[]string{}
+	case "wiktionary":
+		v = &wikipedia.Wiktionary{}
+	default: // a string
+		return nil
+	}
+
+	return v
 }

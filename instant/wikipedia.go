@@ -100,8 +100,8 @@ type Death struct {
 
 // Age is a person's current age (in years) or age when they died
 type Age struct {
-	Birthday `json:"birthday,omitempty"`
-	Death    `json:"death,omitempty"`
+	*Birthday `json:"birthday,omitempty"`
+	*Death    `json:"death,omitempty"`
 }
 
 // TODO: Return the Title (and perhaps Image???) as
@@ -119,16 +119,18 @@ func (w *Wikipedia) solve(r *http.Request) answerer {
 			return w
 		}
 
-		w.Type = "wikidata"
-		b := Birthday{item.Birthday[0]}
+		w.Type = "wikidata birthday"
+		b := &Birthday{item.Birthday[0]}
 
 		if w.triggerWord == "age" || w.triggerWord == "how old is" {
-			a := Age{
+			w.Type = "wikidata age"
+
+			a := &Age{
 				Birthday: b,
 			}
 
 			if len(item.Death) > 0 {
-				a.Death = Death{item.Death[0]}
+				a.Death = &Death{item.Death[0]}
 			}
 
 			w.Data.Solution = a
@@ -139,22 +141,22 @@ func (w *Wikipedia) solve(r *http.Request) answerer {
 		w.Data.Solution = b
 	case death, died:
 		if len(item.Death) > 0 {
-			w.Type = "wikidata"
-			w.Data.Solution = Death{item.Death[0]}
+			w.Type = "wikidata death"
+			w.Data.Solution = &Death{item.Death[0]}
 		}
 	case howTallis, howTallwas, height:
 		if len(item.Height) == 0 {
 			return w
 		}
 
-		w.Type = "wikidata"
+		w.Type = "wikidata height"
 		w.Data.Solution = item.Height
 	case mass, weigh, weight:
 		if len(item.Weight) == 0 {
 			return w
 		}
 
-		w.Type = "wikidata"
+		w.Type = "wikidata weight"
 		w.Data.Solution = item.Weight
 	case quote, quotes:
 		if len(item.Quotes) == 0 {
@@ -190,16 +192,16 @@ func (w *Wikipedia) tests() []test {
 			query: "Bob Marley age",
 			expected: []Data{
 				{
-					Type:      "wikidata",
+					Type:      "wikidata age",
 					Triggered: true,
-					Solution: Age{
-						Birthday: Birthday{
+					Solution: &Age{
+						Birthday: &Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1945-02-06T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 							},
 						},
-						Death: Death{
+						Death: &Death{
 							Death: wikipedia.DateTime{
 								Value:    "1981-05-11T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -214,9 +216,9 @@ func (w *Wikipedia) tests() []test {
 			query: "Jimi hendrix birthday",
 			expected: []Data{
 				{
-					Type:      "wikidata",
+					Type:      "wikidata birthday",
 					Triggered: true,
-					Solution: Birthday{
+					Solution: &Birthday{
 						Birthday: wikipedia.DateTime{
 							Value:    "1942-11-27T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -230,9 +232,9 @@ func (w *Wikipedia) tests() []test {
 			query: "death jimi hendrix",
 			expected: []Data{
 				{
-					Type:      "wikidata",
+					Type:      "wikidata death",
 					Triggered: true,
-					Solution: Death{
+					Solution: &Death{
 						Death: wikipedia.DateTime{
 							Value:    "1970-09-18T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -246,7 +248,7 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal height",
 			expected: []Data{
 				{
-					Type:      "wikidata",
+					Type:      "wikidata height",
 					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{
@@ -262,7 +264,7 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal weight",
 			expected: []Data{
 				{
-					Type:      "wikidata",
+					Type:      "wikidata weight",
 					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{

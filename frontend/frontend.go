@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/bangs"
+	"github.com/jivesearch/jivesearch/frontend/cache"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
@@ -25,6 +26,11 @@ import (
 type Frontend struct {
 	Document
 	*bangs.Bangs
+	Cache struct {
+		cache.Cacher
+		Instant time.Duration
+		Search  time.Duration
+	}
 	*instant.Instant
 	Suggest suggest.Suggester
 	Search  search.Fetcher

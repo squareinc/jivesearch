@@ -25,6 +25,10 @@ func SetDefaults(cfg Provider) {
 
 	cfg.SetDefault("hmac.secret", "")
 
+	// Frontend Cache
+	cfg.SetDefault("cache.instant", 1*time.Second)
+	cfg.SetDefault("cache.search", 1*time.Second)
+
 	// languages are in the order of preference
 	// empty slice = all languages
 	// Note: the crawler and frontend packages (for now) don't support language config yet.

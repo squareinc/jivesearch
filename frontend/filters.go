@@ -56,7 +56,7 @@ func commafy(v interface{}) string {
 	case float64:
 		return humanize.Commaf(v.(float64))
 	default:
-		log.Debug.Printf("unknown type %T\n", reflect.TypeOf(v))
+		log.Debug.Printf("unknown type %T\n", v)
 		return ""
 	}
 }
@@ -125,7 +125,7 @@ func source(answer instant.Data) string {
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
 		// Can select one or the other but not both in their filter.
-		user := answer.Solution.(instant.StackOverflowAnswer).Answer.User
+		user := answer.Solution.(*instant.StackOverflowAnswer).Answer.User
 		img = `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/>`
 		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
 	case "stock quote":
@@ -155,8 +155,7 @@ func source(answer instant.Data) string {
 		default:
 			log.Debug.Printf("unknown weather provider %v\n", w.Provider)
 		}
-
-	case "wikidata":
+	case "wikidata age", "wikidata birthday", "wikidata death", "wikidata height", "wikidata weight":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
@@ -287,11 +286,17 @@ func wikiData(sol instant.Data, r language.Region) string {
 			return ""
 		}
 		return wikiAmount(i[0], r)
-	case instant.Age:
-		a := sol.Solution.(instant.Age)
+	case *[]wikipedia.Quantity: // cached version of height, weight, etc.
+		i := *sol.Solution.(*[]wikipedia.Quantity)
+		if len(i) == 0 {
+			return ""
+		}
+		return wikiAmount(i[0], r)
+	case *instant.Age:
+		a := sol.Solution.(*instant.Age)
 
 		// alive
-		if reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
+		if a.Death == nil || reflect.DeepEqual(a.Death.Death, wikipedia.DateTime{}) {
 			return fmt.Sprintf(`<em>Age:</em> %d Years<br><span style="color:#666;">%v</span>`,
 				wikiYears(a.Birthday.Birthday, now()), wikiDateTime(a.Birthday.Birthday))
 		}
@@ -299,11 +304,11 @@ func wikiData(sol instant.Data, r language.Region) string {
 		// dead
 		return fmt.Sprintf(`<em>Age at Death:</em> %d Years<br><span style="color:#666;">%v - %v</span>`,
 			wikiYears(a.Birthday.Birthday, a.Death.Death), wikiDateTime(a.Birthday.Birthday), wikiDateTime(a.Death.Death))
-	case instant.Birthday:
-		b := sol.Solution.(instant.Birthday)
+	case *instant.Birthday:
+		b := sol.Solution.(*instant.Birthday)
 		return wikiDateTime(b.Birthday)
-	case instant.Death:
-		d := sol.Solution.(instant.Death)
+	case *instant.Death:
+		d := sol.Solution.(*instant.Death)
 		return wikiDateTime(d.Death)
 	default:
 		log.Debug.Printf("unknown instant solution type %T\n", sol.Solution)

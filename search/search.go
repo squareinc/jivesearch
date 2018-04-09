@@ -22,7 +22,7 @@ type Results struct {
 	Previous   string               `json:"previous"`
 	Next       string               `json:"next"`
 	Last       string               `json:"last"`
-	Pagination []string             `json:"-"`
+	Pagination []string             `json:"pagination"`
 	Documents  []*document.Document `json:"links"`
 }
 

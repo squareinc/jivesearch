@@ -1,14 +1,19 @@
 package frontend
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	"github.com/jivesearch/jivesearch/instant/stock"
+	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
@@ -230,22 +235,30 @@ func TestSearchHandler(t *testing.T) {
 						Page:         1,
 					},
 					Results: Results{
-						Instant: instant.Data{
-							Type:      "wikipedia",
-							Triggered: true,
-							Solution:  &wikipedia.Item{},
-							Err:       nil,
-							Cache:     true,
-						},
-						Search: &search.Results{
-							Count:      int64(25),
-							Page:       "1",
-							Previous:   "",
-							Next:       "2",
-							Last:       "72",
-							Pagination: []string{"1"},
-							Documents:  []*document.Document{},
-						},
+						Instant: mockInstantAnswer,
+						Search:  mockSearchResults,
+					},
+				},
+			},
+		},
+		{
+			"not cached", "en", "not cached", "",
+			&response{
+				status:   http.StatusOK,
+				template: "search",
+				data: data{
+					Context: Context{
+						Q:            "not cached",
+						L:            "en",
+						DefaultBangs: db,
+						Preferred:    []language.Tag{language.MustParse("en")},
+						Region:       language.MustParseRegion("US"),
+						Number:       25,
+						Page:         1,
+					},
+					Results: Results{
+						Instant: mockInstantAnswer,
+						Search:  mockSearchResults,
 					},
 				},
 			},
@@ -266,22 +279,8 @@ func TestSearchHandler(t *testing.T) {
 						Page:         1,
 					},
 					Results: Results{
-						Instant: instant.Data{
-							Type:      "wikipedia",
-							Triggered: true,
-							Solution:  &wikipedia.Item{},
-							Err:       nil,
-							Cache:     true,
-						},
-						Search: &search.Results{
-							Count:      int64(25),
-							Page:       "1",
-							Previous:   "",
-							Next:       "2",
-							Last:       "72",
-							Pagination: []string{"1"},
-							Documents:  []*document.Document{},
-						},
+						Instant: mockInstantAnswer,
+						Search:  mockSearchResults,
 					},
 				},
 			},
@@ -318,6 +317,9 @@ func TestSearchHandler(t *testing.T) {
 				},
 				Vote: &mockVoter{},
 			}
+			f.Cache.Cacher = &mockCacher{}
+			f.Cache.Instant = 10 * time.Second
+			f.Cache.Search = 10 * time.Second
 
 			req, err := http.NewRequest("GET", "/", nil)
 			if err != nil {
@@ -331,6 +333,39 @@ func TestSearchHandler(t *testing.T) {
 			req.URL.RawQuery = q.Encode()
 
 			got := f.searchHandler(httptest.NewRecorder(), req)
+
+			if !reflect.DeepEqual(got, c.want) {
+				t.Fatalf("got %+v; want %+v", got, c.want)
+			}
+		})
+	}
+}
+
+func TestDetectType(t *testing.T) {
+	for _, c := range []struct {
+		name string
+		want interface{}
+	}{
+		{"birthstone", nil},
+		{"fedex", &parcel.Response{}},
+		{"stackoverflow", &instant.StackOverflowAnswer{}},
+		{"stock quote", &stock.Quote{}},
+		{"weather", &weather.Weather{}},
+		{"wikipedia", &wikipedia.Item{}},
+		{
+			"wikidata age", &instant.Age{
+				Birthday: &instant.Birthday{},
+				Death:    &instant.Death{},
+			},
+		},
+		{"wikidata birthday", &instant.Birthday{}},
+		{"wikidata death", &instant.Death{}},
+		{"wikidata height", &[]wikipedia.Quantity{}},
+		{"wikiquote", &[]string{}},
+		{"wiktionary", &wikipedia.Wiktionary{}},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			got := detectType(c.name)
 
 			if !reflect.DeepEqual(got, c.want) {
 				t.Fatalf("got %+v; want %+v", got, c.want)
@@ -354,6 +389,32 @@ func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, 
 	return r, nil
 }
 
+type mockCacher struct{}
+
+func (c *mockCacher) Get(key string) (interface{}, error) {
+	var v interface{}
+
+	switch key {
+	case "::instant::en::US::/?l=en&o=json&q=+some+query", "::instant::en::US::/?l=en&o=&q=+some+query+":
+		v = mockInstantAnswer
+	case "::search::en::US::/?l=en&o=json&q=+some+query", "::search::en::US::/?l=en&o=&q=+some+query+":
+		v = mockSearchResults
+	default:
+		return nil, nil
+	}
+
+	j, err := json.Marshal(v)
+	if err != nil {
+		return []int8{}, err
+	}
+
+	return j, nil
+}
+
+func (c *mockCacher) Put(key string, value interface{}, ttl time.Duration) error {
+	return nil
+}
+
 // mock Stack Overflow Fetcher
 type mockStackOverflowFetcher struct{}
 
@@ -371,4 +432,22 @@ func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikiped
 
 func (mf *mockWikipediaFetcher) Setup() error {
 	return nil
+}
+
+var mockInstantAnswer = instant.Data{
+	Type:      "wikipedia",
+	Triggered: true,
+	Solution:  &wikipedia.Item{},
+	Err:       nil,
+	Cache:     true,
+}
+
+var mockSearchResults = &search.Results{
+	Count:      int64(25),
+	Page:       "1",
+	Previous:   "",
+	Next:       "2",
+	Last:       "72",
+	Pagination: []string{"1"},
+	Documents:  []*document.Document{},
 }

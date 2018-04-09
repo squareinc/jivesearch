@@ -250,7 +250,7 @@ func TestSource(t *testing.T) {
 			args: args{
 				instant.Data{
 					Type: "stackoverflow",
-					Solution: instant.StackOverflowAnswer{
+					Solution: &instant.StackOverflowAnswer{
 						Answer: instant.SOAnswer{
 							User: "bob",
 						},
@@ -302,10 +302,10 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="openweathermap" src="/static/favicons/openweathermap.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
 		},
 		{
-			name: "wikidata",
+			name: "wikidata age",
 			args: args{
 				instant.Data{
-					Type: "wikidata",
+					Type: "wikidata age",
 				},
 			},
 			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
@@ -557,11 +557,21 @@ func TestWikiData(t *testing.T) {
 			want: "147 kg",
 		},
 		{
+			name: "kg (cached version)",
+			args: args{
+				instant.Data{
+					Solution: &[]wikipedia.Quantity{{Unit: wikipedia.Wikidata{ID: "Q11570"}, Amount: "147"}},
+				},
+				language.Italian,
+			},
+			want: "147 kg",
+		},
+		{
 			name: "age (alive)",
 			args: args{
 				instant.Data{
-					Solution: instant.Age{
-						Birthday: instant.Birthday{
+					Solution: &instant.Age{
+						Birthday: &instant.Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1972-12-31T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -577,14 +587,14 @@ func TestWikiData(t *testing.T) {
 			name: "age (at time of death)",
 			args: args{
 				instant.Data{
-					Solution: instant.Age{
-						Birthday: instant.Birthday{
+					Solution: &instant.Age{
+						Birthday: &instant.Birthday{
 							Birthday: wikipedia.DateTime{
 								Value:    "1956-04-30T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 							},
 						},
-						Death: instant.Death{
+						Death: &instant.Death{
 							Death: wikipedia.DateTime{
 								Value:    "1984-03-13T00:00:00Z",
 								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -600,7 +610,7 @@ func TestWikiData(t *testing.T) {
 			name: "birthday",
 			args: args{
 				instant.Data{
-					Solution: instant.Birthday{
+					Solution: &instant.Birthday{
 						Birthday: wikipedia.DateTime{
 							Value:    "2001-05-14T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
@@ -615,7 +625,7 @@ func TestWikiData(t *testing.T) {
 			name: "death",
 			args: args{
 				instant.Data{
-					Solution: instant.Death{
+					Solution: &instant.Death{
 						Death: wikipedia.DateTime{
 							Value:    "2015-05-14T00:00:00Z",
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},

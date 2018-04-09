@@ -102,7 +102,7 @@ func tagger(txt string) string {
 }
 
 func (s *StackOverflow) solve(r *http.Request) answerer {
-	a := StackOverflowAnswer{}
+	a := &StackOverflowAnswer{}
 
 	resp, err := s.Fetch(s.remainder, []string{tagger(s.triggerWord)})
 	if err != nil {
@@ -148,7 +148,7 @@ func (s *StackOverflow) tests() []test {
 				{
 					Type:      typ,
 					Triggered: true,
-					Solution: StackOverflowAnswer{
+					Solution: &StackOverflowAnswer{
 						Question: "How does PHP &#39;foreach&#39; actually work?",
 						Link:     "https://stackoverflow.com/questions/10057671/how-does-php-foreach-actually-work",
 						Answer: SOAnswer{
@@ -166,7 +166,7 @@ func (s *StackOverflow) tests() []test {
 				{
 					Type:      typ,
 					Triggered: true,
-					Solution: StackOverflowAnswer{
+					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/c++-loop",
 						Answer: SOAnswer{
@@ -184,7 +184,7 @@ func (s *StackOverflow) tests() []test {
 				{
 					Type:      typ,
 					Triggered: true,
-					Solution: StackOverflowAnswer{
+					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/go-loop",
 						Answer: SOAnswer{
@@ -202,7 +202,7 @@ func (s *StackOverflow) tests() []test {
 				{
 					Type:      typ,
 					Triggered: true,
-					Solution: StackOverflowAnswer{
+					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/macos-loop",
 						Answer: SOAnswer{
@@ -220,7 +220,7 @@ func (s *StackOverflow) tests() []test {
 				{
 					Type:      typ,
 					Triggered: true,
-					Solution: StackOverflowAnswer{
+					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
 						Link:     "https://stackoverflow.com/questions/90210/regex-loop",
 						Answer: SOAnswer{
