@@ -35,7 +35,7 @@ func (m *Minify) setType() answerer {
 
 func (m *Minify) setRegex() answerer {
 	triggers := []string{
-		"minify", "minifier", "pretty", "prettifier",
+		"minify", "minifier", "pretty", "prettifier", "prettify",
 	}
 
 	t := strings.Join(triggers, "|")
