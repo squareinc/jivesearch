@@ -233,7 +233,18 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			res := f.Instant.Detect(r, lang)
 
 			if res.Cache {
-				if err := f.Cache.Put(key, res, f.Cache.Instant); err != nil {
+				var d = f.Cache.Instant
+
+				switch res.Type {
+				case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
+					d = 1 * time.Minute
+				}
+
+				if d > f.Cache.Instant {
+					d = f.Cache.Instant
+				}
+
+				if err := f.Cache.Put(key, res, d); err != nil {
 					log.Info.Println(err)
 				}
 			}
