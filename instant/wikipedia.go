@@ -159,14 +159,14 @@ func (w *Wikipedia) solve(r *http.Request) answerer {
 		w.Type = "wikidata weight"
 		w.Data.Solution = item.Weight
 	case quote, quotes:
-		if len(item.Quotes) == 0 {
+		if len(item.Wikiquote.Quotes) == 0 {
 			return w
 		}
 
 		w.Type = "wikiquote"
-		w.Data.Solution = item.Quotes
+		w.Data.Solution = item.Wikiquote.Quotes
 	case define, definition:
-		if len(item.Definitions) == 0 {
+		if len(item.Wiktionary.Definitions) == 0 {
 			return w
 		}
 

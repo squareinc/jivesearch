@@ -19,16 +19,16 @@ type Fetcher interface {
 type Item struct {
 	Wikipedia
 	*Wikidata
-	Wikiquote
-	Wiktionary
+	Wikiquote  Wikiquote
+	Wiktionary Wiktionary
 }
 
 // Wikipedia holds the summary text of an article
 type Wikipedia struct {
-	ID       string `json:"wikibase_item,omitempty"`
-	Language string `json:"language,omitempty"`
-	Title    string `json:"title,omitempty"`
-	Text     string `json:"text,omitempty"`
+	ID       string `json:"wikibase_item"`
+	Language string `json:"language"`
+	Title    string `json:"title"`
+	Text     string `json:"text"`
 	truncate int
 	//Popularity float32 `json:"popularity_score"` // I can't seem to find any documentation for this
 }
