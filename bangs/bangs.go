@@ -263,6 +263,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"SEC", []string{"sec", "edgar"},
+			map[string]string{
+				def: "https://www.sec.gov/cgi-bin/browse-edgar?CIK={{{term}}}&owner=exclude&action=getcompany",
+			},
+			[]fn{},
+		},
+		{
 			"Stack Overflow", []string{"so", "stackoverflow"},
 			map[string]string{
 				def: "https://stackoverflow.com/search?q={{{term}}}",
