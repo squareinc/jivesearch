@@ -64,6 +64,10 @@ func TestCommafy(t *testing.T) {
 			want:   "-12,000,000",
 		},
 		{
+			number: int64(3743),
+			want:   "3,743",
+		},
+		{
 			number: -120,
 			want:   "-120",
 		},

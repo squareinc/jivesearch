@@ -53,7 +53,9 @@ func commafy(v interface{}) string {
 	switch v.(type) {
 	case int:
 		return humanize.Comma(int64(v.(int)))
-	case float64:
+	case int64:
+		return humanize.Comma(v.(int64))
+	case float32, float64:
 		return humanize.Commaf(v.(float64))
 	default:
 		log.Debug.Printf("unknown type %T\n", v)
