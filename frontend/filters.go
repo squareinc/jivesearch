@@ -10,6 +10,7 @@ import (
 	"math"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -24,25 +25,26 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"Add":           add,
-	"Commafy":       commafy,
-	"Percent":       percent,
-	"SafeHTML":      safeHTML,
-	"Truncate":      truncate,
-	"HMACKey":       hmacKey,
-	"Join":          join,
-	"JSONMarshal":   jsonMarshal,
-	"Source":        source,
-	"Now":           now,
-	"WeatherCode":   weatherCode,
-	"WikiAmount":    wikiAmount,
-	"WikiCanonical": wikiCanonical,
-	"WikiData":      wikiData,
-	"WikiDateTime":  wikiDateTime,
-	"WikiJoin":      wikiJoin,
-	"WikiLabel":     wikiLabel,
-	"WikipediaItem": wikipediaItem,
-	"WikiYears":     wikiYears,
+	"Add":                  add,
+	"Commafy":              commafy,
+	"Percent":              percent,
+	"SafeHTML":             safeHTML,
+	"Truncate":             truncate,
+	"HMACKey":              hmacKey,
+	"Join":                 join,
+	"JSONMarshal":          jsonMarshal,
+	"Source":               source,
+	"Now":                  now,
+	"WeatherCode":          weatherCode,
+	"WeatherDailyForecast": weatherDailyForecast,
+	"WikiAmount":           wikiAmount,
+	"WikiCanonical":        wikiCanonical,
+	"WikiData":             wikiData,
+	"WikiDateTime":         wikiDateTime,
+	"WikiJoin":             wikiJoin,
+	"WikiLabel":            wikiLabel,
+	"WikipediaItem":        wikipediaItem,
+	"WikiYears":            wikiYears,
 }
 
 func add(x, y int) int {
@@ -218,6 +220,75 @@ func weatherCode(c weather.Description) string {
 	}
 
 	return icon
+}
+
+type weatherDay struct {
+	*weather.Instant
+	DT    string
+	codes map[weather.Description]int
+}
+
+// weatherDailyForecast combines multi-day weather forecasts to 1 daily forecast.
+func weatherDailyForecast(forecasts []*weather.Instant, timezone string) []*weatherDay {
+	tmp := map[string]*weatherDay{}
+	dates := []time.Time{}
+	days := []*weatherDay{}
+
+	if timezone == "" { // this is just a hack until we can match timezones with zipcodes
+		timezone = "America/Los_Angeles"
+	}
+
+	location, err := time.LoadLocation(timezone)
+	if err != nil {
+		log.Info.Println(err)
+	}
+
+	var fmtDate = func(d time.Time) string {
+		return d.In(location).Format("Mon 02")
+	}
+
+	for _, f := range forecasts {
+		fd := fmtDate(f.Date)
+
+		if v, ok := tmp[fd]; ok {
+			if f.High > v.Instant.High {
+				v.Instant.High = f.High
+			}
+			if f.Low < v.Instant.Low {
+				v.Instant.Low = f.Low
+			}
+			v.codes[f.Code]++
+		} else {
+			wd := &weatherDay{
+				&weather.Instant{
+					Date: f.Date,
+					Low:  f.Low,
+					High: f.High,
+				}, fd, make(map[weather.Description]int),
+			}
+			wd.codes[f.Code]++
+			tmp[fd] = wd
+			dates = append(dates, f.Date)
+		}
+	}
+
+	sort.Slice(dates, func(i, j int) bool { return dates[i].Before(dates[j]) })
+
+	for _, d := range dates {
+		f := fmtDate(d)
+		// find the most frequently used icon for that day
+		var most int
+		for kk, v := range tmp[f].codes {
+			if v > most {
+				tmp[f].Code = kk
+				most = v
+			}
+		}
+
+		days = append(days, tmp[f])
+	}
+
+	return days
 }
 
 // wikiAmount displays a unit in meters, feet, etc depending on user's region

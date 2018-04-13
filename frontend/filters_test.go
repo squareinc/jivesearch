@@ -117,7 +117,7 @@ func TestHMACKey(t *testing.T) {
 			got := hmacKey(tt.args.u)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -337,7 +337,7 @@ func TestSource(t *testing.T) {
 			got := source(tt.args.src)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -383,6 +383,67 @@ func TestWeatherCode(t *testing.T) {
 			got := weatherCode(tt.arg)
 			if got != tt.want {
 				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestWeatherDailyForecast(t *testing.T) {
+	for _, tt := range []struct {
+		name      string
+		timezone  string
+		forecasts []*weather.Instant
+		want      []*weatherDay
+	}{
+		{
+			"empty", "",
+			[]*weather.Instant{},
+			[]*weatherDay{},
+		},
+		{
+			"basic", "",
+			[]*weather.Instant{
+				{
+					Date: time.Date(2018, 3, 15, 9, 0, 0, 0, time.UTC),
+					Code: weather.LightClouds,
+					Low:  47,
+					High: 72,
+				},
+				{
+					Date: time.Date(2018, 3, 15, 11, 0, 0, 0, time.UTC),
+					Code: weather.OvercastClouds,
+					Low:  44,
+					High: 72,
+				},
+				{
+					Date: time.Date(2018, 3, 15, 13, 0, 0, 0, time.UTC),
+					Code: weather.LightClouds,
+					Low:  48,
+					High: 73,
+				},
+			},
+			[]*weatherDay{
+				{
+					&weather.Instant{
+						Date: time.Date(2018, 3, 15, 9, 0, 0, 0, time.UTC),
+						Code: weather.LightClouds,
+						Low:  44,
+						High: 73,
+					},
+					"Thu 15",
+					map[weather.Description]int{
+						weather.LightClouds:    2,
+						weather.OvercastClouds: 1,
+					},
+				},
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := weatherDailyForecast(tt.forecasts, tt.timezone)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -497,7 +558,7 @@ func TestWikiAmount(t *testing.T) {
 			got := wikiAmount(tt.args.quantity, r)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -523,7 +584,7 @@ func TestWikiCanonical(t *testing.T) {
 			got := wikiCanonical(tt.args.title)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -656,7 +717,7 @@ func TestWikiData(t *testing.T) {
 			got := wikiData(tt.args.sol, r)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %q, want %q", got, tt.want)
+				t.Fatalf("got %q, want %q", got, tt.want)
 			}
 		})
 	}
@@ -697,7 +758,7 @@ func TestWikiDateTime(t *testing.T) {
 			got := wikiDateTime(tt.args.dt)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -741,7 +802,7 @@ func TestWikiJoin(t *testing.T) {
 			got := wikiJoin(tt.args.items, tt.args.preferred)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -777,7 +838,7 @@ func TestWikiLabel(t *testing.T) {
 			got := wikiLabel(tt.args.labels, tt.args.preferred)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}
@@ -793,7 +854,7 @@ func TestWikipediaItem(t *testing.T) {
 	got := wikipediaItem(d)
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %+v, want %+v", got, want)
+		t.Fatalf("got %+v, want %+v", got, want)
 	}
 }
 
@@ -870,7 +931,7 @@ func TestWikiYears(t *testing.T) {
 			got := wikiYears(tt.args.start, tt.args.end)
 
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+				t.Fatalf("got %+v, want %+v", got, tt.want)
 			}
 		})
 	}

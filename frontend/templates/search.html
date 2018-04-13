@@ -256,42 +256,59 @@
                 {{end}}
               {{else if eq .Instant.Type "weather"}}
                 {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
+                <div id="answer" class="pure-u-1" style="height:375px;">
                   <div style="margin:15px;margin-bottom:5px;">
                     <div class="pure-u-1">
                       <div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">
                         {{.Instant.Solution.City}}
                       </div>
-                      <div class="pure-u-1" style="vertical-align:top;">
-                        <i class="{{.Instant.Solution.Today.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i>
-                        <span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">{{.Instant.Solution.Today.Temperature}}</span>
+                      <div class="pure-u-1">
+                        <i class="{{.Instant.Solution.Current.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i>
+                        <span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">{{.Instant.Solution.Current.Temperature}}</span>
                         <span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
                           <i class="icon-fahrenheit" aria-hidden="true"></i>
                           <hr style="display:none;">
                           <i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
                         </span>
-                        <span style="display:inline-block;vertical-align:top;margin-top:14px;margin-left:25px;">
-                          <em>H</em> {{.Instant.Solution.Today.High}}&deg;
+                        <span style="display:inline-block;vertical-align:top;margin-top:10px;margin-left:25px;">
+                          <em>H</em> {{.Instant.Solution.Current.High}}&deg;
                           <hr style="opacity:0;">
-                          <em>L</em> {{.Instant.Solution.Today.Low}}&deg;
+                          <em>L</em> {{.Instant.Solution.Current.Low}}&deg;
                         </span>
                         <span style="display:inline-block;vertical-align:top;margin-left:25px;">
-                          {{if .Instant.Solution.Today.Rain}}
-                            <em>Rain: </em>{{.Instant.Solution.Today.Rain}}
+                          {{if .Instant.Solution.Current.Rain}}
+                            <em>Rain: </em>{{.Instant.Solution.Current.Rain}}
                             <hr style="opacity:0;">
                           {{end}}
-                          {{if .Instant.Solution.Today.Snow}}
-                            <em>Snow: </em>{{.Instant.Solution.Today.Snow}}
+                          {{if .Instant.Solution.Current.Snow}}
+                            <em>Snow: </em>{{.Instant.Solution.Current.Snow}}
                             <hr style="opacity:0;">
                           {{end}}
                           <hr style="opacity:0;">
-                          <em>Wind:</em> {{.Instant.Solution.Today.Wind}} MPH
+                          <em>Wind:</em> {{.Instant.Solution.Current.Wind}} MPH
                           <hr style="opacity:0;">
-                          <em>Humidity:</em> {{.Instant.Solution.Today.Humidity}}%
+                          <em>Humidity:</em> {{.Instant.Solution.Current.Humidity}}%
                           <hr style="opacity:0;">
-                          <em>Clouds:</em> {{.Instant.Solution.Today.Clouds}}%
+                          <em>Clouds:</em> {{.Instant.Solution.Current.Clouds}}%
                         </span>
-                      </div>			
+                      </div>
+                      <div class="pure-u-1">
+                        {{$days := WeatherDailyForecast .Instant.Solution.Forecast .Instant.Solution.TimeZone}}
+                        {{range $i, $d := $days}}
+                          <span class="forecast">
+                            <span style="font-size:14px;">{{$d.DT}}</span><br>
+                            <i class="{{$d.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i><br>
+                            <span style="color:#555;">{{$d.Code}}</span>
+                            {{if eq $d.Code "Scattered Clouds"}}
+                              <br><br>
+                              {{else}}
+                              <br><br><br>
+                            {{end}} 
+                            {{$d.High}}&deg;<br>
+                            {{$d.Low}}&deg;
+                          </span>
+                        {{end}}
+                      </div>		
                     </div>
                   </div>
                   {{template "source" .}}
@@ -361,7 +378,7 @@
             <div id="wikipedia_image">
             {{range $i, $img := $wikipedia.Claims.Flag}}
               {{if eq $i 0}}
-              {{$key := $img | HMACKey}}
+                {{$key := $img | HMACKey}}
                 <a href="/image/250x,s{{$key}}/{{$img}}">
                   <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
                 </a>

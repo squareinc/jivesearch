@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -64,8 +65,7 @@ func (w *Weather) solve(r *http.Request) answerer {
 		}
 	}
 
-	// fetch by lat/long
-	// Note: on localhost this will not return anything
+	// fetch by lat/long. On localhost this will likely give you weather for "Earth"
 	ip := getIPAddress(r)
 
 	city, err := w.LocationFetcher.Fetch(ip)
@@ -73,7 +73,7 @@ func (w *Weather) solve(r *http.Request) answerer {
 		w.Err = err
 	}
 
-	w.Data.Solution, err = w.Fetcher.FetchByLatLong(city.Location.Latitude, city.Location.Longitude)
+	w.Data.Solution, err = w.Fetcher.FetchByLatLong(city.Location.Latitude, city.Location.Longitude, city.Location.TimeZone)
 	if err != nil {
 		w.Err = err
 	}
@@ -98,20 +98,44 @@ func (w *Weather) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution: &weather.Weather{
-						City: "Someville",
-						Today: weather.Today{
+						City: "Bountiful",
+						Current: &weather.Instant{
+							Date:        time.Date(2018, 4, 1, 18, 58, 0, 0, time.UTC),
 							Code:        weather.ScatteredClouds,
 							Temperature: 59,
+							Low:         55,
+							High:        63,
 							Wind:        4.7,
 							Clouds:      40,
 							Rain:        0,
 							Snow:        0,
 							Pressure:    1014,
 							Humidity:    33,
-							Low:         55.4,
-							High:        62.6,
+						},
+						Forecast: []*weather.Instant{
+							{
+								Date:        time.Date(2018, 4, 11, 18, 0, 0, 0, time.UTC),
+								Code:        weather.Clear,
+								Temperature: 97,
+								Low:         84,
+								High:        97,
+								Wind:        3.94,
+								Pressure:    888.01,
+								Humidity:    14,
+							},
+							{
+								Date:        time.Date(2018, 4, 11, 21, 0, 0, 0, time.UTC),
+								Code:        weather.Clear,
+								Temperature: 95,
+								Low:         85,
+								High:        95,
+								Wind:        10.76,
+								Pressure:    886.87,
+								Humidity:    13,
+							},
 						},
 						Provider: weather.OpenWeatherMapProvider,
+						TimeZone: "America/Denver",
 					},
 					Cache: false,
 				},
@@ -125,18 +149,41 @@ func (w *Weather) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution: &weather.Weather{
-						City: "Centerville",
-						Today: weather.Today{
+						City: "Bountiful",
+						Current: &weather.Instant{
+							Date:        time.Date(2018, 4, 1, 18, 58, 0, 0, time.UTC),
 							Code:        weather.ScatteredClouds,
 							Temperature: 59,
+							Low:         55,
+							High:        63,
 							Wind:        4.7,
 							Clouds:      40,
 							Rain:        0,
 							Snow:        0,
 							Pressure:    1014,
 							Humidity:    33,
-							Low:         55.4,
-							High:        62.6,
+						},
+						Forecast: []*weather.Instant{
+							{
+								Date:        time.Date(2018, 4, 11, 18, 0, 0, 0, time.UTC),
+								Code:        weather.Clear,
+								Temperature: 97,
+								Low:         84,
+								High:        97,
+								Wind:        3.94,
+								Pressure:    888.01,
+								Humidity:    14,
+							},
+							{
+								Date:        time.Date(2018, 4, 11, 21, 0, 0, 0, time.UTC),
+								Code:        weather.Clear,
+								Temperature: 95,
+								Low:         85,
+								High:        95,
+								Wind:        10.76,
+								Pressure:    886.87,
+								Humidity:    13,
+							},
 						},
 						Provider: weather.OpenWeatherMapProvider,
 					},

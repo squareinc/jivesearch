@@ -26,4 +26,14 @@ hr{
     margin-left:0px;
     margin-top:0px;
 }
+.forecast{
+    vertical-align: middle;
+    display:inline-block;
+    box-shadow:rgba(0,0,0,.25) 0 1px 2px 0;
+    text-align:center;
+    font-size:12px;
+    width:75px;
+    height: 155px;
+    padding:9px 5px;
+}
 

@@ -402,22 +402,46 @@ type mockWeatherFetcher struct {
 	location.Fetcher
 }
 
-func (m *mockWeatherFetcher) FetchByLatLong(lat, long float64) (*weather.Weather, error) {
+func (m *mockWeatherFetcher) FetchByLatLong(lat, long float64, timezone string) (*weather.Weather, error) {
 	w := &weather.Weather{
-		City: "Someville",
-		Today: weather.Today{
+		City: "Bountiful",
+		Current: &weather.Instant{
+			Date:        time.Date(2018, 4, 1, 18, 58, 0, 0, time.UTC),
 			Code:        weather.ScatteredClouds,
 			Temperature: 59,
+			Low:         55,
+			High:        63,
 			Wind:        4.7,
 			Clouds:      40,
 			Rain:        0,
 			Snow:        0,
 			Pressure:    1014,
 			Humidity:    33,
-			Low:         55.4,
-			High:        62.6,
+		},
+		Forecast: []*weather.Instant{
+			{
+				Date:        time.Date(2018, 4, 11, 18, 0, 0, 0, time.UTC),
+				Code:        weather.Clear,
+				Temperature: 97,
+				Low:         84,
+				High:        97,
+				Wind:        3.94,
+				Pressure:    888.01,
+				Humidity:    14,
+			},
+			{
+				Date:        time.Date(2018, 4, 11, 21, 0, 0, 0, time.UTC),
+				Code:        weather.Clear,
+				Temperature: 95,
+				Low:         85,
+				High:        95,
+				Wind:        10.76,
+				Pressure:    886.87,
+				Humidity:    13,
+			},
 		},
 		Provider: weather.OpenWeatherMapProvider,
+		TimeZone: "America/Denver",
 	}
 
 	return w, nil
@@ -425,18 +449,41 @@ func (m *mockWeatherFetcher) FetchByLatLong(lat, long float64) (*weather.Weather
 
 func (m *mockWeatherFetcher) FetchByZip(zip int) (*weather.Weather, error) {
 	w := &weather.Weather{
-		City: "Centerville",
-		Today: weather.Today{
+		City: "Bountiful",
+		Current: &weather.Instant{
+			Date:        time.Date(2018, 4, 1, 18, 58, 0, 0, time.UTC),
 			Code:        weather.ScatteredClouds,
 			Temperature: 59,
+			Low:         55,
+			High:        63,
 			Wind:        4.7,
 			Clouds:      40,
 			Rain:        0,
 			Snow:        0,
 			Pressure:    1014,
 			Humidity:    33,
-			Low:         55.4,
-			High:        62.6,
+		},
+		Forecast: []*weather.Instant{
+			{
+				Date:        time.Date(2018, 4, 11, 18, 0, 0, 0, time.UTC),
+				Code:        weather.Clear,
+				Temperature: 97,
+				Low:         84,
+				High:        97,
+				Wind:        3.94,
+				Pressure:    888.01,
+				Humidity:    14,
+			},
+			{
+				Date:        time.Date(2018, 4, 11, 21, 0, 0, 0, time.UTC),
+				Code:        weather.Clear,
+				Temperature: 95,
+				Low:         85,
+				High:        95,
+				Wind:        10.76,
+				Pressure:    886.87,
+				Humidity:    13,
+			},
 		},
 		Provider: weather.OpenWeatherMapProvider,
 	}
