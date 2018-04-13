@@ -79,18 +79,6 @@
       "src": "meteocons"
     },
     {
-      "uid": "87cf185e0420ff98e04406c0fbb873eb",
-      "css": "snow-inv",
-      "code": 59396,
-      "src": "meteocons"
-    },
-    {
-      "uid": "f1315f7ea135cbea7966cce0e7c10ce0",
-      "css": "snow-heavy-inv",
-      "code": 59397,
-      "src": "meteocons"
-    },
-    {
       "uid": "ab5c31256cdd1f6b2d6de7202936f5a1",
       "css": "hail-inv",
       "code": 59398,
@@ -271,12 +259,6 @@
       "src": "meteocons"
     },
     {
-      "uid": "d0c325468a74095e565664bec2623aa3",
-      "css": "snowflake",
-      "code": 59428,
-      "src": "meteocons"
-    },
-    {
       "uid": "2efb5347832a09ae69de043f897ec4b9",
       "css": "wind",
       "code": 59429,
@@ -313,24 +295,6 @@
       "src": "meteocons"
     },
     {
-      "uid": "127ed05f3c024a9c73487f18cf3d530d",
-      "css": "snow",
-      "code": 59435,
-      "src": "meteocons"
-    },
-    {
-      "uid": "02bb2eaa1515b8fc954abbaf80212739",
-      "css": "snow-alt",
-      "code": 59436,
-      "src": "meteocons"
-    },
-    {
-      "uid": "0f6059e468716a93329821bcbf11220d",
-      "css": "snow-heavy",
-      "code": 59437,
-      "src": "meteocons"
-    },
-    {
       "uid": "b500010a53f4807828ac252725dc6fd1",
       "css": "hail",
       "code": 59438,
@@ -353,6 +317,12 @@
       "css": "celcius",
       "code": 59441,
       "src": "meteocons"
+    },
+    {
+      "uid": "56f2eac13d2b397ff4a54dc38f783b95",
+      "css": "snowflake-o",
+      "code": 62172,
+      "src": "fontawesome"
     }
   ]
 }

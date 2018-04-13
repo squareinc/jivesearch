@@ -367,7 +367,7 @@ func TestWeatherCode(t *testing.T) {
 			weather.Rain, "icon-rain",
 		},
 		{
-			weather.Snow, "icon-snow",
+			weather.Snow, "icon-snowflake-o",
 		},
 		{
 			weather.ThunderStorm, "icon-cloud-flash",

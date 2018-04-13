@@ -297,13 +297,10 @@
                         {{range $i, $d := $days}}
                           <span class="forecast">
                             <span style="font-size:14px;">{{$d.DT}}</span><br>
-                            <i class="{{$d.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i><br>
-                            <span style="color:#555;">{{$d.Code}}</span>
-                            {{if eq $d.Code "Scattered Clouds"}}
-                              <br><br>
-                              {{else}}
-                              <br><br><br>
-                            {{end}} 
+                            <i class="{{$d.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:bottom;"></i><br>
+                            <br>
+                            <span style="color:#555;">{{$d.Code}}</span><br>
+                            {{if ne $d.Code "Scattered Clouds"}}<br>{{end}} 
                             {{$d.High}}&deg;<br>
                             {{$d.Low}}&deg;
                           </span>

@@ -210,7 +210,7 @@ func weatherCode(c weather.Description) string {
 	case weather.Rain:
 		icon = "icon-rain"
 	case weather.Snow:
-		icon = "icon-snow"
+		icon = "icon-snowflake-o"
 	case weather.ThunderStorm:
 		icon = "icon-cloud-flash"
 	case weather.Windy:
