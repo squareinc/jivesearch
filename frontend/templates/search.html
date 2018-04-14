@@ -1,4 +1,4 @@
-{{define "title"}}{{if .Context.Q}}{{.Context.Q}} - {{end}}Jive Search{{end}}
+{{define "title"}}{{if .Context.Q}}{{.Context.Q}} - {{end}}{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}{{end}}
 
 {{define "css"}}
   {{if .Context.Q}}
@@ -65,7 +65,9 @@
 
 {{if $context.Q}}
   <div id="container" class="pure-g">
-    {{template "small_logo"}}
+    <div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
+      <a href="/">{{template "small_logo" .}}</a>
+    </div>
     <div class="pure-u-1 pure-u-xl-22-24">
       {{template "search_form" .}}
 
@@ -646,12 +648,18 @@
     <div id="container" class="pure-u-1">
       <div style="text-align:center;">
         <div class="pure-u-22-24">
+          {{if .Brand.Logo}}
+            {{.Brand.Logo|SafeHTML}}
+          {{else}}
           <svg width="205" height="65" style="cursor:pointer;">
-           <g><text id="logo" x="7" y="35">Jive Search</text></g>
+           <g><text id="logo" x="7" y="35" fill="#000">Jive Search</text></g>
           </svg>
+          {{end}}
           {{template "search_form" .}}
           <br>
-          <span id="tagline">The little search engine that could. <a href="/about">About Us.</a></span>
+          <span id="tagline">
+          {{if .Brand.TagLine}}{{.Brand.TagLine}}{{else}}The little search engine that could.{{end}} <a href="/about">About Us.</a>
+          </span>
         </div>
       </div>
     </div>

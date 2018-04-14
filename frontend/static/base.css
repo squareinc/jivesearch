@@ -44,7 +44,6 @@ and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    fill: #000;
 }
 #tagline {
     font-family: 'Open Sans',sans-serif;

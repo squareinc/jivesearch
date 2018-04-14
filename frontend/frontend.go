@@ -21,9 +21,9 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Frontend holds settings for our languages supported, backend, etc.
-// better name???
+// Frontend holds settings for branding, cache, search backend, etc.
 type Frontend struct {
+	Brand
 	Document
 	*bangs.Bangs
 	Cache struct {
@@ -37,6 +37,14 @@ type Frontend struct {
 	Wikipedia
 	Vote vote.Voter
 	GitHub
+}
+
+// Brand allows for customization of the name and tagline
+type Brand struct {
+	Name      string
+	TagLine   string
+	Logo      string
+	SmallLogo string
 }
 
 // Document has the languages we support

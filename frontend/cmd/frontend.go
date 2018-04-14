@@ -51,7 +51,14 @@ func setup(v *viper.Viper) *http.Server {
 	}
 
 	frontend.ParseTemplates()
-	f = &frontend.Frontend{}
+	f = &frontend.Frontend{
+		Brand: frontend.Brand{
+			Name:      v.GetString("brand.name"),
+			TagLine:   v.GetString("brand.tagline"),
+			Logo:      v.GetString("brand.logo"),
+			SmallLogo: v.GetString("brand.small_logo"),
+		},
+	}
 
 	router := f.Router(v)
 

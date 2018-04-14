@@ -1,13 +1,9 @@
 #container {
     margin-top: 0;
 }
-#logo {
-    font-size: 20px;
-}
 #search_container {
     margin-left: 0;
 }
-
 /* 
 by default we don't display the count. 
 TODO: display via themes 

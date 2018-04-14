@@ -1,4 +1,4 @@
-{{define "title"}}About Jive Search{{end}}
+{{define "title"}}About {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}{{end}}
 
 {{define "css"}}
 <link rel="stylesheet" href="/static/search.css">
@@ -24,7 +24,9 @@
 
 {{define "content"}}
 <div id="container" class="pure-g">
-    {{template "small_logo"}}
+    <div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
+        <a href="/">{{template "small_logo" .}}</a>
+    </div>
     <div class="pure-u-1 pure-u-xl-22-24">
     {{template "search_form" .}}
     </div>
@@ -32,7 +34,7 @@
     <div id="about" class="pure-u-1 pure-u-xl-22-24">
         <h2>About Us</h2>
         <div class="pure-u-1" style="font-size:18px;">
-            Jive Search is a completely open source search engine that doesn't track you.<br><br>
+            {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} is a completely open source search engine that doesn't track you.<br><br>
             <div class="pure-u-2-24">
                 <a href="https://github.com/jivesearch/jivesearch" style="text-decoration: none !important;">
                     <i class="icon-github-circled" aria-hidden="true" style="color: #333; text-shadow: 1px 1px 1px #ccc;"></i>

@@ -25,6 +25,12 @@ func SetDefaults(cfg Provider) {
 
 	cfg.SetDefault("hmac.secret", "")
 
+	// Brand
+	cfg.SetDefault("brand.name", "Jive Search")
+	cfg.SetDefault("brand.tagline", "The little search engine that could.")
+	cfg.SetDefault("brand.logo", "")
+	cfg.SetDefault("brand.small_logo", "")
+
 	// Frontend Cache
 	cfg.SetDefault("cache.instant", 1*time.Second)
 	cfg.SetDefault("cache.search", 1*time.Second)

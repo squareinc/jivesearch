@@ -216,7 +216,9 @@ func TestSearchHandler(t *testing.T) {
 			&response{
 				status:   http.StatusOK,
 				template: "search",
-				data:     nil,
+				data: data{
+					Brand: Brand{},
+				},
 			},
 		},
 		{
@@ -225,6 +227,7 @@ func TestSearchHandler(t *testing.T) {
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
+					Brand: Brand{},
 					Context: Context{
 						Q:            "some query",
 						L:            "en",
@@ -247,6 +250,7 @@ func TestSearchHandler(t *testing.T) {
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
+					Brand: Brand{},
 					Context: Context{
 						Q:            "not cached",
 						L:            "en",
@@ -269,6 +273,7 @@ func TestSearchHandler(t *testing.T) {
 				status:   http.StatusOK,
 				template: "json",
 				data: data{
+					Brand: Brand{},
 					Context: Context{
 						Q:            "some query",
 						L:            "en",
@@ -302,6 +307,7 @@ func TestSearchHandler(t *testing.T) {
 			)
 
 			f := &Frontend{
+				Brand: Brand{},
 				Document: Document{
 					Matcher: matcher,
 				},

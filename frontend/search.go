@@ -54,6 +54,7 @@ type Instant struct {
 }
 
 type data struct {
+	Brand
 	Context `json:"-"`
 	Results
 }
@@ -141,9 +142,25 @@ func (f *Frontend) addQuery(q string) error {
 }
 
 func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
+	q := strings.TrimSpace(r.FormValue("q"))
+	resp := &response{
+		status: http.StatusOK,
+		data: data{
+			Brand: f.Brand,
+		},
+		template: "search",
+		err:      nil,
+	}
+
+	// render start page if no query
+	if q == "" {
+		return resp
+	}
+
 	d := data{
+		f.Brand,
 		Context{
-			Q:            strings.TrimSpace(r.FormValue("q")),
+			Q:            q,
 			L:            strings.TrimSpace(r.FormValue("l")),
 			N:            strings.TrimSpace(r.FormValue("n")),
 			R:            strings.TrimSpace(r.FormValue("r")),
@@ -152,16 +169,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		Results{
 			Search: &search.Results{},
 		},
-	}
-
-	resp := &response{
-		status:   http.StatusOK,
-		template: "search",
-		err:      nil,
-	}
-
-	if d.Context.Q == "" { // render start page if no query
-		return resp
 	}
 
 	d.Context.Preferred = f.detectLanguage(r)
