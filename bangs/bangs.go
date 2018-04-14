@@ -155,6 +155,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"CNBC", []string{"cnbc"},
+			map[string]string{
+				def: "http://search.cnbc.com/main.do?target=all&keywords={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"GitHub", []string{"gh", "git", "github"},
 			map[string]string{
 				def: "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1",
