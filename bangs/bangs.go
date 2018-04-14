@@ -284,6 +284,13 @@ func New() *Bangs {
 			[]fn{},
 		},
 		{
+			"Steam", []string{"steam"},
+			map[string]string{
+				def: "http://store.steampowered.com/search/?term={{{term}}}",
+			},
+			[]fn{},
+		},
+		{
 			"Twitter", []string{"t", "tw", "twitter"},
 			map[string]string{
 				def: "https://twitter.com/search?q={{{term}}}",
