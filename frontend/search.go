@@ -402,6 +402,8 @@ func detectType(t string) interface{} {
 		v = &instant.Birthday{}
 	case "wikidata death":
 		v = &instant.Death{}
+	case "wikidata discography":
+		v = &[]instant.Discography{}
 	case "wikidata height", "wikidata weight":
 		v = &[]wikipedia.Quantity{}
 	case "wikiquote":

@@ -366,6 +366,7 @@ func TestDetectType(t *testing.T) {
 		},
 		{"wikidata birthday", &instant.Birthday{}},
 		{"wikidata death", &instant.Death{}},
+		{"wikidata discography", &[]instant.Discography{}},
 		{"wikidata height", &[]wikipedia.Quantity{}},
 		{"wikiquote", &[]string{}},
 		{"wiktionary", &wikipedia.Wiktionary{}},
