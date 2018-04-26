@@ -169,6 +169,10 @@ func TestParseTemplates(t *testing.T) {
 	if _, ok := templates["search"]; !ok {
 		t.Fatal("Our search template is not in our templates map.")
 	}
+
+	if _, ok := templates["about"]; !ok {
+		t.Fatal("Our about template is not in our templates map.")
+	}
 }
 
 type mockSuggester struct {
