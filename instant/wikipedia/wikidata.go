@@ -13,7 +13,7 @@ type Wikidata struct {
 	Labels       `json:"labels,omitempty"`
 	Aliases      `json:"aliases,omitempty"`
 	Descriptions `json:"descriptions,omitempty"`
-	*Claims
+	*Claims      `json:"claims,omitempty"`
 }
 
 // Labels holds the labels for an Item
@@ -167,6 +167,7 @@ type claims struct {
 	RecordLabel []claim `json:"P264"`
 	Discography []claim `json:"P358"`
 	Position    []claim `json:"P413"`
+	MusicBrainz []claim `json:"P436"` // group ID...different than P434
 	Partner     []claim `json:"P451"` // non-married spouse
 	Origin      []claim `json:"P495"`
 	DeathCause  []claim `json:"P509"`
@@ -177,6 +178,7 @@ type claims struct {
 	Birthday    []claim `json:"P569"`
 	Death       []claim `json:"P570"`
 	Start       []claim `json:"P571"`
+	Publication []claim `json:"P577"`
 	Sport       []claim `json:"P641"`
 	Drafted     []claim `json:"P647"`
 	GivenName   []claim `json:"P735"`
@@ -226,6 +228,7 @@ type Claims struct {
 	RecordLabel []Wikidata  `json:"record_label,omitempty"`
 	Discography []Wikidata  `json:"discography,omitempty"`
 	Position    []Wikidata  `json:"position,omitempty"` // e.g. position on team...forward, center, etc..
+	MusicBrainz []string    `json:"musicbrainz,omitempty"`
 	Partner     []Spouse    `json:"partner,omitempty"`
 	Origin      []Wikidata  `json:"origin,omitempty"`         // country of origin
 	DeathCause  []Wikidata  `json:"cause_of_death,omitempty"` // there is also P1196 "manner of death"
@@ -236,6 +239,7 @@ type Claims struct {
 	Birthday    []DateTime   `json:"birthday,omitempty"`
 	Death       []DateTime   `json:"death,omitempty"`
 	Start       []DateTime   `json:"start,omitempty"`
+	Publication []DateTime   `json:"publication,omitempty"`
 	Sport       []Wikidata   `json:"sport,omitempty"`
 	Drafted     []Wikidata   `json:"drafted,omitempty"`
 	GivenName   []Wikidata   `json:"given_name,omitempty"`

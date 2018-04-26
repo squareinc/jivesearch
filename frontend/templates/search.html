@@ -12,6 +12,9 @@
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
       {{else if eq .Instant.Type "weather"}}
       <link rel="stylesheet" href="/static/instant/weather/weather.css">
+      {{else if eq .Instant.Type "wikidata discography"}}
+      <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
+      <link rel="stylesheet" href="/static/instant/discography/discography.css">
       {{end}}
     {{end}}
   {{end}}
@@ -26,6 +29,9 @@
     <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
     {{else if eq .Instant.Type "unit converter"}}
     <script src="/static/instant/unit_converter/unit_converter.js"></script>
+    {{else if eq .Instant.Type "wikidata discography"}}
+    <script src="/static/instant/discography/owl.carousel.min.js"></script>
+    <script src="/static/instant/discography/discography.js"></script>
     {{else if eq .Instant.Type "minify"}}
     <!-- 
       prettydiff.js combines prettydiff barebones example files to 1: 
@@ -37,16 +43,6 @@
     <script src="/static/instant/minify/prettydiff.js"></script>
     <script src="/static/instant/minify/minify.js"></script>
     {{end}}
-  {{end}}
-{{end}}
-
-{{define "did_you_mean"}}
-  {{if .Alternative}}
-  <div class="pure-u-1" style="font-size:18px;cursor:pointer;">
-    <p>
-      Did you mean <i><a id="alternative" data-alternative="{{.Alternative}}">{{.Alternative}}?</a></i>
-    </p>
-  </div>
   {{end}}
 {{end}}
 
@@ -64,605 +60,372 @@
 {{$context := .Context}}
 
 {{if $context.Q}}
-  <div id="container" class="pure-g">
-    <div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
-      <a href="/">{{template "small_logo" .}}</a>
-    </div>
-    <div class="pure-u-1 pure-u-xl-22-24">
-      {{template "search_form" .}}
-
-      {{if .Context.DefaultBangs}}
-      <div class="pure-u-1 pure-u-xl-22-24">
-        <div class="pure-u-1 pure-u-xl-15-24">
-          <div class="pure-u-1">
-            <div class="pure-button-group" role="group" aria-label="bang select" style="margin-bottom:10px;">
-            {{range $i, $bng := .Context.DefaultBangs}}
-              <button class="pure-button bang_submit" tabindex="{{Add $i 3}}" 
-                data-location="!{{$bng.Trigger}} {{$context.Q}}">!{{$bng.Trigger}}<br>{{$bng.Name}}</button>
-            {{end}}
-            </div>
-          </div>
-        </div>
-      </div>
-      {{end}}
-
-      {{if .Search.Count}}
-      <div id="count" class="pure-u-1 pure-u-xl-22-24">
-        {{.Search.Count | Commafy}} results
-      </div>
-      {{end}}
-      <div id="results_container" class="pure-u-1 pure-u-xl-22-24">
-        {{if and .Instant .Instant.Triggered}}
-          {{if ne .Instant.Type "wikipedia"}}
-            <div id="instant" class="pure-u-1 pure-u-xl-15-24">
-              {{if eq .Instant.Type "minify"}}
-              <textarea id="code_input" rows="20" cols="60" tabindex="4" style="width:99%" placeholder="Paste code here..."></textarea>
-              <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
-              <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
-              <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Prettify</a>
-              {{else if eq .Instant.Type "unit converter"}}
-              <div id="unit_converter" class="pure-u-18-24" style="margin-bottom:25px;">
-                <div class="pure-u-1">
-                  <form class="pure-form pure-g">
-                    <div class="pure-u-1">
-                      <select id="selector" class="pure-input-1" style="margin-bottom:15px;">
-                        <option {{if eq .Instant.Solution "digital storage"}}selected{{end}}>Digital Storage</option>
-                        <option {{if eq .Instant.Solution "length"}}selected{{end}}>Length</option>
-                        <option {{if eq .Instant.Solution "power"}}selected{{end}}>Power</option>
-                        <option {{if eq .Instant.Solution "speed"}}selected{{end}}>Speed</option>
-                        <option {{if eq .Instant.Solution "temperature"}}selected{{end}}>Temperature</option>
-                      </select>
-                    </div>
-                  </form>
-                </div>
-                <div class="pure-g">
-                  <div class="pure-u-11-24">
-                    <form class="pure-form unit">
-                      <input class="pure-input-1"/>
-                      <select class="pure-input-1"></select>
-                    </form>
-                  </div>
-                  <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
-                  <div class="pure-u-11-24">
-                    <form class="pure-form unit">
-                      <input class="pure-input-1"/>
-                      <select class="pure-input-1"></select>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              {{else if eq .Instant.Type "calculator"}}
-              <div id="calculator">
-                <div id="result" tabindex="4"></div>
-                <div id="main">
-                  <div id="first-row">
-                    <button id="clear" class="del-bg">C</button>
-                    <button class="btn-style operator opera-bg fall-back" value="%">%</button>
-                    <button class="btn-style opera-bg align operator" value="/">/</button>
-                  </div>
-                    
-                  <div class="rows">
-                    <button class="btn-style num-bg number first-child" value="7">7</button>
-                    <button class="btn-style num-bg number" value="8">8</button>
-                    <button class="btn-style num-bg number" value="9">9</button>
-                    <button class="btn-style opera-bg operator" value="*">x</button>
-                  </div>
-                    
-                  <div class="rows">
-                    <button class="btn-style num-bg number first-child" value="4">4</button>
-                    <button class="btn-style num-bg number" value="5">5</button>
-                    <button class="btn-style num-bg number" value="6">6</button>
-                    <button class="btn-style opera-bg operator" value="-">-</button>
-                  </div>
-                    
-                  <div class="rows">
-                    <button class="btn-style num-bg number first-child" value="1">1</button>
-                    <button class="btn-style num-bg number" value="2">2</button>
-                    <button class="btn-style num-bg number" value="3">3</button>
-                    <button class="btn-style opera-bg operator" value="+">+</button>
-                  </div>
-                    
-                  <div class="rows">
-                    <button id="zero" class="num-bg zero" value="0">0</button>
-                    <button class="btn-style num-bg period fall-back" value=".">.</button>
-                    <button id="eqn-bg" class="eqn align" value="=">=</button>
-                  </div>
-                </div>
-              </div>
-              {{else if (or (eq .Instant.Type "fedex") (eq .Instant.Type "ups") (eq .Instant.Type "usps"))}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                      <img width="18" height="18" alt="{{.Instant.Type}}" src="/static/favicons/{{.Instant.Type}}.ico" style="vertical-align:middle"/> 
-                      <a href="{{.Instant.Solution.URL}}"><em>{{.Instant.Solution.TrackingNumber}}</em></a><br>
-                      <p>
-                        <span style="font-weight:bold;font-size:20px;">
-                          {{if and .Instant.Solution.Expected.Delivery .Instant.Solution.Expected.Date}}
-                            {{.Instant.Solution.Expected.Delivery}}: {{.Instant.Solution.Expected.Date.Format "Monday, January 2, 2006"}}
-                          {{else}}
-                            {{range $i, $u := .Instant.Solution.Updates}}
-                              {{if eq $i 0}}
-                                {{$u.Status}}: {{$u.DateTime.Format "Monday, January 2, 2006 3:04PM"}}
-                              {{end}}
-                            {{end}}
-                          {{end}}
-                        </span>
-                      </p>
-                      {{range $i, $u := .Instant.Solution.Updates}}
-                        {{if eq $i 0}}
-                          <div class="pure-u-1" style="margin-bottom:5px;">
-                            <div class="pure-u-7-24" style="font-weight:bold;">DATE</div>
-                            <div class="pure-u-8-24" style="font-weight:bold;">LOCATION</div>
-                            <div class="pure-u-8-24" style="font-weight:bold;">STATUS</div>
-                          </div>
-                        {{end}}
-                        <div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">
-                          <div class="pure-u-7-24">{{$u.DateTime.Format "Mon, 02 Jan 3:04PM"}}</div>
-                          <div class="pure-u-8-24">{{Join $u.Location.City $u.Location.State $u.Location.Country}}</div>
-                          <div class="pure-u-8-24">{{$u.Status}}</div>
-                        </div>
-                      {{end}}
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if eq .Instant.Type "stackoverflow"}}
-                {{if .Instant.Solution}}
-                <!-- I wasn't able to get both the User's display name and link to their profile or id. Can select one or the other but not both in their filter. -->
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                    <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="{{.Instant.Solution.Link|SafeHTML}}"><em>{{.Instant.Solution.Question|SafeHTML}}</em></a><br>{{.Instant.Solution.Answer.Text|SafeHTML}}
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if eq .Instant.Type "stock quote"}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                    <div class="pure-u-1">
-                      <div class="pure-u-1" style="font-size:20px;">{{.Instant.Solution.Name}}</div>
-                      <div class="pure-u-1" style="font-size:14px;">
-                        {{.Instant.Solution.Exchange}}: {{.Instant.Solution.Ticker}} 
-                        <span id="quote_time" style="font-size:12px;">{{.Instant.Solution.Time.Format "January 2, 2006 3:04 PM MST"}}</span>
-                      </div>
-                    </div>
-                    <div class="pure-u-1" style="font-size:40px;">{{.Instant.Solution.Last.Price|Commafy}} 
-                      <span style="font-size:22px;">
-                        {{if ge .Instant.Solution.Last.Change 0.0}}
-                          <span class="quote-arrow quote-arrow-up"></span>
-                          <span style="color:#006D21;"> 
-                        {{else}}
-                          <span class="quote-arrow quote-arrow-down"></span>
-                          <span style="color:#C80000;"> 
-                        {{end}}
-                            {{.Instant.Solution.Last.Change}} ({{.Instant.Solution.Last.ChangePercent|Percent}})
-                          </span>
-                      </span>
-                    </div>
-                    <div id="stock_chart" class="pure-u-1"></div>
-                    <div class="pure-u-1">
-                      <div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;">
-                        <button id="day" class="pure-button" disabled>Day</button>&nbsp;
-                        <button id="week" class="pure-button">Week</button>&nbsp;
-                        <button id="month" class="pure-button">Month</button>&nbsp;
-                        <button id="ytd" class="pure-button">YTD</button>&nbsp;
-                        <button id="1yr" class="pure-button">1 Year</button>&nbsp;
-                        <button id="5yr" class="pure-button">5 Year</button>
-                      </div>
-                    </div>
-                  </div>
-                  <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if eq .Instant.Type "weather"}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1" style="height:375px;">
-                  <div style="margin:15px;margin-bottom:5px;">
-                    <div class="pure-u-1">
-                      <div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">
-                        {{.Instant.Solution.City}}
-                      </div>
-                      <div class="pure-u-1">
-                        <i class="{{.Instant.Solution.Current.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i>
-                        <span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">{{.Instant.Solution.Current.Temperature}}</span>
-                        <span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
-                          <i class="icon-fahrenheit" aria-hidden="true"></i>
-                          <hr style="display:none;">
-                          <i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
-                        </span>
-                        <span style="display:inline-block;vertical-align:top;margin-top:10px;margin-left:25px;">
-                          <em>H</em> {{.Instant.Solution.Current.High}}&deg;
-                          <hr style="opacity:0;">
-                          <em>L</em> {{.Instant.Solution.Current.Low}}&deg;
-                        </span>
-                        <span style="display:inline-block;vertical-align:top;margin-left:25px;">
-                          {{if .Instant.Solution.Current.Rain}}
-                            <em>Rain: </em>{{.Instant.Solution.Current.Rain}}
-                            <hr style="opacity:0;">
-                          {{end}}
-                          {{if .Instant.Solution.Current.Snow}}
-                            <em>Snow: </em>{{.Instant.Solution.Current.Snow}}
-                            <hr style="opacity:0;">
-                          {{end}}
-                          <hr style="opacity:0;">
-                          <em>Wind:</em> {{.Instant.Solution.Current.Wind}} MPH
-                          <hr style="opacity:0;">
-                          <em>Humidity:</em> {{.Instant.Solution.Current.Humidity}}%
-                          <hr style="opacity:0;">
-                          <em>Clouds:</em> {{.Instant.Solution.Current.Clouds}}%
-                        </span>
-                      </div>
-                      <div class="pure-u-1">
-                        {{$days := WeatherDailyForecast .Instant.Solution.Forecast .Instant.Solution.TimeZone}}
-                        {{range $i, $d := $days}}
-                          <span class="forecast">
-                            <span style="font-size:14px;">{{$d.DT}}</span><br>
-                            <i class="{{$d.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:bottom;"></i><br>
-                            <br>
-                            <span style="color:#555;">{{$d.Code}}</span><br><br>
-                            {{if ne $d.Code "Scattered Clouds"}}<br>{{end}} 
-                            {{$d.High}}&deg;<br>
-                            {{$d.Low}}&deg;
-                          </span>
-                        {{end}}
-                      </div>		
-                    </div>
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if or (eq .Instant.Type "wikidata age") (eq .Instant.Type "wikidata birthday") (eq .Instant.Type "wikidata death") (eq .Instant.Type "wikidata height") (eq .Instant.Type "wikidata weight")}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                  {{WikiData .Instant $context.Region|SafeHTML}}
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if eq .Instant.Type "wikiquote"}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                  {{range $i, $q := .Instant.Solution}}
-                    {{if le $i 3}}
-                    <p><span style="font-size:14px;font-style:italic;">{{$q|SafeHTML}}</span></p>
-                    {{end}}
-                  {{end}}
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else if eq .Instant.Type "wiktionary"}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">
-                    <p>
-                      <span style="font-size:18px;">
-                        <em><a href="https://{{.Instant.Solution.Language}}.wiktionary.org/wiki/{{.Instant.Solution.Title}}" style="color:#333;">{{.Instant.Solution.Title}}</a></em>
-                      </span>
-                    </p>
-                    {{range $i, $d := .Instant.Solution.Definitions}}
-                    <span style="font-size:14px;font-style:italic;">{{$d.Part}}</span><br>
-                    <span style="display:inline-block;margin-left:15px;">{{$d.Meaning}}</span><br>
-                    {{if $d.Synonyms}}
-                      <span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span>
-                      {{- range $j, $s := $d.Synonyms -}}
-                      <a href="https://{{$s.Language}}.wiktionary.org/wiki/{{$s.Word}}">{{if $j}}, {{end}}{{$s.Word}}</a>
-                      {{- end -}}
-                      <br>
-                    {{end}}
-                    <br>
-                    {{end}}
-                  </div>
-                  {{template "source" .}}
-                </div>
-                {{end}}
-              {{else}}
-                {{if .Instant.Solution}}
-                <div id="answer" class="pure-u-1">
-                  <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution}}</div>
-                </div>
-                {{end}}
-              {{end}}
-            </div>
-          {{end}}
-        {{end}}
-        {{if eq .Instant.Type "wikipedia"}}
-          {{$wikipedia := .Instant|WikipediaItem}}
-          {{if $wikipedia.Wikipedia.Text}}
-          <div id="wikipedia" class="pure-u-1 pure-u-xl-9-24">
-            <div id="wikipedia_image">
-            {{range $i, $img := $wikipedia.Claims.Flag}}
-              {{if eq $i 0}}
-                {{$key := $img | HMACKey}}
-                <a href="/image/250x,s{{$key}}/{{$img}}">
-                  <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
-                </a>
-              {{end}}
-            {{end}}
-            {{range $i, $img := $wikipedia.Claims.Image}}
-              {{if eq $i 0}}
-              {{$key := $img | HMACKey}}
-              <a href="/image/250x,s{{$key}}/{{$img}}">
-                <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
-              </a>
-              {{end}}
-            {{end}} 
-            </div>
-            <div id="wikipedia_box">
-              <div class="pure-u-1" style="font-size:30px;margin-bottom:1px;font-weight:400;">
-                {{$wikipedia.Wikipedia.Title}}
-              </div>
-              <div class="pure-u-1" style="font-size:14px;margin-bottom:1px;color:#666;margin-bottom:4px;">
-                {{$des := WikiLabel $wikipedia.Descriptions $context.Preferred}}
-                {{Truncate $des 55 true}}
-              </div>
-
-              {{if $wikipedia.Wikipedia.Text}}
-              <div class="pure-u-1" style="font-size:14px;margin-bottom:4px;">
-                {{Truncate $wikipedia.Wikipedia.Text 250 true}}
-                {{if and $wikipedia.Wikipedia.Language $wikipedia.Wikipedia.Title}}
-                  <!-- if this breaks Wikidata dumps have "sitelinks" -->
-                  <a href="https://{{$wikipedia.Wikipedia.Language}}.wikipedia.org/wiki/{{$wikipedia.Wikipedia.Title|WikiCanonical}}">Wikipedia</a>
-                {{end}}
-              </div>
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Website}}
-                {{if eq $i 0}}
-                <div class="pure-u-1 wikipedia_claim">
-                  <a href="{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-globe" aria-hidden="true" style="color: #0077be; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media" style="color:#1a0dab;">{{$c}}</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}}
-                
-              <div class="pure-g">
-              {{range $i, $c := $wikipedia.Claims.Twitter}}
-                {{if eq $i 0}}
-                <div class="pure-u-3-8 wikipedia_claim">
-                  <a href="https://twitter.com/{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-twitter" aria-hidden="true" style="color: #1DA1F2; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media">Twitter</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}} 
-
-              {{range $i, $c := $wikipedia.Claims.Facebook}}
-                {{if eq $i 0}}
-                <div class="pure-u-3-8 wikipedia_claim">
-                  <a href="https://www.facebook.com/{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-facebook-official" aria-hidden="true" style="color: #3b5998; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media">Facebook</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}} 
-
-              {{range $i, $c := $wikipedia.Claims.Instagram}}
-                {{if eq $i 0}}
-                <div class="pure-u-3-8 wikipedia_claim">
-                  <a href="https://www.instagram.com/{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-instagram" aria-hidden="true" style="color: #517fa4; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media">Instagram</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.YouTube}}
-                {{if eq $i 0}}
-                <div class="pure-u-3-8 wikipedia_claim">
-                  <a href="https://www.youtube.com/channel/{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-youtube-play" aria-hidden="true" style="color: #e52d27; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media">YouTube</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Spotify}}
-                {{if eq $i 0}}
-                <div class="pure-u-3-8 wikipedia_claim">
-                  <a href="https://open.spotify.com/artist/{{$c}}" style="text-decoration: none !important;">
-                    <i class="icon-spotify" aria-hidden="true" style="color: #7ab800; text-shadow: 1px 1px 1px #ccc;"></i>
-                    <span class="wikipedia_social_media">Spotify</span>
-                  </a>
-                </div>
-                {{end}}
-              {{end}}
-              </div>
-
-              {{$now := Now}}
-              {{$birthday := $wikipedia.Claims.Birthday}}
-              {{$death := $wikipedia.Claims.Death}}
-
-              {{range $i, $b := $wikipedia.Claims.Birthday}}
-                {{if eq $i 0}} 
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Born:</em> {{WikiDateTime $b}}{{if not $death}} (Age {{WikiYears $b $now}}){{end}}
-                </div>
-                {{end}} 
-              {{end}} 
-
-              {{range $i, $d := $wikipedia.Claims.Death}}
-                {{if eq $i 0}} 
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Died:</em> {{WikiDateTime $d}}{{range $j, $b := $birthday}}{{if eq $j 0}} (Age {{WikiYears $b $d}}){{end}}{{end}}             
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Spouse}}
-                <div class="pure-u-1 wikipedia_claim">
-                {{range $c.Item}}
-                  {{if eq $i 0}}<em>Spouse:</em>
-                  {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  {{end}} 
-                  {{WikiLabel .Labels $context.Preferred}}
-                {{end}}
-                {{range $i, $s := $c.Start}}
-                  {{if eq $i 0}}(m. {{WikiDateTime $s}}{{end}}{{if not $c.End}}){{end}}
-                {{end}}
-                {{range $i, $e := $c.End}}
-                  {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
-                {{end}}              
-                </div>
-              {{end}}
-
-              {{$loc := $wikipedia.Claims.Location}}
-              {{range $i, $c := $wikipedia.Claims.Start}}
-                {{if eq $i 0}}
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Started:</em> {{WikiDateTime $c}} 
-                  {{range $j, $l := $loc}}
-                    {{if eq $j 0}}
-                      - {{WikiLabel .Labels $context.Preferred}}
-                    {{end}}
-                  {{end}}
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Members}}
-                <div class="pure-u-1 wikipedia_claim">
-                {{range $c.Item}}
-                  {{if eq $i 0}}<em>Members:</em>
-                  {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  {{end}} 
-                  {{WikiLabel .Labels $context.Preferred}}
-                {{end}}
-                {{range $i, $s := $c.Start}}
-                  {{if eq $i 0}}({{WikiDateTime $s}}{{end}}{{if not $c.End}} - ){{end}}
-                {{end}}
-                {{range $i, $e := $c.End}}
-                  {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
-                {{end}}              
-                </div>
-              {{end}}
-
-              {{if $wikipedia.Claims.Genre}}
-              <div class="pure-u-1 wikipedia_claim">
-                <em>Genre:</em> {{WikiJoin $wikipedia.Claims.Genre $context.Preferred}}
-              </div>
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Height}}
-                {{if eq $i 0}}
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Height:</em> {{WikiAmount $c $context.Region}}
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Weight}}
-                {{if eq $i 0}}
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Weight:</em> {{WikiAmount $c $context.Region}}
-                </div>
-                {{end}}
-              {{end}}
-
-              {{range $i, $c := $wikipedia.Claims.Currency}}
-                {{if eq $i 0}}
-                <div class="pure-u-1 wikipedia_claim">
-                  <em>Currency:</em> {{WikiLabel $c.Labels $context.Preferred}}
-                </div>
-                {{end}}
-              {{end}}
-
-              {{$quotes:=$wikipedia.Wikiquote.Quotes}}
-              {{if $quotes}}
-              <div style="margin-top:4px;padding:2px;">
-                <div><em>Quotes:</em></div>
-                <div class="pure-u-1" style="font-size:14px;margin-bottom:4px;">
-                  {{range $j, $q := $quotes}}
-                    {{if le $j 2}}
-                    <i style="font-size:14px;">{{$q | SafeHTML}}</i><br><br>
-                    {{end}}
-                  {{end}}
-                </div>
-              </div>
-              {{end}}
-            </div>
-          </div>
-          {{end}}  
-        {{end}}
-
-        <div id="results" class="pure-u-1 pure-u-xl-15-24">
-        {{template "did_you_mean" .}}
-        {{if .Search.Documents}}
-          {{range $i, $doc := .Search.Documents}}
-          <div class="pure-u-1">
-            <div class="pure-u-2-24 pure-u-md-1-24 vote" data-url="{{$doc.ID}}">
-              <div class="up arrow" data-vote="1"></div>
-              <div class="votes">{{$doc.Votes}}</div>
-              <div class="down arrow" data-vote="-1"></div>
-            </div>
-            <div class="pure-u-20-24 pure-u-md-21-24 result">
-             <div class="title"><a href="{{$doc.ID}}" rel="noopener">{{Truncate $doc.Title 60 true}}</a></div>
-             <div class="url">{{Truncate $doc.ID 80 false}}</div>
-             <div class="description">{{Truncate $doc.Description 215 true}}</div>
-             <div></div>
-            </div>
-          </div>
-          {{end}}
-          {{if .Search.Pagination}}
-          <div class="pure-u-1" style="text-align:center;padding-top:10px;padding-bottom:35px;">
-            <div class="pure-u-1" style="display:inline-block;color:#3367e5;">
-              {{if .Search.Previous}}
-              <span class="pagination" data-page="{{.Search.Previous}}" style="margin-right:35px;cursor:pointer;">Previous</span>
-              {{end}}
-              {{range $p := .Search.Pagination}}
-              <span class="pagination" data-page="{{$p}}" {{if eq $.Search.Page $p}}style="color:#000;margin-right:7px;"{{else}}style="color:#3367e5;margin-right:7px;"{{end}}>{{$p}}</span>
-              {{end}}
-              {{if .Search.Next}}
-              <span class="pagination" data-page="{{.Search.Next}}" style="margin-left:35px;cursor:pointer;">Next</span>
-              {{end}}
-            </div>
-          </div>
-          {{end}}
-        {{else}}
-        <div class="pure-u-1">
-          {{template "did_you_mean" .}}
-          <p style="padding-top:5px;">No results for <strong>{{.Context.Q}}</strong></p>
-          <p>Suggestions:</p>
-          <ul>
-            <li>Learn how to spell.</li>
-            <li>Try something else.</li>
-          </ul>
-        </div>
-        {{end}}
-        </div>
-      </div>
-    </div>
+<div id="container" class="pure-g">
+  <div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
+    <a href="/">{{template "small_logo" .}}</a>
   </div>
-  {{else}}
-  <div class="pure-g">
-    <div id="container" class="pure-u-1">
-      <div style="text-align:center;">
-        <div class="pure-u-22-24">
-          {{if .Brand.Logo}}
-            {{.Brand.Logo|SafeHTML}}
-          {{else}}
-          <svg width="205" height="65" style="cursor:pointer;">
-           <g><text id="logo" x="7" y="35" fill="#000">Jive Search</text></g>
-          </svg>
-          {{end}}
-          {{template "search_form" .}}
-          <br>
-          <span id="tagline">
-          {{if .Brand.TagLine}}{{.Brand.TagLine}}{{else}}The little search engine that could.{{end}} <a href="/about">About Us.</a>
-          </span>
+  <div class="pure-u-1 pure-u-xl-22-24">
+    {{template "search_form" .}}
+  </div>
+
+  {{if .Context.DefaultBangs}}
+  <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+  <div class="pure-u-1 pure-u-xl-22-24">
+    <div class="pure-u-1 pure-u-xl-15-24">
+      <div class="pure-u-1">
+        <div class="pure-button-group" role="group" aria-label="bang select" style="margin-bottom:10px;">
+        {{range $i, $bng := .Context.DefaultBangs}}
+          <button class="pure-button bang_submit" tabindex="{{Add $i 3}}" 
+            data-location="!{{$bng.Trigger}} {{$context.Q}}">!{{$bng.Trigger}}<br>{{$bng.Name}}</button>
+        {{end}}
         </div>
       </div>
     </div>
   </div>
   {{end}}
+
+  {{if .Search.Count}}
+  <div class="pure-u-1 pure-u-xl-2-24 spacer count"></div>
+  <div class="pure-u-1 pure-u-xl-22-24 count">{{.Search.Count | Commafy}} results</div>
+  {{end}}
+
+  {{if and .Instant .Instant.Triggered}}
+    {{if eq .Instant.Type "wikipedia"}}<!--Wikipedia Box-->
+    <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+    <div id="results_container" class="pure-u-1 pure-u-xl-22-24">
+      {{template "wikipedia" .}}
+      {{template "search_results" .}}
+    </div>
+    {{else if eq .Instant.Type "wikidata discography"}}<!--100% width instant answer-->
+      {{if .Instant.Solution}}
+      <div id="answer" class="pure-u-1" style="height:325px;background-color:#fcfcfc;resize:none;padding-top:15px;">
+        <div style="margin:15px;margin-bottom:0px;">
+          <div class="carousel-wrap">
+              <div class="owl-carousel">
+              {{range $j, $d := .Instant.Solution}}
+              {{$key := $d.Image.URL.String | HMACKey}}
+              <div class="item album">
+                  <a class="album_link" href="/image/125x,s{{$key}}/{{$d.Image.URL}}">
+                  {{$l := WikiLabel $d.Labels $context.Preferred}}
+                  <img src="/image/125x,s{{$key}}/{{$d.Image.URL}}" title="{{$d.Image.URL}}" alt="{{$l}}" style="border:0px;"/><br>
+                  <span style="color:#000;font-size:12px;"><em>{{Truncate $l 40 false}}</em></span><br>
+                  <span style="color:#000;font-size:12px;">{{WikiDateTime $d.Published}}</span><br>
+                  </a>
+              </div>
+              {{end}}
+              </div>
+          </div>
+        </div>
+        {{template "source" .}}
+      </div>
+      {{end}}
+      <div class="pure-u-1">
+        <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+        <div id="results_container" class="pure-u-1 pure-u-xl-22-24">{{template "search_results" .}}</div>
+      </div>
+    {{else}}<!--normal size instant answer-->
+    <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+    <div class="pure-u-1 pure-u-xl-22-24">
+      <div id="instant" class="pure-u-1 pure-u-xl-15-24">
+      {{if eq .Instant.Type "minify"}}
+      <textarea id="code_input" rows="20" cols="60" tabindex="4" style="width:99%" placeholder="Paste code here..."></textarea>
+      <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
+      <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
+      <a id="prettify" data-value="beautify" class="pure-button" tabindex="7" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Prettify</a>
+      {{else if eq .Instant.Type "unit converter"}}
+      <div id="unit_converter" class="pure-u-18-24" style="margin-bottom:25px;">
+        <div class="pure-u-1">
+          <form class="pure-form pure-g">
+            <div class="pure-u-1">
+              <select id="selector" class="pure-input-1" style="margin-bottom:15px;">
+                <option {{if eq .Instant.Solution "digital storage"}}selected{{end}}>Digital Storage</option>
+                <option {{if eq .Instant.Solution "length"}}selected{{end}}>Length</option>
+                <option {{if eq .Instant.Solution "power"}}selected{{end}}>Power</option>
+                <option {{if eq .Instant.Solution "speed"}}selected{{end}}>Speed</option>
+                <option {{if eq .Instant.Solution "temperature"}}selected{{end}}>Temperature</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="pure-g">
+          <div class="pure-u-11-24">
+            <form class="pure-form unit">
+              <input class="pure-input-1"/>
+              <select class="pure-input-1"></select>
+            </form>
+          </div>
+          <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
+          <div class="pure-u-11-24">
+            <form class="pure-form unit">
+              <input class="pure-input-1"/>
+              <select class="pure-input-1"></select>
+            </form>
+          </div>
+        </div>
+      </div>
+      {{else if eq .Instant.Type "calculator"}}
+      <div id="calculator">
+        <div id="result" tabindex="4"></div>
+        <div id="main">
+          <div id="first-row">
+            <button id="clear" class="del-bg">C</button>
+            <button class="btn-style operator opera-bg fall-back" value="%">%</button>
+            <button class="btn-style opera-bg align operator" value="/">/</button>
+          </div>
+            
+          <div class="rows">
+            <button class="btn-style num-bg number first-child" value="7">7</button>
+            <button class="btn-style num-bg number" value="8">8</button>
+            <button class="btn-style num-bg number" value="9">9</button>
+            <button class="btn-style opera-bg operator" value="*">x</button>
+          </div>
+            
+          <div class="rows">
+            <button class="btn-style num-bg number first-child" value="4">4</button>
+            <button class="btn-style num-bg number" value="5">5</button>
+            <button class="btn-style num-bg number" value="6">6</button>
+            <button class="btn-style opera-bg operator" value="-">-</button>
+          </div>
+            
+          <div class="rows">
+            <button class="btn-style num-bg number first-child" value="1">1</button>
+            <button class="btn-style num-bg number" value="2">2</button>
+            <button class="btn-style num-bg number" value="3">3</button>
+            <button class="btn-style opera-bg operator" value="+">+</button>
+          </div>
+            
+          <div class="rows">
+            <button id="zero" class="num-bg zero" value="0">0</button>
+            <button class="btn-style num-bg period fall-back" value=".">.</button>
+            <button id="eqn-bg" class="eqn align" value="=">=</button>
+          </div>
+        </div>
+      </div>
+      {{else if (or (eq .Instant.Type "fedex") (eq .Instant.Type "ups") (eq .Instant.Type "usps"))}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+              <img width="18" height="18" alt="{{.Instant.Type}}" src="/static/favicons/{{.Instant.Type}}.ico" style="vertical-align:middle"/> 
+              <a href="{{.Instant.Solution.URL}}"><em>{{.Instant.Solution.TrackingNumber}}</em></a><br>
+              <p>
+                <span style="font-weight:bold;font-size:20px;">
+                  {{if and .Instant.Solution.Expected.Delivery .Instant.Solution.Expected.Date}}
+                    {{.Instant.Solution.Expected.Delivery}}: {{.Instant.Solution.Expected.Date.Format "Monday, January 2, 2006"}}
+                  {{else}}
+                    {{range $i, $u := .Instant.Solution.Updates}}
+                      {{if eq $i 0}}
+                        {{$u.Status}}: {{$u.DateTime.Format "Monday, January 2, 2006 3:04PM"}}
+                      {{end}}
+                    {{end}}
+                  {{end}}
+                </span>
+              </p>
+              {{range $i, $u := .Instant.Solution.Updates}}
+                {{if eq $i 0}}
+                  <div class="pure-u-1" style="margin-bottom:5px;">
+                    <div class="pure-u-7-24" style="font-weight:bold;">DATE</div>
+                    <div class="pure-u-8-24" style="font-weight:bold;">LOCATION</div>
+                    <div class="pure-u-8-24" style="font-weight:bold;">STATUS</div>
+                  </div>
+                {{end}}
+                <div class="pure-u-1" style="color:#444;font-size:14px;margin-bottom:10px;">
+                  <div class="pure-u-7-24">{{$u.DateTime.Format "Mon, 02 Jan 3:04PM"}}</div>
+                  <div class="pure-u-8-24">{{Join $u.Location.City $u.Location.State $u.Location.Country}}</div>
+                  <div class="pure-u-8-24">{{$u.Status}}</div>
+                </div>
+              {{end}}
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if eq .Instant.Type "stackoverflow"}}
+        {{if .Instant.Solution}}
+        <!-- I wasn't able to get both the User's display name and link to their profile or id. Can select one or the other but not both in their filter. -->
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+            <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="{{.Instant.Solution.Link|SafeHTML}}"><em>{{.Instant.Solution.Question|SafeHTML}}</em></a><br>{{.Instant.Solution.Answer.Text|SafeHTML}}
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if eq .Instant.Type "stock quote"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+            <div class="pure-u-1">
+              <div class="pure-u-1" style="font-size:20px;">{{.Instant.Solution.Name}}</div>
+              <div class="pure-u-1" style="font-size:14px;">
+                {{.Instant.Solution.Exchange}}: {{.Instant.Solution.Ticker}} 
+                <span id="quote_time" style="font-size:12px;">{{.Instant.Solution.Time.Format "January 2, 2006 3:04 PM MST"}}</span>
+              </div>
+            </div>
+            <div class="pure-u-1" style="font-size:40px;">{{.Instant.Solution.Last.Price|Commafy}} 
+              <span style="font-size:22px;">
+                {{if ge .Instant.Solution.Last.Change 0.0}}
+                  <span class="quote-arrow quote-arrow-up"></span>
+                  <span style="color:#006D21;"> 
+                {{else}}
+                  <span class="quote-arrow quote-arrow-down"></span>
+                  <span style="color:#C80000;"> 
+                {{end}}
+                    {{.Instant.Solution.Last.Change}} ({{.Instant.Solution.Last.ChangePercent|Percent}})
+                  </span>
+              </span>
+            </div>
+            <div id="stock_chart" class="pure-u-1"></div>
+            <div class="pure-u-1">
+              <div id="time_period_buttons" class="pure-button-group" role="group" aria-label="time select" style="margin-left:47px;">
+                <button id="day" class="pure-button" disabled>Day</button>&nbsp;
+                <button id="week" class="pure-button">Week</button>&nbsp;
+                <button id="month" class="pure-button">Month</button>&nbsp;
+                <button id="ytd" class="pure-button">YTD</button>&nbsp;
+                <button id="1yr" class="pure-button">1 Year</button>&nbsp;
+                <button id="5yr" class="pure-button">5 Year</button>
+              </div>
+            </div>
+          </div>
+          <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if eq .Instant.Type "weather"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1" style="height:375px;">
+          <div style="margin:15px;margin-bottom:5px;">
+            <div class="pure-u-1">
+              <div class="pure-u-1" style="margin-bottom:15px;font-size:18px;text-shadow:rgba(0,0,0,.3);">
+                {{.Instant.Solution.City}}
+              </div>
+              <div class="pure-u-1">
+                <i class="{{.Instant.Solution.Current.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:top;"></i>
+                <span style="font-size:48px;font-weight:200;text-shadow:rgba(0,0,0,.3);cursor:default;">{{.Instant.Solution.Current.Temperature}}</span>
+                <span style="width:25px;display:inline-block;vertical-align:top;margin-top:5px;">
+                  <i class="icon-fahrenheit" aria-hidden="true"></i>
+                  <hr style="display:none;">
+                  <i class="icon-celsius" aria-hidden="true" style="display:none;"></i>
+                </span>
+                <span style="display:inline-block;vertical-align:top;margin-top:10px;margin-left:25px;">
+                  <em>H</em> {{.Instant.Solution.Current.High}}&deg;
+                  <hr style="opacity:0;">
+                  <em>L</em> {{.Instant.Solution.Current.Low}}&deg;
+                </span>
+                <span style="display:inline-block;vertical-align:top;margin-left:25px;">
+                  {{if .Instant.Solution.Current.Rain}}
+                    <em>Rain: </em>{{.Instant.Solution.Current.Rain}}
+                    <hr style="opacity:0;">
+                  {{end}}
+                  {{if .Instant.Solution.Current.Snow}}
+                    <em>Snow: </em>{{.Instant.Solution.Current.Snow}}
+                    <hr style="opacity:0;">
+                  {{end}}
+                  <hr style="opacity:0;">
+                  <em>Wind:</em> {{.Instant.Solution.Current.Wind}} MPH
+                  <hr style="opacity:0;">
+                  <em>Humidity:</em> {{.Instant.Solution.Current.Humidity}}%
+                  <hr style="opacity:0;">
+                  <em>Clouds:</em> {{.Instant.Solution.Current.Clouds}}%
+                </span>
+              </div>
+              <div class="pure-u-1">
+                {{$days := WeatherDailyForecast .Instant.Solution.Forecast .Instant.Solution.TimeZone}}
+                {{range $i, $d := $days}}
+                  <span class="forecast">
+                    <span style="font-size:14px;">{{$d.DT}}</span><br>
+                    <i class="{{$d.Code|WeatherCode}} icon-large" aria-hidden="true" style="text-shadow:1px 1px 1px #ccc;vertical-align:bottom;"></i><br>
+                    <br>
+                    <span style="color:#555;">{{$d.Code}}</span><br><br>
+                    {{if ne $d.Code "Scattered Clouds"}}<br>{{end}} 
+                    {{$d.High}}&deg;<br>
+                    {{$d.Low}}&deg;
+                  </span>
+                {{end}}
+              </div>		
+            </div>
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if or (eq .Instant.Type "wikidata age") (eq .Instant.Type "wikidata birthday") (eq .Instant.Type "wikidata death") (eq .Instant.Type "wikidata height") (eq .Instant.Type "wikidata weight")}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+          {{WikiData .Instant $context.Region|SafeHTML}}
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if eq .Instant.Type "wikiquote"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+          {{range $i, $q := .Instant.Solution}}
+            {{if le $i 3}}
+            <p><span style="font-size:14px;font-style:italic;">{{$q|SafeHTML}}</span></p>
+            {{end}}
+          {{end}}
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else if eq .Instant.Type "wiktionary"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+            <p>
+              <span style="font-size:18px;">
+                <em><a href="https://{{.Instant.Solution.Language}}.wiktionary.org/wiki/{{.Instant.Solution.Title}}" style="color:#333;">{{.Instant.Solution.Title}}</a></em>
+              </span>
+            </p>
+            {{range $i, $d := .Instant.Solution.Definitions}}
+            <span style="font-size:14px;font-style:italic;">{{$d.Part}}</span><br>
+            <span style="display:inline-block;margin-left:15px;">{{$d.Meaning}}</span><br>
+            {{if $d.Synonyms}}
+              <span style="display:inline-block;margin-left:15px;font-style:italic;color:#666;">synonyms:&nbsp;</span>
+              {{- range $j, $s := $d.Synonyms -}}
+              <a href="https://{{$s.Language}}.wiktionary.org/wiki/{{$s.Word}}">{{if $j}}, {{end}}{{$s.Word}}</a>
+              {{- end -}}
+              <br>
+            {{end}}
+            <br>
+            {{end}}
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
+      {{else}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution}}</div>
+        </div>
+        {{end}}
+      {{end}}
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+    <div id="results_container" class="pure-u-1 pure-u-xl-22-24">{{template "search_results" .}}</div>
+    {{end}}
+  {{end}}  
+</div>
+{{else}}
+<div class="pure-g">
+  <div id="container" class="pure-u-1">
+    <div style="text-align:center;">
+      <div class="pure-u-22-24">
+        {{if .Brand.Logo}}
+          {{.Brand.Logo|SafeHTML}}
+        {{else}}
+        <svg width="205" height="65" style="cursor:pointer;">
+          <g><text id="logo" x="7" y="35" fill="#000">Jive Search</text></g>
+        </svg>
+        {{end}}
+        {{template "search_form" .}}
+        <br>
+        <span id="tagline">
+        {{if .Brand.TagLine}}{{.Brand.TagLine}}{{else}}The little search engine that could.{{end}} <a href="/about">About Us.</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
 {{end}}

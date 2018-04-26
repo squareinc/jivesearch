@@ -315,6 +315,15 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
 		},
 		{
+			name: "wikidata discography",
+			args: args{
+				instant.Data{
+					Type: "wikidata discography",
+				},
+			},
+			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a><br><img width="12" height="12" alt="coverartarchive" src="/static/favicons/coverartarchive.ico"/> <a href="https://coverartarchive.org/">Cover Art Archive</a>`,
+		},
+		{
 			name: "wikiquote",
 			args: args{
 				instant.Data{

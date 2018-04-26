@@ -66,6 +66,7 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 					"Q169452", "Shaquille O'Neal", "Shaquille O'Neal is a basketball player",
 					"{}", "Shaquille O'Neal", shaqWiktionaryJSON,
 					[]byte(shaqRawLabels), []byte(shaqRawAliases), []byte(shaqRawDescriptions), shaqClaimsJSON,
+					"",
 				},
 			},
 			&Item{
@@ -100,7 +101,7 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 
 			rows := sqlmock.NewRows(
 				[]string{"id", "title", "text", "quotes", "wktitle", "definitions",
-					"labels", "aliases", "descriptions", "claims",
+					"labels", "aliases", "descriptions", "claims", "discography",
 				},
 			)
 			rows = rows.AddRow(

@@ -1,0 +1,225 @@
+{{define "wikipedia"}}
+    {{$context := .Context}}
+    {{$wikipedia := .Instant|WikipediaItem}}
+    {{if $wikipedia.Wikipedia.Text}}
+    <div id="wikipedia" class="pure-u-1 pure-u-xl-9-24">
+      <div id="wikipedia_image">
+      {{range $i, $img := $wikipedia.Claims.Flag}}
+        {{if eq $i 0}}
+          {{$key := $img | HMACKey}}
+          <a href="/image/250x,s{{$key}}/{{$img}}">
+            <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
+          </a>
+        {{end}}
+      {{end}}
+      {{range $i, $img := $wikipedia.Claims.Image}}
+        {{if eq $i 0}}
+        {{$key := $img | HMACKey}}
+        <a href="/image/250x,s{{$key}}/{{$img}}">
+          <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
+        </a>
+        {{end}}
+      {{end}} 
+      </div>
+      <div id="wikipedia_box">
+        <div class="pure-u-1" style="font-size:30px;margin-bottom:1px;font-weight:400;">
+          {{$wikipedia.Wikipedia.Title}}
+        </div>
+        <div class="pure-u-1" style="font-size:14px;margin-bottom:1px;color:#666;margin-bottom:4px;">
+          {{$des := WikiLabel $wikipedia.Descriptions $context.Preferred}}
+          {{Truncate $des 55 true}}
+        </div>
+
+        {{if $wikipedia.Wikipedia.Text}}
+        <div class="pure-u-1" style="font-size:14px;margin-bottom:4px;">
+          {{Truncate $wikipedia.Wikipedia.Text 250 true}}
+          {{if and $wikipedia.Wikipedia.Language $wikipedia.Wikipedia.Title}}
+            <!-- if this breaks Wikidata dumps have "sitelinks" -->
+            <a href="https://{{$wikipedia.Wikipedia.Language}}.wikipedia.org/wiki/{{$wikipedia.Wikipedia.Title|WikiCanonical}}">Wikipedia</a>
+          {{end}}
+        </div>
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Website}}
+          {{if eq $i 0}}
+          <div class="pure-u-1 wikipedia_claim">
+            <a href="{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-globe" aria-hidden="true" style="color: #0077be; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media" style="color:#1a0dab;">{{$c}}</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}}
+          
+        <div class="pure-g">
+        {{range $i, $c := $wikipedia.Claims.Twitter}}
+          {{if eq $i 0}}
+          <div class="pure-u-3-8 wikipedia_claim">
+            <a href="https://twitter.com/{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-twitter" aria-hidden="true" style="color: #1DA1F2; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media">Twitter</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}} 
+
+        {{range $i, $c := $wikipedia.Claims.Facebook}}
+          {{if eq $i 0}}
+          <div class="pure-u-3-8 wikipedia_claim">
+            <a href="https://www.facebook.com/{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-facebook-official" aria-hidden="true" style="color: #3b5998; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media">Facebook</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}} 
+
+        {{range $i, $c := $wikipedia.Claims.Instagram}}
+          {{if eq $i 0}}
+          <div class="pure-u-3-8 wikipedia_claim">
+            <a href="https://www.instagram.com/{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-instagram" aria-hidden="true" style="color: #517fa4; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media">Instagram</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.YouTube}}
+          {{if eq $i 0}}
+          <div class="pure-u-3-8 wikipedia_claim">
+            <a href="https://www.youtube.com/channel/{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-youtube-play" aria-hidden="true" style="color: #e52d27; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media">YouTube</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Spotify}}
+          {{if eq $i 0}}
+          <div class="pure-u-3-8 wikipedia_claim">
+            <a href="https://open.spotify.com/artist/{{$c}}" style="text-decoration: none !important;">
+              <i class="icon-spotify" aria-hidden="true" style="color: #7ab800; text-shadow: 1px 1px 1px #ccc;"></i>
+              <span class="wikipedia_social_media">Spotify</span>
+            </a>
+          </div>
+          {{end}}
+        {{end}}
+        </div>
+
+        {{$now := Now}}
+        {{$birthday := $wikipedia.Claims.Birthday}}
+        {{$death := $wikipedia.Claims.Death}}
+
+        {{range $i, $b := $wikipedia.Claims.Birthday}}
+          {{if eq $i 0}} 
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Born:</em> {{WikiDateTime $b}}{{if not $death}} (Age {{WikiYears $b $now}}){{end}}
+          </div>
+          {{end}} 
+        {{end}} 
+
+        {{range $i, $d := $wikipedia.Claims.Death}}
+          {{if eq $i 0}} 
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Died:</em> {{WikiDateTime $d}}{{range $j, $b := $birthday}}{{if eq $j 0}} (Age {{WikiYears $b $d}}){{end}}{{end}}             
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Spouse}}
+          <div class="pure-u-1 wikipedia_claim">
+          {{range $c.Item}}
+            {{if eq $i 0}}<em>Spouse:</em>
+            {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{end}} 
+            {{WikiLabel .Labels $context.Preferred}}
+          {{end}}
+          {{range $i, $s := $c.Start}}
+            {{if eq $i 0}}(m. {{WikiDateTime $s}}{{end}}{{if not $c.End}}){{end}}
+          {{end}}
+          {{range $i, $e := $c.End}}
+            {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
+          {{end}}              
+          </div>
+        {{end}}
+
+        {{$loc := $wikipedia.Claims.Location}}
+        {{range $i, $c := $wikipedia.Claims.Start}}
+          {{if eq $i 0}}
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Started:</em> {{WikiDateTime $c}} 
+            {{range $j, $l := $loc}}
+              {{if eq $j 0}}
+                - {{WikiLabel .Labels $context.Preferred}}
+              {{end}}
+            {{end}}
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Members}}
+          <div class="pure-u-1 wikipedia_claim">
+          {{range $c.Item}}
+            {{if eq $i 0}}<em>Members:</em>
+            {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{end}} 
+            {{WikiLabel .Labels $context.Preferred}}
+          {{end}}
+          {{range $i, $s := $c.Start}}
+            {{if eq $i 0}}({{WikiDateTime $s}}{{end}}{{if not $c.End}} - ){{end}}
+          {{end}}
+          {{range $i, $e := $c.End}}
+            {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
+          {{end}}              
+          </div>
+        {{end}}
+
+        {{if $wikipedia.Claims.Genre}}
+        <div class="pure-u-1 wikipedia_claim">
+          <em>Genre:</em> {{WikiJoin $wikipedia.Claims.Genre $context.Preferred}}
+        </div>
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Height}}
+          {{if eq $i 0}}
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Height:</em> {{WikiAmount $c $context.Region}}
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Weight}}
+          {{if eq $i 0}}
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Weight:</em> {{WikiAmount $c $context.Region}}
+          </div>
+          {{end}}
+        {{end}}
+
+        {{range $i, $c := $wikipedia.Claims.Currency}}
+          {{if eq $i 0}}
+          <div class="pure-u-1 wikipedia_claim">
+            <em>Currency:</em> {{WikiLabel $c.Labels $context.Preferred}}
+          </div>
+          {{end}}
+        {{end}}
+
+        {{$quotes:=$wikipedia.Wikiquote.Quotes}}
+        {{if $quotes}}
+        <div style="margin-top:4px;padding:2px;">
+          <div><em>Quotes:</em></div>
+          <div class="pure-u-1" style="font-size:14px;margin-bottom:4px;">
+            {{range $j, $q := $quotes}}
+              {{if le $j 2}}
+              <i style="font-size:14px;">{{$q | SafeHTML}}</i><br><br>
+              {{end}}
+            {{end}}
+          </div>
+        </div>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+{{end}} 

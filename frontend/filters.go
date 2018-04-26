@@ -163,6 +163,14 @@ func source(answer instant.Data) string {
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "wikidata discography":
+		txt, u = "Wikipedia", "https://www.wikipedia.org/"
+		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+
+		mbtxt, mbu := "Cover Art Archive", "https://coverartarchive.org/"
+		mbimg := `<img width="12" height="12" alt="coverartarchive" src="/static/favicons/coverartarchive.ico"/>`
+		f += fmt.Sprintf(`<br>%v <a href="%v">%v</a>`, mbimg, mbu, mbtxt)
 	case "wikiquote":
 		txt, u = "Wikiquote", "https://www.wikiquote.org/"
 		img = `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/>`
@@ -353,7 +361,7 @@ func wikiCanonical(t string) string {
 
 func wikiData(sol instant.Data, r language.Region) string {
 	switch sol.Solution.(type) {
-	case []wikipedia.Quantity: // e.g. height, weight, etc.
+	case []wikipedia.Quantity: // height, weight, etc.
 		i := sol.Solution.([]wikipedia.Quantity)
 		if len(i) == 0 {
 			return ""

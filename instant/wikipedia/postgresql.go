@@ -123,7 +123,27 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 					FROM item
 				)`, tag, tag),
 			)
-		case []Wikidata:
+		case []Wikidata, []*Wikidata:
+			if tag == "discography" {
+				stmts = append(stmts, fmt.Sprintf(`
+				"%v" AS (
+					SELECT jsonb_agg(
+						build_item(x.d->'item')->0
+					) item
+					FROM item
+					JOIN LATERAL (
+						SELECT jsonb_array_elements(
+							claims->'members'                                
+						) item FROM wikidata WHERE id = (
+						SELECT build_item(claims->'%v')->0->>'id' item
+						FROM item
+						) 
+					) as x(d) on true
+				)`, tag, tag),
+				)
+				continue
+			}
+
 			stmts = append(stmts, fmt.Sprintf(`
 				"%v" AS (
 					SELECT build_item(claims->'%v') item
@@ -206,24 +226,36 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 			coalesce(item."id", ''), coalesce(item."title", ''), coalesce(item."text", ''),
 			coalesce(item."quotes", '{}'), coalesce(item."wktitle", ''), coalesce(item."definitions", '[]'),
 			coalesce(item."labels", '{}'::jsonb), coalesce(item."aliases", '{}'::jsonb), 
-			coalesce(item."descriptions", '{}'::jsonb), %v "claims"
+			coalesce(item."descriptions", '{}'::jsonb), %v "claims", coalesce(discography.item, '[]'::jsonb)
 		FROM item, %v
 	`, item.Wikipedia.Language, item.Wiktionary.Language, item.Wikipedia.Language,
 		strings.Join(stmts, ", "), strings.Join(objects, " || "), strings.Join(tags, ", "),
 	)
 
-	//log.Info.Println(sql)
-
+	var j string
 	var definitions string
 
 	err := p.DB.QueryRow(sql, query, query).Scan(
 		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text,
 		pq.Array(&item.Wikiquote.Quotes), &item.Wiktionary.Title, &definitions,
-		&item.Labels, &item.Aliases, &item.Descriptions, &item.Claims,
+		&item.Labels, &item.Aliases, &item.Descriptions, &item.Claims, &j,
 	)
 
 	if err != nil {
 		return item, err
+	}
+
+	type discography Wikidata
+	disc := []discography{}
+
+	//fmt.Println(sql)
+
+	if err := json.Unmarshal([]byte(j), &disc); err != nil {
+		fmt.Println(err)
+	}
+
+	for i, d := range disc {
+		item.Wikidata.Discography[i] = (Wikidata)(d)
 	}
 
 	err = json.Unmarshal([]byte(definitions), &item.Wiktionary.Definitions)
@@ -489,7 +521,8 @@ func (p *PostgreSQL) Setup() error {
 	   SELECT jsonb_agg(                                               
 			jsonb_build_object(                                     
 				 'id', x.d->'id',                                
-				 'labels', wikidata.labels                       
+				 'labels', wikidata.labels,
+				 'claims', coalesce(wikidata.claims, '{}'::jsonb)              
 			)                                                       
 		  )                                                               
 		FROM jsonb_array_elements($1) AS x(d)                           

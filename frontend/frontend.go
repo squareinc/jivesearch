@@ -212,6 +212,7 @@ var ParseTemplates = func() {
 				"templates/base.html",
 				"templates/search_form.html",
 				"templates/search.html",
+				"templates/wikipedia.html",
 			),
 	)
 	templates["about"] = template.Must(

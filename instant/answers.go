@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/coverart"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
@@ -23,6 +24,7 @@ import (
 // Instant holds config information for the instant answers
 type Instant struct {
 	QueryVar             string
+	CoverArtFetcher      coverart.Fetcher
 	FedExFetcher         parcel.Fetcher
 	LocationFetcher      location.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher
@@ -203,7 +205,10 @@ func (i *Instant) answers() []answerer {
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
 		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
-		&Wikipedia{Fetcher: i.WikipediaFetcher}, // always keep this last so that Wikipedia Box will trigger if none other
+		&Wikipedia{
+			Fetcher:         i.WikipediaFetcher,
+			CoverArtFetcher: i.CoverArtFetcher,
+		}, // always keep this last so that Wikipedia Box will trigger if none other
 	}
 }
 

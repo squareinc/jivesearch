@@ -8,7 +8,7 @@
 by default we don't display the count. 
 TODO: display via themes 
 */
-#count {
+.count {
     color: #999;
     font-size: small;
     margin-bottom: 10px;
@@ -120,6 +120,14 @@ i {
 and (max-width: 48em) { /* <768px */
     #wikipedia_image {
         max-width: 150px;
+    }
+}
+
+@media screen 
+and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */    
+    #instant,
+    #results{
+        max-width: 635px;
     }
 }
 

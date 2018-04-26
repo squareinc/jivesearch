@@ -3,6 +3,8 @@
 .icon-itunes:before { content: '\e801'; } /* '' */
 .icon-search:before { content: '\e802'; } /* '' */
 .icon-windy-rain-inv:before { content: '\e803'; } /* '' */
+.icon-left-open-mini:before { content: '\e804'; } /* '' */
+.icon-right-open-mini:before { content: '\e805'; } /* '' */
 .icon-hail-inv:before { content: '\e806'; } /* '' */
 .icon-clouds-inv:before { content: '\e807'; } /* '' */
 .icon-clouds-flash-inv:before { content: '\e808'; } /* '' */

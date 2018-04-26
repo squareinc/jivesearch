@@ -61,7 +61,7 @@ and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */
 #search_container {
     height: 38px;
     width: auto;
-    max-width: 573px; /* 635px max-width - 62px for !bang button */
+    max-width: 635px;
     padding: 10px 0 15px;
     margin: auto;
     width: auto;
@@ -148,13 +148,5 @@ and (orientation: landscape) {
     body {
         padding-left: 100px;
         padding-right: 100px;
-    }
-}
-@media screen 
-and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */    
-    #instant,
-    #results,
-    #search_container {
-        max-width: 635px;
     }
 }

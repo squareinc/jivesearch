@@ -3,8 +3,12 @@ package instant
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"regexp"
+	"sort"
 	"strings"
+
+	"github.com/jivesearch/jivesearch/instant/coverart"
 
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"golang.org/x/text/language"
@@ -14,6 +18,7 @@ import (
 // including Wikidata/Wikiquote/Wiktionary
 type Wikipedia struct {
 	wikipedia.Fetcher
+	CoverArtFetcher coverart.Fetcher
 	Answer
 }
 
@@ -68,11 +73,16 @@ const quotes = "quotes"
 const define = "define"
 const definition = "definition"
 
+// discography
+const albums = "albums"
+const discography = "discography"
+
 func (w *Wikipedia) setRegex() answerer {
 	triggers := []string{
 		age, howOldIs,
 		birthday, born,
 		death, died,
+		discography, albums,
 		howTallis, howTallwas, height,
 		mass, weigh, weight,
 		quote, quotes,
@@ -102,6 +112,14 @@ type Death struct {
 type Age struct {
 	*Birthday `json:"birthday,omitempty"`
 	*Death    `json:"death,omitempty"`
+}
+
+// Discography is the discography of an Artist
+type Discography struct {
+	Labels    wikipedia.Labels
+	Published wikipedia.DateTime
+	Image     coverart.Image
+	Err       error
 }
 
 // TODO: Return the Title (and perhaps Image???) as
@@ -144,6 +162,54 @@ func (w *Wikipedia) solve(r *http.Request) answerer {
 			w.Type = "wikidata death"
 			w.Data.Solution = &Death{item.Death[0]}
 		}
+	case albums, discography:
+		if len(item.Discography) == 0 {
+			return w
+		}
+
+		var ids = []string{}
+
+		for _, disc := range item.Discography {
+			if len(disc.MusicBrainz) == 0 {
+				continue
+			}
+
+			ids = append(ids, disc.MusicBrainz[0])
+		}
+
+		m, err := w.CoverArtFetcher.Fetch(ids)
+		if err != nil {
+			w.Err = err
+			return w
+		}
+
+		discs := []Discography{}
+		for _, disc := range item.Discography {
+			if len(disc.MusicBrainz) == 0 {
+				continue
+			}
+
+			if v, ok := m[disc.MusicBrainz[0]]; ok {
+				d := Discography{
+					Labels: disc.Labels,
+					Image:  v,
+				}
+
+				if len(disc.Publication) > 0 {
+					d.Published = disc.Publication[0]
+				}
+
+				discs = append(discs, d)
+			}
+		}
+
+		// sort by date released
+		sort.Slice(discs, func(i, j int) bool {
+			return discs[i].Published.Value < discs[j].Published.Value
+		})
+
+		w.Type = "wikidata discography"
+		w.Data.Solution = discs
 	case howTallis, howTallwas, height:
 		if len(item.Height) == 0 {
 			return w
@@ -327,6 +393,51 @@ func (w *Wikipedia) tests() []test {
 										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 									},
 								},
+								Discography: []wikipedia.Wikidata{
+									{
+										ID: "Q90210",
+										Labels: wikipedia.Labels{
+											"en": wikipedia.Text{Text: "Are You Experienced"},
+										},
+										Claims: &wikipedia.Claims{
+											MusicBrainz: []string{"90210"},
+											Publication: []wikipedia.DateTime{
+												{
+													Value:    "1970-09-18T00:00:00Z",
+													Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "jimi hendrix discography",
+			expected: []Data{
+				{
+					Type:      "wikidata discography",
+					Triggered: true,
+					Solution: []Discography{
+						{
+							Labels: wikipedia.Labels{
+								"en": wikipedia.Text{Text: "Are You Experienced"},
+							},
+							Published: wikipedia.DateTime{
+								Value:    "1970-09-18T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
+							Image: coverart.Image{
+								ID:          "90211",
+								URL:         u,
+								Description: coverart.Front,
+								Height:      250,
+								Width:       250,
 							},
 						},
 					},
@@ -338,3 +449,5 @@ func (w *Wikipedia) tests() []test {
 
 	return tests
 }
+
+var u, _ = url.Parse("http://coverartarchive.org/release/1/2-250..jpg")
