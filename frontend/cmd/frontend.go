@@ -200,10 +200,11 @@ func main() {
 			DB: v.GetString("maxmind.database"),
 		},
 		FedExFetcher: &parcel.FedEx{
-			Account:  v.GetString("fedex.account"),
-			Password: v.GetString("fedex.password"),
-			Key:      v.GetString("fedex.key"),
-			Meter:    v.GetString("fedex.meter"),
+			HTTPClient: httpClient,
+			Account:    v.GetString("fedex.account"),
+			Password:   v.GetString("fedex.password"),
+			Key:        v.GetString("fedex.key"),
+			Meter:      v.GetString("fedex.meter"),
 		},
 		StackOverflowFetcher: &stackoverflow.API{
 			HTTPClient: httpClient,
