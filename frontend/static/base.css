@@ -131,6 +131,7 @@ and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */
     box-shadow: rgba(0,0,0,.25) 0 1px 3px 0;
     background-color: #fff;
     font-weight: bold;
+    z-index:1;
 }
 .ui-state-focus {
     background: #f3f3f3;

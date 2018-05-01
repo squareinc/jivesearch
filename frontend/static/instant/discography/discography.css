@@ -7,7 +7,6 @@
 /* fix blank or flashing items on carousel */
 .owl-carousel .item {
     position: relative;
-    z-index: 100;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden; 
 } /* end fix */
