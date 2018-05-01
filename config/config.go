@@ -159,6 +159,9 @@ func SetDefaults(cfg Provider) {
 	cmd.Flags().Int("truncate", truncate, "number of characters to extract from text")
 	cfg.BindPFlag("wikipedia.truncate", cmd.Flags().Lookup("truncate"))
 
+	cmd.Flags().Bool("delete", true, "delete file after parsed")
+	cfg.BindPFlag("wikipedia.delete", cmd.Flags().Lookup("delete"))
+
 	cfg.BindPFlag("wikipedia.workers", cmd.Flags().Lookup("workers"))
 
 	if err := cmd.Execute(); err != nil {

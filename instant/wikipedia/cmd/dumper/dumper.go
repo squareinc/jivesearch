@@ -120,7 +120,7 @@ func main() {
 	}
 
 	download := make(chan *wikipedia.File)
-	parse := make(chan *wikipedia.File)
+	parse := make(chan *wikipedia.File, len(files)) // buffered so we continue downloading files if parser workers are full
 
 	// Wikipedia seems to allow 3 concurrent downloads.
 	var dwg sync.WaitGroup
@@ -151,6 +151,11 @@ func main() {
 			for f := range parse {
 				if err := f.Parse(v.GetInt("wikipedia.truncate")); err != nil {
 					panic(errors.Wrap(err, f.ABS))
+				}
+				if v.GetBool("wikipedia.delete") {
+					if err := os.Remove(f.ABS); err != nil {
+						panic(errors.Wrap(err, f.ABS))
+					}
 				}
 			}
 		}()
