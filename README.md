@@ -39,21 +39,21 @@ Marked items indicate progress has been made in that category. There is much mor
 - [x] Autocomplete
 - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
 - [x] Instant Answers
-    - [x] Wikipedia
-    - [x] Wikidata
-        - [x] Wikidata partial answers (how tall is, birthday, etc.)
-    - [x] Wikiquote
-    - [x] Wiktionary
-    - [x] Stack Overflow
-    - [x] Stock Quotes & Charts
-    - [x] Package Tracking (UPS, FedEx, USPS, etc...)
-    - [x] Weather
-    - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent 
+    - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent, etc. 
+    - [x] Discography/Music albums
     - [x] JavaScript-based answers
         - [x] Basic calculator
             - [ ] Mortgage, financial and other calculators
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
         - [x] Converters (meters to feet, mb to gb, etc...)
+    - [x] Package Tracking (UPS, FedEx, USPS, etc...)
+    - [x] Stack Overflow
+    - [x] Stock Quotes & Charts    
+    - [x] Weather
+    - [x] Wikipedia summary
+    - [x] Wikidata answers (how tall is, birthday, etc.)
+    - [x] Wikiquote
+    - [x] Wiktionary    
     - [ ] Many more instant answers (including from 3rd party APIs)
     - [ ] Translate trigger words and answers to other languages?
 - [ ] Maps
