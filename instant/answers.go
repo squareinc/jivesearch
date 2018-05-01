@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/coverart"
+	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
@@ -24,7 +24,7 @@ import (
 // Instant holds config information for the instant answers
 type Instant struct {
 	QueryVar             string
-	CoverArtFetcher      coverart.Fetcher
+	DiscographyFetcher   discography.Fetcher
 	FedExFetcher         parcel.Fetcher
 	LocationFetcher      location.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher
@@ -186,6 +186,7 @@ func (i *Instant) answers() []answerer {
 		&CamelCase{},
 		&Characters{},
 		&Coin{},
+		&Discography{Fetcher: i.DiscographyFetcher},
 		&DigitalStorage{},
 		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
@@ -206,8 +207,7 @@ func (i *Instant) answers() []answerer {
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
 		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
 		&Wikipedia{
-			Fetcher:         i.WikipediaFetcher,
-			CoverArtFetcher: i.CoverArtFetcher,
+			Fetcher: i.WikipediaFetcher,
 		}, // always keep this last so that Wikipedia Box will trigger if none other
 	}
 }

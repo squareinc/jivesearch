@@ -11,6 +11,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -383,6 +384,8 @@ func detectType(t string) interface{} {
 	var v interface{}
 
 	switch t {
+	case "discography":
+		v = &[]discography.Album{}
 	case "fedex", "ups", "usps":
 		v = &parcel.Response{}
 	case "stackoverflow":
@@ -402,8 +405,6 @@ func detectType(t string) interface{} {
 		v = &instant.Birthday{}
 	case "wikidata death":
 		v = &instant.Death{}
-	case "wikidata discography":
-		v = &[]instant.Discography{}
 	case "wikidata height", "wikidata weight":
 		v = &[]wikipedia.Quantity{}
 	case "wikiquote":

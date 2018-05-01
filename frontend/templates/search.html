@@ -12,7 +12,7 @@
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
       {{else if eq .Instant.Type "weather"}}
       <link rel="stylesheet" href="/static/instant/weather/weather.css">
-      {{else if eq .Instant.Type "wikidata discography"}}
+      {{else if eq .Instant.Type "discography"}}
       <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
       <link rel="stylesheet" href="/static/instant/discography/discography.css">
       {{end}}
@@ -29,7 +29,7 @@
     <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
     {{else if eq .Instant.Type "unit converter"}}
     <script src="/static/instant/unit_converter/unit_converter.js"></script>
-    {{else if eq .Instant.Type "wikidata discography"}}
+    {{else if eq .Instant.Type "discography"}}
     <script src="/static/instant/discography/owl.carousel.min.js"></script>
     <script src="/static/instant/discography/discography.js"></script>
     {{else if eq .Instant.Type "minify"}}
@@ -96,24 +96,33 @@
       {{template "wikipedia" .}}
       {{template "search_results" .}}
     </div>
-    {{else if eq .Instant.Type "wikidata discography"}}<!--100% width instant answer-->
-      {{if .Instant.Solution}}
+    {{else if eq .Instant.Type "discography"}}<!--100% width instant answer-->
+      {{$length := len .Instant.Solution}} 
+      {{if ne $length 0 }}
       <div id="answer" class="pure-u-1" style="height:325px;background-color:#fcfcfc;resize:none;padding-top:15px;margin-bottom:15px;">
         <div style="margin:15px;margin-bottom:0px;">
           <div class="carousel-wrap">
-              <div class="owl-carousel">
-              {{range $j, $d := .Instant.Solution}}
-              {{$key := $d.Image.URL.String | HMACKey}}
-              <div class="item album">
-                  <a class="album_link" href="/image/125x,s{{$key}}/{{$d.Image.URL}}">
-                  {{$l := WikiLabel $d.Labels $context.Preferred}}
-                  <img src="/image/125x,s{{$key}}/{{$d.Image.URL}}" title="{{$d.Image.URL}}" alt="{{$l}}" style="border:0px;"/><br>
-                  <span style="color:#000;font-size:12px;"><em>{{Truncate $l 40 false}}</em></span><br>
-                  <span style="color:#000;font-size:12px;">{{WikiDateTime $d.Published}}</span><br>
-                  </a>
-              </div>
+            <div class="owl-carousel">
+            {{range $j, $a := .Instant.Solution}}
+            <div class="item album">
+              {{if $a.Image.URL}}
+                {{$key := $a.Image.URL.String | HMACKey}}
+                <a class="album_link" href="/image/125x,s{{$key}}/{{$a.Image.URL}}">
+                <img src="/image/125x,s{{$key}}/{{$a.Image.URL}}" title="{{$a.Image.URL}}" alt="{{$a.Name}}" style="border:0px;"/>
+              {{else}}
+                <a class="album_link"><br>
+                <i class="icon-picture" aria-hidden="true" style="color:#444;text-shadow: 1px 1px 1px #ccc;font-size:26px;">
+                    <br><span style="font-size:24px;">Image not available</span>
+                </i>
+                <br><br>                 
               {{end}}
-              </div>
+              <br>
+              <span style="color:#000;font-size:12px;"><em>{{Truncate $a.Name 40 false}}</em></span><br>
+              <span style="color:#000;font-size:12px;">{{$a.Published.Format "Jan 2, 2006"}}</span><br>
+              </a>
+            </div>
+            {{end}}
+            </div>
           </div>
         </div>
         {{template "source" .}}

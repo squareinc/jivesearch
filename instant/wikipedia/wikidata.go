@@ -165,9 +165,8 @@ type claims struct {
 	Ethnicity   []claim `json:"P172"`
 	Military    []claim `json:"P241"`
 	RecordLabel []claim `json:"P264"`
-	Discography []claim `json:"P358"`
 	Position    []claim `json:"P413"`
-	MusicBrainz []claim `json:"P436"` // group ID...different than P434
+	MusicBrainz []claim `json:"P434"`
 	Partner     []claim `json:"P451"` // non-married spouse
 	Origin      []claim `json:"P495"`
 	DeathCause  []claim `json:"P509"`
@@ -226,7 +225,6 @@ type Claims struct {
 	Ethnicity   []Wikidata  `json:"ethnicity,omitempty"`
 	Military    []Military  `json:"military,omitempty"` // military branch
 	RecordLabel []Wikidata  `json:"record_label,omitempty"`
-	Discography []Wikidata  `json:"discography,omitempty"`
 	Position    []Wikidata  `json:"position,omitempty"` // e.g. position on team...forward, center, etc..
 	MusicBrainz []string    `json:"musicbrainz,omitempty"`
 	Partner     []Spouse    `json:"partner,omitempty"`

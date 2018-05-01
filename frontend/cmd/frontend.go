@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/coverart/musicbrainz"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/weather"
 
@@ -22,6 +21,7 @@ import (
 	"github.com/jivesearch/jivesearch/frontend"
 	"github.com/jivesearch/jivesearch/frontend/cache"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/discography/musicbrainz"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -193,7 +193,7 @@ func main() {
 
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
-		CoverArtFetcher: &musicbrainz.PostgreSQL{
+		DiscographyFetcher: &musicbrainz.PostgreSQL{
 			DB: db,
 		},
 		LocationFetcher: &location.MaxMind{

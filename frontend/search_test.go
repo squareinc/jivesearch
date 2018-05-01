@@ -10,6 +10,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -366,7 +367,7 @@ func TestDetectType(t *testing.T) {
 		},
 		{"wikidata birthday", &instant.Birthday{}},
 		{"wikidata death", &instant.Death{}},
-		{"wikidata discography", &[]instant.Discography{}},
+		{"discography", &[]discography.Album{}},
 		{"wikidata height", &[]wikipedia.Quantity{}},
 		{"wikiquote", &[]string{}},
 		{"wiktionary", &wikipedia.Wiktionary{}},

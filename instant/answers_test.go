@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/coverart"
+	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
@@ -27,7 +27,7 @@ func TestDetect(t *testing.T) {
 
 	i := Instant{
 		QueryVar:             "q",
-		CoverArtFetcher:      &mockCoverArtFetcher{},
+		DiscographyFetcher:   &mockDiscographyFetcher{},
 		FedExFetcher:         &mockFedExFetcher{},
 		LocationFetcher:      &mockLocationFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
@@ -533,23 +533,6 @@ func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikiped
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 						},
 					},
-					Discography: []wikipedia.Wikidata{
-						{
-							ID: "Q90210",
-							Labels: wikipedia.Labels{
-								"en": wikipedia.Text{Text: "Are You Experienced"},
-							},
-							Claims: &wikipedia.Claims{
-								MusicBrainz: []string{"90210"},
-								Publication: []wikipedia.DateTime{
-									{
-										Value:    "1970-09-18T00:00:00Z",
-										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
-									},
-								},
-							},
-						},
-					},
 				},
 			},
 		}, nil
@@ -604,17 +587,17 @@ func (mf *mockWikipediaFetcher) Setup() error {
 	return nil
 }
 
-type mockCoverArtFetcher struct{}
+type mockDiscographyFetcher struct{}
 
-func (m *mockCoverArtFetcher) Fetch(id []string) (map[string]coverart.Image, error) {
+func (m *mockDiscographyFetcher) Fetch(artist string) ([]discography.Album, error) {
 	u, _ := url.Parse("http://coverartarchive.org/release/1/2-250..jpg")
-	return map[string]coverart.Image{
-		"90210": {
-			ID:          "90211",
-			URL:         u,
-			Description: coverart.Front,
-			Height:      250,
-			Width:       250,
+	return []discography.Album{
+		{
+			Name:      "Are You Experienced",
+			Published: time.Date(1970, 9, 18, 0, 0, 0, 0, time.UTC),
+			Image: discography.Image{
+				URL: u,
+			},
 		},
 	}, nil
 

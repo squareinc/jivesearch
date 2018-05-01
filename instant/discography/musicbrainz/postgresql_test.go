@@ -5,41 +5,43 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+	"time"
 
+	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/lib/pq"
-
-	"github.com/jivesearch/jivesearch/instant/coverart"
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 func TestFetch(t *testing.T) {
 	type args struct {
-		ids  []string
-		row1 []driver.Value
-		row2 []driver.Value
+		artist  string
+		artmbid string
+		row1    []driver.Value
+		row2    []driver.Value
 	}
 
-	u, _ := url.Parse("http://coverartarchive.org/release/1/2-250..jpg")
+	u, _ := url.Parse("http://coverartarchive.org/release/art_mbid/1-250..jpg")
 
 	tests := []struct {
 		name string
 		args args
-		want map[string]coverart.Image
+		want []discography.Album
 	}{
 		{
 			"basic",
 			args{
-				[]string{"1"},
-				[]driver.Value{"1", "2"},
-				[]driver.Value{"1", "2", ".jpg"},
+				"matisyahu",
+				"art_mbid",
+				[]driver.Value{"1", "Album 1", "art_mbid", time.Date(1998, 1, 1, 0, 0, 0, 0, time.UTC)},
+				[]driver.Value{"art_mbid", "1", ".jpg"},
 			},
-			map[string]coverart.Image{
-				"2": {
-					ID:          "2",
-					URL:         u,
-					Description: coverart.Front,
-					Height:      250,
-					Width:       250,
+			[]discography.Album{
+				{
+					Name:      "Album 1",
+					Published: time.Date(1998, 1, 1, 0, 0, 0, 0, time.UTC),
+					Image: discography.Image{
+						URL: u,
+					},
 				},
 			},
 		},
@@ -54,14 +56,14 @@ func TestFetch(t *testing.T) {
 			defer db.Close()
 
 			rows := sqlmock.NewRows(
-				[]string{"mbid", "gid"},
+				[]string{"gid", "name", "art_mbid", "published"},
 			)
 
 			rows = rows.AddRow(
 				tt.args.row1...,
 			)
 
-			mock.ExpectQuery("SELECT").WithArgs(pq.Array(tt.args.ids)).WillReturnRows(rows)
+			mock.ExpectQuery("SELECT").WithArgs(tt.args.artist).WillReturnRows(rows)
 
 			rows = sqlmock.NewRows(
 				[]string{"gid", "id", "suffix"},
@@ -70,13 +72,13 @@ func TestFetch(t *testing.T) {
 				tt.args.row2...,
 			)
 
-			mock.ExpectQuery("SELECT").WithArgs(pq.Array(tt.args.ids)).WillReturnRows(rows)
+			mock.ExpectQuery("SELECT").WithArgs(pq.Array([]string{tt.args.artmbid})).WillReturnRows(rows)
 
 			p := &PostgreSQL{
 				DB: db,
 			}
 
-			got, err := p.Fetch(tt.args.ids)
+			got, err := p.Fetch(tt.args.artist)
 			if err != nil {
 				t.Fatal(err)
 			}

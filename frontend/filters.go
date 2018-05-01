@@ -122,6 +122,10 @@ func source(answer instant.Data) string {
 	var f string
 
 	switch answer.Type {
+	case "discography":
+		txt, u = "MusicBrainz", "https://musicbrainz.org/"
+		img = `<img width="12" height="12" alt="musicbrainz" src="/static/favicons/musicbrainz.ico"/>`
+		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "fedex":
 		txt, u = "FedEx", "https://www.fedex.com"
 		img = `<img width="12" height="12" alt="fedex" src="/static/favicons/fedex.ico"/>`
@@ -163,14 +167,6 @@ func source(answer instant.Data) string {
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
-	case "wikidata discography":
-		txt, u = "Wikipedia", "https://www.wikipedia.org/"
-		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
-
-		mbtxt, mbu := "Cover Art Archive", "https://coverartarchive.org/"
-		mbimg := `<img width="12" height="12" alt="coverartarchive" src="/static/favicons/coverartarchive.ico"/>`
-		f += fmt.Sprintf(`<br>%v <a href="%v">%v</a>`, mbimg, mbu, mbtxt)
 	case "wikiquote":
 		txt, u = "Wikiquote", "https://www.wikiquote.org/"
 		img = `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/>`
