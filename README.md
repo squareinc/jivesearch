@@ -24,7 +24,7 @@ Jive Search (name subject to change) is a completely open source search engine t
 3. Install Jive Search
 
 ```
- +go get -u github.com/jivesearch/jivesearch
+go get -u github.com/jivesearch/jivesearch
 ```
   
 
