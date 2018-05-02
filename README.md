@@ -4,7 +4,7 @@ Jive Search (name subject to change) is a completely open source search engine t
 
 [![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
 
-go get -u github.com/jivesearch/jivesearch
+`go get -u github.com/jivesearch/jivesearch`
 
 #### Crawler
 Requires Elasticsearch and Redis.
@@ -25,7 +25,7 @@ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && 
 ```
 
 # **Roadmap** (in no particular order)
-### Our goal is to create a search engine that respects your privacy AND delivers on great search results, instant answers, maps, image search, news, and more. 
+### Our goal is to create a search engine that respects your privacy AND delivers great search results, instant answers, maps, image search, news, and more. 
 
 Marked items indicate progress has been made in that category. There is much more to do in each area. Suggestions are welcome!
 - [x] Privacy
