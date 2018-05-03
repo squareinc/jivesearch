@@ -8,7 +8,7 @@
 
 
 <p align="center">
-Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes. Try it [here](https://www.jivesearch.com)
+Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes. Try is at <https://www.jivesearch.com)>
 </p>
 
 <br>
