@@ -1,5 +1,5 @@
 <p align="center">
- ![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
+![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
 </p>
  		 
 <p align="center">
