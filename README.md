@@ -57,26 +57,29 @@ Jive Search is the open source search engine that does not track you. Pages are 
 2. Set your GOPATH, steps [here](https://github.com/golang/go/wiki/SettingGOPATH)
 3. Install Jive Search
 
-```
+```bash
 $ go get -u github.com/jivesearch/jivesearch
 ```
   
 
 ##### Crawler
 Requires Elasticsearch and Redis.
-```
+
+```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/search/crawler && go run ./cmd/crawler.go --workers=75 --time=5m --debug=true
 ```
   
 ##### Frontend
 Requires Elasticsearch and PostgreSQL.
-```
+
+```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
 
 ##### Wikipedia Dump File
 Requires PostgreSQL.
-```
+
+```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
 <br>
