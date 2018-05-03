@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="frontend/static/icons/logo.png">
+  <a href="https://github.com/adamfaliq42/jivesearch/edit/master/README.md">
     <img alt="jive-search logo" src="frontend/static/icons/logo.png">
   </a>
 </p>
