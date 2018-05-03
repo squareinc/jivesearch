@@ -93,9 +93,9 @@ $ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper &
 
 Follow the instruction to install nginx on :
 
-a) [Windows](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
-b) [OSX](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
-c) [Linux](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+- [Windows](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+- [OSX](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
+- [Linux](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
 
 ##### MusicBrainz
 
