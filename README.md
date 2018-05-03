@@ -1,7 +1,12 @@
+
 <p align="center">
-![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
+  <a href="frontend/static/icons/logo.png">
+    <img alt="jive-search logo" src="frontend/static/icons/logo.png">
+  </a>
 </p>
- 		 
+    
+
+
 <p align="center">
  Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes.
 </p>
