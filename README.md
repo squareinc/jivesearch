@@ -87,7 +87,20 @@ Requires PostgreSQL.
 
 ```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
+
 ```
+##### Nginx
+
+Follow the instruction to install nginx on :
+
+a) [Windows](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+b) [OSX](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
+c) [Linux](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+
+##### MusicBrainz
+
+Download MusicBrainz [here](https://picard.musicbrainz.org/downloads/)
+
 <br>
 
 ## 🚀 **Roadmap** 
