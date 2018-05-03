@@ -1,8 +1,17 @@
-Jive Search (name subject to change) is the open source search engine that does not track you. Pages are ranked based on their upvotes.
+<p align="center">
+ ![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
+</p>
+ 		 
+<p align="center">
+ Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes.
+</p>
 
-[![go](https://img.shields.io/badge/go-1.10.2-blue.svg)](https://github.com/jivesearch/jivesearch) 
-[![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
-[![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)](https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
+<p align="center">
+   <a href="https://github.com/jivesearch/jivesearch"><img src="https://img.shields.io/badge/go-1.10.2-blue.svg"></a>
+   <a href="https://travis-ci.org/jivesearch/jivesearch"><img src="https://travis-ci.org/jivesearch/jivesearch.svg?branch=master"></a>
+  <a href="https://github.com/jivesearch/jivesearch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache-brightgreen.svg"></a>
+</p>
+
 
   
 ## 🚩Table of Contents
