@@ -1,4 +1,4 @@
-Jive Search (name subject to change) is a completely open source search engine that respects your privacy. 
+Jive Search (name subject to change) is the open source search engine that does not track you. Pages are ranked based on their upvotes.
   
 ## Table of Contents
 - [Quick start](#quick-start)
