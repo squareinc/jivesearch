@@ -49,6 +49,7 @@ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && 
 ```
 ## Status
 [![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
+[![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)(https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
   
 ## **Roadmap** 
 ### Our goal is to create a search engine that respects your privacy AND delivers great search results, instant answers, maps, image search, news, and more. 
@@ -96,7 +97,7 @@ Jive Search's documentation is hosted on GoDoc Page at <https://godoc.org/github
 ## Contributing
 Want to contribute? Great! 
 
-Search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/jivesearch/jivesearch/issues/new).
+Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new [issue](https://github.com/jivesearch/jivesearch/issues/new).
 
 ## Copyright and License
 Code and documentation copyright 2018 the [Jivesearch Authors](https://github.com/jivesearch/jivesearch/graphs/contributors). Code and docs released under the [Apache License](https://github.com/jivesearch/jivesearch/blob/master/LICENSE).
