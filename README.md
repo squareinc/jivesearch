@@ -1,6 +1,6 @@
 Jive Search (name subject to change) is the open source search engine that does not track you. Pages are ranked based on their upvotes.
 
-<img src="jivesearch/main.png" alt="Jive Search"/> 
+<img src="/jivesearch/main.png" alt="Jive Search"/> 
   
 ## Table of Contents
 - [Browser Support](#browser-support)
