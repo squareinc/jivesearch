@@ -56,7 +56,7 @@ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && 
 ## Status
 [![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
 [![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)](https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
-[![language]](https://img.shields.io/badge/go-1.10.2-blue.svg)]
+[![go](https://img.shields.io/badge/go-1.10.2-blue.svg)](https://github.com/jivesearch/jivesearch) 
   
 ## **Roadmap** 
 ### Our goal is to create a search engine that respects your privacy AND delivers great search results, instant answers, maps, image search, news, and more. 
