@@ -39,7 +39,12 @@ Jive Search is the open source search engine that does not track you. Pages are 
 ```
 go get -u github.com/jivesearch/jivesearch
 ```
-  
+4. Run the tests
+
+```
+cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
+```
+
 
 ##### Crawler
 Requires Elasticsearch and Redis.
