@@ -112,7 +112,7 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Custom Themes
   
 ## 📙 Documentation
-Jive Search's documentation is hosted on GoDoc Page at [here](https://godoc.org/github.com/jivesearch/jivesearch).
+Jive Search's documentation is hosted on GoDoc Page [here](https://godoc.org/github.com/jivesearch/jivesearch).
 
 ## 💬 Contributing
 Want to contribute? Great! 
