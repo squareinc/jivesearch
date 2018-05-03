@@ -5,7 +5,7 @@ Jive Search (name subject to change) is the open source search engine that does 
 [![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)](https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
 
   
-## Table of Contents
+## 🚩Table of Contents
 - [Browser Support](#browser-support)
 - [Quick start](#quick-start)
 - [Installation](#installation)
@@ -18,17 +18,17 @@ Jive Search (name subject to change) is the open source search engine that does 
 - [Creators](#creators)
 - [Copyright and license](#copyright-and-license)
 
-## Browser Support
+## 🌏 Browser Support
 | <img src="https://user-images.githubusercontent.com/1215767/34348387-a2e64588-ea4d-11e7-8267-a43365103afe.png" alt="Chrome" width="16px" height="16px" /> Chrome | <img src="https://user-images.githubusercontent.com/1215767/34348590-250b3ca2-ea4f-11e7-9efb-da953359321f.png" alt="IE" width="16px" height="16px" /> Internet Explorer | <img src="https://user-images.githubusercontent.com/1215767/34348380-93e77ae8-ea4d-11e7-8696-9a989ddbbbf5.png" alt="Edge" width="16px" height="16px" /> Edge | <img src="https://user-images.githubusercontent.com/1215767/34348394-a981f892-ea4d-11e7-9156-d128d58386b9.png" alt="Safari" width="16px" height="16px" /> Safari | <img src="https://user-images.githubusercontent.com/1215767/34348383-9e7ed492-ea4d-11e7-910c-03b39d52f496.png" alt="Firefox" width="16px" height="16px" /> Firefox |
 | :---------: | :---------: | :---------: | :---------: | :---------: |
 | Yes | 10+ | Yes | Yes | Yes |
   
-## Quick Start
+## 🐾 Quick Start
 1. Go to Jive Search's [homepage](https://www.jivesearch.com).
 2. Start searching.
 3. Upvote or downvote the pages!
 
-## Installation
+## 💾 Installation
 
 1. Download Go [here](https://golang.org/dl/).
 2. Set your GOPATH, steps [here](https://github.com/golang/go/wiki/SettingGOPATH)
@@ -57,7 +57,7 @@ Requires PostgreSQL.
 cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
 
-## **Roadmap** 
+## 🚀 **Roadmap** 
 ### Our goal is to create a search engine that respects your privacy AND delivers great search results, instant answers, maps, image search, news, and more. 
   
 Marked items indicate progress has been made in that category. There is much more to do in each area. Suggestions are welcome!
@@ -97,13 +97,13 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Shopping
 - [ ] Custom Themes
   
-## Documentation
+## 📙 Documentation
 Jive Search's documentation is hosted on GoDoc Page at [here](https://godoc.org/github.com/jivesearch/jivesearch).
 
-## Contributing
+## 💬 Contributing
 Want to contribute? Great! 
 
 Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new [issue](https://github.com/jivesearch/jivesearch/issues/new).
 
-## Copyright and License
+## 📜 Copyright and License
 Code and documentation copyright 2018 the [Jivesearch Authors](https://github.com/jivesearch/jivesearch/graphs/contributors). Code and docs released under the [Apache License](https://github.com/jivesearch/jivesearch/blob/master/LICENSE).
