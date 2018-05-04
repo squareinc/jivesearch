@@ -20,15 +20,6 @@ Jive Search is the open source search engine that does not track you. Pages are 
 </p>
 
 <br>
-
-![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
-
-Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes.
-
-[![go](https://img.shields.io/badge/go-1.10.2-blue.svg)](https://github.com/jivesearch/jivesearch) 
-[![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
-[![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)](https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
-
  
 ## 🚩Table of Contents
 - [Browser Support](#browser-support)
@@ -84,7 +75,7 @@ cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
 
 4. Run the tests
 
-```
+```bash
 cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
 ```
 
@@ -104,7 +95,7 @@ Requires Elasticsearch and PostgreSQL.
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
 
-
+```bash
 cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
 
@@ -130,7 +121,7 @@ Follow the instruction to install nginx on :
 Download MusicBrainz [here](https://picard.musicbrainz.org/downloads/)
 
 <br>
-
+```bash
 cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
 
