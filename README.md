@@ -20,15 +20,6 @@ Jive Search is the open source search engine that does not track you. Pages are 
 </p>
 
 <br>
-
-![Jive Search Logo](frontend/static/icons/logo.png?raw=true "Jive Search")
-
-Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes.
-
-[![go](https://img.shields.io/badge/go-1.10.2-blue.svg)](https://github.com/jivesearch/jivesearch) 
-[![Build Status](https://travis-ci.org/jivesearch/jivesearch.svg?branch=master)](https://travis-ci.org/jivesearch/jivesearch)
-[![license](https://img.shields.io/badge/license-Apache-brightgreen.svg)](https://github.com/jivesearch/jivesearch/blob/master/LICENSE) 
-
  
 ## 🚩Table of Contents
 - [Browser Support](#browser-support)
@@ -84,7 +75,7 @@ cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
 
 4. Run the tests
 
-```
+```bash
 cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
 ```
 
@@ -104,7 +95,7 @@ Requires Elasticsearch and PostgreSQL.
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
 
-
+```bash
 cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
 
@@ -131,6 +122,7 @@ Download MusicBrainz [here](https://picard.musicbrainz.org/downloads/)
 
 <br>
 
+```bash
 cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
 
@@ -195,16 +187,6 @@ Want to contribute? Great!
 Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new issue [here](https://github.com/jivesearch/jivesearch/issues/new).
 
 <br>
-
-  
-## 📙 Documentation
-Jive Search's documentation is hosted on GoDoc Page at [here](https://godoc.org/github.com/jivesearch/jivesearch).
-
-## 💬 Contributing
-Want to contribute? Great! 
-
-Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new [issue](https://github.com/jivesearch/jivesearch/issues/new).
-
 
 ## 📜 Copyright and License
 Code and documentation copyright 2018 the [Jivesearch Authors](https://github.com/jivesearch/jivesearch/graphs/contributors). Code and docs released under the [Apache License](https://github.com/jivesearch/jivesearch/blob/master/LICENSE).
