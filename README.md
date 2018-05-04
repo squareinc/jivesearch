@@ -121,6 +121,7 @@ Follow the instruction to install nginx on :
 Download MusicBrainz [here](https://picard.musicbrainz.org/downloads/)
 
 <br>
+
 ```bash
 cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
 ```
