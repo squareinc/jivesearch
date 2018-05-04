@@ -142,7 +142,12 @@ func TestAutocompleteHandler(t *testing.T) {
 				Suggest: &mockSuggester{},
 			}
 
-			f.Bangs = bangs.New()
+			var err error
+
+			f.Bangs, err = bangsFromConfig()
+			if err != nil {
+				t.Fatal(err)
+			}
 			f.Bangs.Suggester = &mockBangSuggester{}
 
 			req, err := http.NewRequest("GET", "/", nil)

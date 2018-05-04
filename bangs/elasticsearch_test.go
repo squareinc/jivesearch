@@ -238,7 +238,10 @@ func TestSetup(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			b := New()
+			b, err := fromConfig()
+			if err != nil {
+				panic(err)
+			}
 
 			if err := e.Setup(b.Bangs); err != nil {
 				t.Fatal(err)

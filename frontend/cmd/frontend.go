@@ -110,7 +110,19 @@ func main() {
 	}
 
 	// !bangs
-	f.Bangs = bangs.New()
+	vb := viper.New()
+	vb.SetConfigType("toml")
+	vb.SetConfigName("bangs") // the default !bangs config file
+	vb.AddConfigPath("../bangs")
+	f.Bangs, err = bangs.New(vb)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := f.Bangs.CreateFunctions(); err != nil {
+		panic(err)
+	}
+
 	f.Bangs.Suggester = &bangs.ElasticSearch{
 		Client: client,
 		Index:  v.GetString("elasticsearch.bangs.index"),

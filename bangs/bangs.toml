@@ -1,0 +1,232 @@
+# Use default url unless a region is provided.
+# Region: US, Language: French !a ---> Amazon.com
+# Region: France, Language: English !a ---> Amazon.fr
+# !afr ---> Amazon.fr
+# Note: Some !bangs don't respect the language passed in or
+# may not support it (eg they may support pt but not pt-BR)
+[[bang]]
+    name = "Amazon"
+    triggers = ["a", "amazon"]
+    [bang.regions]
+        default = "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
+        ca = "https://www.amazon.ca/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
+        fr = "https://www.amazon.fr/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
+        uk = "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
+
+[[bang]]
+    name = "Bing"
+    triggers = ["b", "bing"]
+    [bang.regions]
+        default = "https://www.bing.com/search?q={{{term}}}"
+
+[[bang]]
+    name = "Bing Images"
+    triggers = ["bi", "bingimages"]
+    [bang.regions]
+        default = "https://www.bing.com/images/search?q={{{term}}}"
+    
+[[bang]]
+    name = "Bitbucket"
+    triggers = ["bb", "bitbucket"]
+    [bang.regions]
+        default = "https://bitbucket.org/repo/all/?name={{{term}}}"
+
+[[bang]]
+    name = "CNBC"
+    triggers = ["cnbc"]
+    [bang.regions]
+        default = "http://search.cnbc.com/main.do?target=all&keywords={{{term}}}"
+
+[[bang]]
+    name = "GitHub"
+    triggers = ["gh", "git", "github"]
+    [bang.regions]
+        default = "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1"
+
+[[bang]]
+    name = "eBay"
+    triggers = ["e", "ebay"]
+    [bang.regions]
+        default = "https://www.ebay.com/sch/items/?_nkw={{{term}}}&_sacat=&_ex_kw=&_mPrRngCbx=1&_udlo=&_udhi=&_sop=12&_fpos=&_fspt=1&_sadis=&LH_CAds=&rmvSB=true"
+
+[[bang]]
+    name = "Genius"
+    triggers = ["genius"]
+    [bang.regions]
+        default = "https://genius.com/search?q={{{term}}}"
+
+[[bang]]
+    name = "Google"
+    triggers = ["g", "google"]
+    [bang.regions]
+        default = "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}"
+        ca = "https://www.google.ca/search?q={{{term}}}"
+		fr = "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}"
+		ru = "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}"
+
+[[bang]]
+    name = "Google France"
+    triggers = ["gfr", "googlefr"]
+    [bang.regions]
+        default = "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}"
+
+[[bang]]
+    name = "Google Images"
+    triggers = ["gi"]
+    [bang.regions]
+        default = "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch"
+
+[[bang]]
+    name = "Google Russia"
+    triggers = ["gru", "googleru"]
+    [bang.regions]
+        default = "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}"
+
+[[bang]]
+    name = "Google Scholar"
+    triggers = ["googlescholar"]
+    [bang.regions]
+        default = "https://scholar.google.com/scholar?hl={{{lang}}}&q={{{term}}}"
+
+[[bang]]
+    name = "Google Translate"
+    triggers = ["gt", "googletranslate"]
+    [bang.regions]
+        default = "https://translate.google.com/#auto/en/{{{term}}}"
+
+[[bang]]
+    name = "Hacker News"
+    triggers = ["hn", "hackernews"]
+    [bang.regions]
+        default = "https://hn.algolia.com/?query={{{term}}}&sort=byPopularity&prefix&page=0&dateRange=all&type=story"
+
+[[bang]]
+    name = "Hulu"
+    triggers = ["hulu"]
+    [bang.regions]
+        default = "https://www.hulu.com/search?query={{{term}}}"
+
+[[bang]]
+    name = "IMDb"
+    triggers = ["imdb"]
+    [bang.regions]
+        default = "http://www.imdb.com/find?q={{{term}}}&s=all"
+
+[[bang]]
+    name = "Instagram"
+    triggers = ["instagram", "ig"]
+    [bang.regions]
+        default = "https://www.instagram.com/explore/tags/{{{term}}}"
+
+[[bang]]
+    name = "LinkedIn"
+    triggers = ["linkedin", "li"]
+    [bang.regions]
+        default = "https://www.linkedin.com/search/results/index/?keywords={{{term}}}"
+
+[[bang]]
+    name = "Movie DB"
+    triggers = ["moviedb"]
+    [bang.regions]
+        default = "https://www.themoviedb.org/search?query={{{term}}}"
+
+[[bang]]
+    name = "New York Times"
+    triggers = ["nyt", "nytimes", "newyorktimes"]
+    [bang.regions]
+        default = "http://query.nytimes.com/search/sitesearch/#/{{{term}}}/"
+        
+[[bang]]
+    name = "Reddit"
+    triggers = ["reddit"]
+    [bang.regions]
+        default = "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all"
+
+[[bang]]
+    name = "Rotten Tomatoes"
+    triggers = ["rt", "rottentomatoes", "rottentomato"]
+    [bang.regions]
+        default = "https://www.rottentomatoes.com/search/?search={{{term}}}"
+        
+[[bang]]
+    name = "SEC"
+    triggers = ["sec", "edgar"]
+    [bang.regions]
+        default = "https://www.sec.gov/cgi-bin/browse-edgar?CIK={{{term}}}&owner=exclude&action=getcompany"
+        
+[[bang]]
+    name = "Stack Overflow"
+    triggers = ["so", "stackoverflow"]
+    [bang.regions]
+        default = "https://stackoverflow.com/search?q={{{term}}}"
+        
+[[bang]]
+    name = "Steam"
+    triggers = ["steam"]
+    [bang.regions]
+        default = "http://store.steampowered.com/search/?term={{{term}}}"
+
+[[bang]]
+    name = "TV Database"
+    triggers = ["tvdb"]
+    [bang.regions]
+        default = "https://www.thetvdb.com/?string={{{term}}}&tab=listseries&function=Search"
+
+[[bang]]
+    name = "Twitter"
+    triggers = ["t", "tw", "twitter"]
+    [bang.regions]
+        default = "https://twitter.com/search?q={{{term}}}"
+       
+[[bang]]
+    name = "Wall Street Journal"
+    triggers = ["wsj", "wallstreetjournal"]
+    [bang.regions]
+        default = "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire"
+
+[[bang]]
+    # I think these need to be mapped to languages, not regions...
+    name = "Wikipedia"
+    triggers = ["w", "wikipedia"]
+    functions = ["wikipediaCanonical"]
+    [bang.regions]
+        default = "https://en.wikipedia.org/wiki/{{{term}}}"
+        es = "https://es.wikipedia.org/wiki/{{{term}}}"
+        de = "https://de.wikipedia.org/wiki/{{{term}}}"
+        fr = "https://fr.wikipedia.org/wiki/{{{term}}}"
+
+[[bang]]
+    name = "Yahoo"
+    triggers = ["y", "yahoo"]
+    [bang.regions]
+        default = "https://search.yahoo.com/search?p={{{term}}}"
+        
+[[bang]]
+    name = "Yahoo Finance"
+    triggers = ["yf", "yahoofinance"]
+    [bang.regions]
+        default = "https://finance.yahoo.com/quote/{{{term}}}"
+       
+[[bang]]
+    name = "Yahoo Finance Charts"
+    triggers = ["yfc"]
+    [bang.regions]
+        default = "https://finance.yahoo.com/chart/{{{term}}}"
+
+[[bang]]
+    name = "Yahoo Finance Profile"
+    triggers = ["yfp"]
+    [bang.regions]
+        default = "https://finance.yahoo.com/quote/{{{term}}}/profile"
+        
+[[bang]]
+    name = "Yahoo Finance Stats"
+    triggers = ["yfs"]
+    [bang.regions]
+        default = "https://finance.yahoo.com/quote/{{{term}}}/key-statistics"
+
+[[bang]]
+    name = "Youtube"
+    triggers = ["yt", "youtube"]
+    [bang.regions]
+        default = "https://www.youtube.com/results?search_query={{{term}}}"

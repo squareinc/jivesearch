@@ -2,6 +2,7 @@
 package bangs
 
 import (
+	"fmt"
 	"strings"
 
 	"golang.org/x/text/language"
@@ -9,7 +10,7 @@ import (
 
 // Bangs holds a map of !bangs
 type Bangs struct {
-	Bangs []Bang
+	Bangs []Bang `mapstructure:"bang"`
 	Suggester
 }
 
@@ -18,7 +19,8 @@ type Bang struct {
 	Name      string            `json:"name"`
 	Triggers  []string          `json:"triggers"`
 	Regions   map[string]string `json:"regions"`
-	Functions []fn              `json:"-"`
+	Functions []string          `json:"-"`
+	Funcs     []fn              `json:"-"`
 }
 
 // Suggester is a !bangs suggester/autocomplete
@@ -41,6 +43,24 @@ type Suggestion struct {
 }
 
 const def = "default"
+
+// Provider is a configuration provider
+type Provider interface {
+	ReadInConfig() error
+	Unmarshal(interface{}) error
+}
+
+// New creates Bangs from a config file
+func New(cfg Provider) (*Bangs, error) {
+	var b = &Bangs{}
+
+	if err := cfg.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	err := cfg.Unmarshal(&b)
+	return b, err
+}
 
 // Suggest is an autocomplete for !bangs
 func (b *Bangs) Suggest(term string, size int) (Results, error) {
@@ -81,7 +101,7 @@ func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string
 
 			remainder := strings.Join(append(fields[:i], fields[i+1:]...), " ")
 
-			for _, f := range bng.Functions {
+			for _, f := range bng.Funcs {
 				remainder = f(remainder)
 			}
 
@@ -114,264 +134,21 @@ func trigger(k string, triggers []string) bool {
 	return false
 }
 
-// New creates a pointer with the default !bangs.
-// Use default url unless a region is provided.
-// Region: US, Language: French !a ---> Amazon.com
-// Region: France, Language: English !a ---> Amazon.fr
-// !afr ---> Amazon.fr
-// Note: Some !bangs don't respect the language passed in or
-// may not support it (eg they may support pt but not pt-BR)
-//
-// TODO: Allow overrides...perhaps add a method or use a config.
-// Note: If we end up using viper for this don't use "SetDefault"
-// as overriding one !bang will replace ALL !bangs. Instead, use "Set".
-func New() *Bangs {
-	// Not sure about the structure here...slice of Bangs makes it easy to add bangs
-	// Would like to add autocomplete feature so that people can find !bangs easier.
-	b := &Bangs{}
-	b.Bangs = []Bang{
-		{
-			"Amazon", []string{"a", "amazon"},
-			map[string]string{
-				def:  "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
-				"ca": "https://www.amazon.ca/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
-				"fr": "https://www.amazon.fr/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
-				"uk": "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Bing", []string{"b", "bing"},
-			map[string]string{
-				def: "https://www.bing.com/search?q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Bing Images", []string{"bi", "bingimages"},
-			map[string]string{
-				def: "https://www.bing.com/images/search?q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Bitbucket", []string{"bb", "bitbucket"},
-			map[string]string{
-				def: "https://bitbucket.org/repo/all/?name={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"CNBC", []string{"cnbc"},
-			map[string]string{
-				def: "http://search.cnbc.com/main.do?target=all&keywords={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"GitHub", []string{"gh", "git", "github"},
-			map[string]string{
-				def: "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1",
-			},
-			[]fn{},
-		},
-		{
-			"eBay", []string{"e", "ebay"},
-			map[string]string{
-				def: "https://www.ebay.com/sch/items/?_nkw={{{term}}}&_sacat=&_ex_kw=&_mPrRngCbx=1&_udlo=&_udhi=&_sop=12&_fpos=&_fspt=1&_sadis=&LH_CAds=&rmvSB=true",
-			},
-			[]fn{},
-		},
-		{
-			"Genius", []string{"genius"},
-			map[string]string{
-				def: "https://genius.com/search?q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Google", []string{"g", "google"},
-			map[string]string{
-				def:  "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
-				"ca": "https://www.google.ca/search?q={{{term}}}",
-				"fr": "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
-				"ru": "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Google France", []string{"gfr", "googlefr"},
-			map[string]string{
-				def: "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Google Images", []string{"gi"},
-			map[string]string{
-				def: "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch",
-			},
-			[]fn{},
-		},
-		{
-			"Google Russia", []string{"gru", "googleru"},
-			map[string]string{
-				def: "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Google Scholar", []string{"googlescholar"},
-			map[string]string{
-				def: "https://scholar.google.com/scholar?hl={{{lang}}}&q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Google Translate", []string{"gt", "googletranslate"},
-			map[string]string{
-				def: "https://translate.google.com/#auto/en/{{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Hacker News", []string{"hn", "hackernews"},
-			map[string]string{
-				def: "https://hn.algolia.com/?query={{{term}}}&sort=byPopularity&prefix&page=0&dateRange=all&type=story",
-			},
-			[]fn{},
-		},
-		{
-			"Hulu", []string{"hulu"},
-			map[string]string{
-				def: "https://www.hulu.com/search?query={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"IMDb", []string{"imdb"},
-			map[string]string{
-				def: "http://www.imdb.com/find?q={{{term}}}&s=all",
-			},
-			[]fn{},
-		},
-		{
-			"Instagram", []string{"instagram", "ig"},
-			map[string]string{
-				def: "https://www.instagram.com/explore/tags/{{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"LinkedIn", []string{"linkedin", "li"},
-			map[string]string{
-				def: "https://www.linkedin.com/search/results/index/?keywords={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"New York Times", []string{"nyt", "nytimes", "newyorktimes"},
-			map[string]string{
-				def: "http://query.nytimes.com/search/sitesearch/#/{{{term}}}/",
-			},
-			[]fn{},
-		},
-		{
-			"Reddit", []string{"reddit"},
-			map[string]string{
-				def: "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all",
-			},
-			[]fn{},
-		},
-		{
-			"SEC", []string{"sec", "edgar"},
-			map[string]string{
-				def: "https://www.sec.gov/cgi-bin/browse-edgar?CIK={{{term}}}&owner=exclude&action=getcompany",
-			},
-			[]fn{},
-		},
-		{
-			"Stack Overflow", []string{"so", "stackoverflow"},
-			map[string]string{
-				def: "https://stackoverflow.com/search?q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Steam", []string{"steam"},
-			map[string]string{
-				def: "http://store.steampowered.com/search/?term={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Twitter", []string{"t", "tw", "twitter"},
-			map[string]string{
-				def: "https://twitter.com/search?q={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Wall Street Journal", []string{"wsj", "wallstreetjournal"},
-			map[string]string{
-				def: "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire",
-			},
-			[]fn{},
-		},
-		{
-			// I think these need to be mapped to languages, not regions...
-			"Wikipedia", []string{"w", "wikipedia"},
-			map[string]string{
-				def:  "https://en.wikipedia.org/wiki/{{{term}}}",
-				"es": "https://es.wikipedia.org/wiki/{{{term}}}",
-				"de": "https://de.wikipedia.org/wiki/{{{term}}}",
-				"fr": "https://fr.wikipedia.org/wiki/{{{term}}}",
-			},
-			[]fn{wikipediaCanonical},
-		},
-		{
-			"Yahoo", []string{"y", "yahoo"},
-			map[string]string{
-				def: "https://search.yahoo.com/search?p={{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Yahoo Finance", []string{"yf", "yahoofinance"},
-			map[string]string{
-				def: "https://finance.yahoo.com/quote/{{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Yahoo Finance Charts", []string{"yfc"},
-			map[string]string{
-				def: "https://finance.yahoo.com/chart/{{{term}}}",
-			},
-			[]fn{},
-		},
-		{
-			"Yahoo Finance Profile", []string{"yfp"},
-			map[string]string{
-				def: "https://finance.yahoo.com/quote/{{{term}}}/profile",
-			},
-			[]fn{},
-		},
-		{
-			"Yahoo Finance Stats", []string{"yfs"},
-			map[string]string{
-				def: "https://finance.yahoo.com/quote/{{{term}}}/key-statistics",
-			},
-			[]fn{},
-		},
-		{
-			"Youtube", []string{"yt", "youtube"},
-			map[string]string{
-				def: "https://www.youtube.com/results?search_query={{{term}}}",
-			},
-			[]fn{},
-		},
-	}
+// CreateFunctions creates []Funcs from []Functions.
+// Is a workaround since I couldn't find a way to map a function type in a config file.
+func (b *Bangs) CreateFunctions() error {
+	for i, bng := range b.Bangs {
+		for _, f := range bng.Functions {
+			var ff fn
 
-	return b
+			switch f {
+			case "wikipediaCanonical":
+				ff = wikipediaCanonical
+			default:
+				return fmt.Errorf("unknown function string %v", f)
+			}
+			b.Bangs[i].Funcs = append(b.Bangs[i].Funcs, ff)
+		}
+	}
+	return nil
 }

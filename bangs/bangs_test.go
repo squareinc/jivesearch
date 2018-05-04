@@ -4,12 +4,25 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )
 
+func fromConfig() (*Bangs, error) {
+	vb := viper.New()
+	vb.SetConfigType("toml")
+	vb.SetConfigName("bangs")
+	vb.AddConfigPath("../bangs")
+	return New(vb)
+}
+
 // TestDefault tests that each !bang has a default location
 func TestDefault(t *testing.T) {
-	b := New()
+	b, err := fromConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	for _, bng := range b.Bangs {
 		if _, ok := bng.Regions[def]; !ok {
 			t.Fatalf("%q bang needs a default region", bng.Name)
@@ -20,7 +33,10 @@ func TestDefault(t *testing.T) {
 func TestDuplicateTriggers(t *testing.T) {
 	seen := make(map[string]bool)
 
-	b := New()
+	b, err := fromConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, bng := range b.Bangs {
 		for _, trig := range bng.Triggers {
 			if _, ok := seen[trig]; ok {
@@ -51,7 +67,10 @@ func TestSuggest(t *testing.T) {
 		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			b := New()
+			b, err := fromConfig()
+			if err != nil {
+				t.Fatal(err)
+			}
 			b.Suggester = &mockSuggester{}
 			got, err := b.Suggest(c.args.term, c.args.size)
 			if err != nil {
@@ -135,7 +154,14 @@ func TestDetect(t *testing.T) {
 		},
 	} {
 		t.Run(c.q, func(t *testing.T) {
-			b := New()
+			b, err := fromConfig()
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if err := b.CreateFunctions(); err != nil {
+				t.Fatal(err)
+			}
 
 			r := language.MustParseRegion(c.r)
 

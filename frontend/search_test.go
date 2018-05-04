@@ -19,12 +19,19 @@ import (
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
 	"github.com/jivesearch/jivesearch/search/vote"
+	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )
 
-func getDefaultBangs() []DefaultBang {
-	bngs := bangs.New()
+func bangsFromConfig() (*bangs.Bangs, error) {
+	vb := viper.New()
+	vb.SetConfigType("toml")
+	vb.SetConfigName("bangs")
+	vb.AddConfigPath("../bangs")
+	return bangs.New(vb)
+}
 
+func getDefaultBangs(bngs *bangs.Bangs) ([]DefaultBang, error) {
 	var m = map[string]bangs.Bang{}
 
 	for _, b := range bngs.Bangs {
@@ -42,15 +49,20 @@ func getDefaultBangs() []DefaultBang {
 		}
 	}
 
-	return []DefaultBang{
+	db := []DefaultBang{
 		{"g", m["g"]}, {"b", m["b"]}, {"a", m["a"]}, {"yt", m["yt"]},
 	}
+
+	return db, nil
 }
 
 func TestDefaultBangs(t *testing.T) {
 	var bing = DefaultBang{}
 	var so = DefaultBang{}
-	bngs := bangs.New()
+	bngs, err := bangsFromConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	for _, b := range bngs.Bangs {
 		if b.Name == "Bing" {
@@ -61,13 +73,18 @@ func TestDefaultBangs(t *testing.T) {
 		}
 	}
 
+	db, err := getDefaultBangs(bngs)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	for _, c := range []struct {
 		name string
 		args string
 		want []DefaultBang
 	}{
 		{
-			"default", "", getDefaultBangs(),
+			"default", "", db,
 		},
 		{
 			"custom", "b,so", []DefaultBang{bing, so},
@@ -75,7 +92,7 @@ func TestDefaultBangs(t *testing.T) {
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			f := &Frontend{
-				Bangs: bangs.New(),
+				Bangs: bngs,
 			}
 
 			req, err := http.NewRequest("GET", "/", nil)
@@ -203,7 +220,15 @@ func TestDetectRegion(t *testing.T) {
 }
 
 func TestSearchHandler(t *testing.T) {
-	db := getDefaultBangs()
+	bngs, err := bangsFromConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	db, err := getDefaultBangs(bngs)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	for _, c := range []struct {
 		name     string
@@ -312,7 +337,7 @@ func TestSearchHandler(t *testing.T) {
 				Document: Document{
 					Matcher: matcher,
 				},
-				Bangs: bangs.New(),
+				Bangs: bngs,
 				Instant: &instant.Instant{
 					WikipediaFetcher:     &mockWikipediaFetcher{},
 					StackOverflowFetcher: &mockStackOverflowFetcher{},
