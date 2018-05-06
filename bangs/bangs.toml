@@ -6,6 +6,7 @@
 # may not support it (eg they may support pt but not pt-BR)
 [[bang]]
     name = "Amazon"
+    favicon = "https://www.amazon.com/favicon.ico"
     triggers = ["a", "amazon"]
     [bang.regions]
         default = "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
@@ -15,48 +16,56 @@
 
 [[bang]]
     name = "Bing"
+    favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
     [bang.regions]
         default = "https://www.bing.com/search?q={{{term}}}"
 
 [[bang]]
     name = "Bing Images"
+    favicon = "https://www.bing.com/favicon.ico"
     triggers = ["bi", "bingimages"]
     [bang.regions]
         default = "https://www.bing.com/images/search?q={{{term}}}"
     
 [[bang]]
     name = "Bitbucket"
+    favicon = "https://bitbucket.org/favicon.ico"
     triggers = ["bb", "bitbucket"]
     [bang.regions]
         default = "https://bitbucket.org/repo/all/?name={{{term}}}"
 
 [[bang]]
     name = "CNBC"
+    favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
     [bang.regions]
         default = "http://search.cnbc.com/main.do?target=all&keywords={{{term}}}"
 
 [[bang]]
     name = "GitHub"
+    favicon = "https://github.com/favicon.ico"
     triggers = ["gh", "git", "github"]
     [bang.regions]
         default = "https://github.com/search?q={{{term}}}&type=Everything&repo=&langOverride=&start_value=1"
 
 [[bang]]
     name = "eBay"
+    favicon = "https://www.ebay.com/favicon.ico"
     triggers = ["e", "ebay"]
     [bang.regions]
         default = "https://www.ebay.com/sch/items/?_nkw={{{term}}}&_sacat=&_ex_kw=&_mPrRngCbx=1&_udlo=&_udhi=&_sop=12&_fpos=&_fspt=1&_sadis=&LH_CAds=&rmvSB=true"
 
 [[bang]]
     name = "Genius"
+    favicon = "http://genius.com/favicon.ico"
     triggers = ["genius"]
     [bang.regions]
         default = "https://genius.com/search?q={{{term}}}"
 
 [[bang]]
     name = "Google"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["g", "google"]
     [bang.regions]
         default = "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}"
@@ -66,120 +75,140 @@
 
 [[bang]]
     name = "Google France"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["gfr", "googlefr"]
     [bang.regions]
         default = "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}"
 
 [[bang]]
     name = "Google Images"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["gi"]
     [bang.regions]
         default = "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch"
 
 [[bang]]
     name = "Google Russia"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["gru", "googleru"]
     [bang.regions]
         default = "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}"
 
 [[bang]]
     name = "Google Scholar"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["googlescholar"]
     [bang.regions]
         default = "https://scholar.google.com/scholar?hl={{{lang}}}&q={{{term}}}"
 
 [[bang]]
     name = "Google Translate"
+    favicon = "https://www.google.com/favicon.ico"
     triggers = ["gt", "googletranslate"]
     [bang.regions]
         default = "https://translate.google.com/#auto/en/{{{term}}}"
 
 [[bang]]
     name = "Hacker News"
+    favicon = "https://news.ycombinator.com/favicon.ico"
     triggers = ["hn", "hackernews"]
     [bang.regions]
         default = "https://hn.algolia.com/?query={{{term}}}&sort=byPopularity&prefix&page=0&dateRange=all&type=story"
 
 [[bang]]
     name = "Hulu"
+    favicon = "http://www.hulu.com/favicon.ico"
     triggers = ["hulu"]
     [bang.regions]
         default = "https://www.hulu.com/search?query={{{term}}}"
 
 [[bang]]
     name = "IMDb"
+    favicon = "https://ia.media-imdb.com/images/G/01/imdb/images/favicon-2165806970"
     triggers = ["imdb"]
     [bang.regions]
         default = "http://www.imdb.com/find?q={{{term}}}&s=all"
 
 [[bang]]
     name = "Instagram"
+    favicon = "https://instagram.com/favicon.ico"
     triggers = ["instagram", "ig"]
     [bang.regions]
         default = "https://www.instagram.com/explore/tags/{{{term}}}"
 
 [[bang]]
     name = "LinkedIn"
+    favicon = "https://www.linkedin.com/favicon.ico"
     triggers = ["linkedin", "li"]
     [bang.regions]
         default = "https://www.linkedin.com/search/results/index/?keywords={{{term}}}"
 
 [[bang]]
     name = "Movie DB"
+    favicon = "https://www.themoviedb.org/favicon.ico"
     triggers = ["moviedb"]
     [bang.regions]
         default = "https://www.themoviedb.org/search?query={{{term}}}"
 
 [[bang]]
     name = "New York Times"
+    favicon = "http://www.nytimes.com/favicon.ico"
     triggers = ["nyt", "nytimes", "newyorktimes"]
     [bang.regions]
         default = "http://query.nytimes.com/search/sitesearch/#/{{{term}}}/"
         
 [[bang]]
     name = "Reddit"
+    favicon = "https://www.reddit.com/favicon.ico"
     triggers = ["reddit"]
     [bang.regions]
         default = "https://www.reddit.com/search?q={{{term}}}&restrict_sr=&sort=relevance&t=all"
 
 [[bang]]
     name = "Rotten Tomatoes"
+    favicon = "https://www.rottentomatoes.com/favicon.ico"
     triggers = ["rt", "rottentomatoes", "rottentomato"]
     [bang.regions]
         default = "https://www.rottentomatoes.com/search/?search={{{term}}}"
         
 [[bang]]
     name = "SEC"
+    favicon = "https://www.sec.gov/favicon.ico"
     triggers = ["sec", "edgar"]
     [bang.regions]
         default = "https://www.sec.gov/cgi-bin/browse-edgar?CIK={{{term}}}&owner=exclude&action=getcompany"
         
 [[bang]]
     name = "Stack Overflow"
+    favicon = "https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico"
     triggers = ["so", "stackoverflow"]
     [bang.regions]
         default = "https://stackoverflow.com/search?q={{{term}}}"
         
 [[bang]]
     name = "Steam"
+    favicon = "https://store.steampowered.com/favicon.ico"
     triggers = ["steam"]
     [bang.regions]
         default = "http://store.steampowered.com/search/?term={{{term}}}"
 
 [[bang]]
     name = "TV Database"
+    favicon = "https://www.thetvdb.com/favicon.ico"
     triggers = ["tvdb"]
     [bang.regions]
         default = "https://www.thetvdb.com/?string={{{term}}}&tab=listseries&function=Search"
 
 [[bang]]
     name = "Twitter"
+    favicon = "https://twitter.com/favicon.ico"
     triggers = ["t", "tw", "twitter"]
     [bang.regions]
         default = "https://twitter.com/search?q={{{term}}}"
        
 [[bang]]
     name = "Wall Street Journal"
+    favicon = "http://online.wsj.com/favicon.ico"
     triggers = ["wsj", "wallstreetjournal"]
     [bang.regions]
         default = "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire"
@@ -187,6 +216,7 @@
 [[bang]]
     # I think these need to be mapped to languages, not regions...
     name = "Wikipedia"
+    favicon = "https://en.wikipedia.org/favicon.ico"
     triggers = ["w", "wikipedia"]
     functions = ["wikipediaCanonical"]
     [bang.regions]
@@ -197,36 +227,42 @@
 
 [[bang]]
     name = "Yahoo"
+    favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["y", "yahoo"]
     [bang.regions]
         default = "https://search.yahoo.com/search?p={{{term}}}"
         
 [[bang]]
     name = "Yahoo Finance"
+    favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["yf", "yahoofinance"]
     [bang.regions]
         default = "https://finance.yahoo.com/quote/{{{term}}}"
        
 [[bang]]
     name = "Yahoo Finance Charts"
+    favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["yfc"]
     [bang.regions]
         default = "https://finance.yahoo.com/chart/{{{term}}}"
 
 [[bang]]
     name = "Yahoo Finance Profile"
+    favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["yfp"]
     [bang.regions]
         default = "https://finance.yahoo.com/quote/{{{term}}}/profile"
         
 [[bang]]
     name = "Yahoo Finance Stats"
+    favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["yfs"]
     [bang.regions]
         default = "https://finance.yahoo.com/quote/{{{term}}}/key-statistics"
 
 [[bang]]
     name = "Youtube"
+    favicon = "https://youtube.com/favicon.ico"
     triggers = ["yt", "youtube"]
     [bang.regions]
         default = "https://www.youtube.com/results?search_query={{{term}}}"

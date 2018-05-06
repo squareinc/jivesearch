@@ -17,6 +17,7 @@ type Bangs struct {
 // Bang holds a single !bang
 type Bang struct {
 	Name      string            `json:"name"`
+	FavIcon   string            `json:"favicon"`
 	Triggers  []string          `json:"triggers"`
 	Regions   map[string]string `json:"regions"`
 	Functions []string          `json:"-"`

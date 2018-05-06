@@ -30,6 +30,21 @@ func TestDefault(t *testing.T) {
 	}
 }
 
+// TestFavIcon tests that each !bang has a favicon
+func TestFavIcon(t *testing.T) {
+	b, err := fromConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, bng := range b.Bangs {
+		if bng.FavIcon == "" {
+			t.Fatalf("%q bang needs a favicon", bng.Name)
+		}
+	}
+
+}
+
 func TestDuplicateTriggers(t *testing.T) {
 	seen := make(map[string]bool)
 
