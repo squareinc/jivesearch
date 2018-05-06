@@ -77,7 +77,10 @@ func TestSuggest(t *testing.T) {
 			"basic",
 			args{"g", 10},
 			Results{Suggestions: []Suggestion{
-				{"g", "Google"}, {"gfr", "Google France"}, {"gh", "GitHub"}, {"gi", "Google Images"},
+				{"g", "Google", "https://www.google.com/favicon.ico"},
+				{"gfr", "Google France", "https://www.google.com/favicon.ico"},
+				{"gh", "GitHub", "https://github.com/favicon.ico"},
+				{"gi", "Google Images", "https://www.google.com/favicon.ico"},
 			}},
 		},
 	} {

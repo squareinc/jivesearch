@@ -115,11 +115,11 @@ func TestAutocompleteHandler(t *testing.T) {
 				template: "json",
 				data: bangs.Results{
 					Suggestions: []bangs.Suggestion{
-						{Trigger: "g", Name: "Google"},
-						{Trigger: "a", Name: "Amazon"},
-						{Trigger: "b", Name: "Bing"},
-						{Trigger: "r", Name: "Reddit"},
-						{Trigger: "w", Name: "Wikipedia"},
+						{Trigger: "g", Name: "Google", FavIcon: "/image/32x,sOidINN3lLWugS3iyX9NlOZNNR9KlRs1eUcqSReZpZ1Y=/https://www.google.com/favicon.ico"},
+						{Trigger: "a", Name: "Amazon", FavIcon: "/image/32x,sOqZY1UB3EmwsX6xESH_XgeJzQhOfB30yMNC9aaN1oCA=/https://www.amazon.com/favicon.ico"},
+						{Trigger: "b", Name: "Bing", FavIcon: "/image/32x,sLccmz7JmNIZUI-FIfjAwI5ginz62zIQhX_ffuA6DoSQ=/https://www.bing.com/favicon.ico"},
+						{Trigger: "reddit", Name: "Reddit", FavIcon: "/image/32x,saRNw35pHUMLQF5-Z8OFhQ1kHz-RioJ7a_S5ZFyTGJF0=/https://www.reddit.com/favicon.ico"},
+						{Trigger: "w", Name: "Wikipedia", FavIcon: "/image/32x,szl9NPdfHe0jt93aiLlox2zOB1DX2ThfpEHiI3AZWUpQ=/https://en.wikipedia.org/favicon.ico"},
 					},
 				},
 			},
@@ -130,8 +130,8 @@ func TestAutocompleteHandler(t *testing.T) {
 				template: "json",
 				data: bangs.Results{
 					Suggestions: []bangs.Suggestion{
-						{Trigger: "g", Name: "Google"},
-						{Trigger: "gh", Name: "GitHub"},
+						{Trigger: "g", Name: "Google", FavIcon: "/image/32x,sOidINN3lLWugS3iyX9NlOZNNR9KlRs1eUcqSReZpZ1Y=/https://www.google.com/favicon.ico"},
+						{Trigger: "gh", Name: "GitHub", FavIcon: "/image/32x,stnNTL-BiRf_CwEuaKJfpgC1xRR8is9PqSW-qLgt3J-s=/https://github.com/favicon.ico"},
 					},
 				},
 			},

@@ -41,6 +41,7 @@ type Results struct { // remember top-level arrays = no-no in javascript/json
 type Suggestion struct {
 	Trigger string `json:"trigger"`
 	Name    string `json:"name"`
+	FavIcon string `json:"favicon"`
 }
 
 const def = "default"
@@ -76,6 +77,7 @@ func (b *Bangs) Suggest(term string, size int) (Results, error) {
 			for _, trigger := range bng.Triggers {
 				if trigger == s.Trigger {
 					s.Name = bng.Name
+					s.FavIcon = bng.FavIcon
 					res.Suggestions[i] = s
 				}
 			}

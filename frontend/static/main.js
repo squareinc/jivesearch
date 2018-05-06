@@ -120,20 +120,10 @@ $(document).ready(function() {
         var formatted = "<a>" + r + "</a>";
 
         if (bang===true){
-          var img = item.name.toLowerCase().replace(/\s/g, "") + ".ico"; // "Wall Street Journal" -> "wallstreetjournal.ico"
-
-          if (item.name.startsWith("Bing ")){ // "Bing Images", etc.. -> "bing.ico"
-            img = "bing.ico";
-          } else if (item.name.startsWith("Google ")){ // "Google France", etc.. -> "google.ico"
-            img = "google.ico";
-          } else if (item.name.startsWith("Yahoo ")){ // "Yahoo Finance", etc.. -> "yahoo.ico"
-            img = "yahoo.ico";
-          }
-
           // Note: below about 600px this doesn't display right.
           // I've tried adding "display:none" for the bang name in main.css but that isn't being respected for some reason.
           r = '<span style="vertical-align:top;">' + item.name + '</span><span style="float:right;margin-right:50%;margin-left:1px;"> !' + r + '</span>';
-          formatted = '<a><img width="20" height="20" style="vertical-align:top;" src="/static/favicons/' + img + '"/> ' + r + '</a>';
+          formatted = '<a><img width="20" height="20" style="vertical-align:top;" src="' + item.favicon + '"/> ' + r + '</a>';
         }
 
         return $("<li></li>").data("item.autocomplete", item).append(formatted).appendTo(ul);

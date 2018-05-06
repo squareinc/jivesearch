@@ -149,24 +149,37 @@ func errHandler(w http.ResponseWriter, rsp *response) {
 }
 
 func (f *Frontend) autocompleteHandler(w http.ResponseWriter, r *http.Request) *response {
+	var proxyFavIcon = func(u string) string {
+		return fmt.Sprintf("/image/32x,s%v/%v", hmacKey(u), u)
+	}
+
 	q := strings.TrimSpace(r.FormValue("q"))
 
 	if q == "!" {
-		// give a default set of !bang suggestions
-		res := bangs.Results{
-			Suggestions: []bangs.Suggestion{
-				{Trigger: "g", Name: "Google"},
-				{Trigger: "a", Name: "Amazon"},
-				{Trigger: "b", Name: "Bing"},
-				{Trigger: "r", Name: "Reddit"},
-				{Trigger: "w", Name: "Wikipedia"},
-			},
+		bngs := []bangs.Suggestion{}
+		triggers := []string{"g", "a", "b", "reddit", "w"}
+		for _, trigger := range triggers {
+			for _, bng := range f.Bangs.Bangs {
+				for _, tr := range bng.Triggers {
+					if tr == trigger {
+						sug := bangs.Suggestion{
+							Trigger: trigger,
+							Name:    bng.Name,
+							FavIcon: proxyFavIcon(bng.FavIcon),
+						}
+						bngs = append(bngs, sug)
+					}
+				}
+			}
 		}
 
+		// give a default set of !bang suggestions
 		return &response{
 			status:   http.StatusOK,
 			template: "json",
-			data:     res,
+			data: bangs.Results{
+				Suggestions: bngs,
+			},
 		}
 
 	} else if len(q) > 1 && !strings.HasPrefix(q, " ") && strings.HasPrefix(q, "!") {
@@ -179,6 +192,12 @@ func (f *Frontend) autocompleteHandler(w http.ResponseWriter, r *http.Request) *
 		}
 
 		if len(res.Suggestions) > 0 {
+			// fetch the favicons through our image proxy
+			for i, b := range res.Suggestions {
+				b.FavIcon = proxyFavIcon(b.FavIcon)
+				res.Suggestions[i] = b
+			}
+
 			return &response{
 				status:   http.StatusOK,
 				template: "json",
