@@ -15,6 +15,13 @@
         uk = "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
 
 [[bang]]
+    name = "AZLyrics"
+    favicon = "https://www.azlyrics.com/favicon.ico"
+    triggers = ["azl", "azlyrics"]
+    [bang.regions]
+        default = "https://search.azlyrics.com/search.php?q={{{term}}}"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
