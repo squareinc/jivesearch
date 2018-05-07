@@ -45,11 +45,11 @@ type UPSResponse struct {
 					Description string `json:"Description"`
 				} `json:"Type"`
 				Address struct {
-					AddressLine       []string `json:"AddressLine"`
-					City              string   `json:"City"`
-					StateProvinceCode string   `json:"StateProvinceCode"`
-					PostalCode        string   `json:"PostalCode"`
-					CountryCode       string   `json:"CountryCode"`
+					AddressLine       interface{} `json:"AddressLine"`
+					City              string      `json:"City"`
+					StateProvinceCode string      `json:"StateProvinceCode"`
+					PostalCode        string      `json:"PostalCode"`
+					CountryCode       string      `json:"CountryCode"`
 				} `json:"Address"`
 			} `json:"ShipmentAddress"`
 			ShipmentWeight struct {
@@ -62,11 +62,8 @@ type UPSResponse struct {
 				Code        string `json:"Code"`
 				Description string `json:"Description"`
 			} `json:"Service"`
-			ReferenceNumber []struct {
-				Code  string `json:"Code"`
-				Value string `json:"Value"`
-			} `json:"ReferenceNumber"`
-			DeliveryDetail struct {
+			ReferenceNumber interface{} `json:"ReferenceNumber"`
+			DeliveryDetail  struct {
 				Type struct {
 					Code        string `json:"Code"`
 					Description string `json:"Description"`
