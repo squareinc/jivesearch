@@ -241,13 +241,22 @@ func TestSource(t *testing.T) {
 			want: "",
 		},
 		{
+			name: "discography",
+			args: args{
+				instant.Data{
+					Type: "discography",
+				},
+			},
+			want: `<img width="12" height="12" alt="musicbrainz" src="/image/32x,sv4p1VZOkfT_gjscSjDjuToOCXgNXhcOxdBDjhYmwmsk=/https://musicbrainz.org/favicon.ico"/> <a href="https://musicbrainz.org/">MusicBrainz</a>`,
+		},
+		{
 			name: "fedex",
 			args: args{
 				instant.Data{
 					Type: "fedex",
 				},
 			},
-			want: `<img width="12" height="12" alt="fedex" src="/static/favicons/fedex.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
+			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
 		},
 		{
 			name: "stackoverflow",
@@ -261,7 +270,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
+			want: `bob via <img width="12" height="12" alt="stackoverflow" src="/image/32x,sT0tRYsDTt0J1npxPJ5N9YAHsrK7jWT0WcvRrCA0vRW8=/https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico"/> <a href="https://stackoverflow.com/">Stack Overflow</a>`,
 		},
 		{
 			name: "stock quote",
@@ -273,7 +282,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="iex" src="/static/favicons/iex.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
+			want: `<img width="12" height="12" alt="iex" src="/image/32x,sHbfM3QKtrjDw8v0skAKSmNQfZJ-C1OtMtjfBMNwsALI=/https://iextrading.com/favicon.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
 		},
 		{
 			name: "ups",
@@ -282,7 +291,7 @@ func TestSource(t *testing.T) {
 					Type: "ups",
 				},
 			},
-			want: `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/> <a href="https://www.ups.com">UPS</a>`,
+			want: `<img width="12" height="12" alt="ups" src="/image/32x,s7SrucFg7UkzGUC-_R7m3DpE6fo5QP58vJgfJOx_0B7U=/https://www.ups.com/favicon.ico"/> <a href="https://www.ups.com">UPS</a>`,
 		},
 		{
 			name: "usps",
@@ -291,7 +300,7 @@ func TestSource(t *testing.T) {
 					Type: "usps",
 				},
 			},
-			want: `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/> <a href="https://www.usps.com">USPS</a>`,
+			want: `<img width="12" height="12" alt="usps" src="/image/32x,s2Yd8OZY8nuJHuzn8G36MHtysVdP4NyCIEI4g7M1gAOA=/https://www.usps.com/favicon.ico"/> <a href="https://www.usps.com">USPS</a>`,
 		},
 		{
 			name: "weather",
@@ -303,7 +312,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="openweathermap" src="/static/favicons/openweathermap.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
+			want: `<img width="12" height="12" alt="openweathermap" src="/image/32x,scZVABsAW_b194omixXeIrSTCiy1clQD-lTg3-51Lo84=/http://openweathermap.org/favicon.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
 		},
 		{
 			name: "wikidata age",
@@ -312,16 +321,7 @@ func TestSource(t *testing.T) {
 					Type: "wikidata age",
 				},
 			},
-			want: `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
-		},
-		{
-			name: "discography",
-			args: args{
-				instant.Data{
-					Type: "discography",
-				},
-			},
-			want: `<img width="12" height="12" alt="musicbrainz" src="/static/favicons/musicbrainz.ico"/> <a href="https://musicbrainz.org/">MusicBrainz</a>`,
+			want: `<img width="12" height="12" alt="wikipedia" src="/image/32x,szl9NPdfHe0jt93aiLlox2zOB1DX2ThfpEHiI3AZWUpQ=/https://en.wikipedia.org/favicon.ico"/> <a href="https://www.wikipedia.org/">Wikipedia</a>`,
 		},
 		{
 			name: "wikiquote",
@@ -330,7 +330,7 @@ func TestSource(t *testing.T) {
 					Type: "wikiquote",
 				},
 			},
-			want: `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
+			want: `<img width="12" height="12" alt="wikiquote" src="/image/32x,sybsABfe6inobFfifJrP1JfzqdReRgDujtUDZ6Kca5fA=/https://en.wikiquote.org/favicon.ico"/> <a href="https://www.wikiquote.org/">Wikiquote</a>`,
 		},
 		{
 			name: "wiktionary",
@@ -339,7 +339,7 @@ func TestSource(t *testing.T) {
 					Type: "wiktionary",
 				},
 			},
-			want: `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/> <a href="https://www.wiktionary.org/">Wiktionary</a>`,
+			want: `<img width="12" height="12" alt="wiktionary" src="/image/32x,sFXYsXfk2L36AnwMAa75urF8XoD92aPCqQCo3eCvRSek=/https://www.wiktionary.org/static/favicon/piece.ico"/> <a href="https://www.wiktionary.org/">Wiktionary</a>`,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

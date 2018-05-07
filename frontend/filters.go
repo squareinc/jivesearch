@@ -116,6 +116,10 @@ func safeHTML(value string) template.HTML {
 
 // source will show the source of an instant answer if data comes from a 3rd party
 func source(answer instant.Data) string {
+	var proxyFavIcon = func(u string) string {
+		return fmt.Sprintf("/image/32x,s%v/%v", hmacKey(u), u)
+	}
+
 	var txt string
 	var u string
 	var img string
@@ -124,56 +128,56 @@ func source(answer instant.Data) string {
 	switch answer.Type {
 	case "discography":
 		txt, u = "MusicBrainz", "https://musicbrainz.org/"
-		img = `<img width="12" height="12" alt="musicbrainz" src="/static/favicons/musicbrainz.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="musicbrainz" src="%v"/>`, proxyFavIcon("https://musicbrainz.org/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "fedex":
 		txt, u = "FedEx", "https://www.fedex.com"
-		img = `<img width="12" height="12" alt="fedex" src="/static/favicons/fedex.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="fedex" src="%v"/>`, proxyFavIcon("http://www.fedex.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
 		// Can select one or the other but not both in their filter.
 		user := answer.Solution.(*instant.StackOverflowAnswer).Answer.User
-		img = `<img width="12" height="12" alt="stackoverflow" src="/static/favicons/stackoverflow.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="stackoverflow" src="%v"/>`, proxyFavIcon("https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico"))
 		f = fmt.Sprintf(`%v via %v <a href="https://stackoverflow.com/">Stack Overflow</a>`, user, img)
 	case "stock quote":
 		q := answer.Solution.(*stock.Quote)
 		switch q.Provider {
 		case stock.IEXProvider:
-			img = `<img width="12" height="12" alt="iex" src="/static/favicons/iex.ico"/>`
+			img = fmt.Sprintf(`<img width="12" height="12" alt="iex" src="%v"/>`, proxyFavIcon("https://iextrading.com/favicon.ico"))
 			f = fmt.Sprintf(`%v Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`, img) // MUST say "Data provided for free by <a href="https://iextrading.com/developer">IEX</a>."
 		default:
 			log.Debug.Printf("unknown stock quote provider %v\n", q.Provider)
 		}
 	case "ups":
 		txt, u = "UPS", "https://www.ups.com"
-		img = `<img width="12" height="12" alt="ups" src="/static/favicons/ups.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="ups" src="%v"/>`, proxyFavIcon("https://www.ups.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "usps":
 		txt, u = "USPS", "https://www.usps.com"
-		img = `<img width="12" height="12" alt="usps" src="/static/favicons/usps.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="usps" src="%v"/>`, proxyFavIcon("https://www.usps.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "weather":
 		w := answer.Solution.(*weather.Weather)
 		switch w.Provider {
 		case weather.OpenWeatherMapProvider:
 			txt, u = "OpenWeatherMap", "http://openweathermap.org"
-			img = `<img width="12" height="12" alt="openweathermap" src="/static/favicons/openweathermap.ico"/>`
+			img = fmt.Sprintf(`<img width="12" height="12" alt="openweathermap" src="%v"/>`, proxyFavIcon("http://openweathermap.org/favicon.ico"))
 			f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 		default:
 			log.Debug.Printf("unknown weather provider %v\n", w.Provider)
 		}
 	case "wikidata age", "wikidata birthday", "wikidata death", "wikidata height", "wikidata weight":
 		txt, u = "Wikipedia", "https://www.wikipedia.org/"
-		img = `<img width="12" height="12" alt="wikipedia" src="/static/favicons/wikipedia.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="wikipedia" src="%v"/>`, proxyFavIcon("https://en.wikipedia.org/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "wikiquote":
 		txt, u = "Wikiquote", "https://www.wikiquote.org/"
-		img = `<img width="12" height="12" alt="wikiquote" src="/static/favicons/wikiquote.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="wikiquote" src="%v"/>`, proxyFavIcon("https://en.wikiquote.org/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	case "wiktionary":
 		txt, u = "Wiktionary", "https://www.wiktionary.org/"
-		img = `<img width="12" height="12" alt="wiktionary" src="/static/favicons/wiktionary.ico"/>`
+		img = fmt.Sprintf(`<img width="12" height="12" alt="wiktionary" src="%v"/>`, proxyFavIcon("https://www.wiktionary.org/static/favicon/piece.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
 	default:
 		log.Debug.Printf("unknown instant answer type %v\n", answer.Type)
