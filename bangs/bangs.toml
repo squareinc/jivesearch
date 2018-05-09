@@ -235,6 +235,13 @@
         default = "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire"
 
 [[bang]]
+    name = "WeatherBug"
+    favicon = "https://www.weatherbug.com/img/favicon-32x32.png"
+    triggers = ["weatherbug"]
+    [bang.regions]
+        default = "https://www.weatherbug.com/weather-forecast/now/{{{term}}}"
+
+[[bang]]
     name = "The Weather Channel"
     favicon = "https://weather.com/weather/assets/favicon.1acd6ad0f84c999b39c434f6bda4e29f.ico"
     triggers = ["wc", "weatherchannel"]
