@@ -2,10 +2,40 @@
 
 
 [[projects]]
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  revision = "a86ea073017a6beddef78c8659e7224e8ca634b0"
+  version = "v1.4.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/abursavich/nett"
   packages = ["."]
   revision = "f31118c7aeb99f781b38483679bef7bece9f78db"
+
+[[projects]]
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  revision = "901648c87902174f774fac311d7f176f8647bdaa"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/antchfx/htmlquery"
+  packages = ["."]
+  revision = "9f7717ac9bac5f660391c57e3d496b3c7cf9741f"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/antchfx/xmlquery"
+  packages = ["."]
+  revision = "3b6128f0092aaf2a8f4b72654cc00bc1cc9f5cbd"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/antchfx/xpath"
+  packages = ["."]
+  revision = "fcab9e58f09ba99b9426deb11850a0e8c93004cb"
 
 [[projects]]
   name = "github.com/disintegration/imaging"
@@ -46,6 +76,59 @@
   ]
   revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
   version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/singleflight",
+    "internal/util"
+  ]
+  revision = "877867d2845fbaf86798befe410b6ceb6f5c29a3"
+  version = "v6.10.2"
+
+[[projects]]
+  name = "github.com/gobwas/glob"
+  packages = [
+    ".",
+    "compiler",
+    "match",
+    "syntax",
+    "syntax/ast",
+    "syntax/lexer",
+    "util/runes",
+    "util/strings"
+  ]
+  revision = "5ccd90ef52e1e632236f7326478d4faa74f99438"
+  version = "v0.2.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gocolly/colly"
+  packages = [
+    ".",
+    "debug",
+    "queue",
+    "storage"
+  ]
+  revision = "60a9d4f10643e2fbce20b258dfff74b9d61c2396"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gocolly/redisstorage"
+  packages = ["."]
+  revision = "681b42d3f0841ebde76ee827ff4c4f4cbb12f2a8"
+
+[[projects]]
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -92,6 +175,12 @@
   name = "github.com/jarcoal/httpmock"
   packages = ["."]
   revision = "4442edb3db31196622da56482fd8d0fa375fba4d"
+
+[[projects]]
+  name = "github.com/kennygrant/sanitize"
+  packages = ["."]
+  revision = "2e6820834a1f36c626bf19a253b7d3cc060e9b8b"
+  version = "v1.2.3"
 
 [[projects]]
   branch = "master"
@@ -199,6 +288,12 @@
   revision = "17202558c8d9c3fd047859f1a5e73fd9ae709187"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/saintfish/chardet"
+  packages = ["."]
+  revision = "3af4cd4741ca4f3eb0c407c034571a6fb0ea529c"
+
+[[projects]]
   name = "github.com/spf13/afero"
   packages = [
     ".",
@@ -283,6 +378,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = [
+    "context",
     "html",
     "html/atom",
     "html/charset",
@@ -334,6 +430,23 @@
   version = "v0.2.0"
 
 [[projects]]
+  name = "google.golang.org/appengine"
+  packages = [
+    ".",
+    "internal",
+    "internal/app_identity",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/modules",
+    "internal/remote_api",
+    "internal/urlfetch",
+    "urlfetch"
+  ]
+  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
+  version = "v1.0.0"
+
+[[projects]]
   name = "gopkg.in/DATA-DOG/go-sqlmock.v1"
   packages = ["."]
   revision = "d76b18b42f285b792bf985118980ce9eacea9d10"
@@ -363,6 +476,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1ccd0e7e53addee7522fdefcd82511408b4be2c38eabc0ff44a15999a4792a92"
+  inputs-digest = "5ab119f32b06b4ce8ff441b3fae1afdce25b8a002c9782602278e371069abaaa"
   solver-name = "gps-cdcl"
   solver-version = 1
