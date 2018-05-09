@@ -76,7 +76,12 @@ func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
 		ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
 		if triggered := ia.trigger(); triggered {
 			ia.setType().setCache().solve(r)
-			return ia.solution()
+			sol := ia.solution()
+			if sol.Err != nil { // this s/b handled in search.go in the frontend...
+				log.Debug.Println(sol.Err)
+				continue
+			}
+			return sol
 		}
 	}
 

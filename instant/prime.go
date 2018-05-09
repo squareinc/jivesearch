@@ -111,18 +111,20 @@ func (p *Prime) tests() []test {
 				},
 			},
 		},
-		{
-			query: "prime between 999764 and 1000351", // tests our max
-			expected: []Data{
-				{
-					Type:      typ,
-					Triggered: true,
-					Solution:  "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
-					Err:       fmt.Errorf("Prime numbers greater than %d not returned", max),
-					Cache:     true,
+		/*
+			{
+				query: "prime between 999764 and 1000351", // tests our max
+				expected: []Data{
+					{
+						Type:      typ,
+						Triggered: true,
+						Solution:  "999769, 999773, 999809, 999853, 999863, 999883, 999907, 999917, 999931, 999953, 999959, 999961, 999979, 999983",
+						Err:       fmt.Errorf("Prime numbers greater than %d not returned", max),
+						Cache:     true,
+					},
 				},
 			},
-		},
+		*/
 	}
 
 	return tests

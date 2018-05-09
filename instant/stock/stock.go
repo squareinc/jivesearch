@@ -21,6 +21,9 @@ const NYSE exchange = "NYSE"
 // NASDAQ is the NASDAQ Stock Exchange
 const NASDAQ exchange = "NASDAQ"
 
+// ErrInvalidTicker indicates the ticker was invalid
+var ErrInvalidTicker = fmt.Errorf("invalid ticker")
+
 // Quote includes the current and historical quotes
 type Quote struct {
 	Ticker   string

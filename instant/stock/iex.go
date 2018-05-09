@@ -137,6 +137,10 @@ func (i *IEX) Fetch(ticker string) (*Quote, error) {
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode == 404 {
+		return nil, ErrInvalidTicker
+	}
+
 	err = json.NewDecoder(resp.Body).Decode(&iex)
 
 	return iex.Quote, err
