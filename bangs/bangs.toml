@@ -219,6 +219,13 @@
     triggers = ["t", "tw", "twitter"]
     [bang.regions]
         default = "https://twitter.com/search?q={{{term}}}"
+
+[[bang]]
+    name = "Ultimate Guitar Tabs"
+    favicon = "https://www.ultimate-guitar.com/static/_img/bootstrap/ug/img/favicon.ico"
+    triggers = ["tabs"]
+    [bang.regions]
+        default = "https://www.ultimate-guitar.com/search.php?search_type=title&value={{{term}}}"
        
 [[bang]]
     name = "Wall Street Journal"
