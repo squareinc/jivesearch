@@ -71,6 +71,13 @@
         default = "https://genius.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "Giphy"
+    favicon = "https://giphy.com/favicon.ico"
+    triggers = ["giphy"]
+    [bang.regions]
+        default = "https://giphy.com/search/{{{term}}}"
+
+[[bang]]
     name = "Google"
     favicon = "https://www.google.com/favicon.ico"
     triggers = ["g", "google"]
