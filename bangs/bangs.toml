@@ -223,7 +223,7 @@
 [[bang]]
     name = "Ultimate Guitar Tabs"
     favicon = "https://www.ultimate-guitar.com/static/_img/bootstrap/ug/img/favicon.ico"
-    triggers = ["tabs"]
+    triggers = ["tabs", "ultimateguitar"]
     [bang.regions]
         default = "https://www.ultimate-guitar.com/search.php?search_type=title&value={{{term}}}"
        
@@ -233,6 +233,13 @@
     triggers = ["wsj", "wallstreetjournal"]
     [bang.regions]
         default = "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire"
+
+[[bang]]
+    name = "The Weather Channel"
+    favicon = "https://weather.com/weather/assets/favicon.1acd6ad0f84c999b39c434f6bda4e29f.ico"
+    triggers = ["wc", "weatherchannel"]
+    [bang.regions]
+        default = "https://weather.com/weather/today/l/{{{term}}}"
 
 [[bang]]
     # I think these need to be mapped to languages, not regions...

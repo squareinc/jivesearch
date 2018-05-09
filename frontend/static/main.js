@@ -122,7 +122,7 @@ $(document).ready(function() {
         if (bang===true){
           // Note: below about 600px this doesn't display right.
           // I've tried adding "display:none" for the bang name in main.css but that isn't being respected for some reason.
-          r = '<span style="vertical-align:top;">' + item.name + '</span><span style="float:right;margin-right:50%;margin-left:1px;"> !' + r + '</span>';
+          r = '<span style="vertical-align:top;">' + item.name + '</span><span style="float:right;margin-right:40%;margin-left:1px;"> !' + r + '</span>';
           formatted = '<a><img width="20" height="20" style="vertical-align:top;" src="' + item.favicon + '"/> ' + r + '</a>';
         }
 
