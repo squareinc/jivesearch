@@ -158,6 +158,13 @@
         default = "https://api.jquery.com/?ns0=1&s={{{term}}}"
 
 [[bang]]
+    name = "jQuery UI"
+    favicon = "https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/i/favicon.ico"
+    triggers = ["jqu", "jqui", "jqueryui"]
+    [bang.regions]
+        default = "https://jqueryui.com/?s={{{term}}}"
+
+[[bang]]
     name = "LinkedIn"
     favicon = "https://www.linkedin.com/favicon.ico"
     triggers = ["linkedin", "li"]
