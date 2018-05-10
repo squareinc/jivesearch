@@ -151,6 +151,13 @@
         default = "https://www.instagram.com/explore/tags/{{{term}}}"
 
 [[bang]]
+    name = "jQuery"
+    favicon = "https://jquery.com/jquery-wp-content/themes/jquery.com/i/favicon.ico"
+    triggers = ["jquery"]
+    [bang.regions]
+        default = "https://api.jquery.com/?ns0=1&s={{{term}}}"
+
+[[bang]]
     name = "LinkedIn"
     favicon = "https://www.linkedin.com/favicon.ico"
     triggers = ["linkedin", "li"]
