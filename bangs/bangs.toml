@@ -191,7 +191,14 @@
     triggers = ["sec", "edgar"]
     [bang.regions]
         default = "https://www.sec.gov/cgi-bin/browse-edgar?CIK={{{term}}}&owner=exclude&action=getcompany"
-        
+
+[[bang]]
+    name = "Stack Exchange"
+    favicon = "https://cdn.sstatic.net/Sites/stackexchange/img/favicon.ico"
+    triggers = ["se", "sx", "stackexchange"]
+    [bang.regions]
+        default = "https://stackexchange.com/search?q={{{term}}}"
+
 [[bang]]
     name = "Stack Overflow"
     favicon = "https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico"
