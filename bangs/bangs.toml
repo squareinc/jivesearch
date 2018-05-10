@@ -207,6 +207,13 @@
         default = "http://store.steampowered.com/search/?term={{{term}}}"
 
 [[bang]]
+    name = "Subreddit"
+    favicon = "https://www.reddit.com/favicon.ico"
+    triggers = ["sr", "subreddit", "sreddit"]
+    [bang.regions]
+        default = "https://www.reddit.com/r/{{{term}}}"
+
+[[bang]]
     name = "TV Database"
     favicon = "https://www.thetvdb.com/favicon.ico"
     triggers = ["tvdb"]
