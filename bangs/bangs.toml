@@ -275,6 +275,13 @@
         fr = "https://fr.wikipedia.org/wiki/{{{term}}}"
 
 [[bang]]
+    name = "Wolfram|Alpha"
+    favicon = "https://www.wolframalpha.com/favicon.ico"
+    triggers = ["wa", "wolframalpha"]
+    [bang.regions]
+        default = "https://www.wolframalpha.com/input/?i={{{term}}}"
+
+[[bang]]
     name = "Yahoo"
     favicon = "https://www.yahoo.com/favicon.ico"
     triggers = ["y", "yahoo"]
