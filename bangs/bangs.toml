@@ -7,7 +7,7 @@
 [[bang]]
     name = "500px"
     favicon = "https://500px.com/favicon.ico"
-    triggers = ["500px"]
+    triggers = ["500", "500px"]
     [bang.regions]
         default = "https://500px.com/search?q={{{term}}}"
 

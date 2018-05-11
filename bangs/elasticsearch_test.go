@@ -23,7 +23,7 @@ func TestSuggestES(t *testing.T) {
 		want   Results
 	}{
 		{
-			"ok", args{"g", 10}, http.StatusOK,
+			"ok", args{"500", 10}, http.StatusOK,
 			`{
 				"took": 0,
 				"timed_out": false,

@@ -61,6 +61,7 @@ func (e *ElasticSearch) SuggestResults(term string, size int) (Results, error) {
 }
 
 func (e *ElasticSearch) mapping() string {
+	// Note: the simple analyzer won't work for numeric triggers -> e.g. "500".
 	return fmt.Sprintf(`{
 		"mappings": {
 			"%v": {
@@ -68,8 +69,8 @@ func (e *ElasticSearch) mapping() string {
 				"properties": {
 					"%v": {
 						"type": "completion",
-						"analyzer": "simple",
-						"search_analyzer" : "simple",
+						"analyzer": "standard",
+						"search_analyzer" : "standard",
 						"preserve_separators": true,
 						"preserve_position_increments": true,
 						"max_input_length": 100
