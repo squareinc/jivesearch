@@ -5,6 +5,13 @@
 # Note: Some !bangs don't respect the language passed in or
 # may not support it (eg they may support pt but not pt-BR)
 [[bang]]
+    name = "500px"
+    favicon = "https://500px.com/favicon.ico"
+    triggers = ["500px"]
+    [bang.regions]
+        default = "https://500px.com/search?q={{{term}}}"
+
+[[bang]]
     name = "Amazon"
     favicon = "https://www.amazon.com/favicon.ico"
     triggers = ["a", "amazon"]
