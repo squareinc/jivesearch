@@ -172,6 +172,13 @@
         default = "https://www.linkedin.com/search/results/index/?keywords={{{term}}}"
 
 [[bang]]
+    name = "Medium"
+    favicon = "https://medium.com/favicon.ico"
+    triggers = ["med", "medium"]
+    [bang.regions]
+        default = "https://medium.com/search?q={{{term}}}"
+
+[[bang]]
     name = "Movie DB"
     favicon = "https://www.themoviedb.org/favicon.ico"
     triggers = ["moviedb"]
