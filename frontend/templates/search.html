@@ -378,7 +378,7 @@
       {{else if eq .Instant.Type "wikiquote"}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1">
-          <div style="margin:15px;margin-bottom:5px;">
+          <div style="margin:15px;margin-bottom:0px;">
           {{range $i, $q := .Instant.Solution}}
             {{if le $i 3}}
             <p><span style="font-size:14px;font-style:italic;">{{$q|SafeHTML}}</span></p>

@@ -21,20 +21,15 @@ type Wikiquote struct {
 // Another option is to convert wiky to Go then work w/ the HTML
 // but there are PCRE regex patterns that won't work with Go's RE2.
 // https://github.com/lahdekorpi/Wiky.php
-var reSubheading = regexp.MustCompile(`===\s(.+?)\s===`) // "=== [[Dick Cavett]] interview (1969) ===" => "<h3>[[Dick Cavett]] interview (1969)</h3>"
-var re = regexp.MustCompile(`== (?P<section>[^=]*?) ==\n(?P<quotes>[^=]*)`)
-var reRefTags = regexp.MustCompile(`<ref>.*?</ref>`)                                         // "<ref>https://www.example.com</ref>" => ""
-var reLinks = regexp.MustCompile(`\[\[(file|img):((ht|f)tp(s?):\/\/(.+?))( (.+))*\]\]`)      // http links
-var reLinksWithText = regexp.MustCompile(`\[((news|(ht|f)tp(s?)|irc):\/\/(.+?))( (.+))\]/i`) // urls with text
-var reLinksNoText = regexp.MustCompile(`\[((news|(ht|f)tp(s?)|irc):\/\/(.+?))\]`)            // urls without text
-var reWikiLinks = regexp.MustCompile(`(.*)(\[{2})(.*?)\|(.*?)(\]{2})(.*?)`)                  // "a link to [[w:Pasta|Pasta]] here" => "a link to Pasta here"
-var reBraces = regexp.MustCompile(`{{.*?}}`)                                                 // "{{citation}}" => ""
-var reBrackets = regexp.MustCompile(`\[\[(.*?)\]\]`)                                         // "[[Gratitude]]" => "Gratitude"
+var reRefTags = regexp.MustCompile(`<ref>.*?</ref>`)                        // "<ref>https://www.example.com</ref>" => ""
+var reWikiLinks = regexp.MustCompile(`(.*)(\[{2})(.*?)\|(.*?)(\]{2})(.*?)`) // "a link to [[w:Pasta|Pasta]] here" => "a link to Pasta here"
+var reBraces = regexp.MustCompile(`{{.*?}}`)                                // "{{citation}}" => ""
+var reBrackets = regexp.MustCompile(`\[\[(.*?)\]\]`)                        // "[[Gratitude]]" => "Gratitude"
 var sanitizer = bluemonday.StrictPolicy()
 
 // UnmarshalJSON extracts the raw quotes from the source_text
 func (w *Wikiquote) UnmarshalJSON(data []byte) error {
-	// copy the fields of Wikipedia but not the
+	// copy the fields of Wikiquote but not the
 	// methods so we don't recursively call UnmarshalJSON
 	type Alias Wikiquote
 	a := &struct {
@@ -56,24 +51,26 @@ func (w *Wikiquote) UnmarshalJSON(data []byte) error {
 	// Wikitext cheat sheet: https://en.wikipedia.org/wiki/Help:Cheatsheet
 	// not sure how to capture song lyrics (albums start with "===")
 
-	w.Source = reSubheading.ReplaceAllString(w.Source, `<h2>$1</h2>`) // change "===" so they don't interfere w/ search for "=="
-	// remove links so that "=" in url params doesn't interfere w/ search for "==")
-	w.Source = reLinks.ReplaceAllString(w.Source, `$6`)
-	w.Source = reLinksWithText.ReplaceAllString(w.Source, `$7`)
-	w.Source = reLinksNoText.ReplaceAllString(w.Source, `$1`)
+	// change the equal signs so they get out of the way of regex
+	w.Source = reQuadEq.ReplaceAllString(w.Source, "<h3>$1</h3>")   // Subsubheading
+	w.Source = reTripleEq.ReplaceAllString(w.Source, "<h2>$1</h2>") // Subheading
+	w.Source = reDoubleEq.ReplaceAllString(w.Source, "<h1>$1</h1>") // Heading
+	w.Source = reSingleEq.ReplaceAllString(w.Source, "[equals]")
+	w.Source = reH2.ReplaceAllString(w.Source, "===$1===") // Change heading back so we can use [^=]
+	w.Source = reH1.ReplaceAllString(w.Source, "==$1==")   // Change heading back so we can use [^=]
 
-	for _, m := range re.FindAllStringSubmatch(w.Source, -1) {
+	for _, m := range h1.FindAllStringSubmatch(w.Source, -1) {
 		if len(m) < 2 {
 			continue
 		}
 		section := strings.ToLower(strings.TrimSpace(m[1]))
-		if section == "quotes" || section == "song lyrics" || section == "sourced" { // any more sections we want???
+		if section == "quotes" || section == "sourced" { // any more sections we want???
 			for _, q := range strings.Split(m[2], "\n") {
 				if strings.HasPrefix(q, "* ") {
 					// Remove wikitext formatting. I couldn't find a good
 					// library to convert wikitext to html or some other format.
 					q = strings.TrimPrefix(q, "* ")
-					q = strings.Replace(q, `'`, "", -1)
+					q = strings.Replace(q, `'''`, "", -1)
 					q = reRefTags.ReplaceAllString(q, "")
 					q = reWikiLinks.ReplaceAllString(q, `$1$4$6`)
 					q = reBraces.ReplaceAllString(q, "")
