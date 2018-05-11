@@ -12,6 +12,13 @@
         default = "https://500px.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "800notes"
+    favicon = "https://800notes.com/favicon.ico"
+    triggers = ["800"]
+    [bang.regions]
+        default = "https://800notes.com/Phone.aspx/1-{{{term}}}"
+
+[[bang]]
     name = "Amazon"
     favicon = "https://www.amazon.com/favicon.ico"
     triggers = ["a", "amazon"]
