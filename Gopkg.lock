@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/Knetic/govaluate"
+  packages = ["."]
+  revision = "d216395917cc49052c7c7094cf57f09657ca08a8"
+  version = "v3.0.0"
+
+[[projects]]
   name = "github.com/PuerkitoBio/goquery"
   packages = ["."]
   revision = "a86ea073017a6beddef78c8659e7224e8ca634b0"
@@ -476,6 +482,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5ab119f32b06b4ce8ff441b3fae1afdce25b8a002c9782602278e371069abaaa"
+  inputs-digest = "12fa18dde3d9b693d9f5b6f3fa8bab3f0f87e860e92709d7898aa7ea5332db0a"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,4 +1,7 @@
 window.onload = function() {
+    // hide the non-js answer and show calculator
+    $("#calculator").show();
+
     var output;
     var result = document.getElementById("result");
     var numbers = document.querySelectorAll(".number");

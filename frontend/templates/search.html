@@ -173,8 +173,13 @@
         </div>
       </div>
       {{else if eq .Instant.Type "calculator"}}
-      <div id="calculator">
-        <div id="result" tabindex="4"></div>
+      <noscript>
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution}}</div>
+        </div>
+      </noscript>
+      <div id="calculator" style="display:none;">
+        <div id="result" tabindex="4">{{if .Instant.Solution}}{{.Instant.Solution}}{{end}}</div>
         <div id="main">
           <div id="first-row">
             <button id="clear" class="del-bg">C</button>

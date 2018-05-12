@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Knetic/govaluate"
+	"github.com/pkg/errors"
 	"golang.org/x/text/language"
 )
 
@@ -33,21 +35,58 @@ func (c *Calculator) setType() answerer {
 	return c
 }
 
+var calculatorTriggers = []string{
+	"calculator", "calculate", "compute", "formula", "solve", "add", "subtract", "multiply", "divide",
+}
+
 func (c *Calculator) setRegex() answerer {
-	triggers := []string{
-		"calculator", "calculate",
-	}
-
-	t := strings.Join(triggers, "|")
+	t := strings.Join(calculatorTriggers, "|")
 	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)$`, t)))
-	//c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) .*$`, t))) // not implemented yet
-	//c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^.* (?P<trigger>%s)$`, t))) // not implemented yet
 
+	f := `[\s0-9\.\^+\-*\/\(\)]*`
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)?(?P<remainder>%v)$`, t, f)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>%v)(?P<trigger>%s)?$`, f, t)))
 	return c
 }
 
 func (c *Calculator) solve(r *http.Request) answerer {
-	// The caller is expected to provide the solution when triggered, preferably in JavaScript
+	for _, t := range calculatorTriggers {
+		if c.query == t { // eg a search for "calculate", "calculator", etc
+			return c
+		}
+
+		c.remainder = strings.Replace(c.remainder, t, "", -1)
+	}
+
+	if !strings.ContainsAny(c.remainder, "+-/*^") { // don't trigger fedex/ups/usps tracking numbers
+		c.Triggered = false
+		c.Err = fmt.Errorf("not a mathematical formula %q", c.remainder)
+		return c
+	}
+
+	expression, err := govaluate.NewEvaluableExpression(c.remainder)
+	if err != nil {
+		c.Triggered = false
+		c.Err = fmt.Errorf("not a mathematical formula %q", c.remainder)
+		return c
+	}
+
+	result, err := expression.Evaluate(nil)
+	if err != nil {
+		c.Triggered = false
+		c.Err = errors.Wrap(err, c.remainder)
+		return c
+	}
+
+	switch result.(type) {
+	case float64:
+		c.Solution = result
+	default:
+		c.Triggered = false
+		c.Err = errors.Wrapf(err, "not a mathematical formula %q", c.remainder)
+		return c
+	}
+
 	return c
 }
 
@@ -71,8 +110,37 @@ func (c *Calculator) tests() []test {
 			expected: []Data{d},
 		},
 		{
-			query:    "calculate",
-			expected: []Data{d},
+			query: "calculate 2+2",
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution:  4.0,
+					Cache:     true,
+				},
+			},
+		},
+		{
+			query: "(2+2)*3+6.3",
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution:  18.3,
+					Cache:     true,
+				},
+			},
+		},
+		{
+			query: "(2+2)*3/6.4 compute",
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution:  1.875,
+					Cache:     true,
+				},
+			},
 		},
 	}
 
