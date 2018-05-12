@@ -64,6 +64,13 @@
         default = "https://m.aliexpress.com/wholesale/bob.html?keywords={{{term}}}"
 
 [[bang]]
+    name = "Allrecipes"
+    favicon = "https://www.allrecipes.com/favicon.ico"
+    triggers = ["ar", "allrecipes", "recipe", "recipes"]
+    [bang.regions]
+        default = "https://www.allrecipes.com/search/results/?qt=k&wt={{{term}}}&origin=Recipe%20Search%20Results"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
