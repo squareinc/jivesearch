@@ -61,7 +61,7 @@
     favicon = "https://m.aliexpress.com/img/logo/favicon.ico"
     triggers = ["alim"]
     [bang.regions]
-        default = "https://m.aliexpress.com/wholesale/bob.html?keywords={{{term}}}"
+        default = "https://m.aliexpress.com/wholesale/{{{term}}}.html?keywords={{{term}}}"
 
 [[bang]]
     name = "Allrecipes"
