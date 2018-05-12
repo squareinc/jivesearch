@@ -29,6 +29,41 @@
         uk = "https://www.amazon.co.uk/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={{{term}}}"
 
 [[bang]]
+    name = "Airbnb"
+    favicon = "https://www.airbnb.com/favicon.ico"
+    triggers = ["airbnb"]
+    [bang.regions]
+        default = "https://www.airbnb.com/s/{{{term}}}/all"
+
+[[bang]]
+    name = "Algorithmia"
+    favicon = "https://algorithmia.com/assets/images/favicon.png"
+    triggers = ["algo", "algorithmia"]
+    [bang.regions]
+        default = "https://algorithmia.com/search?q={{{term}}}"
+
+[[bang]]
+    name = "Alibaba"
+    favicon = "https://is.alicdn.com/simg/single/icon/favicon.ico"
+    triggers = ["baba", "alibaba"]
+    [bang.regions]
+        default = "https://www.alibaba.com/trade/search?SearchText={{{term}}}"
+
+[[bang]]
+    name = "AliExpress"
+    favicon = "https://www.aliexpress.com/favicon.ico"
+    triggers = ["aliexp", "aliexpress", "ali", "ae", ]
+    [bang.regions]
+        default = "https://www.aliexpress.com/wholesale?SearchText={{{term}}}"
+
+[[bang]]
+    name = "AliExpress Mobile"
+    favicon = "https://m.aliexpress.com/img/logo/favicon.ico"
+    triggers = ["alim"]
+    [bang.regions]
+        default = "https://m.aliexpress.com/wholesale/bob.html?keywords={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
