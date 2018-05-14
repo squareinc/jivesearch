@@ -78,6 +78,13 @@
         default = "https://alternativeto.net/software/{{{term}}}"
 
 [[bang]]
+    name = "AMC Networks"
+    favicon = "http://www.amc.com/favicon.ico"
+    triggers = ["amc"]
+    [bang.regions]
+        default = "http://www.amc.com/search#q={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
