@@ -92,6 +92,13 @@
         default = "https://angel.co/search?q={{{term}}}"
 
 [[bang]]
+    name = "Answers"
+    favicon = "https://www.answers.com/favicon.ico"
+    triggers = ["answers"]
+    [bang.regions]
+        default = "https://www.answers.com/search?q={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
