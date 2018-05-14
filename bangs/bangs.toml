@@ -71,6 +71,13 @@
         default = "https://www.allrecipes.com/search/results/?qt=k&wt={{{term}}}&origin=Recipe%20Search%20Results"
 
 [[bang]]
+    name = "alternativeTo"
+    favicon = "https://alternativeto.net/favicon.ico"
+    triggers = ["alto", "altto", "ato", "alt", "alternativeto", "alternative", "a2"]
+    [bang.regions]
+        default = "https://alternativeto.net/software/{{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
