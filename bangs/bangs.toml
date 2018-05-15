@@ -104,7 +104,42 @@
     triggers = ["aol"]
     [bang.regions]
         default = "https://search.aol.com/aol/search?s_chn=prt_bon&q={{{term}}}&s_it=comsearch"
-                   
+
+[[bang]]
+    name = "Apple"
+    favicon = "https://www.apple.com/favicon.ico"
+    triggers = ["apple"]
+    [bang.regions]
+        default = "https://www.apple.com/search/{{{term}}}"
+
+[[bang]]
+    name = "Apple Developer Forums"
+    favicon = "https://www.apple.com/favicon.ico"
+    triggers = ["adf", "appledevforum"]
+    [bang.regions]
+        default = "https://forums.developer.apple.com/search.jspa?q={{{term}}}"
+
+[[bang]]
+    name = "Apple Developer"
+    favicon = "https://www.apple.com/favicon.ico"
+    triggers = ["devapple", "appledev", "cocoa", "adev", "adc"]
+    [bang.regions]
+        default = "https://developer.apple.com/search/?q={{{term}}}"
+
+[[bang]]
+    name = "Apple Discussions"
+    favicon = "https://www.apple.com/favicon.ico"
+    triggers = ["applediscuss"]
+    [bang.regions]
+        default = "https://discussions.apple.com/search.jspa?peopleEnabled=true&userID=&containerType=&container=&spotlight=true&q={{{term}}}"
+
+[[bang]]
+    name = "Apple Support"
+    favicon = "https://www.apple.com/favicon.ico"
+    triggers = ["applesupport"]
+    [bang.regions]
+        default = "https://support.apple.com/kb/index?page=search&q={{{term}}}&product=&doctype=&currentPage=1&includeArchived=false&locale=en_US&src=support_site.kbase.search.searchresults"
+
 [[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
