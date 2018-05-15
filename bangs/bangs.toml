@@ -99,6 +99,13 @@
         default = "https://www.answers.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "Aol"
+    favicon = "https://s.blogsmithmedia.com/www.aol.com/assets-h7f98b93826355b88b8b2513a24166879/images/favicon/favicon-16x16.png?h=adfa9c2f0e5396a0b113422f4cf312aa"
+    triggers = ["aol"]
+    [bang.regions]
+        default = "https://search.aol.com/aol/search?s_chn=prt_bon&q={{{term}}}&s_it=comsearch"
+                   
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
