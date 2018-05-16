@@ -148,6 +148,13 @@
         default = "https://archive.fo/search/?q={{{term}}}"
 
 [[bang]]
+    name = "Ask Ubuntu"
+    favicon = "https://cdn.sstatic.net/Sites/askubuntu/img/favicon.ico"
+    triggers = ["askubnt", "asku", "askubuntu"]
+    [bang.regions]
+        default = "https://askubuntu.com/search?q={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
