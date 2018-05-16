@@ -141,6 +141,13 @@
         default = "https://support.apple.com/kb/index?page=search&q={{{term}}}&product=&doctype=&currentPage=1&includeArchived=false&locale=en_US&src=support_site.kbase.search.searchresults"
 
 [[bang]]
+    name = "Archive.is"
+    favicon = "https://archive.is/favicon.ico"
+    triggers = ["archiveis", "ais"]
+    [bang.regions]
+        default = "https://archive.fo/search/?q={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
@@ -277,6 +284,13 @@
         default = "https://www.instagram.com/explore/tags/{{{term}}}"
 
 [[bang]]
+    name = "Internet Archive"
+    favicon = "https://archive.org/favicon.ico"
+    triggers = ["archive", "iarchive", "archiveweb"]
+    [bang.regions]
+        default = "https://archive.org/search.php?query={{{term}}}"
+
+[[bang]]
     name = "jQuery"
     favicon = "https://jquery.com/jquery-wp-content/themes/jquery.com/i/favicon.ico"
     triggers = ["jquery"]
@@ -401,6 +415,13 @@
     triggers = ["wsj", "wallstreetjournal"]
     [bang.regions]
         default = "https://www.wsj.com/search/term.html?KEYWORDS={{{term}}}&isAdvanced=true&daysback=90d&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch,press,newswire"
+
+[[bang]]
+    name = "Wayback Machine"
+    favicon = "https://web.archive.org/static/images/archive.ico"
+    triggers = ["archived", "wbm", "save", "wayback", "waybackmachine"]
+    [bang.regions]
+        default = "https://web.archive.org/web/*/{{{term}}}"
 
 [[bang]]
     name = "WeatherBug"
