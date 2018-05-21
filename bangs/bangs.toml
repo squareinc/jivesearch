@@ -155,6 +155,13 @@
         default = "https://askubuntu.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "Ask.com"
+    favicon = "http://www.search.ask.com/favicon.ico"
+    triggers = ["ask", "jeeves"]
+    [bang.regions]
+        default = "http://www.search.ask.com/web?q={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
