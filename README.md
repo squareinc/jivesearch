@@ -118,7 +118,7 @@ Follow the instruction to install nginx on :
 
 ##### MusicBrainz
 
-Download MusicBrainz [here](https://picard.musicbrainz.org/downloads/)
+Instructions for MusicBrainz can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd)
 
 <br>
 
