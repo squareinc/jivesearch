@@ -105,5 +105,7 @@ Want to contribute? Great!
 
 Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new [issue](https://github.com/jivesearch/jivesearch/issues/new).
 
+You can also join us in our chatroom at https://discord.gg/cfxQkuh.
+
 ## 📜 Copyright and License
 Code and documentation copyright 2018 the [Jivesearch Authors](https://github.com/jivesearch/jivesearch/graphs/contributors). Code and docs released under the [Apache License](https://github.com/jivesearch/jivesearch/blob/master/LICENSE).
