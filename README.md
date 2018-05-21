@@ -116,9 +116,11 @@ Follow the instruction to install nginx on :
 - [OSX](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
 - [Linux](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
 
+The version we run includes Let's Encrypt and the PageSpeed module. Full instructions can be found [here](https://gist.github.com/brentadamson/b43482a8d07ee222c17457d5e0ff5cf0).
+
 ##### MusicBrainz
 
-Instructions for MusicBrainz can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd)
+Instructions for MusicBrainz can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd).
 
 <br>
 
