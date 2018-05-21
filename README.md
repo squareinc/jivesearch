@@ -70,17 +70,6 @@ $ go get -u github.com/jivesearch/jivesearch
 cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
 ```
 
-
-5. Install dependencies
-
-4. Run the tests
-
-```bash
-cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
-```
-
-
-
 ##### Crawler
 Requires Elasticsearch and Redis.
 
@@ -94,11 +83,6 @@ Requires Elasticsearch and PostgreSQL.
 ```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
 ```
-
-```bash
-cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
-```
-
 
 ##### Wikipedia Dump File
 Requires PostgreSQL.
@@ -123,10 +107,6 @@ The version we run includes Let's Encrypt and the PageSpeed module. Full instruc
 Instructions for MusicBrainz can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd).
 
 <br>
-
-```bash
-cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
-```
 
 
 ## 🚀 **Roadmap** 
