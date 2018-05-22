@@ -74,7 +74,8 @@ func main() {
 		panic(err)
 	}
 
-	for _, image := range images {
+	for i, image := range images {
+		log.Info.Println(i, image.ID)
 		// At some point we should rewrite the Flask server to Go and put it here instead...
 		cl := &http.Client{
 			Timeout: 2 * time.Second,
@@ -83,14 +84,16 @@ func main() {
 		u := "http://localhost:5000/?image=" + image.ID
 		resp, err := cl.Get(u)
 		if err != nil {
-			panic(err)
+			log.Debug.Println(err)
+			continue
 		}
 
 		defer resp.Body.Close()
 
 		bdy, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			panic(err)
+			log.Debug.Println(err)
+			continue
 		}
 
 		image.Crawled = time.Now().Format("20060102")
