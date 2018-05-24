@@ -169,6 +169,13 @@
         default = "https://www.autozone.com/searchresult?searchText={{{term}}}"
 
 [[bang]]
+    name = "AWS Documentation"
+    favicon = "https://aws.amazon.com/favicon.ico"
+    triggers = ["aws"]
+    [bang.regions]
+        default = "https://aws.amazon.com/search/?searchQuery={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
