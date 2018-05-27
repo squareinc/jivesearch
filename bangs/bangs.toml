@@ -183,6 +183,13 @@
         default = "https://www.azfonts.net/search.html?query={{{term}}}"
 
 [[bang]]
+    name = "Baidu"
+    favicon = "https://www.baidu.com/favicon.ico"
+    triggers = ["bd", "baidu"]
+    [bang.regions]
+        default = "https://www.baidu.com/s?wd={{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
