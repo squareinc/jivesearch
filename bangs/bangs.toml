@@ -190,6 +190,13 @@
         default = "https://www.baidu.com/s?wd={{{term}}}"
 
 [[bang]]
+    name = "Barnes & Noble"
+    favicon = "https://www.barnesandnoble.com/favicon.ico"
+    triggers = ["bn", "b&n", "barnesandnoble"]
+    [bang.regions]
+        default = "https://www.barnesandnoble.com/s/{{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
