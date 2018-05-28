@@ -208,7 +208,14 @@
     favicon = "https://www.bedbathandbeyond.com/favicon.ico"
     triggers = ["bbby", "bedbath", "bedbathbeyond"]
     [bang.regions]
-        default = "https://www.bedbathandbeyond.com/store/s/soap{{{term}}}"
+        default = "https://www.bedbathandbeyond.com/store/s/{{{term}}}"
+
+[[bang]]
+    name = "Bell Canada"
+    favicon = "https://www.bell.ca/favicon.ico"
+    triggers = ["bell", "bellcanada"]
+    [bang.regions]
+        default = "https://www.bell.ca/Search?prov=ON&lang=en&q={{{term}}}&mktseg=SHP&ver=W&personal=False&business=False&support=False&pg=1&rscnt=10&facets=&supportLob=&isPageClick=False&referrerValue=shop"
 
 [[bang]]
     name = "AZLyrics"
