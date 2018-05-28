@@ -204,6 +204,13 @@
         default = "https://www.crummy.com/software/BeautifulSoup/bs4/doc/search.html?q={{{term}}}"
 
 [[bang]]
+    name = "Bed Bath & Beyond"
+    favicon = "https://www.bedbathandbeyond.com/favicon.ico"
+    triggers = ["bbby", "bedbath", "bedbathbeyond"]
+    [bang.regions]
+        default = "https://www.bedbathandbeyond.com/store/s/soap{{{term}}}"
+
+[[bang]]
     name = "AZLyrics"
     favicon = "https://www.azlyrics.com/favicon.ico"
     triggers = ["azl", "azlyrics"]
