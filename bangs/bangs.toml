@@ -225,6 +225,20 @@
         default = "https://www.bell.ca/Search?prov=ON&lang=en&q={{{term}}}&mktseg=SHP&ver=W&personal=False&business=False&support=False&pg=1&rscnt=10&facets=&supportLob=&isPageClick=False&referrerValue=shop"
 
 [[bang]]
+    name = "Best Buy"
+    favicon = "https://assets.bbystatic.com/header-footer/images/favicon-32.png"
+    triggers = ["bby", "bestbuy", "bbuy"]
+    [bang.regions]
+        default = "https://www.bestbuy.com/site/searchpage.jsp?st={{{term}}}&_dyncharset=UTF-8&id=pcat17071&type=page&sc=Global&cp=1&nrp=&sp=&qp=&list=n&af=true&iht=y&usc=All+Categories&ks=960&keys=keys"
+
+[[bang]]
+    name = "Best Buy Canada"
+    favicon = "https://static.bbycastatic.ca/favicon.ico"
+    triggers = ["bestbuycanada"]
+    [bang.regions]
+        default = "https://www.bestbuy.ca/en-CA/Search/SearchResults.aspx?query={{{term}}}"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
