@@ -246,6 +246,13 @@
         default = "https://www.bbb.org/en/us/search?find_text={{{term}}}"
 
 [[bang]]
+    name = "Betty Crocker"
+    favicon = "https://www.bettycrocker.com/favicon.ico"
+    triggers = ["bettycrocker", "crocker"]
+    [bang.regions]
+        default = "https://www.bettycrocker.com/search?term={{{term}}}"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
