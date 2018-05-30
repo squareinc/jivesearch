@@ -84,6 +84,23 @@
   </div>
   {{end}}
 
+  {{if .Images}}
+    <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+    <div id="results_container" class="pure-u-1 pure-u-xl-22-24">
+    {{range $i, $img := .Images.Images}}
+    {{$key := $img.ID | HMACKey}}
+    <!--
+      Using an object tag here will hide broken images.
+      https://stackoverflow.com/questions/22051573/how-to-hide-image-broken-icon-using-only-css-html-without-js/37334582
+    -->
+    <a href="/image/225x,s{{$key}}/{{$img.ID}}">
+      <object data="/image/225x,s{{$key}}/{{$img.ID}}" title="{{$img.Alt}}" type="image/jpg"></object>
+    </a>
+
+
+    {{end}}
+    </div>
+  {{else}}
   {{if .Search.Count}}
   <div class="pure-u-1 pure-u-xl-2-24 spacer count"></div>
   <div class="pure-u-1 pure-u-xl-22-24 count">{{.Search.Count | Commafy}} results</div>
@@ -433,7 +450,8 @@
   {{else}}
   <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
   <div id="results_container" class="pure-u-1 pure-u-xl-22-24">{{template "search_results" .}}</div>
-  {{end}}  
+  {{end}}
+{{end}}  
 </div>
 {{else}}
 <div class="pure-g">

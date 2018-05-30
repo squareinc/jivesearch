@@ -20,7 +20,10 @@ func TestNew(t *testing.T) {
 			name: "basic",
 			src:  "http://www.example.com",
 			want: want{
-				img: &Image{ID: "http://www.example.com"},
+				img: &Image{
+					ID:     "http://www.example.com",
+					Domain: "example.com",
+				},
 				err: nil,
 			},
 		},

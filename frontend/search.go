@@ -18,6 +18,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
+	img "github.com/jivesearch/jivesearch/search/image"
 	"github.com/pkg/errors"
 	"golang.org/x/text/language"
 )
@@ -45,6 +46,7 @@ type DefaultBang struct {
 // Results is the results from search, instant, wikipedia, etc
 type Results struct {
 	Alternative string          `json:"alternative"`
+	Images      *img.Results    `json:"images"`
 	Instant     instant.Data    `json:"instant"`
 	Search      *search.Results `json:"search"`
 }
@@ -200,6 +202,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	}
 
 	channels := 1
+	imageCH := make(chan *img.Results)
 	sc := make(chan *search.Results)
 	var ac chan error
 	var ic chan instant.Data
@@ -262,60 +265,96 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	}
 
 	go func(d data, lang language.Tag, region language.Region) {
-		key := cacheKey("search", lang, region, r.URL)
+		switch strings.TrimSpace(r.FormValue("t")) {
+		case "images":
+			key := cacheKey("images", lang, region, r.URL)
 
-		v, err := f.Cache.Get(key)
-		if err != nil {
-			log.Info.Println(err)
-		}
+			v, err := f.Cache.Get(key)
+			if err != nil {
+				log.Info.Println(err)
+			}
 
-		if v != nil {
-			sr := &search.Results{}
-			if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+			if v != nil {
+				sr := &img.Results{}
+				if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+					log.Info.Println(err)
+				}
+
+				imageCH <- sr
+				return
+			}
+
+			offset := d.Context.Page*d.Context.Number - d.Context.Number
+			sr, err := f.Images.Fetch(d.Context.Q, .8, d.Context.Number, offset)
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
+				log.Info.Println(err)
+			}
+
+			imageCH <- sr
+		default:
+			key := cacheKey("search", lang, region, r.URL)
+
+			v, err := f.Cache.Get(key)
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			if v != nil {
+				sr := &search.Results{}
+				if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+					log.Info.Println(err)
+				}
+
+				sc <- sr
+				return
+			}
+
+			// get the votes
+			offset := d.Context.Page*d.Context.Number - d.Context.Number
+			votes, err := f.Vote.Get(d.Context.Q, d.Context.Number*10) // get votes for first 10 pages
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset, votes)
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			for _, doc := range sr.Documents {
+				for _, v := range votes {
+					if doc.ID == v.URL {
+						doc.Votes = v.Votes
+					}
+				}
+			}
+
+			sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
+
+			if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
 				log.Info.Println(err)
 			}
 
 			sc <- sr
-			return
 		}
 
-		// get the votes
-		offset := d.Context.Page*d.Context.Number - d.Context.Number
-		votes, err := f.Vote.Get(d.Context.Q, d.Context.Number*10) // get votes for first 10 pages
-		if err != nil {
-			log.Info.Println(err)
-		}
-
-		sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset, votes)
-		if err != nil {
-			log.Info.Println(err)
-		}
-
-		for _, doc := range sr.Documents {
-			for _, v := range votes {
-				if doc.ID == v.URL {
-					doc.Votes = v.Votes
-				}
-			}
-		}
-
-		sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
-
-		if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
-			log.Info.Println(err)
-		}
-
-		sc <- sr
 	}(d, lang, d.Context.Region)
 
 	stats := struct {
 		autocomplete time.Duration
+		images       time.Duration
 		instant      time.Duration
 		search       time.Duration
 	}{}
 
 	for i := 0; i < channels; i++ {
 		select {
+		case d.Images = <-imageCH:
+			stats.images = time.Since(strt).Round(time.Millisecond)
 		case d.Instant = <-ic:
 			if d.Instant.Err != nil {
 				log.Info.Println(d.Instant.Err)
@@ -335,7 +374,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
-	log.Info.Printf("ac:%v, instant (%v):%v, search:%v\n", stats.autocomplete, d.Instant.Type, stats.instant, stats.search)
+	log.Info.Printf("ac:%v, images: %v, instant (%v):%v, search:%v\n", stats.autocomplete, stats.images, d.Instant.Type, stats.instant, stats.search)
 
 	if r.FormValue("o") == "json" {
 		resp.template = r.FormValue("o")

@@ -29,6 +29,7 @@ import (
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
+	img "github.com/jivesearch/jivesearch/search/image"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/lib/pq"
@@ -89,6 +90,12 @@ func main() {
 			Index:  v.GetString("elasticsearch.search.index"),
 			Type:   v.GetString("elasticsearch.search.type"),
 		},
+	}
+
+	f.Images = &img.ElasticSearch{
+		Client: client,
+		Index:  v.GetString("elasticsearch.images.index"),
+		Type:   v.GetString("elasticsearch.images.type"),
 	}
 
 	// autocomplete & phrase suggestor

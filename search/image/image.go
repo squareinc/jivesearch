@@ -3,17 +3,41 @@ package image
 import (
 	"fmt"
 	"net/url"
+
+	"golang.org/x/net/publicsuffix"
 )
 
 // Image is a link to an image
 type Image struct {
-	ID        string  `json:"id"`
-	Alt       string  `json:"alt,omitempty"`
-	NSFW      float64 `json:"nsfw_score,omitempty"`
-	Copyright string  `json:"copyright,omitempty"`
-	Height    int     `json:"height,omitempty"`
-	Width     int     `json:"width,omitempty"`
-	Crawled   string  `json:"crawled,omitempty"`
+	ID     string  `json:"id"`
+	Domain string  `json:"domain"`
+	Alt    string  `json:"alt,omitempty"`
+	NSFW   float64 `json:"nsfw_score,omitempty"`
+	Width  int     `json:"width,omitempty"`
+	Height int     `json:"height,omitempty"`
+	EXIF
+	Crawled string `json:"crawled,omitempty"`
+}
+
+// EXIF is the metadata of an image
+type EXIF struct {
+	Copyright string `json:"copyright,omitempty"`
+}
+
+// Fetcher outlines the methods used to retrieve the image results
+type Fetcher interface {
+	Fetch(q string, nsfwScore float64, number int, page int) (*Results, error)
+}
+
+// Results are the image results from a query
+type Results struct {
+	Count      int64    `json:"count"`
+	Page       string   `json:"page"`
+	Previous   string   `json:"previous"`
+	Next       string   `json:"next"`
+	Last       string   `json:"last"`
+	Pagination []string `json:"pagination"`
+	Images     []*Image `json:"images"`
 }
 
 var errInvalidURL = fmt.Errorf("invalid url")
@@ -29,5 +53,10 @@ func New(src string) (*Image, error) {
 		return nil, errInvalidURL
 	}
 
-	return &Image{ID: u.String()}, nil
+	dom, err := publicsuffix.EffectiveTLDPlusOne(u.Host)
+	if err != nil {
+		return nil, errInvalidURL
+	}
+
+	return &Image{ID: u.String(), Domain: dom}, nil
 }

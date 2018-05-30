@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/olivere/elastic"
@@ -15,6 +16,54 @@ type ElasticSearch struct {
 	Index  string
 	Type   string
 	Bulk   *elastic.BulkProcessor
+}
+
+// Fetch returns image results for a search query
+func (e *ElasticSearch) Fetch(q string, nsfwScore float64, number int, offset int) (*Results, error) {
+	res := &Results{}
+	qu := fmt.Sprintf(`{
+		"query": {
+		  "bool": {
+				"should": {
+					"multi_match": {
+						"query": "%v",
+						"fields": [
+							"alt"
+						]
+					}
+				},
+				"must": {
+					"range": {
+						"nsfw_score": {
+							"lt": %v
+						}
+					}
+				}
+		  }
+	  },
+	  "from": %d, "size": %d
+	}`, q, nsfwScore, offset, number)
+
+	out, err := e.Client.Search(e.Index).Source(qu).Do(context.TODO())
+	if err != nil {
+		return res, err
+	}
+
+	res.Count = out.TotalHits()
+
+	for _, h := range out.Hits.Hits {
+		img := &Image{
+			ID: h.Id,
+		}
+		err := json.Unmarshal(*h.Source, img)
+		if err != nil {
+			return res, err
+		}
+
+		res.Images = append(res.Images, img)
+	}
+
+	return res, err
 }
 
 // Upsert updates an image link or inserts it if it doesn't exist
@@ -33,26 +82,66 @@ func (e *ElasticSearch) Upsert(img *Image) error {
 }
 
 // Uncrawled finds images that haven't been crawled recently/yet
-func (e *ElasticSearch) Uncrawled(number int) ([]*Image, error) {
+// We also aggregate by domain, which is equivalent to
+// selecting unique domains so that we don't overload a domain.
+// The subaggregation will then return 1 result for each domain.
+func (e *ElasticSearch) Uncrawled(number int, since time.Time) ([]*Image, error) {
+	agg := "by_domain"
+	subAgg := "get_one"
+
 	q := fmt.Sprintf(`{
 		"query": {
-			"bool": {
-				"should": [
+		  "bool": {
+			"should": [
+			  {
+				"bool": {
+				  "must_not": [
 					{
-						"bool": { 
-							"must_not":[{"exists": {"field":"crawled"}}]
+					  "exists": {
+						"field": "crawled"
+					  }
+					}
+				  ]
+				}
+			  },
+			  {
+				"bool": {
+				  "filter": [
+					{
+					  "range": {
+						"crawled": {
+						  "lte": %v
 						}
-					},
-					{
-						"bool":{
-						"filter":[{ "range": {"crawled": {"lte": 19630301}}}]
+					  }
+					}
+				  ]
+				}
+			  }
+			]
+		  }
+		},
+		"aggs": {
+		  "%v": {
+				"terms": {
+					"field": "domain",
+					"size": %v
+				},
+				"aggs": {
+					"%v": {
+						"top_hits": {
+							"_source": {
+							"includes": [
+								"id", "domain", "alt"
+							]
+							},
+							"size": 1
 						}
 					}
-				]
-			}
+				}
+		  }
 		},
-		"size": %v
-	}`, number)
+		"size": 0
+	}`, since.Format("20060102"), agg, number, subAgg)
 
 	images := []*Image{}
 
@@ -61,15 +150,27 @@ func (e *ElasticSearch) Uncrawled(number int) ([]*Image, error) {
 		return images, err
 	}
 
-	for _, h := range res.Hits.Hits {
-		img := &Image{}
-		err := json.Unmarshal(*h.Source, img)
-		if err != nil {
-			return images, err
+	termsAggRes, found := res.Aggregations.Terms(agg)
+	if !found || termsAggRes == nil {
+		return images, fmt.Errorf("aggregation key not found")
+	}
+
+	for _, b := range termsAggRes.Buckets {
+		hits, ok := b.TopHits(subAgg)
+		if !ok {
+			return images, fmt.Errorf("subaggregation key not found")
 		}
 
-		img.ID = h.Id
-		images = append(images, img)
+		for _, h := range hits.Hits.Hits {
+			img := &Image{}
+			err := json.Unmarshal(*h.Source, img)
+			if err != nil {
+				return images, err
+			}
+
+			img.ID = h.Id
+			images = append(images, img)
+		}
 	}
 
 	return images, nil
@@ -105,8 +206,20 @@ func (e *ElasticSearch) mapping() string {
 					"id": {
 						"type": "text"
 					},
+					"domain": {
+						"type": "keyword"
+					},
 					"alt": {
 						"type": "text"
+					},
+					"copyright": {
+						"type": "text"
+					},
+					"width": {
+						"type": "integer"
+					},
+					"height": {
+						"type": "integer"
 					},
 					"nsfw_score": {
 						"type": "double"

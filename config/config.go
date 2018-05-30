@@ -19,6 +19,8 @@ type Provider interface {
 	GetStringSlice(key string) []string
 }
 
+var now = func() time.Time { return time.Now().UTC() }
+
 // SetDefaults configures some default values
 func SetDefaults(cfg Provider) {
 	cfg.SetTypeByDefaultValue(true)
@@ -97,6 +99,11 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("crawler.truncate.title", 100)
 	cfg.SetDefault("crawler.truncate.keywords", 25)
 	cfg.SetDefault("crawler.truncate.description", 250)
+
+	// image nsfw scoring and metadata
+	cfg.SetDefault("nsfw.host", "http://localhost:8080/")
+	cfg.SetDefault("nsfw.workers", 10)
+	cfg.SetDefault("nsfw.since", now().AddDate(0, -1, 0))
 
 	// useragent for fetching api's, images, etc.
 	cfg.SetDefault("useragent", "https://github.com/jivesearch/jivesearch")
