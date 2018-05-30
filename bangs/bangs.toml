@@ -239,6 +239,13 @@
         default = "https://www.bestbuy.ca/en-CA/Search/SearchResults.aspx?query={{{term}}}"
 
 [[bang]]
+    name = "Better Business Bureau"
+    favicon = "https://www.bbb.org/favicon.ico"
+    triggers = ["bbb", "betterbusinessbureau"]
+    [bang.regions]
+        default = "https://www.bbb.org/en/us/search?find_text={{{term}}}"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
