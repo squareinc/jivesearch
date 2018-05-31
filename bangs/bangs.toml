@@ -253,6 +253,62 @@
         default = "https://www.bettycrocker.com/search?term={{{term}}}"
 
 [[bang]]
+    name = "Bible Atlas"
+    favicon = "http://biblehub.net/favicon.ico"
+    triggers = ["bibleatlas", "biblehub", "bhb", "bibhub"]
+    [bang.regions]
+        default = "http://biblehub.net/searchatlas.php?q={{{term}}}"
+
+[[bang]]
+    name = "Bible Study Tools"
+    favicon = "https://www.biblestudytools.com/Content/Images/favicon.ico"
+    triggers = ["bibletools", "biblestudytools"]
+    [bang.regions]
+        default = "https://www.biblestudytools.com/search/?q={{{term}}}"
+
+[[bang]]
+    name = "Bible Study Tools Encyclopedia"
+    favicon = "https://www.biblestudytools.com/Content/Images/favicon.ico"
+    triggers = ["biben"]
+    [bang.regions]
+        default = "https://www.biblestudytools.com/search/?s=references&q={{{term}}}&rc=ENC&rc2="
+
+[[bang]]
+    name = "Bible Study Tools (New International Version)"
+    favicon = "https://www.biblestudytools.com/Content/Images/favicon.ico"
+    triggers = ["niv"]
+    [bang.regions]
+        default = "https://www.biblestudytools.com/search/?q={{{term}}}&s=Bibles&t=niv"
+
+[[bang]]
+    name = "Bible.com"
+    favicon = "https://www.bible.com/favicon.ico"
+    triggers = ["verse"]
+    [bang.regions]
+        default = "https://www.bible.com/search/bible?q={{{term}}}"
+
+[[bang]]
+    name = "BibleForums.Org"
+    favicon = "http://bibleforums.org/favicon.ico"
+    triggers = ["sbg"]
+    [bang.regions]
+        default = "http://bibleforums.org/search.php?s={{{term}}}"
+
+[[bang]]
+    name = "BibleGateway"
+    favicon = "https://www.biblegateway.com/favicon.ico"
+    triggers = ["bible", "bg", "bgw", "biblegateway"]
+    [bang.regions]
+        default = "https://www.biblegateway.com/quicksearch/?search={{{term}}}&searchtype=all"
+
+[[bang]]
+    name = "BibleServer"
+    favicon = "https://www.bibleserver.com/favicon.ico"
+    triggers = ["biblsrv", "elb", "bibleserver", "lut"]
+    [bang.regions]
+        default = "https://www.bibleserver.com/search/LUT/{{{term}}}/1"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
