@@ -14,6 +14,10 @@ func TestSetDefaults(t *testing.T) {
 		m: map[string]interface{}{},
 	}
 
+	now = func() time.Time {
+		return time.Date(2018, 02, 06, 20, 34, 58, 651387237, time.UTC)
+	}
+
 	SetDefaults(cfg)
 
 	values := []struct {
@@ -74,7 +78,13 @@ func TestSetDefaults(t *testing.T) {
 		{"crawler.truncate.keywords", 25},
 		{"crawler.truncate.description", 250},
 
+		// useragent for fetching api's, images, etc.
 		{"useragent", "https://github.com/jivesearch/jivesearch"},
+
+		// image nsfw scoring and metadata
+		{"nsfw.host", "http://localhost:8080/"},
+		{"nsfw.workers", 10},
+		{"nsfw.since", time.Date(2018, 01, 06, 20, 34, 58, 651387237, time.UTC)},
 
 		// stackoverflow API settings
 		{"stackoverflow.key", "app key"},

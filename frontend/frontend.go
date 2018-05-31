@@ -15,6 +15,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
+	img "github.com/jivesearch/jivesearch/search/image"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/oxtoacart/bpool"
@@ -34,6 +35,7 @@ type Frontend struct {
 	*instant.Instant
 	Suggest suggest.Suggester
 	Search  search.Fetcher
+	Images  img.Fetcher
 	Wikipedia
 	Vote vote.Voter
 	GitHub
