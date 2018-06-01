@@ -309,6 +309,13 @@
         default = "https://www.bibleserver.com/search/LUT/{{{term}}}/1"
 
 [[bang]]
+    name = "Big Fish Games"
+    favicon = "https://www.bigfishgames.com/favicon.ico"
+    triggers = ["bigfish", "bigfishgames"]
+    [bang.regions]
+        default = "https://www.bigfishgames.com/games/search/?type=pc&search={{{term}}}"
+
+[[bang]]
     name = "Bing"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["b", "bing"]
