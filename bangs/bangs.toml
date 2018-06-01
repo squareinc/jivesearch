@@ -323,6 +323,13 @@
         default = "https://www.bing.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "Bing GIFs"
+    favicon = "https://www.bing.com/favicon.ico"
+    triggers = ["binggif", "binggifs"]
+    [bang.regions]
+        default = "https://www.bing.com/images/search?&q={{{term}}}&qft=+filterui:photo-animatedgif&FORM=R5IR25"
+
+[[bang]]
     name = "Bing Images"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["bi", "bingimages"]
