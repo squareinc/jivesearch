@@ -438,6 +438,13 @@
         default = "https://www.google.com/maps?hl=en&q={{{term}}}"
 
 [[bang]]
+    name = "Google News"
+    favicon = "https://www.google.com/favicon.ico"
+    triggers = ["gn", "gnews", "googlenews"]
+    [bang.regions]
+        default = "https://news.google.com/search?q={{{term}}}&hl=en-US&gl=US&ceid=US:en"
+
+[[bang]]
     name = "Google Russia"
     favicon = "https://www.google.com/favicon.ico"
     triggers = ["gru", "googleru"]
