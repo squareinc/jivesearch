@@ -332,9 +332,16 @@
 [[bang]]
     name = "Bing Images"
     favicon = "https://www.bing.com/favicon.ico"
-    triggers = ["bi", "bingimages"]
+    triggers = ["bi", "bim", "bimages", "bingimages"]
     [bang.regions]
         default = "https://www.bing.com/images/search?q={{{term}}}"
+
+[[bang]]
+    name = "Bing Maps"
+    favicon = "https://www.bing.com/favicon.ico"
+    triggers = ["bm", "bingmaps", "bmaps"]
+    [bang.regions]
+        default = "https://www.bing.com/maps/?q={{{term}}}&obox=1"
 
 [[bang]]
     name = "Bing Videos"
