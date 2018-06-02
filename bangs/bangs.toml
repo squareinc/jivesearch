@@ -431,6 +431,13 @@
         default = "https://www.google.com/search?q={{{term}}}&source=lnms&tbm=isch"
 
 [[bang]]
+    name = "Google Maps"
+    favicon = "https://www.google.com/favicon.ico"
+    triggers = ["gm", "googlemaps", "gmap", "gmaps"]
+    [bang.regions]
+        default = "https://www.google.com/maps?hl=en&q={{{term}}}"
+
+[[bang]]
     name = "Google Russia"
     favicon = "https://www.google.com/favicon.ico"
     triggers = ["gru", "googleru"]
