@@ -466,6 +466,13 @@
         default = "https://translate.google.com/#auto/en/{{{term}}}"
 
 [[bang]]
+    name = "Google Videos"
+    favicon = "https://www.google.com/favicon.ico"
+    triggers = ["gv", "gvideo", "gvideos", "googlevideos"]
+    [bang.regions]
+        default = "https://www.google.com/search?tbm=vid&q={{{term}}}"
+
+[[bang]]
     name = "Hacker News"
     favicon = "https://news.ycombinator.com/favicon.ico"
     triggers = ["hn", "hackernews"]
