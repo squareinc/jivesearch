@@ -356,6 +356,13 @@
     triggers = ["bv", "bingvideo", "bingvideos", "bvideo", "bvideos"]
     [bang.regions]
         default = "https://www.bing.com/videos/search?q={{{term}}}"
+
+[[bang]]
+    name = "Bing Weather"
+    favicon = "https://www.bing.com/favicon.ico"
+    triggers = ["bw", "bingweather", "bweather"]
+    [bang.regions]
+        default = "https://www.bing.com/search?q={{{term}}}&q=weather"
     
 [[bang]]
     name = "Bitbucket"
