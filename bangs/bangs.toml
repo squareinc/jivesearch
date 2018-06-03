@@ -452,6 +452,13 @@
         default = "https://news.google.com/search?q={{{term}}}&hl=en-US&gl=US&ceid=US:en"
 
 [[bang]]
+    name = "Google Reverse Image Search"
+    favicon = "https://www.google.com/favicon.ico"
+    triggers = ["gri", "rgi"]
+    [bang.regions]
+        default = "https://www.google.com/searchbyimage?image_url={{{term}}}&btnG=Search+by+image&encoded_image=&image_content=&filename=&hl=en"
+
+[[bang]]
     name = "Google Russia"
     favicon = "https://www.google.com/favicon.ico"
     triggers = ["gru", "googleru"]
