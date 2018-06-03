@@ -351,6 +351,13 @@
         default = "https://www.bing.com/news/search?q={{{term}}}"
 
 [[bang]]
+    name = "Bing Reverse Image Search"
+    favicon = "https://www.bing.com/favicon.ico"
+    triggers = ["bir", "bri"]
+    [bang.regions]
+        default = "https://www.bing.com/images/search?q=imgurl:{{{term}}}&view=detailv2&iss=sbi&FORM=IRSBIQ#enterInsights"
+
+[[bang]]
     name = "Bing Videos"
     favicon = "https://www.bing.com/favicon.ico"
     triggers = ["bv", "bingvideo", "bingvideos", "bvideo", "bvideos"]

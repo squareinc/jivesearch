@@ -196,6 +196,8 @@ def download_models():
 @route('/')
 def index():
   print(request.query.image)
+  response.content_type = 'application/json'
+
   try:
     image_data = requests.get(request.query.image).content
     im = Image.open(StringIO(str(image_data)))
@@ -222,7 +224,6 @@ def index():
   d["classification"] = classification
   d["mime"] = magic.from_buffer(image_data, mime=True)
 
-  response.content_type = 'application/json'
   try:
     return dumps(d)
   except Exception, e:
