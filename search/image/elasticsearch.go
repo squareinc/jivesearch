@@ -215,6 +215,9 @@ func (e *ElasticSearch) mapping() string {
 					"copyright": {
 						"type": "text"
 					},
+					"mime": {
+						"type": "keyword"
+					},
 					"width": {
 						"type": "integer"
 					},
@@ -227,6 +230,11 @@ func (e *ElasticSearch) mapping() string {
 					"crawled": {
 						"type": "date",
 						"format": "basic_date"
+					},
+					"classification": {
+					  "type": "object",
+						"dynamic": "true", 
+						"enabled": "true"
 					}
 				}
 			}

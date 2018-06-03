@@ -16,10 +16,13 @@ type Image struct {
 	Width  int     `json:"width,omitempty"`
 	Height int     `json:"height,omitempty"`
 	EXIF
-	Crawled string `json:"crawled,omitempty"`
+	Classification map[string]float64 `json:"classification,omitempty"`
+	MIME           string             `json:"mime,omitempty"`
+	Crawled        string             `json:"crawled,omitempty"`
 }
 
 // EXIF is the metadata of an image
+// What other fields do we need???
 type EXIF struct {
 	Copyright string `json:"copyright,omitempty"`
 }

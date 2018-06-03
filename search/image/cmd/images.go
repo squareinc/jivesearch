@@ -177,7 +177,9 @@ func (c *conf) fetchImage(i *img.Image) (*img.Image, error) {
 		i.NSFW = im.NSFW
 		i.Width = im.Width
 		i.Height = im.Height
+		i.MIME = im.MIME
 		i.EXIF = im.EXIF
+		i.Classification = im.Classification
 	}
 
 	return i, err
