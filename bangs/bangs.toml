@@ -370,6 +370,13 @@
     triggers = ["bw", "bingweather", "bweather"]
     [bang.regions]
         default = "https://www.bing.com/search?q={{{term}}}&q=weather"
+
+[[bang]]
+    name = "Biography"
+    favicon = "https://www.biography.com/.image/MTQ3NTAwNDUzNjQ5NzIwODE0/favicon-32x32.png"
+    triggers = ["bio", "biography"]
+    [bang.regions]
+        default = "https://www.biography.com/search?query={{{term}}}"
     
 [[bang]]
     name = "Bitbucket"
