@@ -393,6 +393,13 @@
         default = "https://bitbucket.org/{{{term}}}/"
 
 [[bang]]
+    name = "Bitcoin Wiki"
+    favicon = "https://en.bitcoin.it/favicon.ico"
+    triggers = ["bcwiki", "bitcoinwiki"]
+    [bang.regions]
+        default = "https://en.bitcoin.it/w/index.php?title=Special%3ASearch&search={{{term}}}/"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
