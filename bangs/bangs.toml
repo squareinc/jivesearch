@@ -386,6 +386,13 @@
         default = "https://bitbucket.org/repo/all/?name={{{term}}}"
 
 [[bang]]
+    name = "Bitbucket User"
+    favicon = "https://bitbucket.org/favicon.ico"
+    triggers = ["bbus"]
+    [bang.regions]
+        default = "https://bitbucket.org/{{{term}}}/"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
