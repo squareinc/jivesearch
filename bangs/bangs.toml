@@ -407,6 +407,13 @@
         default = "https://blockchain.info/search?search={{{term}}}/"
 
 [[bang]]
+    name = "Bloomberg"
+    favicon = "https://assets.bwbx.io/s3/javelin/public/hub/images/favicon-black-12c7d129b0.png"
+    triggers = ["bloomberg", "blmb", "bloom"]
+    [bang.regions]
+        default = "https://www.bloomberg.com/search?query={{{term}}}/"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
