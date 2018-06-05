@@ -400,6 +400,13 @@
         default = "https://en.bitcoin.it/w/index.php?title=Special%3ASearch&search={{{term}}}/"
 
 [[bang]]
+    name = "Blockchain"
+    favicon = "https://www.blockchain.com/favicon.ico"
+    triggers = ["blockchain", "bc", "bitcoin", "bchain", "btcaddr", "btc"]
+    [bang.regions]
+        default = "https://blockchain.info/search?search={{{term}}}/"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
