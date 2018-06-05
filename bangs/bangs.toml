@@ -414,6 +414,13 @@
         default = "https://www.bloomberg.com/search?query={{{term}}}/"
 
 [[bang]]
+    name = "Blue Letter Bible"
+    favicon = "https://www.blueletterbible.org/favicon.ico"
+    triggers = ["blb", "blueletter", "blueletterbible"]
+    [bang.regions]
+        default = "https://www.blueletterbible.org/search/search.cfm?Criteria={{{term}}}&t=KJV#s=s_primary_0_1/"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
