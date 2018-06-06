@@ -421,6 +421,13 @@
         default = "https://docs.blender.org/api/current/search.html?q={{{term}}}"
 
 [[bang]]
+    name = "Blender Current API"
+    favicon = "https://www.blender.org/favicon.ico"
+    triggers = ["blendapi"]
+    [bang.regions]
+        default = "https://docs.blender.org/api/blender_python_api_current/search.html?q={{{term}}}"
+
+[[bang]]
     name = "Blockchain"
     favicon = "https://www.blockchain.com/favicon.ico"
     triggers = ["blockchain", "bc", "bitcoin", "bchain", "btcaddr", "btc"]
