@@ -435,6 +435,13 @@
         default = "https://docs.blender.org/manual/en/dev/search.html?check_keywords=yes&q={{{term}}}"
 
 [[bang]]
+    name = "Body & Fit"
+    favicon = "https://www.bodyenfitshop.nl/favicon.ico"
+    triggers = ["bodyfit"]
+    [bang.regions]
+        default = "https://www.bodyenfitshop.nl/#twn|?tn_q={{{term}}}"
+
+[[bang]]
     name = "Blockchain"
     favicon = "https://www.blockchain.com/favicon.ico"
     triggers = ["blockchain", "bc", "bitcoin", "bchain", "btcaddr", "btc"]
