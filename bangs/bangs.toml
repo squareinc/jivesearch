@@ -407,6 +407,13 @@
         default = "https://btdb.to/q/{{{term}}}/"
 
 [[bang]]
+    name = "BitTrust"
+    favicon = "http://bittrust.org/assets/img/favicon.ico"
+    triggers = ["bittrust"]
+    [bang.regions]
+        default = "http://bittrust.org/search#stq={{{term}}}"
+
+[[bang]]
     name = "Blockchain"
     favicon = "https://www.blockchain.com/favicon.ico"
     triggers = ["blockchain", "bc", "bitcoin", "bchain", "btcaddr", "btc"]
