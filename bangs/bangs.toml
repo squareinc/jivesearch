@@ -400,6 +400,13 @@
         default = "https://en.bitcoin.it/w/index.php?title=Special%3ASearch&search={{{term}}}/"
 
 [[bang]]
+    name = "BitTorrent Database"
+    favicon = "https://btdb.to/favicon.ico"
+    triggers = ["btdb", "bittorrentdatabase"]
+    [bang.regions]
+        default = "https://btdb.to/q/{{{term}}}/"
+
+[[bang]]
     name = "Blockchain"
     favicon = "https://www.blockchain.com/favicon.ico"
     triggers = ["blockchain", "bc", "bitcoin", "bchain", "btcaddr", "btc"]
