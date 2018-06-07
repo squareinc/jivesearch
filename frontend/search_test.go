@@ -18,6 +18,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
+	"github.com/jivesearch/jivesearch/search/image"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
@@ -235,10 +236,12 @@ func TestSearchHandler(t *testing.T) {
 		language string
 		query    string
 		output   string
+		t        string
+		safe     string
 		want     *response
 	}{
 		{
-			"empty", "en", "", "",
+			"empty", "en", "", "", "", "true",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -248,7 +251,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"basic", "en", " some query ", "",
+			"basic", "en", " some query ", "", "", "false",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -262,6 +265,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						Safe:         false,
 					},
 					Results: Results{
 						Instant: mockInstantAnswer,
@@ -271,7 +275,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"not cached", "en", "not cached", "",
+			"not cached", "en", "not cached", "", "", "true",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -285,6 +289,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						Safe:         true,
 					},
 					Results: Results{
 						Instant: mockInstantAnswer,
@@ -294,7 +299,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"json", "en", " some query", "json",
+			"json", "en", " some query", "json", "", "true",
 			&response{
 				status:   http.StatusOK,
 				template: "json",
@@ -308,6 +313,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						Safe:         true,
 					},
 					Results: Results{
 						Instant: mockInstantAnswer,
@@ -317,10 +323,35 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"!bang", "", "!g something", "",
+			"!bang", "", "!g something", "", "", "true",
 			&response{
 				status:   http.StatusFound,
 				redirect: "https://encrypted.google.com/search?hl=en&q=something",
+			},
+		},
+		{
+			"images", "en", "some query", "", "images", "true",
+			&response{
+				status:   http.StatusOK,
+				template: "search",
+				data: data{
+					Brand: Brand{},
+					Context: Context{
+						Q:            "some query",
+						L:            "en",
+						DefaultBangs: db,
+						Preferred:    []language.Tag{language.MustParse("en")},
+						Region:       language.MustParseRegion("US"),
+						Number:       25,
+						Page:         1,
+						Safe:         true,
+						T:            "images",
+					},
+					Results: Results{
+						Images: mockImageResults,
+						Search: &search.Results{},
+					},
+				},
 			},
 		},
 	} {
@@ -344,6 +375,7 @@ func TestSearchHandler(t *testing.T) {
 				},
 				Suggest: &mockSuggester{},
 				Search:  &mockSearch{},
+				Images:  &mockImages{},
 				Wikipedia: Wikipedia{
 					Matcher: matcher,
 				},
@@ -362,6 +394,8 @@ func TestSearchHandler(t *testing.T) {
 			q.Add("q", c.query)
 			q.Add("l", c.language)
 			q.Add("o", c.output)
+			q.Add("t", c.t)
+			q.Add("safe", c.safe)
 			req.URL.RawQuery = q.Encode()
 
 			got := f.searchHandler(httptest.NewRecorder(), req)
@@ -410,16 +444,13 @@ func TestDetectType(t *testing.T) {
 type mockSearch struct{}
 
 func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, page int, number int, votes []vote.Result) (*search.Results, error) {
-	r := &search.Results{
-		Count:      int64(25),
-		Page:       "1",
-		Next:       "2",
-		Last:       "72",
-		Pagination: []string{"2", "3", "4", "5"},
-		Documents:  []*document.Document{},
-	}
+	return mockSearchResults, nil
+}
 
-	return r, nil
+type mockImages struct{}
+
+func (i *mockImages) Fetch(q string, safe bool, number int, offset int) (*image.Results, error) {
+	return mockImageResults, nil
 }
 
 type mockCacher struct{}
@@ -483,4 +514,14 @@ var mockSearchResults = &search.Results{
 	Last:       "72",
 	Pagination: []string{"1"},
 	Documents:  []*document.Document{},
+}
+
+var mockImageResults = &image.Results{
+	Count:      int64(25),
+	Page:       "1",
+	Previous:   "",
+	Next:       "2",
+	Last:       "72",
+	Pagination: []string{"1"},
+	Images:     []*image.Image{},
 }

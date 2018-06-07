@@ -12,37 +12,64 @@ import (
 
 // ElasticSearch hold connection and index settings
 type ElasticSearch struct {
-	Client *elastic.Client
-	Index  string
-	Type   string
-	Bulk   *elastic.BulkProcessor
+	Client        *elastic.Client
+	Index         string
+	Type          string
+	Bulk          *elastic.BulkProcessor
+	NSFWThreshold float64
 }
 
 // Fetch returns image results for a search query
-func (e *ElasticSearch) Fetch(q string, nsfwScore float64, number int, offset int) (*Results, error) {
+func (e *ElasticSearch) Fetch(q string, safe bool, number int, offset int) (*Results, error) {
 	res := &Results{}
+
+	var safeQuery string
+
+	switch safe {
+	case false:
+		safeQuery = fmt.Sprintf(`"gte": %v`, e.NSFWThreshold)
+	default:
+		safeQuery = fmt.Sprintf(`"lt": %v`, e.NSFWThreshold)
+	}
+
 	qu := fmt.Sprintf(`{
 		"query": {
-		  "bool": {
-				"should": {
-					"multi_match": {
-						"query": "%v",
-						"fields": [
-							"alt"
+			"function_score": {
+				"query": {
+					"bool": {
+						"should": [
+							{
+								"multi_match": {
+									"query": "%v",
+									"fields": [
+										"alt"
+									]
+								}
+							}
+						],
+						"must": [
+							{
+								"range": {
+									"nsfw_score": {
+										%v
+									}
+								}
+							}
 						]
 					}
 				},
-				"must": {
-					"range": {
-						"nsfw_score": {
-							"lt": %v
-						}
-					}
-				}
-		  }
-	  },
-	  "from": %d, "size": %d
-	}`, q, nsfwScore, offset, number)
+				"field_value_factor": {
+					"field": "classification.%v",
+					"modifier": "log1p",
+					"missing": 0.0,
+					"factor": 2
+				},
+				"boost_mode": "sum"
+			}
+		},
+		"from": %d,
+		"size": %d
+	}`, q, safeQuery, q, offset, number)
 
 	out, err := e.Client.Search(e.Index).Source(qu).Do(context.TODO())
 	if err != nil {
@@ -225,7 +252,8 @@ func (e *ElasticSearch) mapping() string {
 						"type": "integer"
 					},
 					"nsfw_score": {
-						"type": "double"
+						"type": "scaled_float",
+						"scaling_factor": 100
 					},
 					"crawled": {
 						"type": "date",

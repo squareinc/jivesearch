@@ -66,6 +66,23 @@
   </div>
   <div class="pure-u-1 pure-u-xl-22-24">
     {{template "search_form" .}}
+    <div class="pure-u-1" style="margin-bottom:-8px;font-size:16px;color:#444;cursor:pointer;">
+      <div class="navbar">
+        <span id="all" {{if eq $context.T "images"}}class="nav"{{else}}class="nav_selected"{{end}} style="margin-right:20px;">All</span>
+        <span id="images" {{if eq $context.T "images"}}class="nav_selected"{{else}}class="nav"{{end}} style="margin-right:20px;">Images</span>
+        <div id="safesearch" style="float:right;">
+          <button id="safesearchbtn">SafeSearch <span id="safesearch_selection">{{if eq $context.Safe true}}On{{else}}Off{{end}}</span></button>
+          <div id="safesearch-content">
+            <label id="safesearch-content-label" for="safe">
+              <input id="safe" type="checkbox" {{if eq $context.Safe true}}checked="checked"{{end}}> Turn on Safe Search
+            </label>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="pure-u-1" style="margin-bottom:5px;">
+    <hr style="border:1px solid #e3e3e3;">
   </div>
 
   {{if .Context.DefaultBangs}}
@@ -85,8 +102,7 @@
   {{end}}
 
   {{if .Images}}
-    <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
-    <div id="results_container" class="pure-u-1 pure-u-xl-22-24">
+    <div class="pure-u-1">
     {{range $i, $img := .Images.Images}}
     {{$key := $img.ID | HMACKey}}
     <!--
@@ -96,8 +112,6 @@
     <a href="/image/225x,s{{$key}}/{{$img.ID}}">
       <object data="/image/225x,s{{$key}}/{{$img.ID}}" title="{{$img.Alt}}" type="image/jpg"></object>
     </a>
-
-
     {{end}}
     </div>
   {{else}}

@@ -18,7 +18,7 @@ type OpenWeatherMap struct {
 var OpenWeatherMapProvider provider = "OpenWeatherMap"
 
 type owmCurrent struct {
-	*owmInstant
+	*OwmInstant
 	Coord struct {
 		Lon float64 `json:"lon"`
 		Lat float64 `json:"lat"`
@@ -35,7 +35,7 @@ type owmForecast struct {
 	Message float64 `json:"message"`
 	Cnt     int     `json:"cnt"`
 	List    []struct {
-		*owmInstant
+		*OwmInstant
 	} `json:"list"`
 	City struct {
 		ID    int    `json:"id"`
@@ -49,7 +49,7 @@ type owmForecast struct {
 	DtTxt string `json:"dt_txt"` // only forecast data has this
 }
 
-type owmInstant struct {
+type OwmInstant struct {
 	Instant *Instant
 	Dt      int64 `json:"dt"`
 	Main    struct {
@@ -202,7 +202,7 @@ func (o *OpenWeatherMap) fetchCurrentAndForecast(currentURL, forecastURL string)
 	return w, nil
 }
 
-func (i *owmInstant) instant() (*owmInstant, error) {
+func (i *OwmInstant) instant() (*OwmInstant, error) {
 	i.Instant = &Instant{
 		Date:        time.Unix(i.Dt, 0).In(time.UTC),
 		Temperature: int(i.Main.Temp + 0.5),
@@ -225,7 +225,7 @@ func (i *owmInstant) instant() (*owmInstant, error) {
 	return i, nil
 }
 
-func (i *owmInstant) convertCode(id int) error {
+func (i *OwmInstant) convertCode(id int) error {
 	// convert OpenWeatherMap code to a weatherCode
 	// http://openweathermap.org/weather-conditions
 	switch {

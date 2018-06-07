@@ -456,17 +456,17 @@ var shaqWikidata = &Wikidata{
 var italyRawJSON = []byte(fmt.Sprintf(`{"type": "item", "id": "Q38", "claims": %v}`, italyRawClaims))
 
 var italyClaims = &Claims{ // coordinate not implemented yet
-/*
-	Coordinate: []Coordinate{
-		Coordinate{
-			Latitude:  []float64{float64(43)},
-			Longitude: []float64{float64(12)},
-			Altitude:  []float64{float64(1)},
-			Precision: []float64{float64(1)},
-			Globe:     []Wikidata{Wikidata{ID: "Q2"}},
+	/*
+		Coordinate: []Coordinate{
+			Coordinate{
+				Latitude:  []float64{float64(43)},
+				Longitude: []float64{float64(12)},
+				Altitude:  []float64{float64(1)},
+				Precision: []float64{float64(1)},
+				Globe:     []Wikidata{Wikidata{ID: "Q2"}},
+			},
 		},
-	},
-*/
+	*/
 }
 
 func TestWikiData_UnmarshalJSON(t *testing.T) {

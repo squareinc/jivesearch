@@ -93,9 +93,10 @@ func main() {
 	}
 
 	f.Images = &img.ElasticSearch{
-		Client: client,
-		Index:  v.GetString("elasticsearch.images.index"),
-		Type:   v.GetString("elasticsearch.images.type"),
+		Client:        client,
+		Index:         v.GetString("elasticsearch.images.index"),
+		Type:          v.GetString("elasticsearch.images.type"),
+		NSFWThreshold: .80,
 	}
 
 	// autocomplete & phrase suggestor

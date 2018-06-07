@@ -248,6 +248,6 @@ with tf.gfile.FastGFile(os.path.join(
   _ = tf.import_graph_def(graph_def, name='')
 
 if __name__ == '__main__':
-  p = 8080
+  p = int(os.environ.get('NSFW_PORT','8080'))
   print('Serving on ', p)
   run(host='localhost', port=p, server='gunicorn')

@@ -30,6 +30,8 @@ type Context struct {
 	L            string          `json:"-"`
 	R            string          `json:"-"`
 	N            string          `json:"-"`
+	T            string          `json:"-"`
+	Safe         bool            `json:"-"`
 	DefaultBangs []DefaultBang   `json:"-"`
 	Preferred    []language.Tag  `json:"-"`
 	Region       language.Region `json:"-"`
@@ -160,6 +162,11 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		return resp
 	}
 
+	safe, err := strconv.ParseBool(strings.TrimSpace(r.FormValue("safe")))
+	if err != nil {
+		safe = true
+	}
+
 	d := data{
 		f.Brand,
 		Context{
@@ -167,6 +174,8 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			L:            strings.TrimSpace(r.FormValue("l")),
 			N:            strings.TrimSpace(r.FormValue("n")),
 			R:            strings.TrimSpace(r.FormValue("r")),
+			T:            strings.TrimSpace(r.FormValue("t")),
+			Safe:         safe,
 			DefaultBangs: f.defaultBangs(r),
 		},
 		Results{
@@ -189,7 +198,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	// Let's get them their results
 	// what page are they on? Give them first page by default
-	var err error
 	d.Context.Page, err = strconv.Atoi(strings.TrimSpace(r.FormValue("p")))
 	if err != nil || d.Context.Page < 1 {
 		d.Context.Page = 1
@@ -210,62 +218,64 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	strt := time.Now() // we already have total response time in nginx...we want the breakdown
 
 	if d.Context.Page == 1 {
-		channels += 2
+		channels++
 
 		ac = make(chan error)
-		ic = make(chan instant.Data)
-
 		go func(q string, ch chan error) {
 			ch <- f.addQuery(q)
 		}(d.Context.Q, ac)
 
-		go func(r *http.Request) {
-			lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
-			key := cacheKey("instant", lang, f.detectRegion(lang, r), r.URL)
+		if d.Context.T != "images" {
+			channels++
+			ic = make(chan instant.Data)
+			go func(r *http.Request) {
+				lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
+				key := cacheKey("instant", lang, f.detectRegion(lang, r), r.URL)
 
-			v, err := f.Cache.Get(key)
-			if err != nil {
-				log.Info.Println(err)
-			}
-
-			if v != nil {
-				ir := &Instant{
-					instant.Data{},
-				}
-
-				if err := json.Unmarshal(v.([]byte), &ir); err != nil {
+				v, err := f.Cache.Get(key)
+				if err != nil {
 					log.Info.Println(err)
 				}
 
-				ic <- ir.Data
-				return
-			}
+				if v != nil {
+					ir := &Instant{
+						instant.Data{},
+					}
 
-			res := f.Instant.Detect(r, lang)
+					if err := json.Unmarshal(v.([]byte), &ir); err != nil {
+						log.Info.Println(err)
+					}
 
-			if res.Cache {
-				var d = f.Cache.Instant
-
-				switch res.Type {
-				case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
-					d = 1 * time.Minute
+					ic <- ir.Data
+					return
 				}
 
-				if d > f.Cache.Instant {
-					d = f.Cache.Instant
+				res := f.Instant.Detect(r, lang)
+
+				if res.Cache {
+					var d = f.Cache.Instant
+
+					switch res.Type {
+					case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
+						d = 1 * time.Minute
+					}
+
+					if d > f.Cache.Instant {
+						d = f.Cache.Instant
+					}
+
+					if err := f.Cache.Put(key, res, d); err != nil {
+						log.Info.Println(err)
+					}
 				}
 
-				if err := f.Cache.Put(key, res, d); err != nil {
-					log.Info.Println(err)
-				}
-			}
-
-			ic <- res
-		}(r)
+				ic <- res
+			}(r)
+		}
 	}
 
 	go func(d data, lang language.Tag, region language.Region) {
-		switch strings.TrimSpace(r.FormValue("t")) {
+		switch d.Context.T {
 		case "images":
 			key := cacheKey("images", lang, region, r.URL)
 
@@ -284,8 +294,9 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 				return
 			}
 
-			offset := d.Context.Page*d.Context.Number - d.Context.Number
-			sr, err := f.Images.Fetch(d.Context.Q, .8, d.Context.Number, offset)
+			num := 100
+			offset := d.Context.Page*num - num
+			sr, err := f.Images.Fetch(d.Context.Q, d.Context.Safe, num, offset) // .8 is Yahoo's open_nsfw cutoff for nsfw
 			if err != nil {
 				log.Info.Println(err)
 			}

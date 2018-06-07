@@ -20,9 +20,9 @@ func TestFetch(t *testing.T) {
 	for _, c := range []struct {
 		name   string
 		query  string
-		nsfw   float64
+		safe   bool
 		number int
-		page   int
+		offset int
 		status int
 		resp   string
 		want
@@ -30,9 +30,9 @@ func TestFetch(t *testing.T) {
 		{
 			name:   "basic",
 			query:  "Bob Dylan",
-			nsfw:   0.62,
+			safe:   true,
 			number: 25,
-			page:   1,
+			offset: 1,
 			status: http.StatusOK,
 			resp: `{
 				"took": 2,
@@ -127,7 +127,7 @@ func TestFetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			got, err := e.Fetch(c.query, c.nsfw, c.number, c.page)
+			got, err := e.Fetch(c.query, c.safe, c.number, c.offset)
 			if err != c.want.err {
 				t.Fatalf("got err %q; want %q", err, c.want.err)
 			}

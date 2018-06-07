@@ -210,7 +210,7 @@ func TestConvertCode(t *testing.T) {
 		{951, Windy},
 	} {
 		t.Run(string(tt.c), func(t *testing.T) {
-			r := &owmInstant{
+			r := &OwmInstant{
 				Instant: &Instant{},
 			}
 

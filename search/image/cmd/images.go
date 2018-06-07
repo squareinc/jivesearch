@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -74,9 +75,10 @@ func main() {
 		panic(err)
 	}
 
+	bulkActions := 1000
 	bulk, err := client.BulkProcessor().
 		After(afterFn).
-		//BulkActions().
+		BulkActions(bulkActions).
 		Do(context.Background())
 
 	if err != nil {
@@ -117,7 +119,7 @@ func main() {
 			panic(err)
 		}
 
-		if len(images) == 0 {
+		if len(images) < 100 { // otherwise will keep crawling same links even w/ a manual flush & refresh.
 			break
 		}
 
@@ -174,13 +176,33 @@ func (c *conf) fetchImage(i *img.Image) (*img.Image, error) {
 			return i, err
 		}
 
-		i.NSFW = im.NSFW
+		i.NSFW = math.Round(im.NSFW/.0001) / 10000
 		i.Width = im.Width
 		i.Height = im.Height
 		i.MIME = im.MIME
 		i.EXIF = im.EXIF
-		i.Classification = im.Classification
+		i.Classification = separateKeys(im.Classification)
 	}
 
 	return i, err
+}
+
+// separateKeys turns "punching bag, punch bag" to 2 items
+// In case of duplicate keys we take that with highest value
+func separateKeys(c map[string]float64) map[string]float64 {
+	m := map[string]float64{}
+	for key, val := range c {
+		rounded := math.Round(val/.001) / 1000
+		for _, s := range strings.Split(key, ",") {
+			s = strings.TrimSpace(s)
+			if v, ok := m[s]; ok {
+				if v >= rounded {
+					continue
+				}
+			}
+			m[s] = rounded
+		}
+	}
+
+	return m
 }

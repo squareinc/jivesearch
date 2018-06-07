@@ -17,9 +17,9 @@ $(document).ready(function() {
     $(value).html(c.join(" "));
   });
 
-  // redirect to the default !bang
+  // redirect to a default !bang
   $(document).on('click', '.bang_submit', function(){
-    window.location.href = window.location.pathname + replaceQueryParam(queryString(), 'q', $(this).data('location'));
+    changeParamAndRedirect("q", $(this).data('location'));
   });
 
   // voting
@@ -58,7 +58,7 @@ $(document).ready(function() {
 
   // Traditional Pagination
   $(document).on('click', '.pagination', function(){
-    window.location.href = window.location.pathname + replaceQueryParam(queryString(), 'p', $(this).data('page'));
+    changeParamAndRedirect("p", $(this).data('page')); 
   });
 
   function isBang(item) {
@@ -137,17 +137,55 @@ $(document).ready(function() {
   }
 
   // redirect "did you mean?" queries
-  $("#alternative").on("click", function(){    
-    window.location.href = window.location.pathname + replaceQueryParam(queryString(), "q", $(this).attr("data-alternative"));
+  $("#alternative").on("click", function(){  
+    changeParamAndRedirect("q", $(this).attr("data-alternative"));  
   });
 
   function queryString(){
     return window.location.search;
   }
 
-  function replaceQueryParam(qs, param, newval) {
-    var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
-    var query = qs.replace(regex, "$1").replace(/&$/, '');
-    return (query.length > 2 ? query + "&" : "?") + (newval ? param + "=" + newval : '');
-  }
+  var changeParamAndRedirect = function (key, value) {
+    var  urlQueryString = document.location.search,
+      newParam = key + '=' + value,
+      params = '?' + newParam;
+
+    // If the "search" string exists, then build params from it
+    if (urlQueryString) {
+        var updateRegex = new RegExp('([\?&])' + key + '[^&]*');
+        var removeRegex = new RegExp('([\?&])' + key + '=[^&;]+[&;]?');
+        if( typeof value == 'undefined' || value == null || value == '' ) { // Remove param if value is empty
+            params = urlQueryString.replace(removeRegex, "$1");
+            params = params.replace( /[&;]$/, "" );
+        } else if (urlQueryString.match(updateRegex) !== null) { // If param exists already, update it
+            params = urlQueryString.replace(updateRegex, "$1" + newParam);
+        } else { // Otherwise, add it to end of query string
+            params = urlQueryString + '&' + newParam;
+        }
+    }
+
+    // no parameter was set so we don't need the question mark
+    params = params == '?' ? '' : params;
+    window.location.href = window.location.pathname + params;
+  };
+
+  $("#safesearch").show();
+  $("#safesearchbtn").on("click", function(){
+    $("#safesearch-content").toggle();
+  });
+
+  $("#safe").on("click", function(){
+    var checked = $("#safe").is(':checked') ? "true" : "false";
+    changeParamAndRedirect("safe", checked);
+  });
+
+  $("#all").on("click", function(){
+    // we should delete the param but this works also 
+    changeParamAndRedirect("t", "");
+  });
+
+  $("#images").on("click", function(){
+    changeParamAndRedirect("t", "images");
+  });
 });
+

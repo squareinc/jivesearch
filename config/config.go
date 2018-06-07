@@ -101,7 +101,7 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("crawler.truncate.description", 250)
 
 	// image nsfw scoring and metadata
-	cfg.SetDefault("nsfw.host", "http://localhost:8080/")
+	cfg.SetDefault("nsfw.host", "http://127.0.0.1:8080")
 	cfg.SetDefault("nsfw.workers", 10)
 	cfg.SetDefault("nsfw.since", now().AddDate(0, -1, 0))
 

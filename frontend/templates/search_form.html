@@ -24,6 +24,8 @@
       {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
       {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
       {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
+      {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
+      {{if .Context.Safe}}{{else}}<input type="hidden" name="safe" value="{{.Context.Safe}}"/>{{end}}
       <!--don't set 'p' param...always force it back to page 1-->
     	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
           autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />

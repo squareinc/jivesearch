@@ -82,7 +82,6 @@ func TestSetDefaults(t *testing.T) {
 		{"useragent", "https://github.com/jivesearch/jivesearch"},
 
 		// image nsfw scoring and metadata
-		{"nsfw.host", "http://localhost:8080/"},
 		{"nsfw.workers", 10},
 		{"nsfw.since", time.Date(2018, 01, 06, 20, 34, 58, 651387237, time.UTC)},
 

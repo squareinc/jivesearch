@@ -3,6 +3,7 @@ package image
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	"golang.org/x/net/publicsuffix"
 )
@@ -29,7 +30,7 @@ type EXIF struct {
 
 // Fetcher outlines the methods used to retrieve the image results
 type Fetcher interface {
-	Fetch(q string, nsfwScore float64, number int, page int) (*Results, error)
+	Fetch(q string, safe bool, number int, offset int) (*Results, error)
 }
 
 // Results are the image results from a query
@@ -62,4 +63,15 @@ func New(src string) (*Image, error) {
 	}
 
 	return &Image{ID: u.String(), Domain: dom}, nil
+}
+
+// SimplifyMIME strips unnecessary info from MIME
+// image/jpg -> jpg
+func (i *Image) SimplifyMIME() *Image {
+	s := strings.Split(i.MIME, "/")
+	if len(s) > 1 {
+		i.MIME = s[1]
+	}
+
+	return i
 }
