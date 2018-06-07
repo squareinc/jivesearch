@@ -49,6 +49,7 @@ type owmForecast struct {
 	DtTxt string `json:"dt_txt"` // only forecast data has this
 }
 
+// OwmInstant is an OpenWeatherMap day
 type OwmInstant struct {
 	Instant *Instant
 	Dt      int64 `json:"dt"`
