@@ -400,6 +400,13 @@
         default = "https://en.bitcoin.it/w/index.php?title=Special%3ASearch&search={{{term}}}/"
 
 [[bang]]
+    name = "Bitly"
+    favicon = "https://bitly.com/favicon.ico"
+    triggers = ["bitly"]
+    [bang.regions]
+        default = "https://bitly.com/?url={{{term}}}/"
+
+[[bang]]
     name = "BitTorrent Database"
     favicon = "https://btdb.to/favicon.ico"
     triggers = ["btdb", "bittorrentdatabase"]
