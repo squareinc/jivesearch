@@ -175,7 +175,7 @@ $(document).ready(function() {
   });
 
   $("#safe").on("click", function(){
-    var checked = $("#safe").is(':checked') ? "true" : "false";
+    var checked = $("#safe").is(':checked') ? "" : "f";
     changeParamAndRedirect("safe", checked);
   });
 

@@ -148,10 +148,18 @@ func (f *Frontend) addQuery(q string) error {
 
 func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
 	q := strings.TrimSpace(r.FormValue("q"))
+	var safe = true
+	if strings.TrimSpace(r.FormValue("safe")) == "f" {
+		safe = false
+	}
+
 	resp := &response{
 		status: http.StatusOK,
 		data: data{
 			Brand: f.Brand,
+			Context: Context{
+				Safe: safe,
+			},
 		},
 		template: "search",
 		err:      nil,
@@ -160,11 +168,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	// render start page if no query
 	if q == "" {
 		return resp
-	}
-
-	safe, err := strconv.ParseBool(strings.TrimSpace(r.FormValue("safe")))
-	if err != nil {
-		safe = true
 	}
 
 	d := data{
@@ -196,8 +199,11 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
+	fmt.Println(d.Context.Safe)
+
 	// Let's get them their results
 	// what page are they on? Give them first page by default
+	var err error
 	d.Context.Page, err = strconv.Atoi(strings.TrimSpace(r.FormValue("p")))
 	if err != nil || d.Context.Page < 1 {
 		d.Context.Page = 1

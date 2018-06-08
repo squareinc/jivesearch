@@ -2,6 +2,7 @@ package frontend
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -241,17 +242,20 @@ func TestSearchHandler(t *testing.T) {
 		want     *response
 	}{
 		{
-			"empty", "en", "", "", "", "true",
+			"empty", "en", "", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
+					Context: Context{
+						Safe: true,
+					},
 				},
 			},
 		},
 		{
-			"basic", "en", " some query ", "", "", "false",
+			"basic", "en", " some query ", "", "", "f",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -275,7 +279,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"not cached", "en", "not cached", "", "", "true",
+			"not cached", "en", "not cached", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -299,7 +303,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"json", "en", " some query", "json", "", "true",
+			"json", "en", " some query", "json", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "json",
@@ -323,14 +327,14 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"!bang", "", "!g something", "", "", "true",
+			"!bang", "", "!g something", "", "", "",
 			&response{
 				status:   http.StatusFound,
 				redirect: "https://encrypted.google.com/search?hl=en&q=something",
 			},
 		},
 		{
-			"images", "en", "some query", "", "images", "true",
+			"images", "en", "some query", "", "images", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -397,6 +401,8 @@ func TestSearchHandler(t *testing.T) {
 			q.Add("t", c.t)
 			q.Add("safe", c.safe)
 			req.URL.RawQuery = q.Encode()
+
+			fmt.Println("safe", c.safe)
 
 			got := f.searchHandler(httptest.NewRecorder(), req)
 
