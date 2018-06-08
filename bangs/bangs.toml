@@ -477,6 +477,13 @@
         default = "https://www.bogleheads.org/w/index.php?search={{{term}}}"
 
 [[bang]]
+    name = "Booking.com"
+    favicon = "https://www.booking.com/favicon.ico"
+    triggers = ["book", "booking"]
+    [bang.regions]
+        default = "https://www.booking.com/searchresults.html?si=ai&ss={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
