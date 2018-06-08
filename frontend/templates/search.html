@@ -70,6 +70,7 @@
       <div class="navbar">
         <span id="all" {{if eq $context.T "images"}}class="nav"{{else}}class="nav_selected"{{end}} style="margin-right:20px;">All</span>
         <span id="images" {{if eq $context.T "images"}}class="nav_selected"{{else}}class="nav"{{end}} style="margin-right:20px;">Images</span>
+        {{if eq $context.T "images"}}
         <div id="safesearch" style="float:right;">
           <button id="safesearchbtn">SafeSearch <span id="safesearch_selection">{{if eq $context.Safe false}}Off{{else}}On{{end}}</span></button>
           <div id="safesearch-content">
@@ -77,7 +78,8 @@
               <input id="safe" type="checkbox" {{if eq $context.Safe true}}checked="checked"{{end}}> Turn on Safe Search
             </label>
           </div>
-        </div> 
+        </div>
+        {{end}}
       </div>
     </div>
   </div>
