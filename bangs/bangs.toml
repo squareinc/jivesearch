@@ -498,6 +498,13 @@
         default = "https://www.brainyquote.com/search_results.html?q={{{term}}}"
 
 [[bang]]
+    name = "Breitbart"
+    favicon = "http://www.breitbart.com/favicon.ico"
+    triggers = ["bbart", "breitbart"]
+    [bang.regions]
+        default = "http://www.breitbart.com/search/?s={{{term}}}#gsc.tab=0&gsc.q={{{term}}}&gsc.page=1"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
