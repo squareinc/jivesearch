@@ -491,6 +491,13 @@
         default = "http://www.boxofficemojo.com/search/?q={{{term}}}"
 
 [[bang]]
+    name = "BrainyQuote"
+    favicon = "https://www.brainyquote.com/favicon.ico"
+    triggers = ["brainyquote"]
+    [bang.regions]
+        default = "https://www.brainyquote.com/search_results.html?q={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
