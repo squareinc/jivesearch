@@ -199,8 +199,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
-	fmt.Println(d.Context.Safe)
-
 	// Let's get them their results
 	// what page are they on? Give them first page by default
 	var err error

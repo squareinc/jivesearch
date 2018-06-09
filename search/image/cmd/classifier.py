@@ -198,8 +198,14 @@ def index():
   print(request.query.image)
   response.content_type = 'application/json'
 
+  headers = {
+    'User-Agent':
+      os.environ.get('JIVESEARCH_CRAWLER_USERAGENT_FULL',
+      'https://github.com/jivesearch/jivesearch'),
+  }
+
   try:
-    image_data = requests.get(request.query.image).content
+    image_data = requests.get(request.query.image, headers=headers).content
     im = Image.open(StringIO(str(image_data)))
   except Exception, e:
     print(e)
