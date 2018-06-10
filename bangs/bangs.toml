@@ -518,13 +518,19 @@
     [bang.regions]
         default = "http://search.byui.edu/search?q={{{term}}}&btnG=Search&proxystylesheet=byui_frontend&ulang=en&sort=date%3AD%3AL%3Ad1&oe=UTF-8&ie=UTF-8&ud=1&filter=0&site=default_collection"
 
-
 [[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
     [bang.regions]
         default = "http://search.cnbc.com/main.do?target=all&keywords={{{term}}}"
+
+[[bang]]
+    name = "Encyclopedia Britannica"
+    favicon = "https://www.britannica.com/favicon.ico"
+    triggers = ["britannica"]
+    [bang.regions]
+        default = "https://www.britannica.com/search?query={{{term}}}"
 
 [[bang]]
     name = "GitHub"
