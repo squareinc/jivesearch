@@ -519,6 +519,13 @@
         default = "http://search.byui.edu/search?q={{{term}}}&btnG=Search&proxystylesheet=byui_frontend&ulang=en&sort=date%3AD%3AL%3Ad1&oe=UTF-8&ie=UTF-8&ud=1&filter=0&site=default_collection"
 
 [[bang]]
+    name = "Bugzilla"
+    favicon = "https://bugzilla.mozilla.org/favicon.ico"
+    triggers = ["mbug", "bmo", "bugzilla"]
+    [bang.regions]
+        default = "https://bugzilla.mozilla.org/show_bug.cgi?id={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
