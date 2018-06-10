@@ -223,6 +223,7 @@ func (e *ElasticSearch) Setup() error {
 // mapping is the mapping of our image Index.
 func (e *ElasticSearch) mapping() string {
 	m := `{
+		"index.mapping.total_fields.limit": 100000,
 		"mappings": {
 			"image": {
 				"_all": {
