@@ -505,6 +505,21 @@
         default = "http://www.breitbart.com/search/?s={{{term}}}#gsc.tab=0&gsc.q={{{term}}}&gsc.page=1"
 
 [[bang]]
+    name = "Brigham Young University"
+    favicon = "https://byu.edu/themes/home_d8/favicon.ico"
+    triggers = ["byu", "brighamyounguniversity"]
+    [bang.regions]
+        default = "https://www.byu.edu/search/byu?keys={{{term}}}"
+
+[[bang]]
+    name = "BYU Idaho"
+    favicon = "http://www.byui.edu/prebuilt/stylenew/images/ico/favicon.ico"
+    triggers = ["byui", "byuidaho"]
+    [bang.regions]
+        default = "http://search.byui.edu/search?q={{{term}}}&btnG=Search&proxystylesheet=byui_frontend&ulang=en&sort=date%3AD%3AL%3Ad1&oe=UTF-8&ie=UTF-8&ud=1&filter=0&site=default_collection"
+
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
