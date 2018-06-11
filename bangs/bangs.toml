@@ -526,6 +526,13 @@
         default = "https://bugzilla.mozilla.org/show_bug.cgi?id={{{term}}}"
 
 [[bang]]
+    name = "Build.com"
+    favicon = "https://www.build.com/favicon.ico"
+    triggers = ["build"]
+    [bang.regions]
+        default = "https://www.build.com/search?page=search:browse&term={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
