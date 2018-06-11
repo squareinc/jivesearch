@@ -540,6 +540,13 @@
         default = "https://builtwith.com/{{{term}}}"
 
 [[bang]]
+    name = "Bulbapedia"
+    favicon = "https://bulbapedia.bulbagarden.net/favicon.ico"
+    triggers = ["bpa", "bulba", "bpedia", "bulbapedia"]
+    [bang.regions]
+        default = "https://bulbapedia.bulbagarden.net/w/index.php?title=Special:Search&search={{{term}}}&go=Go"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
