@@ -561,6 +561,13 @@
         default = "https://www.buzzfeed.com/search?q={{{term}}}"
 
 [[bang]]
+    name = "C-SPAN"
+    favicon = "https://www.c-span.org/favicon.ico"
+    triggers = ["cspan"]
+    [bang.regions]
+        default = "https://www.c-span.org/search/?For={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
