@@ -547,6 +547,13 @@
         default = "https://bulbapedia.bulbagarden.net/w/index.php?title=Special:Search&search={{{term}}}&go=Go"
 
 [[bang]]
+    name = "Business Insider"
+    favicon = "https://www.businessinsider.com/favicon.ico"
+    triggers = ["bsi", "businessinsider"]
+    [bang.regions]
+        default = "https://www.businessinsider.com/s?q={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
