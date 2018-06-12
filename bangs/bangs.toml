@@ -554,6 +554,13 @@
         default = "https://www.businessinsider.com/s?q={{{term}}}"
 
 [[bang]]
+    name = "BuzzFeed"
+    favicon = "https://www.buzzfeed.com/static-assets/img/favicon.5a0c77a8815cfcc67c710199054a55c6.ico"
+    triggers = ["bf", "buzzfeed"]
+    [bang.regions]
+        default = "https://www.buzzfeed.com/search?q={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
