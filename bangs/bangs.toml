@@ -583,7 +583,7 @@
 
 [[bang]]
     name = "Call of Duty Wiki"
-    favicon = "http://callofduty.wikia.com/favicon.ico"
+    favicon = "https://vignette.wikia.nocookie.net/callofduty/images/6/64/Favicon.ico/revision/latest?cb=20110216192246"
     triggers = ["codw", "callofduty"]
     [bang.regions]
         default = "http://callofduty.wikia.com/wiki/Special:Search?search={{{term}}}"
