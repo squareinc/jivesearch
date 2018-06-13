@@ -582,6 +582,13 @@
         default = "https://book.cakephp.org/2.0/en/search.html?q={{{term}}}"
 
 [[bang]]
+    name = "Call of Duty Wiki"
+    favicon = "http://callofduty.wikia.com/favicon.ico"
+    triggers = ["codw", "callofduty"]
+    [bang.regions]
+        default = "http://callofduty.wikia.com/wiki/Special:Search?search={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
