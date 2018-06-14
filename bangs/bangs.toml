@@ -858,6 +858,13 @@
         default = "https://www.urbandictionary.com/define.php?term={{{term}}}"
 
 [[bang]]
+    name = "VeryWellFit"
+    favicon = "https://www.verywellfit.com/favicon.ico"
+    triggers = ["cals"]
+    [bang.regions]
+        default = "https://www.verywellfit.com/search?q={{{term}}}"
+
+[[bang]]
     name = "Wall Street Journal"
     favicon = "http://online.wsj.com/favicon.ico"
     triggers = ["wsj", "wallstreetjournal"]
