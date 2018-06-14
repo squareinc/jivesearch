@@ -596,6 +596,13 @@
         default = "http://www.calorieking.com.au/foods/search.php?keywords={{{term}}}&showresults=yes&go=Search"
 
 [[bang]]
+    name = "Calvin and Hobbes"
+    favicon = "http://michaelyingling.com/favicon.ico"
+    triggers = ["cah", "calvinandhobbes"]
+    [bang.regions]
+        default = "http://michaelyingling.com/random/calvin_and_hobbes/search.php?phrase={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
