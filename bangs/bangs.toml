@@ -589,6 +589,13 @@
         default = "http://callofduty.wikia.com/wiki/Special:Search?search={{{term}}}"
 
 [[bang]]
+    name = "Calorie King"
+    favicon = "http://www.calorieking.com.au/favicon.ico"
+    triggers = ["carbs", "calorieking"]
+    [bang.regions]
+        default = "http://www.calorieking.com.au/foods/search.php?keywords={{{term}}}&showresults=yes&go=Search"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
@@ -860,7 +867,7 @@
 [[bang]]
     name = "VeryWellFit"
     favicon = "https://www.verywellfit.com/favicon.ico"
-    triggers = ["cals"]
+    triggers = ["cals", "verywellfit"]
     [bang.regions]
         default = "https://www.verywellfit.com/search?q={{{term}}}"
 
