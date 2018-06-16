@@ -610,6 +610,28 @@
         default = "https://dictionary.cambridge.org/dictionary/english/{{{term}}}"
 
 [[bang]]
+    name = "CamelCamelCamel"
+    favicon = "https://camelcamelcamel.com/favicon.ico"
+    triggers = ["ccc", "camel"]
+    [bang.regions]
+        default = "https://camelcamelcamel.com/search?sq={{{term}}}"
+
+[[bang]]
+    name = "CamelCamelCamel UK"
+    favicon = "https://uk.camelcamelcamel.com/favicon.ico"
+    triggers = ["cccuk", "cameluk"]
+    [bang.regions]
+        default = "https://uk.camelcamelcamel.com/search?sq={{{term}}}"
+
+[[bang]]
+    name = "CamelCamelCamel German"
+    favicon = "https://de.camelcamelcamel.com/favicon.ico"
+    triggers = ["cccde", "camelde"]
+    [bang.regions]
+        default = "https://de.camelcamelcamel.com/products?sq={{{term}}}"
+
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
