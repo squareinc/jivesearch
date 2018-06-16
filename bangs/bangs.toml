@@ -630,6 +630,12 @@
     [bang.regions]
         default = "https://de.camelcamelcamel.com/products?sq={{{term}}}"
 
+[[bang]]
+    name = "Can I use"
+    favicon = "https://caniuse.com/favicon.ico"
+    triggers = ["cu", "ciu", "cius", "caniuse"]
+    [bang.regions]
+        default = "https://caniuse.com/#search={{{term}}}"
 
 [[bang]]
     name = "CNBC"
