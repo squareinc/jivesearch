@@ -603,6 +603,13 @@
         default = "http://michaelyingling.com/random/calvin_and_hobbes/search.php?phrase={{{term}}}"
 
 [[bang]]
+    name = "Cambridge Dictionary"
+    favicon = "https://dictionary.cambridge.org/favicon.ico"
+    triggers = ["cald", "cdgdic", "cambd", "cambridge"]
+    [bang.regions]
+        default = "https://dictionary.cambridge.org/dictionary/english/{{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
