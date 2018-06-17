@@ -638,6 +638,13 @@
         default = "https://caniuse.com/#search={{{term}}}"
 
 [[bang]]
+    name = "Canada Post"
+    favicon = "https://www.canadapost.ca/favicon.ico"
+    triggers = ["capost", "canadapost"]
+    [bang.regions]
+        default = "https://www.canadapost.ca/cpotools/apps/track/personal/findByTrackNumber?trackingNumber={{{term}}}"
+
+[[bang]]
     name = "CNBC"
     favicon = "https://www.cnbc.com/favicon.ico"
     triggers = ["cnbc"]
