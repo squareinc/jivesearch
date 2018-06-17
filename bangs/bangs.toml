@@ -638,6 +638,13 @@
         default = "https://caniuse.com/#search={{{term}}}"
 
 [[bang]]
+    name = "Canada.ca"
+    favicon = "https://www.canada.ca/etc/designs/canada/wet-boew/assets/favicon.ico"
+    triggers = ["can", "canada"]
+    [bang.regions]
+        default = "https://www.canada.ca/en/sr/srb.html?cdn=canada&st=s&num=10&langs=en&st1rt=1&s5bm3ts21rch=x&q={{{term}}}&_charset_=UTF-8&wb-srch-sub="
+
+[[bang]]
     name = "Canada Post"
     favicon = "https://www.canadapost.ca/favicon.ico"
     triggers = ["capost", "canadapost"]
