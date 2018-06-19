@@ -181,7 +181,7 @@ func main() {
 	// The database needs to be setup beforehand.
 	db, err := sql.Open("postgres",
 		fmt.Sprintf(
-			"user=%s password=%s host=%s database=%s sslmode=require",
+			"user=%s password=%s host=%s database=%s sslmode=disable",
 			v.GetString("postgresql.user"),
 			v.GetString("postgresql.password"),
 			v.GetString("postgresql.host"),

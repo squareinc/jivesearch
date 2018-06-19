@@ -25,7 +25,6 @@ import magic
 import tensorflow as tf
 import caffe
 
-model_dir = '/tmp/imagenet'
 # pylint: disable=line-too-long
 # pylint: enable=line-too-long
 
@@ -88,11 +87,9 @@ class NodeLookup(object):
   """Converts integer node ID's to human readable labels."""
   def __init__(self, label_lookup_path=None, uid_lookup_path=None):
     if not label_lookup_path:
-      label_lookup_path = os.path.join(
-        model_dir, 'imagenet_2012_challenge_label_map_proto.pbtxt')
+      label_lookup_path = 'imagenet_2012_challenge_label_map_proto.pbtxt'
     if not uid_lookup_path:
-      uid_lookup_path = os.path.join(
-        model_dir, 'imagenet_synset_to_human_label_map.txt')
+      uid_lookup_path = 'imagenet_synset_to_human_label_map.txt'
     self.node_lookup = self.load(label_lookup_path, uid_lookup_path)
 
   def load(self, label_lookup_path, uid_lookup_path):
@@ -172,27 +169,6 @@ def classify_image(image_data):
   
   return d
 
-def download_models():
-  caffe_url = 'https://modeldepot.io/assets/uploads/models/models/5005730b-eff1-4700-a553-c13f9bc97a53_nsfw_model.zip'
-  tf_url = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
-  for u in [caffe_url, tf_url]:
-    if not os.path.exists(model_dir):
-      os.makedirs(model_dir)
-    filename = u.split('/')[-1]
-    filepath = os.path.join(model_dir, filename)
-    if not os.path.exists(filepath):
-      def _progress(count, block_size, total_size):
-        sys.stdout.write('\r>> Downloading %s %.1f%%' % (
-          filename, float(count * block_size) / float(total_size) * 100.0))
-        sys.stdout.flush()
-      filepath, _ = urllib.request.urlretrieve(u, filepath, _progress)
-      statinfo = os.stat(filepath)
-      print('Successfully downloaded', filename, statinfo.st_size, 'bytes.')
-    if u.endswith("gz"):
-      tarfile.open(filepath, 'r:gz').extractall(model_dir)
-    elif u.endswith("zip"):
-      zipfile.ZipFile(filepath, 'r').extractall(model_dir)
-
 @route('/')
 def index():
   print(request.query.image)
@@ -236,9 +212,7 @@ def index():
     print(e)
     return dumps({})
 
-download_models()
-nsfw_net = caffe.Net(os.path.join(model_dir, "nsfw_model/deploy.prototxt"),  
-  os.path.join(model_dir, "nsfw_model/resnet_50_1by2_nsfw.caffemodel"), caffe.TEST)
+nsfw_net = caffe.Net("nsfw_model/deploy.prototxt", "nsfw_model/resnet_50_1by2_nsfw.caffemodel", caffe.TEST)
 caffe_transformer = caffe.io.Transformer({'data': nsfw_net.blobs['data'].data.shape})
 caffe_transformer.set_transpose('data', (2, 0, 1))  # move image channels to outermost
 caffe_transformer.set_mean('data', 
@@ -247,8 +221,7 @@ caffe_transformer.set_raw_scale('data', 255)  # rescale from [0, 1] to [0, 255]
 caffe_transformer.set_channel_swap('data', (2, 1, 0))  # swap channels from RGB to BGR
 
 # TensorFlow
-with tf.gfile.FastGFile(os.path.join(
-  model_dir, 'classify_image_graph_def.pb'), 'rb') as f:
+with tf.gfile.FastGFile('classify_image_graph_def.pb', 'rb') as f:
   graph_def = tf.GraphDef()
   graph_def.ParseFromString(f.read())
   _ = tf.import_graph_def(graph_def, name='')
@@ -256,4 +229,4 @@ with tf.gfile.FastGFile(os.path.join(
 if __name__ == '__main__':
   p = int(os.environ.get('NSFW_PORT','8080'))
   print('Serving on ', p)
-  run(host='localhost', port=p, server='gunicorn')
+  run(host=os.environ.get('NSFW_ADDR','127.0.0.1'), port=p, server='gunicorn')
