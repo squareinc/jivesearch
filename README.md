@@ -56,18 +56,23 @@ Jive Search is the open source search engine that does not track you. Pages are 
 <br>
 
 ## 💾 Installation
+The below will build and run a Docker Compose file for Elasticsearch, OpenResty (Nginx), PostgreSQL, Redis, and a NSFW/image classification server. The OpenResty build assumes you have a domain name as well as a Let's Encrypt SSL certificate. However, in order for the nginx.conf file to dynamically load your SSL certificate you will need to create a symlink to a generic "domain" folder (replace "example.com" with your domain). For local development you can skip this step.
 
-1. Download Go [here](https://golang.org/dl/).
-2. Set your GOPATH, steps [here](https://github.com/golang/go/wiki/SettingGOPATH)
-3. Install Jive Search
+```bash
+$ ln -s /etc/letsencrypt/live/example.com /etc/letsencrypt/live/domain
+```
+
+Install and run
 
 ```bash
 $ go get -u github.com/jivesearch/jivesearch
+$ cd $GOPATH/src/github.com/jivesearch/jivesearch/docker
+$ domain=example.com && data_directory=/path/to/data && sudo mkdir -p $data_directory/elasticsearch && sudo chown 1000:1000 $data_directory/elasticsearch && sudo DATA_DIRECTORY=$data_directory ES_HEAP=2g NGINX_DOMAIN=$domain docker-compose up
 ```
-4. Run the tests
 
+Elasticsearch may give you an error about max virtual memory areas. In that case:
 ```bash
-cd $HOME/go/src/github.com/jivesearch/jivesearch && go test -cover -race ./...
+$ sudo sysctl -w vm.max_map_count=262144
 ```
 
 ##### Crawler
