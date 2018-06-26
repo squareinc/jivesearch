@@ -85,7 +85,7 @@ sudo curl -o /etc/systemd/system/frontend.service https://gist.githubusercontent
 
 ##### Wikipedia Dump File
 ```bash
-$ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
+$ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=2 --dir=/path/to/dump/files --wikipedia=true --wikidata=true --wikiquote=true --wiktionary=true --truncate=400 --delete=true
 ```
 ##### MusicBrainz
 Instructions for MusicBrainz (to show the album discography instant answer) can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd).
