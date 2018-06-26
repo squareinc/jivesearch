@@ -75,38 +75,18 @@ Elasticsearch may give you an error about max virtual memory areas. In that case
 $ sudo sysctl -w vm.max_map_count=262144
 ```
 
-##### Crawler
-Requires Elasticsearch and Redis.
-
+For systemd settings (replace "myuser" below and edit env variables as needed):
 ```bash
-$ cd $GOPATH/src/github.com/jivesearch/jivesearch/search/crawler && go run ./cmd/crawler.go --workers=75 --time=5m --debug=true
+sudo curl -o /etc/systemd/system/crawler.service https://gist.githubusercontent.com/brentadamson/0880ef548130f69c2537049a550be8e8/raw/42269dfcba6d86aba49bc56ffa7e60a9eb7ebdf3/crawler
 ```
-  
-##### Frontend
-Requires Elasticsearch and PostgreSQL.
-
 ```bash
-$ cd $GOPATH/src/github.com/jivesearch/jivesearch/frontend && go run ./cmd/frontend.go --debug=true
+sudo curl -o /etc/systemd/system/frontend.service https://gist.githubusercontent.com/brentadamson/7b8117347909cc38384fed589a3d785d/raw/1a0f14f7a8e61abd007224b3f0937e62e344a3e5/frontend
 ```
 
 ##### Wikipedia Dump File
-Requires PostgreSQL.
-
 ```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=3 --dir=/path/to/wiki/files --text=true --data=true --truncate=400
-
 ```
-
-##### Nginx
-
-Follow the instruction to install nginx on :
-
-- [Windows](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
-- [OSX](https://coderwall.com/p/dgwwuq/installing-nginx-in-mac-os-x-maverick-with-homebrew)
-- [Linux](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
-
-The version we run includes Let's Encrypt and the PageSpeed module. Full instructions can be found [here](https://gist.github.com/brentadamson/b43482a8d07ee222c17457d5e0ff5cf0).
-
 ##### MusicBrainz
 
 Instructions for MusicBrainz can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd).
