@@ -55,7 +55,7 @@ RUN apt-get update && \
   ldconfig
 
 WORKDIR /nsfw
-RUN wget https://raw.githubusercontent.com/jivesearch/jivesearch/master/search/image/cmd/classifier.py
+RUN wget --no-check-certificate https://raw.githubusercontent.com/jivesearch/jivesearch/master/search/image/cmd/classifier.py
 
 ENV NSFW_MODEL 5005730b-eff1-4700-a553-c13f9bc97a53_nsfw_model.zip
 ENV NSFW_MODEL_URL https://modeldepot.io/assets/uploads/models/models/$NSFW_MODEL

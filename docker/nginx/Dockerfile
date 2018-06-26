@@ -108,11 +108,12 @@ RUN \
     useradd -u 8888 -g nginx nginx && \
     # Symlink nginx logs to system output
     ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log && \
-    mkdir -p /etc/letsencrypt
+    ln -sf /dev/stderr /var/log/nginx/error.log
 
-ADD letsencrypt /etc/letsencrypt
-RUN wget https://raw.githubusercontent.com/jivesearch/jivesearch/master/frontend/nginx.conf
+WORKDIR /config
+RUN apt-get update && \
+    apt-get -y install wget --no-install-recommends && \
+    wget --no-check-certificate https://raw.githubusercontent.com/jivesearch/jivesearch/master/frontend/nginx.conf
 
 EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;", "-c", "/config/nginx.conf"]
