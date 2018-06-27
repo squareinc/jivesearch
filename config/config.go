@@ -67,8 +67,8 @@ func SetDefaults(cfg Provider) {
 	// Note: there is a security concern if postgres password is stored in env variable
 	// but setting it as an env var w/in systemd nullifies this.
 	cfg.SetDefault("postgresql.host", "localhost")
-	cfg.SetDefault("postgresql.user", "postgres")
-	cfg.SetDefault("postgresql.password", "password")
+	cfg.SetDefault("postgresql.user", "jivesearch")
+	cfg.SetDefault("postgresql.password", "mypassword")
 	cfg.SetDefault("postgresql.database", "jivesearch")
 	cfg.SetDefault("postgresql.votes.table", "votes")
 

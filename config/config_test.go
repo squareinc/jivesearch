@@ -49,8 +49,8 @@ func TestSetDefaults(t *testing.T) {
 
 		// PostgreSQL
 		{"postgresql.host", "localhost"},
-		{"postgresql.user", "postgres"},
-		{"postgresql.password", "password"},
+		{"postgresql.user", "jivesearch"},
+		{"postgresql.password", "mypassword"},
 		{"postgresql.database", "jivesearch"},
 		{"postgresql.votes.table", "votes"},
 
