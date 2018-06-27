@@ -56,6 +56,20 @@ sudo curl -o /etc/systemd/system/images.service https://gist.githubusercontent.c
 ```bash
 $ cd $GOPATH/src/github.com/jivesearch/jivesearch/instant/wikipedia/cmd/dumper && go run dumper.go --workers=2 --dir=/path/to/dump/files --wikipedia=true --wikidata=true --wikiquote=true --wiktionary=true --truncate=400 --delete=true
 ```
+##### Location Data
+Location data is not logged but is used for local weather
+
+```bash
+$ sudo add-apt-repository ppa:maxmind/ppa
+$ sudo apt update && sudo apt install geoipupdate
+$ sudo nano /usr/local/etc/GeoIP.conf
+  AccountID 0
+  LicenseKey 000000000000
+  EditionIDs GeoLite2-City GeoLite2-Country
+$ sudo crontab -e
+  56 3 * * 4 /usr/bin/geoipupdate
+```
+
 ##### MusicBrainz
 Instructions for MusicBrainz (to show the album discography instant answer) can be found [here](https://gist.github.com/brentadamson/b711d5c9c4d974d6999876004f8bc1cd).
 
