@@ -13,6 +13,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -26,6 +27,7 @@ type Instant struct {
 	QueryVar             string
 	DiscographyFetcher   discography.Fetcher
 	FedExFetcher         parcel.Fetcher
+	LinkShortener        shortener.Service
 	LocationFetcher      location.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher
 	StockQuoteFetcher    stock.Fetcher
@@ -203,6 +205,7 @@ func (i *Instant) answers() []answerer {
 		&Prime{},
 		&Random{},
 		&Reverse{},
+		&Shortener{Service: i.LinkShortener},
 		&Stats{},
 		&StockQuote{Fetcher: i.StockQuoteFetcher},
 		&Temperature{},

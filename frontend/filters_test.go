@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/shortener"
+
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 
@@ -283,6 +285,18 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `<img width="12" height="12" alt="iex" src="/image/32x,sHbfM3QKtrjDw8v0skAKSmNQfZJ-C1OtMtjfBMNwsALI=/https://iextrading.com/favicon.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
+		},
+		{
+			name: "url shortener",
+			args: args{
+				instant.Data{
+					Type: "url shortener",
+					Solution: &shortener.Response{
+						Provider: shortener.IsGdProvider,
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="is.gd" src="/image/32x,sLbsPCKZT8roneQHXIKUMot4b2rdKGtVgiQ-bwvzLGMQ=/https://is.gd/isgd_favicon.ico"/> <a href="https://is.gd/">is.gd</a>`,
 		},
 		{
 			name: "ups",

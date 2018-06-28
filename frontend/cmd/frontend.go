@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/shortener"
+
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/weather"
 
@@ -215,6 +217,9 @@ func main() {
 		QueryVar: "q",
 		DiscographyFetcher: &musicbrainz.PostgreSQL{
 			DB: db,
+		},
+		LinkShortener: &shortener.IsGd{
+			HTTPClient: httpClient,
 		},
 		LocationFetcher: &location.MaxMind{
 			DB: v.GetString("maxmind.database"),

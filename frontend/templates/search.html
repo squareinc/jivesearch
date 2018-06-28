@@ -347,6 +347,18 @@
           {{template "source" .}}
         </div>
         {{end}}
+      {{else if eq .Instant.Type "url shortener"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+            <div class="pure-u-1">
+              <div class="pure-u-1" style="font-size:20px;">{{.Instant.Solution.Short}}</div><br>
+              <div class="pure-u-1" style="font-size:14px;color:#444;">{{.Instant.Solution.Original}}</div>
+            </div>
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
       {{else if eq .Instant.Type "weather"}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1" style="height:375px;">

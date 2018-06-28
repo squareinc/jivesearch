@@ -13,6 +13,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -29,6 +30,7 @@ func TestDetect(t *testing.T) {
 		QueryVar:             "q",
 		DiscographyFetcher:   &mockDiscographyFetcher{},
 		FedExFetcher:         &mockFedExFetcher{},
+		LinkShortener:        &mockShortener{},
 		LocationFetcher:      &mockLocationFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
 		StockQuoteFetcher:    &mockStockQuoteFetcher{},
@@ -599,6 +601,18 @@ func (m *mockDiscographyFetcher) Fetch(artist string) ([]discography.Album, erro
 				URL: u,
 			},
 		},
+	}, nil
+}
+
+type mockShortener struct{}
+
+func (m *mockShortener) Shorten(u *url.URL) (*shortener.Response, error) {
+	shrt, _ := url.Parse("http://shrt.url")
+
+	return &shortener.Response{
+		Original: u,
+		Short:    shrt,
+		Provider: "mockShortener",
 	}, nil
 
 }

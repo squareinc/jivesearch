@@ -17,6 +17,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -157,6 +158,16 @@ func source(answer instant.Data) string {
 		txt, u = "USPS", "https://www.usps.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="usps" src="%v"/>`, proxyFavIcon("https://www.usps.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "url shortener":
+		s := answer.Solution.(*shortener.Response)
+		switch s.Provider {
+		case shortener.IsGdProvider:
+			txt, u = "is.gd", "https://is.gd/"
+			img = fmt.Sprintf(`<img width="12" height="12" alt="is.gd" src="%v"/>`, proxyFavIcon("https://is.gd/isgd_favicon.ico"))
+			f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		default:
+			log.Debug.Printf("unknown link shortening service %v\n", s.Provider)
+		}
 	case "weather":
 		w := answer.Solution.(*weather.Weather)
 		switch w.Provider {
