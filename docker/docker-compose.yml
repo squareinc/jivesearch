@@ -42,7 +42,7 @@ services:
 
   # NOTE: If you change your POSTGRES_USER then run "sudo docker-compose rm"
   # https://github.com/docker-library/postgres/issues/41#issuecomment-167603905
-  # To access psql -> docker exec -ti postgresql psql -U jivesearch
+  # To access psql -> docker exec -ti postgres psql -U jivesearch
   postgres:
     image: postgres:9.6-alpine
     container_name: postgres
