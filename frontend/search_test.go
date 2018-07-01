@@ -13,6 +13,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -422,6 +423,7 @@ func TestDetectType(t *testing.T) {
 		{"fedex", &parcel.Response{}},
 		{"stackoverflow", &instant.StackOverflowAnswer{}},
 		{"stock quote", &stock.Quote{}},
+		{"url shortener", &shortener.Response{}},
 		{"weather", &weather.Weather{}},
 		{"wikipedia", &wikipedia.Item{}},
 		{

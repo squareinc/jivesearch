@@ -13,6 +13,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
+	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -446,6 +447,8 @@ func detectType(t string) interface{} {
 		v = &instant.StackOverflowAnswer{}
 	case "stock quote":
 		v = &stock.Quote{}
+	case "url shortener":
+		v = &shortener.Response{}
 	case "weather":
 		v = &weather.Weather{}
 	case "wikipedia":
