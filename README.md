@@ -38,7 +38,8 @@ $ domain=example.com && data_directory=/path/to/data && sudo mkdir -p $data_dire
 
 Elasticsearch may give you an error about max virtual memory areas. In that case:
 ```bash
-$ sudo sysctl -w vm.max_map_count=262144
+# Add the following to the bottom of /etc/sysctl.conf:
+vm.max_map_count=262144
 ```
 
 For systemd settings (replace "myuser" below and edit env variables as needed):
