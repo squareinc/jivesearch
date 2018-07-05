@@ -47,7 +47,7 @@ func getDefaultBangs(bngs *bangs.Bangs) ([]DefaultBang, error) {
 		if b.Name == "Amazon" {
 			m["a"] = b
 		}
-		if b.Name == "Youtube" {
+		if b.Name == "YouTube" {
 			m["yt"] = b
 		}
 	}

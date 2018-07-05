@@ -90,7 +90,7 @@ func (f *Frontend) defaultBangs(r *http.Request) []DefaultBang {
 		{"g", "Google"},
 		{"b", "Bing"},
 		{"a", "Amazon"},
-		{"yt", "Youtube"},
+		{"yt", "YouTube"},
 	} {
 		for _, bng := range f.Bangs.Bangs {
 			if bng.Name == b.name {
