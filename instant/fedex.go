@@ -17,26 +17,26 @@ type FedEx struct {
 	Answer
 }
 
-func (f *FedEx) setQuery(r *http.Request, qv string) answerer {
+func (f *FedEx) setQuery(r *http.Request, qv string) Answerer {
 	f.Answer.setQuery(r, qv)
 	return f
 }
 
-func (f *FedEx) setUserAgent(r *http.Request) answerer {
+func (f *FedEx) setUserAgent(r *http.Request) Answerer {
 	return f
 }
 
-func (f *FedEx) setLanguage(lang language.Tag) answerer {
+func (f *FedEx) setLanguage(lang language.Tag) Answerer {
 	f.language = lang
 	return f
 }
 
-func (f *FedEx) setType() answerer {
+func (f *FedEx) setType() Answerer {
 	f.Type = "fedex"
 	return f
 }
 
-func (f *FedEx) setRegex() answerer {
+func (f *FedEx) setRegex() Answerer {
 	// https://stackoverflow.com/questions/619977/regular-expression-patterns-for-tracking-numbers
 	// https://github.com/jkeen/tracking_number_data/blob/70065359c64996e1537c46efc5d0638b24df105b/couriers/fedex.json
 	// Probably only necessary if it triggers other IA's accidentally???
@@ -45,7 +45,7 @@ func (f *FedEx) setRegex() answerer {
 	return f
 }
 
-func (f *FedEx) solve(req *http.Request) answerer {
+func (f *FedEx) solve(req *http.Request) Answerer {
 	r, err := f.Fetch(f.triggerWord)
 	if err != nil {
 		f.Err = err
@@ -56,7 +56,7 @@ func (f *FedEx) solve(req *http.Request) answerer {
 	return f
 }
 
-func (f *FedEx) setCache() answerer {
+func (f *FedEx) setCache() Answerer {
 	f.Cache = true
 	return f
 }

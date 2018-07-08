@@ -255,7 +255,9 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 					return
 				}
 
-				res := f.Instant.Detect(r, lang)
+				res := f.DetectInstantAnswer(r, lang, d.Context.T == "maps")
+
+				//res := f.Instant.Detect(r, lang)
 
 				if res.Cache {
 					var d = f.Cache.Instant
@@ -432,6 +434,66 @@ func (d *Instant) UnmarshalJSON(b []byte) error {
 
 	d.Solution = s
 	return json.Unmarshal(j, d.Solution)
+}
+
+// DetectInstantAnswer triggers the instant answers
+func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyMaps bool) instant.Data {
+	var answers []instant.Answerer
+
+	// select all answers by default, unless user chooses maps
+	switch onlyMaps {
+	case true:
+		// TODO
+		answers = []instant.Answerer{}
+	default:
+		answers = []instant.Answerer{
+			&instant.BirthStone{},
+			&instant.Calculator{},
+			&instant.CamelCase{},
+			&instant.Characters{},
+			&instant.Coin{},
+			&instant.Discography{Fetcher: f.Instant.DiscographyFetcher},
+			&instant.DigitalStorage{},
+			&instant.FedEx{Fetcher: f.Instant.FedExFetcher},
+			&instant.Frequency{},
+			&instant.Speed{}, // trigger "miles per hour" b/f "miles"
+			&instant.Length{},
+			&instant.Minify{},
+			&instant.Potus{},
+			&instant.Power{},
+			&instant.Prime{},
+			&instant.Random{},
+			&instant.Reverse{},
+			&instant.Shortener{Service: f.Instant.LinkShortener},
+			&instant.Stats{},
+			&instant.StockQuote{Fetcher: f.Instant.StockQuoteFetcher},
+			&instant.Temperature{},
+			&instant.USPS{Fetcher: f.Instant.USPSFetcher},
+			&instant.UPS{Fetcher: f.Instant.UPSFetcher},
+			&instant.UserAgent{},
+			&instant.StackOverflow{Fetcher: f.Instant.StackOverflowFetcher},
+			&instant.Weather{Fetcher: f.Instant.WeatherFetcher, LocationFetcher: f.Instant.LocationFetcher},
+			&instant.Wikipedia{
+				Fetcher: f.Instant.WikipediaFetcher,
+			}, // always keep this last so that Wikipedia Box will trigger if none other
+		}
+	}
+
+	// Necessary to use goroutines??? setSolution called only when triggered.
+	// Also, the order of some answers matters, like Wikipedia, which is a catch-all
+	for _, ia := range answers {
+		if triggered := f.Instant.Trigger(ia, r, lang); triggered {
+			sol := f.Instant.Solve(ia, r)
+			if sol.Err != nil {
+				log.Debug.Println(sol.Err)
+				continue
+			}
+
+			return sol
+		}
+	}
+
+	return instant.Data{}
 }
 
 // detectType returns the proper data structure for an instant answer type

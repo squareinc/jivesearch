@@ -14,26 +14,26 @@ type BirthStone struct {
 	Answer
 }
 
-func (b *BirthStone) setQuery(r *http.Request, qv string) answerer {
+func (b *BirthStone) setQuery(r *http.Request, qv string) Answerer {
 	b.Answer.setQuery(r, qv)
 	return b
 }
 
-func (b *BirthStone) setUserAgent(r *http.Request) answerer {
+func (b *BirthStone) setUserAgent(r *http.Request) Answerer {
 	return b
 }
 
-func (b *BirthStone) setLanguage(lang language.Tag) answerer {
+func (b *BirthStone) setLanguage(lang language.Tag) Answerer {
 	b.language = lang
 	return b
 }
 
-func (b *BirthStone) setType() answerer {
+func (b *BirthStone) setType() Answerer {
 	b.Type = "birthstone"
 	return b
 }
 
-func (b *BirthStone) setRegex() answerer {
+func (b *BirthStone) setRegex() Answerer {
 	triggers := []string{
 		"birthstones",
 		"birth stones",
@@ -48,7 +48,7 @@ func (b *BirthStone) setRegex() answerer {
 	return b
 }
 
-func (b *BirthStone) solve(r *http.Request) answerer {
+func (b *BirthStone) solve(r *http.Request) Answerer {
 	switch b.remainder {
 	case "january":
 		b.Solution = "Garnet"
@@ -79,7 +79,7 @@ func (b *BirthStone) solve(r *http.Request) answerer {
 	return b
 }
 
-func (b *BirthStone) setCache() answerer {
+func (b *BirthStone) setCache() Answerer {
 	b.Cache = true
 	return b
 }

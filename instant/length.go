@@ -14,26 +14,26 @@ type Length struct {
 	Answer
 }
 
-func (l *Length) setQuery(req *http.Request, q string) answerer {
+func (l *Length) setQuery(req *http.Request, q string) Answerer {
 	l.Answer.setQuery(req, q)
 	return l
 }
 
-func (l *Length) setUserAgent(req *http.Request) answerer {
+func (l *Length) setUserAgent(req *http.Request) Answerer {
 	return l
 }
 
-func (l *Length) setLanguage(lang language.Tag) answerer {
+func (l *Length) setLanguage(lang language.Tag) Answerer {
 	l.language = lang
 	return l
 }
 
-func (l *Length) setType() answerer {
+func (l *Length) setType() Answerer {
 	l.Type = "unit converter"
 	return l
 }
 
-func (l *Length) setRegex() answerer {
+func (l *Length) setRegex() Answerer {
 	u := []string{
 		"mile", "yard", "foot", "feet", "inch", "nautical mile",
 		"ft", "in",
@@ -57,13 +57,13 @@ func (l *Length) setRegex() answerer {
 	return l
 }
 
-func (l *Length) solve(r *http.Request) answerer {
+func (l *Length) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	l.Solution = "length"
 	return l
 }
 
-func (l *Length) setCache() answerer {
+func (l *Length) setCache() Answerer {
 	l.Cache = true
 	return l
 }

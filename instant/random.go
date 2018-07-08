@@ -18,26 +18,26 @@ type Random struct {
 
 var reRandom *regexp.Regexp
 
-func (r *Random) setQuery(req *http.Request, qv string) answerer {
+func (r *Random) setQuery(req *http.Request, qv string) Answerer {
 	r.Answer.setQuery(req, qv)
 	return r
 }
 
-func (r *Random) setUserAgent(req *http.Request) answerer {
+func (r *Random) setUserAgent(req *http.Request) Answerer {
 	return r
 }
 
-func (r *Random) setLanguage(lang language.Tag) answerer {
+func (r *Random) setLanguage(lang language.Tag) Answerer {
 	r.language = lang
 	return r
 }
 
-func (r *Random) setType() answerer {
+func (r *Random) setType() Answerer {
 	r.Type = "random"
 	return r
 }
 
-func (r *Random) setRegex() answerer {
+func (r *Random) setRegex() Answerer {
 	triggers := []string{
 		"random number", "random number between",
 	}
@@ -49,7 +49,7 @@ func (r *Random) setRegex() answerer {
 	return r
 }
 
-func (r *Random) solve(req *http.Request) answerer {
+func (r *Random) solve(req *http.Request) Answerer {
 	matches := make(map[string]int)
 	matches["min"], matches["max"] = 1, 100 // if no range specified
 
@@ -74,7 +74,7 @@ func (r *Random) solve(req *http.Request) answerer {
 	return r
 }
 
-func (r *Random) setCache() answerer {
+func (r *Random) setCache() Answerer {
 	r.Cache = false
 	return r
 }

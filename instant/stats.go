@@ -19,26 +19,26 @@ type Stats struct {
 
 var reStats *regexp.Regexp
 
-func (s *Stats) setQuery(r *http.Request, qv string) answerer {
+func (s *Stats) setQuery(r *http.Request, qv string) Answerer {
 	s.Answer.setQuery(r, qv)
 	return s
 }
 
-func (s *Stats) setUserAgent(r *http.Request) answerer {
+func (s *Stats) setUserAgent(r *http.Request) Answerer {
 	return s
 }
 
-func (s *Stats) setLanguage(lang language.Tag) answerer {
+func (s *Stats) setLanguage(lang language.Tag) Answerer {
 	s.language = lang
 	return s
 }
 
-func (s *Stats) setType() answerer {
+func (s *Stats) setType() Answerer {
 	s.Type = "stats"
 	return s
 }
 
-func (s *Stats) setRegex() answerer {
+func (s *Stats) setRegex() Answerer {
 	triggers := []string{
 		"avg", "average", "mean", "median", "sum", "total",
 	}
@@ -50,7 +50,7 @@ func (s *Stats) setRegex() answerer {
 	return s
 }
 
-func (s *Stats) solve(r *http.Request) answerer {
+func (s *Stats) solve(r *http.Request) Answerer {
 	// get all the numbers..this regexp will correctly grab e notation
 	numbersStrings := reStats.FindAllString(s.remainder, -1)
 	numbers := []float64{}
@@ -81,7 +81,7 @@ func (s *Stats) solve(r *http.Request) answerer {
 	return s
 }
 
-func (s *Stats) setCache() answerer {
+func (s *Stats) setCache() Answerer {
 	s.Cache = true
 	return s
 }

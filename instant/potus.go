@@ -31,26 +31,26 @@ type Person struct {
 	End   string
 }
 
-func (p *Potus) setQuery(r *http.Request, qv string) answerer {
+func (p *Potus) setQuery(r *http.Request, qv string) Answerer {
 	p.Answer.setQuery(r, qv)
 	return p
 }
 
-func (p *Potus) setUserAgent(r *http.Request) answerer {
+func (p *Potus) setUserAgent(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Potus) setLanguage(lang language.Tag) answerer {
+func (p *Potus) setLanguage(lang language.Tag) Answerer {
 	p.language = lang
 	return p
 }
 
-func (p *Potus) setType() answerer {
+func (p *Potus) setType() Answerer {
 	p.Type = "potus"
 	return p
 }
 
-func (p *Potus) setRegex() answerer {
+func (p *Potus) setRegex() Answerer {
 	triggers := []string{
 		"president of the united states", "potus",
 	}
@@ -62,7 +62,7 @@ func (p *Potus) setRegex() answerer {
 	return p
 }
 
-func (p *Potus) solve(r *http.Request) answerer {
+func (p *Potus) solve(r *http.Request) Answerer {
 	// maybe a better solution is to have
 	// a set of non-trigger funcs???
 	if strings.Contains(p.query, "vice") {
@@ -99,7 +99,7 @@ func (p *Potus) solve(r *http.Request) answerer {
 	return p
 }
 
-func (p *Potus) setCache() answerer {
+func (p *Potus) setCache() Answerer {
 	p.Cache = true
 	return p
 }

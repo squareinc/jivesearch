@@ -17,26 +17,26 @@ type Frequency struct {
 	Answer
 }
 
-func (f *Frequency) setQuery(r *http.Request, qv string) answerer {
+func (f *Frequency) setQuery(r *http.Request, qv string) Answerer {
 	f.Answer.setQuery(r, qv)
 	return f
 }
 
-func (f *Frequency) setUserAgent(r *http.Request) answerer {
+func (f *Frequency) setUserAgent(r *http.Request) Answerer {
 	return f
 }
 
-func (f *Frequency) setLanguage(lang language.Tag) answerer {
+func (f *Frequency) setLanguage(lang language.Tag) Answerer {
 	f.language = lang
 	return f
 }
 
-func (f *Frequency) setType() answerer {
+func (f *Frequency) setType() Answerer {
 	f.Type = "frequency"
 	return f
 }
 
-func (f *Frequency) setRegex() answerer {
+func (f *Frequency) setRegex() Answerer {
 	triggers := []string{
 		"frequency of",
 	}
@@ -47,7 +47,7 @@ func (f *Frequency) setRegex() answerer {
 	return f
 }
 
-func (f *Frequency) solve(r *http.Request) answerer {
+func (f *Frequency) solve(r *http.Request) Answerer {
 	var char string
 	var wrd string
 
@@ -70,7 +70,7 @@ func (f *Frequency) solve(r *http.Request) answerer {
 	return f
 }
 
-func (f *Frequency) setCache() answerer {
+func (f *Frequency) setCache() Answerer {
 	f.Cache = true
 	return f
 }

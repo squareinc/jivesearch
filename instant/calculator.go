@@ -16,21 +16,21 @@ type Calculator struct {
 	Answer
 }
 
-func (c *Calculator) setQuery(req *http.Request, q string) answerer {
+func (c *Calculator) setQuery(req *http.Request, q string) Answerer {
 	c.Answer.setQuery(req, q)
 	return c
 }
 
-func (c *Calculator) setUserAgent(req *http.Request) answerer {
+func (c *Calculator) setUserAgent(req *http.Request) Answerer {
 	return c
 }
 
-func (c *Calculator) setLanguage(lang language.Tag) answerer {
+func (c *Calculator) setLanguage(lang language.Tag) Answerer {
 	c.language = lang
 	return c
 }
 
-func (c *Calculator) setType() answerer {
+func (c *Calculator) setType() Answerer {
 	c.Type = "calculator"
 	return c
 }
@@ -39,7 +39,7 @@ var calculatorTriggers = []string{
 	"calculator", "calculate", "compute", "formula", "solve", "add", "subtract", "multiply", "divide",
 }
 
-func (c *Calculator) setRegex() answerer {
+func (c *Calculator) setRegex() Answerer {
 	t := strings.Join(calculatorTriggers, "|")
 	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s)$`, t)))
 
@@ -49,7 +49,7 @@ func (c *Calculator) setRegex() answerer {
 	return c
 }
 
-func (c *Calculator) solve(r *http.Request) answerer {
+func (c *Calculator) solve(r *http.Request) Answerer {
 	for _, t := range calculatorTriggers {
 		if c.query == t { // eg a search for "calculate", "calculator", etc
 			return c
@@ -90,7 +90,7 @@ func (c *Calculator) solve(r *http.Request) answerer {
 	return c
 }
 
-func (c *Calculator) setCache() answerer {
+func (c *Calculator) setCache() Answerer {
 	c.Cache = true
 	return c
 }

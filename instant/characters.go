@@ -15,26 +15,26 @@ type Characters struct {
 	Answer
 }
 
-func (c *Characters) setQuery(r *http.Request, qv string) answerer {
+func (c *Characters) setQuery(r *http.Request, qv string) Answerer {
 	c.Answer.setQuery(r, qv)
 	return c
 }
 
-func (c *Characters) setUserAgent(r *http.Request) answerer {
+func (c *Characters) setUserAgent(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Characters) setLanguage(lang language.Tag) answerer {
+func (c *Characters) setLanguage(lang language.Tag) Answerer {
 	c.language = lang
 	return c
 }
 
-func (c *Characters) setType() answerer {
+func (c *Characters) setType() Answerer {
 	c.Type = "characters"
 	return c
 }
 
-func (c *Characters) setRegex() answerer {
+func (c *Characters) setRegex() Answerer {
 	triggers := []string{
 		"number of characters in", "number of characters",
 		"number of chars in", "number of chars",
@@ -52,7 +52,7 @@ func (c *Characters) setRegex() answerer {
 	return c
 }
 
-func (c *Characters) solve(r *http.Request) answerer {
+func (c *Characters) solve(r *http.Request) Answerer {
 	for _, ch := range []string{`"`, `'`} {
 		c.remainder = strings.TrimPrefix(c.remainder, ch)
 		c.remainder = strings.TrimSuffix(c.remainder, ch)
@@ -63,7 +63,7 @@ func (c *Characters) solve(r *http.Request) answerer {
 	return c
 }
 
-func (c *Characters) setCache() answerer {
+func (c *Characters) setCache() Answerer {
 	c.Cache = true
 	return c
 }

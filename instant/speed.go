@@ -14,26 +14,26 @@ type Speed struct {
 	Answer
 }
 
-func (s *Speed) setQuery(req *http.Request, q string) answerer {
+func (s *Speed) setQuery(req *http.Request, q string) Answerer {
 	s.Answer.setQuery(req, q)
 	return s
 }
 
-func (s *Speed) setUserAgent(req *http.Request) answerer {
+func (s *Speed) setUserAgent(req *http.Request) Answerer {
 	return s
 }
 
-func (s *Speed) setLanguage(lang language.Tag) answerer {
+func (s *Speed) setLanguage(lang language.Tag) Answerer {
 	s.language = lang
 	return s
 }
 
-func (s *Speed) setType() answerer {
+func (s *Speed) setType() Answerer {
 	s.Type = "unit converter"
 	return s
 }
 
-func (s *Speed) setRegex() answerer {
+func (s *Speed) setRegex() Answerer {
 	u := []string{
 		"mile",
 		"foot", "feet", "ft",
@@ -67,13 +67,13 @@ func (s *Speed) setRegex() answerer {
 	return s
 }
 
-func (s *Speed) solve(r *http.Request) answerer {
+func (s *Speed) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	s.Solution = "speed"
 	return s
 }
 
-func (s *Speed) setCache() answerer {
+func (s *Speed) setCache() Answerer {
 	s.Cache = true
 	return s
 }

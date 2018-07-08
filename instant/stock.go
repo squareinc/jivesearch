@@ -17,26 +17,26 @@ type StockQuote struct {
 	Answer
 }
 
-func (s *StockQuote) setQuery(r *http.Request, qv string) answerer {
+func (s *StockQuote) setQuery(r *http.Request, qv string) Answerer {
 	s.Answer.setQuery(r, qv)
 	return s
 }
 
-func (s *StockQuote) setUserAgent(r *http.Request) answerer {
+func (s *StockQuote) setUserAgent(r *http.Request) Answerer {
 	return s
 }
 
-func (s *StockQuote) setLanguage(lang language.Tag) answerer {
+func (s *StockQuote) setLanguage(lang language.Tag) Answerer {
 	s.language = lang
 	return s
 }
 
-func (s *StockQuote) setType() answerer {
+func (s *StockQuote) setType() Answerer {
 	s.Type = "stock quote"
 	return s
 }
 
-func (s *StockQuote) setRegex() answerer {
+func (s *StockQuote) setRegex() Answerer {
 	triggers := []string{
 		"quote", "stock", "stock quote",
 	}
@@ -54,7 +54,7 @@ func (s *StockQuote) setRegex() answerer {
 	return s
 }
 
-func (s *StockQuote) solve(r *http.Request) answerer {
+func (s *StockQuote) solve(r *http.Request) Answerer {
 	ticker := strings.ToUpper(strings.Replace(s.remainder, "$", "", -1))
 
 	resp, err := s.Fetcher.Fetch(ticker)
@@ -69,7 +69,7 @@ func (s *StockQuote) solve(r *http.Request) answerer {
 	return s
 }
 
-func (s *StockQuote) setCache() answerer {
+func (s *StockQuote) setCache() Answerer {
 	s.Cache = true
 	return s
 }

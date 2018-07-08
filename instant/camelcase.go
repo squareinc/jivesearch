@@ -14,26 +14,26 @@ type CamelCase struct {
 	Answer
 }
 
-func (c *CamelCase) setQuery(r *http.Request, qv string) answerer {
+func (c *CamelCase) setQuery(r *http.Request, qv string) Answerer {
 	c.Answer.setQuery(r, qv)
 	return c
 }
 
-func (c *CamelCase) setUserAgent(r *http.Request) answerer {
+func (c *CamelCase) setUserAgent(r *http.Request) Answerer {
 	return c
 }
 
-func (c *CamelCase) setLanguage(lang language.Tag) answerer {
+func (c *CamelCase) setLanguage(lang language.Tag) Answerer {
 	c.language = lang
 	return c
 }
 
-func (c *CamelCase) setType() answerer {
+func (c *CamelCase) setType() Answerer {
 	c.Type = "camelcase"
 	return c
 }
 
-func (c *CamelCase) setRegex() answerer {
+func (c *CamelCase) setRegex() Answerer {
 	triggers := []string{
 		"camelcase",
 		"camel case",
@@ -46,7 +46,7 @@ func (c *CamelCase) setRegex() answerer {
 	return c
 }
 
-func (c *CamelCase) solve(r *http.Request) answerer {
+func (c *CamelCase) solve(r *http.Request) Answerer {
 	titled := []string{}
 	for _, w := range strings.Fields(c.remainder) {
 		titled = append(titled, strings.Title(w))
@@ -57,7 +57,7 @@ func (c *CamelCase) solve(r *http.Request) answerer {
 	return c
 }
 
-func (c *CamelCase) setCache() answerer {
+func (c *CamelCase) setCache() Answerer {
 	c.Cache = true
 	return c
 }

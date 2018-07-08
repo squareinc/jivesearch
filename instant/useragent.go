@@ -14,27 +14,27 @@ type UserAgent struct {
 	Answer
 }
 
-func (u *UserAgent) setQuery(r *http.Request, qv string) answerer {
+func (u *UserAgent) setQuery(r *http.Request, qv string) Answerer {
 	u.Answer.setQuery(r, qv)
 	return u
 }
 
-func (u *UserAgent) setUserAgent(r *http.Request) answerer {
+func (u *UserAgent) setUserAgent(r *http.Request) Answerer {
 	u.Answer.userAgent = r.UserAgent()
 	return u
 }
 
-func (u *UserAgent) setLanguage(lang language.Tag) answerer {
+func (u *UserAgent) setLanguage(lang language.Tag) Answerer {
 	u.language = lang
 	return u
 }
 
-func (u *UserAgent) setType() answerer {
+func (u *UserAgent) setType() Answerer {
 	u.Type = "user agent"
 	return u
 }
 
-func (u *UserAgent) setRegex() answerer {
+func (u *UserAgent) setRegex() Answerer {
 	triggers := []string{
 		"user agent", "user agent?",
 		"useragent", "useragent?",
@@ -52,12 +52,12 @@ func (u *UserAgent) setRegex() answerer {
 	return u
 }
 
-func (u *UserAgent) solve(r *http.Request) answerer {
+func (u *UserAgent) solve(r *http.Request) Answerer {
 	u.Solution = u.userAgent
 	return u
 }
 
-func (u *UserAgent) setCache() answerer {
+func (u *UserAgent) setCache() Answerer {
 	// caching would cache the query but the browser could change
 	u.Cache = false
 	return u

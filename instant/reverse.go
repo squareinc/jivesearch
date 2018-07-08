@@ -14,26 +14,26 @@ type Reverse struct {
 	Answer
 }
 
-func (r *Reverse) setQuery(req *http.Request, qv string) answerer {
+func (r *Reverse) setQuery(req *http.Request, qv string) Answerer {
 	r.Answer.setQuery(req, qv)
 	return r
 }
 
-func (r *Reverse) setUserAgent(req *http.Request) answerer {
+func (r *Reverse) setUserAgent(req *http.Request) Answerer {
 	return r
 }
 
-func (r *Reverse) setLanguage(lang language.Tag) answerer {
+func (r *Reverse) setLanguage(lang language.Tag) Answerer {
 	r.language = lang
 	return r
 }
 
-func (r *Reverse) setType() answerer {
+func (r *Reverse) setType() Answerer {
 	r.Type = "reverse"
 	return r
 }
 
-func (r *Reverse) setRegex() answerer {
+func (r *Reverse) setRegex() Answerer {
 	triggers := []string{
 		"reverse",
 	}
@@ -45,7 +45,7 @@ func (r *Reverse) setRegex() answerer {
 	return r
 }
 
-func (r *Reverse) solve(req *http.Request) answerer {
+func (r *Reverse) solve(req *http.Request) Answerer {
 	for _, c := range []string{`"`, `'`} {
 		r.remainder = strings.TrimPrefix(r.remainder, c)
 		r.remainder = strings.TrimSuffix(r.remainder, c)
@@ -69,7 +69,7 @@ func (r *Reverse) solve(req *http.Request) answerer {
 	return r
 }
 
-func (r *Reverse) setCache() answerer {
+func (r *Reverse) setCache() Answerer {
 	r.Cache = true
 	return r
 }

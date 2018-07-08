@@ -17,21 +17,21 @@ type Wikipedia struct {
 	Answer
 }
 
-func (w *Wikipedia) setQuery(r *http.Request, qv string) answerer {
+func (w *Wikipedia) setQuery(r *http.Request, qv string) Answerer {
 	w.Answer.setQuery(r, qv)
 	return w
 }
 
-func (w *Wikipedia) setUserAgent(r *http.Request) answerer {
+func (w *Wikipedia) setUserAgent(r *http.Request) Answerer {
 	return w
 }
 
-func (w *Wikipedia) setLanguage(lang language.Tag) answerer {
+func (w *Wikipedia) setLanguage(lang language.Tag) Answerer {
 	w.language = lang
 	return w
 }
 
-func (w *Wikipedia) setType() answerer {
+func (w *Wikipedia) setType() Answerer {
 	w.Type = "wiki"
 	return w
 }
@@ -68,7 +68,7 @@ const quotes = "quotes"
 const define = "define"
 const definition = "definition"
 
-func (w *Wikipedia) setRegex() answerer {
+func (w *Wikipedia) setRegex() Answerer {
 	triggers := []string{
 		age, howOldIs,
 		birthday, born,
@@ -106,7 +106,7 @@ type Age struct {
 
 // TODO: Return the Title (and perhaps Image???) as
 // confirmation that we fetched the right asset.
-func (w *Wikipedia) solve(r *http.Request) answerer {
+func (w *Wikipedia) solve(r *http.Request) Answerer {
 	item, err := w.Fetch(w.remainder, w.language)
 	if err != nil {
 		w.Err = err
@@ -180,7 +180,7 @@ func (w *Wikipedia) solve(r *http.Request) answerer {
 	return w
 }
 
-func (w *Wikipedia) setCache() answerer {
+func (w *Wikipedia) setCache() Answerer {
 	w.Cache = true
 	return w
 }

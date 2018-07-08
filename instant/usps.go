@@ -17,26 +17,26 @@ type USPS struct {
 	Answer
 }
 
-func (u *USPS) setQuery(r *http.Request, qv string) answerer {
+func (u *USPS) setQuery(r *http.Request, qv string) Answerer {
 	u.Answer.setQuery(r, qv)
 	return u
 }
 
-func (u *USPS) setUserAgent(r *http.Request) answerer {
+func (u *USPS) setUserAgent(r *http.Request) Answerer {
 	return u
 }
 
-func (u *USPS) setLanguage(lang language.Tag) answerer {
+func (u *USPS) setLanguage(lang language.Tag) Answerer {
 	u.language = lang
 	return u
 }
 
-func (u *USPS) setType() answerer {
+func (u *USPS) setType() Answerer {
 	u.Type = "usps"
 	return u
 }
 
-func (u *USPS) setRegex() answerer {
+func (u *USPS) setRegex() Answerer {
 	// https://stackoverflow.com/questions/619977/regular-expression-patterns-for-tracking-numbers
 	// A Go library for checksum for UPS, FedEx, USPS: https://github.com/lensrentals/trackr
 	u.regex = append(u.regex, regexp.MustCompile(`(?i)\b(?P<trigger>\d{30}\b)|(\b91\d+\b)|(\b\d{20})\b`))
@@ -46,7 +46,7 @@ func (u *USPS) setRegex() answerer {
 	return u
 }
 
-func (u *USPS) solve(req *http.Request) answerer {
+func (u *USPS) solve(req *http.Request) Answerer {
 	tn := strings.ToUpper(u.triggerWord)
 
 	r, err := u.Fetch(tn)
@@ -59,7 +59,7 @@ func (u *USPS) solve(req *http.Request) answerer {
 	return u
 }
 
-func (u *USPS) setCache() answerer {
+func (u *USPS) setCache() Answerer {
 	u.Cache = true
 	return u
 }

@@ -14,26 +14,26 @@ type Temperature struct {
 	Answer
 }
 
-func (t *Temperature) setQuery(r *http.Request, qv string) answerer {
+func (t *Temperature) setQuery(r *http.Request, qv string) Answerer {
 	t.Answer.setQuery(r, qv)
 	return t
 }
 
-func (t *Temperature) setUserAgent(r *http.Request) answerer {
+func (t *Temperature) setUserAgent(r *http.Request) Answerer {
 	return t
 }
 
-func (t *Temperature) setLanguage(lang language.Tag) answerer {
+func (t *Temperature) setLanguage(lang language.Tag) Answerer {
 	t.language = lang
 	return t
 }
 
-func (t *Temperature) setType() answerer {
+func (t *Temperature) setType() Answerer {
 	t.Type = "unit converter"
 	return t
 }
 
-func (t *Temperature) setRegex() answerer {
+func (t *Temperature) setRegex() Answerer {
 	// a query for "convert" will result in a DigitalStorage answer
 	patterns := []string{
 		`[0-9]*\s?[cf] to [0-9]*\s?[cf]`,
@@ -55,13 +55,13 @@ func (t *Temperature) setRegex() answerer {
 	return t
 }
 
-func (t *Temperature) solve(r *http.Request) answerer {
+func (t *Temperature) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	t.Solution = "temperature"
 	return t
 }
 
-func (t *Temperature) setCache() answerer {
+func (t *Temperature) setCache() Answerer {
 	t.Cache = true
 	return t
 }

@@ -14,26 +14,26 @@ type Power struct {
 	Answer
 }
 
-func (p *Power) setQuery(req *http.Request, q string) answerer {
+func (p *Power) setQuery(req *http.Request, q string) Answerer {
 	p.Answer.setQuery(req, q)
 	return p
 }
 
-func (p *Power) setUserAgent(req *http.Request) answerer {
+func (p *Power) setUserAgent(req *http.Request) Answerer {
 	return p
 }
 
-func (p *Power) setLanguage(lang language.Tag) answerer {
+func (p *Power) setLanguage(lang language.Tag) Answerer {
 	p.language = lang
 	return p
 }
 
-func (p *Power) setType() answerer {
+func (p *Power) setType() Answerer {
 	p.Type = "unit converter"
 	return p
 }
 
-func (p *Power) setRegex() answerer {
+func (p *Power) setRegex() Answerer {
 	u := []string{
 		"watt", "kilowatt", "megawatt", "gigawatt", "terawatt", "petawatt", "exawatt", "horsepower", "hp",
 	}
@@ -52,13 +52,13 @@ func (p *Power) setRegex() answerer {
 	return p
 }
 
-func (p *Power) solve(r *http.Request) answerer {
+func (p *Power) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	p.Solution = "power"
 	return p
 }
 
-func (p *Power) setCache() answerer {
+func (p *Power) setCache() Answerer {
 	p.Cache = true
 	return p
 }

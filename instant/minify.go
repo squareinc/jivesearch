@@ -14,26 +14,26 @@ type Minify struct {
 	Answer
 }
 
-func (m *Minify) setQuery(req *http.Request, q string) answerer {
+func (m *Minify) setQuery(req *http.Request, q string) Answerer {
 	m.Answer.setQuery(req, q)
 	return m
 }
 
-func (m *Minify) setUserAgent(req *http.Request) answerer {
+func (m *Minify) setUserAgent(req *http.Request) Answerer {
 	return m
 }
 
-func (m *Minify) setLanguage(lang language.Tag) answerer {
+func (m *Minify) setLanguage(lang language.Tag) Answerer {
 	m.language = lang
 	return m
 }
 
-func (m *Minify) setType() answerer {
+func (m *Minify) setType() Answerer {
 	m.Type = "minify"
 	return m
 }
 
-func (m *Minify) setRegex() answerer {
+func (m *Minify) setRegex() Answerer {
 	triggers := []string{
 		"minify", "minifier", "pretty", "prettifier", "prettify",
 	}
@@ -46,12 +46,12 @@ func (m *Minify) setRegex() answerer {
 	return m
 }
 
-func (m *Minify) solve(r *http.Request) answerer {
+func (m *Minify) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	return m
 }
 
-func (m *Minify) setCache() answerer {
+func (m *Minify) setCache() Answerer {
 	m.Cache = true
 	return m
 }

@@ -19,26 +19,26 @@ type Discography struct {
 	Answer
 }
 
-func (d *Discography) setQuery(req *http.Request, q string) answerer {
+func (d *Discography) setQuery(req *http.Request, q string) Answerer {
 	d.Answer.setQuery(req, q)
 	return d
 }
 
-func (d *Discography) setUserAgent(req *http.Request) answerer {
+func (d *Discography) setUserAgent(req *http.Request) Answerer {
 	return d
 }
 
-func (d *Discography) setLanguage(lang language.Tag) answerer {
+func (d *Discography) setLanguage(lang language.Tag) Answerer {
 	d.language = lang
 	return d
 }
 
-func (d *Discography) setType() answerer {
+func (d *Discography) setType() Answerer {
 	d.Type = "discography"
 	return d
 }
 
-func (d *Discography) setRegex() answerer {
+func (d *Discography) setRegex() Answerer {
 	triggers := []string{
 		"discography", "albums",
 	}
@@ -50,7 +50,7 @@ func (d *Discography) setRegex() answerer {
 	return d
 }
 
-func (d *Discography) solve(r *http.Request) answerer {
+func (d *Discography) solve(r *http.Request) Answerer {
 	albums, err := d.Fetch(d.remainder)
 	if err != nil {
 		d.Err = err
@@ -61,7 +61,7 @@ func (d *Discography) solve(r *http.Request) answerer {
 	return d
 }
 
-func (d *Discography) setCache() answerer {
+func (d *Discography) setCache() Answerer {
 	d.Cache = true
 	return d
 }

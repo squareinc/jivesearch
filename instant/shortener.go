@@ -20,26 +20,26 @@ type Shortener struct {
 // ErrInvalidURL indicates an invalid url
 var ErrInvalidURL = fmt.Errorf("unable to parse url")
 
-func (s *Shortener) setQuery(r *http.Request, qv string) answerer {
+func (s *Shortener) setQuery(r *http.Request, qv string) Answerer {
 	s.Answer.setQuery(r, qv)
 	return s
 }
 
-func (s *Shortener) setUserAgent(r *http.Request) answerer {
+func (s *Shortener) setUserAgent(r *http.Request) Answerer {
 	return s
 }
 
-func (s *Shortener) setLanguage(lang language.Tag) answerer {
+func (s *Shortener) setLanguage(lang language.Tag) Answerer {
 	s.language = lang
 	return s
 }
 
-func (s *Shortener) setType() answerer {
+func (s *Shortener) setType() Answerer {
 	s.Type = "url shortener"
 	return s
 }
 
-func (s *Shortener) setRegex() answerer {
+func (s *Shortener) setRegex() Answerer {
 	triggers := []string{
 		"shorten", "shortener", "short url", "shorten url", "url short", "url shorten", "url shortener",
 	}
@@ -51,7 +51,7 @@ func (s *Shortener) setRegex() answerer {
 	return s
 }
 
-func (s *Shortener) solve(r *http.Request) answerer {
+func (s *Shortener) solve(r *http.Request) Answerer {
 	u, err := url.Parse(s.remainder)
 	if err != nil {
 		s.Err = ErrInvalidURL
@@ -68,7 +68,7 @@ func (s *Shortener) solve(r *http.Request) answerer {
 	return s
 }
 
-func (s *Shortener) setCache() answerer {
+func (s *Shortener) setCache() Answerer {
 	s.Cache = true
 	return s
 }

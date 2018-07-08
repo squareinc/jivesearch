@@ -17,26 +17,26 @@ type UPS struct {
 	Answer
 }
 
-func (u *UPS) setQuery(r *http.Request, qv string) answerer {
+func (u *UPS) setQuery(r *http.Request, qv string) Answerer {
 	u.Answer.setQuery(r, qv)
 	return u
 }
 
-func (u *UPS) setUserAgent(r *http.Request) answerer {
+func (u *UPS) setUserAgent(r *http.Request) Answerer {
 	return u
 }
 
-func (u *UPS) setLanguage(lang language.Tag) answerer {
+func (u *UPS) setLanguage(lang language.Tag) Answerer {
 	u.language = lang
 	return u
 }
 
-func (u *UPS) setType() answerer {
+func (u *UPS) setType() Answerer {
 	u.Type = "ups"
 	return u
 }
 
-func (u *UPS) setRegex() answerer {
+func (u *UPS) setRegex() Answerer {
 	/*
 		UPS Format:
 		https://www.ups.com/ca/en/tracking/help/tracking/tnh.page
@@ -64,7 +64,7 @@ func (u *UPS) setRegex() answerer {
 	return u
 }
 
-func (u *UPS) solve(req *http.Request) answerer {
+func (u *UPS) solve(req *http.Request) Answerer {
 	tn := strings.ToUpper(u.triggerWord)
 
 	r, err := u.Fetch(tn)
@@ -77,7 +77,7 @@ func (u *UPS) solve(req *http.Request) answerer {
 	return u
 }
 
-func (u *UPS) setCache() answerer {
+func (u *UPS) setCache() Answerer {
 	u.Cache = true
 	return u
 }

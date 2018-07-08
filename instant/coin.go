@@ -15,26 +15,26 @@ type Coin struct {
 	Answer
 }
 
-func (c *Coin) setQuery(r *http.Request, qv string) answerer {
+func (c *Coin) setQuery(r *http.Request, qv string) Answerer {
 	c.Answer.setQuery(r, qv)
 	return c
 }
 
-func (c *Coin) setUserAgent(r *http.Request) answerer {
+func (c *Coin) setUserAgent(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Coin) setLanguage(lang language.Tag) answerer {
+func (c *Coin) setLanguage(lang language.Tag) Answerer {
 	c.language = lang
 	return c
 }
 
-func (c *Coin) setType() answerer {
+func (c *Coin) setType() Answerer {
 	c.Type = "coin toss"
 	return c
 }
 
-func (c *Coin) setRegex() answerer {
+func (c *Coin) setRegex() Answerer {
 	triggers := []string{
 		"flip a coin", "heads or tails", "coin toss",
 	}
@@ -45,7 +45,7 @@ func (c *Coin) setRegex() answerer {
 	return c
 }
 
-func (c *Coin) solve(r *http.Request) answerer {
+func (c *Coin) solve(r *http.Request) Answerer {
 	choices := []string{"Heads", "Tails"}
 
 	c.Solution = choices[rand.Intn(2)]
@@ -53,7 +53,7 @@ func (c *Coin) solve(r *http.Request) answerer {
 	return c
 }
 
-func (c *Coin) setCache() answerer {
+func (c *Coin) setCache() Answerer {
 	c.Cache = false
 	return c
 }

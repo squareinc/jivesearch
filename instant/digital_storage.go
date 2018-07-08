@@ -14,26 +14,26 @@ type DigitalStorage struct {
 	Answer
 }
 
-func (d *DigitalStorage) setQuery(req *http.Request, q string) answerer {
+func (d *DigitalStorage) setQuery(req *http.Request, q string) Answerer {
 	d.Answer.setQuery(req, q)
 	return d
 }
 
-func (d *DigitalStorage) setUserAgent(req *http.Request) answerer {
+func (d *DigitalStorage) setUserAgent(req *http.Request) Answerer {
 	return d
 }
 
-func (d *DigitalStorage) setLanguage(lang language.Tag) answerer {
+func (d *DigitalStorage) setLanguage(lang language.Tag) Answerer {
 	d.language = lang
 	return d
 }
 
-func (d *DigitalStorage) setType() answerer {
+func (d *DigitalStorage) setType() Answerer {
 	d.Type = "unit converter"
 	return d
 }
 
-func (d *DigitalStorage) setRegex() answerer {
+func (d *DigitalStorage) setRegex() Answerer {
 	// a query for "convert" will result in a DigitalStorage answer
 	triggers := []string{
 		"convert", "converter",
@@ -68,7 +68,7 @@ func (d *DigitalStorage) setRegex() answerer {
 	return d
 }
 
-func (d *DigitalStorage) solve(r *http.Request) answerer {
+func (d *DigitalStorage) solve(r *http.Request) Answerer {
 	// The caller is expected to provide the solution when triggered, preferably in JavaScript
 	// TODO: pass the remainder to our html template so that "50gb to mb" prefills the form with "50", "gb", and "mb"
 	// Note: Combining the digital storage, length and other unit converters would then require us to make
@@ -77,7 +77,7 @@ func (d *DigitalStorage) solve(r *http.Request) answerer {
 	return d
 }
 
-func (d *DigitalStorage) setCache() answerer {
+func (d *DigitalStorage) setCache() Answerer {
 	d.Cache = true
 	return d
 }

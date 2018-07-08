@@ -30,26 +30,26 @@ type SOAnswer struct {
 	Text string
 }
 
-func (s *StackOverflow) setQuery(r *http.Request, qv string) answerer {
+func (s *StackOverflow) setQuery(r *http.Request, qv string) Answerer {
 	s.Answer.setQuery(r, qv)
 	return s
 }
 
-func (s *StackOverflow) setUserAgent(r *http.Request) answerer {
+func (s *StackOverflow) setUserAgent(r *http.Request) Answerer {
 	return s
 }
 
-func (s *StackOverflow) setLanguage(lang language.Tag) answerer {
+func (s *StackOverflow) setLanguage(lang language.Tag) Answerer {
 	s.language = lang
 	return s
 }
 
-func (s *StackOverflow) setType() answerer {
+func (s *StackOverflow) setType() Answerer {
 	s.Type = "stackoverflow"
 	return s
 }
 
-func (s *StackOverflow) setRegex() answerer {
+func (s *StackOverflow) setRegex() Answerer {
 	// https://stackoverflow.com/tags?page=1&tab=popular
 	// Please convert to the trigger to the official tag in "tagger" func.
 	// e.g. golang => go
@@ -101,7 +101,7 @@ func tagger(txt string) string {
 	return tag
 }
 
-func (s *StackOverflow) solve(r *http.Request) answerer {
+func (s *StackOverflow) solve(r *http.Request) Answerer {
 	a := &StackOverflowAnswer{}
 
 	resp, err := s.Fetch(s.remainder, []string{tagger(s.triggerWord)})
@@ -133,7 +133,7 @@ func (s *StackOverflow) solve(r *http.Request) answerer {
 	return s
 }
 
-func (s *StackOverflow) setCache() answerer {
+func (s *StackOverflow) setCache() Answerer {
 	s.Cache = true
 	return s
 }

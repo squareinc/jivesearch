@@ -37,16 +37,16 @@ type Instant struct {
 	WikipediaFetcher     wikipedia.Fetcher
 }
 
-// answerer outlines methods for an instant answer
-type answerer interface {
-	setQuery(r *http.Request, qv string) answerer
-	setUserAgent(r *http.Request) answerer
-	setLanguage(lang language.Tag) answerer
-	setType() answerer
-	setRegex() answerer
+// Answerer outlines methods for an instant answer
+type Answerer interface {
+	setQuery(r *http.Request, qv string) Answerer
+	setUserAgent(r *http.Request) Answerer
+	setLanguage(lang language.Tag) Answerer
+	setType() Answerer
+	setRegex() Answerer
 	trigger() bool
-	solve(r *http.Request) answerer
-	setCache() answerer
+	solve(r *http.Request) Answerer
+	setCache() Answerer
 	solution() Data
 	tests() []test
 }
@@ -71,23 +71,21 @@ type Data struct {
 	Cache     bool        `json:"cache,omitempty"`
 }
 
-// Detect loops through all instant answers to find a solution
-// Necessary to use goroutines??? setSolution called only when triggered.
-func (i *Instant) Detect(r *http.Request, lang language.Tag) Data {
-	for _, ia := range i.answers() {
-		ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
-		if triggered := ia.trigger(); triggered {
-			ia.setType().setCache().solve(r)
-			sol := ia.solution()
-			if sol.Err != nil { // this s/b handled in search.go in the frontend...
-				log.Debug.Println(sol.Err)
-				continue
-			}
-			return sol
-		}
-	}
+// Triggerer detects if the answer has been triggered
+type Triggerer interface {
+	Trigger()
+}
 
-	return Data{}
+// Trigger will trigger an instant answer
+func (i *Instant) Trigger(ia Answerer, r *http.Request, lang language.Tag) bool {
+	ia.setUserAgent(r).setQuery(r, i.QueryVar).setLanguage(lang).setRegex()
+	return ia.trigger()
+}
+
+// Solve solves an instant answer
+func (i *Instant) Solve(ia Answerer, r *http.Request) Data {
+	ia.setType().setCache().solve(r)
+	return ia.solution()
 }
 
 // setQuery sets the query field
@@ -182,42 +180,6 @@ type test struct {
 	userAgent string
 	ip        net.IP
 	expected  []Data
-}
-
-// answers returns a slice of all instant answers
-// Note: Since we modify fields of the answers we probably shouldn't reuse them....
-func (i *Instant) answers() []answerer {
-	return []answerer{
-		&BirthStone{},
-		&Calculator{},
-		&CamelCase{},
-		&Characters{},
-		&Coin{},
-		&Discography{Fetcher: i.DiscographyFetcher},
-		&DigitalStorage{},
-		&FedEx{Fetcher: i.FedExFetcher},
-		&Frequency{},
-		&Speed{}, // trigger "miles per hour" b/f "miles"
-		&Length{},
-		&Minify{},
-		&Potus{},
-		&Power{},
-		&Prime{},
-		&Random{},
-		&Reverse{},
-		&Shortener{Service: i.LinkShortener},
-		&Stats{},
-		&StockQuote{Fetcher: i.StockQuoteFetcher},
-		&Temperature{},
-		&USPS{Fetcher: i.USPSFetcher},
-		&UPS{Fetcher: i.UPSFetcher},
-		&UserAgent{},
-		&StackOverflow{Fetcher: i.StackOverflowFetcher},
-		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
-		&Wikipedia{
-			Fetcher: i.WikipediaFetcher,
-		}, // always keep this last so that Wikipedia Box will trigger if none other
-	}
 }
 
 func init() {

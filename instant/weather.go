@@ -21,26 +21,26 @@ type Weather struct {
 	Answer
 }
 
-func (w *Weather) setQuery(r *http.Request, qv string) answerer {
+func (w *Weather) setQuery(r *http.Request, qv string) Answerer {
 	w.Answer.setQuery(r, qv)
 	return w
 }
 
-func (w *Weather) setUserAgent(r *http.Request) answerer {
+func (w *Weather) setUserAgent(r *http.Request) Answerer {
 	return w
 }
 
-func (w *Weather) setLanguage(lang language.Tag) answerer {
+func (w *Weather) setLanguage(lang language.Tag) Answerer {
 	w.language = lang
 	return w
 }
 
-func (w *Weather) setType() answerer {
+func (w *Weather) setType() Answerer {
 	w.Type = "weather"
 	return w
 }
 
-func (w *Weather) setRegex() answerer {
+func (w *Weather) setRegex() Answerer {
 	triggers := []string{
 		"climate", "forecast", "weather forecast", "weather",
 	}
@@ -53,7 +53,7 @@ func (w *Weather) setRegex() answerer {
 	return w
 }
 
-func (w *Weather) solve(r *http.Request) answerer {
+func (w *Weather) solve(r *http.Request) Answerer {
 	if len(w.remainder) == 5 { // US zipcodes for now???
 		if z, err := strconv.Atoi(w.remainder); err == nil {
 			w.Data.Solution, err = w.Fetcher.FetchByZip(z)
@@ -81,7 +81,7 @@ func (w *Weather) solve(r *http.Request) answerer {
 	return w
 }
 
-func (w *Weather) setCache() answerer {
+func (w *Weather) setCache() Answerer {
 	// caching is set in solve()
 	return w
 }

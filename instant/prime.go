@@ -18,26 +18,26 @@ type Prime struct {
 
 var rePrime *regexp.Regexp
 
-func (p *Prime) setQuery(r *http.Request, qv string) answerer {
+func (p *Prime) setQuery(r *http.Request, qv string) Answerer {
 	p.Answer.setQuery(r, qv)
 	return p
 }
 
-func (p *Prime) setUserAgent(r *http.Request) answerer {
+func (p *Prime) setUserAgent(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Prime) setLanguage(lang language.Tag) answerer {
+func (p *Prime) setLanguage(lang language.Tag) Answerer {
 	p.language = lang
 	return p
 }
 
-func (p *Prime) setType() answerer {
+func (p *Prime) setType() Answerer {
 	p.Type = "prime"
 	return p
 }
 
-func (p *Prime) setRegex() answerer {
+func (p *Prime) setRegex() Answerer {
 	triggers := []string{
 		"prime numbers", "prime number", "prime",
 	}
@@ -49,7 +49,7 @@ func (p *Prime) setRegex() answerer {
 	return p
 }
 
-func (p *Prime) solve(r *http.Request) answerer {
+func (p *Prime) solve(r *http.Request) Answerer {
 	var start, end int
 
 	matches := rePrime.FindStringSubmatch(p.remainder)
@@ -69,7 +69,7 @@ func (p *Prime) solve(r *http.Request) answerer {
 	return p
 }
 
-func (p *Prime) setCache() answerer {
+func (p *Prime) setCache() Answerer {
 	p.Cache = true
 	return p
 }

@@ -22,6 +22,40 @@ import (
 	"golang.org/x/text/language"
 )
 
+func answers(i Instant) []Answerer {
+	return []Answerer{
+		&BirthStone{},
+		&Calculator{},
+		&CamelCase{},
+		&Characters{},
+		&Coin{},
+		&Discography{Fetcher: i.DiscographyFetcher},
+		&DigitalStorage{},
+		&FedEx{Fetcher: i.FedExFetcher},
+		&Frequency{},
+		&Speed{},
+		&Length{},
+		&Minify{},
+		&Potus{},
+		&Power{},
+		&Prime{},
+		&Random{},
+		&Reverse{},
+		&Shortener{Service: i.LinkShortener},
+		&Stats{},
+		&StockQuote{Fetcher: i.StockQuoteFetcher},
+		&Temperature{},
+		&USPS{Fetcher: i.USPSFetcher},
+		&UPS{Fetcher: i.UPSFetcher},
+		&UserAgent{},
+		&StackOverflow{Fetcher: i.StackOverflowFetcher},
+		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
+		&Wikipedia{
+			Fetcher: i.WikipediaFetcher,
+		},
+	}
+}
+
 // TestDetect runs the test cases for each instant answer.
 func TestDetect(t *testing.T) {
 	cases := []test{}
@@ -40,7 +74,7 @@ func TestDetect(t *testing.T) {
 		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
 
-	for j, ia := range i.answers() {
+	for j, ia := range answers(i) {
 		if len(ia.tests()) == 0 {
 			t.Fatalf("No tests for answer #%d", j)
 		}
@@ -62,25 +96,32 @@ func TestDetect(t *testing.T) {
 			r.Header.Set("User-Agent", c.userAgent)
 			r.Header.Set("X-Forwarded-For", c.ip.String())
 
-			got := i.Detect(r, language.English)
+			for _, ia := range answers(i) {
+				if triggered := i.Trigger(ia, r, language.English); triggered {
+					got := i.Solve(ia, r)
+					if got.Err != nil {
+						continue
+					}
 
-			var solved bool
+					var solved bool
 
-			for _, expected := range c.expected {
-				if reflect.DeepEqual(got, expected) {
-					solved = true
+					for _, expected := range c.expected {
+						if reflect.DeepEqual(got, expected) {
+							solved = true
+							break
+						}
+					}
+					if !solved {
+						t.Errorf("Instant answer failed %v", ctx)
+						t.Errorf("got %+v;", got)
+						t.Errorf("want ")
+						for _, expected := range c.expected {
+							t.Errorf("    %+v\n", expected)
+						}
+						t.FailNow()
+					}
 					break
 				}
-			}
-
-			if !solved {
-				t.Errorf("Instant answer failed %v", ctx)
-				t.Errorf("got %+v;", got)
-				t.Errorf("want ")
-				for _, expected := range c.expected {
-					t.Errorf("    %+v\n", expected)
-				}
-				t.FailNow()
 			}
 		})
 	}
