@@ -94,6 +94,9 @@ func TestSetDefaults(t *testing.T) {
 		{"fedex.key", "key"},
 		{"fedex.meter", "meter"},
 
+		// Maps
+		{"mapbox.key", "key"},
+
 		// MaxMind geolocation DB
 		{"maxmind.database", "/usr/share/GeoIP/GeoLite2-City.mmdb"},
 

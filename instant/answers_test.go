@@ -35,6 +35,7 @@ func answers(i Instant) []Answerer {
 		&Frequency{},
 		&Speed{},
 		&Length{},
+		&Maps{LocationFetcher: i.LocationFetcher},
 		&Minify{},
 		&Potus{},
 		&Power{},
@@ -226,6 +227,8 @@ type mockLocationFetcher struct{}
 func (l *mockLocationFetcher) Fetch(ip net.IP) (*geoip2.City, error) {
 	c := &geoip2.City{}
 	c.City.Names = map[string]string{"en": "Someville"}
+	c.Location.Latitude = 12
+	c.Location.Longitude = 18
 	return c, nil
 }
 

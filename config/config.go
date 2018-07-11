@@ -27,6 +27,9 @@ func SetDefaults(cfg Provider) {
 
 	cfg.SetDefault("hmac.secret", "")
 
+	// Bangs
+	cfg.SetDefault("bangs.path", "../bangs")
+
 	// Brand
 	cfg.SetDefault("brand.name", "Jive Search")
 	cfg.SetDefault("brand.tagline", "The little search engine that could.")
@@ -116,6 +119,9 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("fedex.password", "password")
 	cfg.SetDefault("fedex.key", "key")
 	cfg.SetDefault("fedex.meter", "meter")
+
+	// Maps
+	cfg.SetDefault("mapbox.key", "key")
 
 	// MaxMind geolocation DB
 	cfg.SetDefault("maxmind.database", "/usr/share/GeoIP/GeoLite2-City.mmdb")

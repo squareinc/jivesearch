@@ -61,7 +61,8 @@ type Instant struct {
 
 type data struct {
 	Brand
-	Context `json:"-"`
+	MapBoxKey string
+	Context   `json:"-"`
 	Results
 }
 
@@ -157,7 +158,8 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	resp := &response{
 		status: http.StatusOK,
 		data: data{
-			Brand: f.Brand,
+			Brand:     f.Brand,
+			MapBoxKey: f.MapBoxKey,
 			Context: Context{
 				Safe: safe,
 			},
@@ -173,6 +175,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	d := data{
 		f.Brand,
+		f.MapBoxKey,
 		Context{
 			Q:            q,
 			L:            strings.TrimSpace(r.FormValue("l")),
@@ -458,6 +461,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.Frequency{},
 			&instant.Speed{}, // trigger "miles per hour" b/f "miles"
 			&instant.Length{},
+			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},
 			&instant.Minify{},
 			&instant.Potus{},
 			&instant.Power{},

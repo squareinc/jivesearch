@@ -32,10 +32,11 @@ type Frontend struct {
 		Instant time.Duration
 		Search  time.Duration
 	}
+	Images img.Fetcher
 	*instant.Instant
-	Suggest suggest.Suggester
-	Search  search.Fetcher
-	Images  img.Fetcher
+	MapBoxKey string
+	Suggest   suggest.Suggester
+	Search    search.Fetcher
 	Wikipedia
 	Vote vote.Voter
 	GitHub

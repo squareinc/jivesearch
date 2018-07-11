@@ -101,6 +101,8 @@ func main() {
 		NSFWThreshold: .80,
 	}
 
+	f.MapBoxKey = v.GetString("mapbox.key")
+
 	// autocomplete & phrase suggestor
 	f.Suggest = &suggest.ElasticSearch{
 		Client: client,
@@ -123,7 +125,7 @@ func main() {
 	vb := viper.New()
 	vb.SetConfigType("toml")
 	vb.SetConfigName("bangs") // the default !bangs config file
-	vb.AddConfigPath("../bangs")
+	vb.AddConfigPath(v.GetString("bangs.path"))
 	f.Bangs, err = bangs.New(vb)
 	if err != nil {
 		panic(err)
@@ -218,18 +220,18 @@ func main() {
 		DiscographyFetcher: &musicbrainz.PostgreSQL{
 			DB: db,
 		},
-		LinkShortener: &shortener.IsGd{
-			HTTPClient: httpClient,
-		},
-		LocationFetcher: &location.MaxMind{
-			DB: v.GetString("maxmind.database"),
-		},
 		FedExFetcher: &parcel.FedEx{
 			HTTPClient: httpClient,
 			Account:    v.GetString("fedex.account"),
 			Password:   v.GetString("fedex.password"),
 			Key:        v.GetString("fedex.key"),
 			Meter:      v.GetString("fedex.meter"),
+		},
+		LinkShortener: &shortener.IsGd{
+			HTTPClient: httpClient,
+		},
+		LocationFetcher: &location.MaxMind{
+			DB: v.GetString("maxmind.database"),
 		},
 		StackOverflowFetcher: &stackoverflow.API{
 			HTTPClient: httpClient,

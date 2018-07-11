@@ -6,6 +6,8 @@
     {{if .Instant}}
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
+      {{else if eq .Instant.Type "maps"}}
+      <link rel="stylesheet" href="/static/instant/maps/mapbox.css">
       {{else if eq .Instant.Type "stock quote"}}
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
@@ -24,6 +26,18 @@
   {{if .Instant}}
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
+    {{else if eq .Instant.Type "maps"}}
+    <script src="/static/instant/maps/mapbox.js"></script>
+    <script>
+      mapboxgl.accessToken = {{.MapBoxKey}};
+      var map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/light-v9",
+        center: [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
+        zoom: 13,
+        showZoom: true,
+      });
+    </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
     <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
@@ -169,7 +183,9 @@
     <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
     <div class="pure-u-1 pure-u-xl-22-24">
       <div id="instant" class="pure-u-1 pure-u-xl-15-24">
-      {{if eq .Instant.Type "minify"}}
+      {{if eq .Instant.Type "maps"}}
+      <div id="map" style="width:100%;height:300px;"></div>
+      {{else if eq .Instant.Type "minify"}}
       <textarea id="code_input" rows="20" cols="60" tabindex="4" style="width:99%" placeholder="Paste code here..."></textarea>
       <textarea id="code_output" rows="20" cols="60" tabindex="5" style="width:99%;display:none;"></textarea>
       <a id="minify" data-value="minify" class="pure-button pure-button-primary" tabindex="6" style="font-size:20px;background:rgba(112,234,157,1);color:#333;border-radius:4px;text-shadow: 0 1px 1px rgba(255,255,255,1);">Minify</a>
