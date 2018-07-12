@@ -99,6 +99,7 @@ Marked items indicate progress has been made in that category. There is much mor
             - [ ] Mortgage, financial and other calculators
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
         - [x] Converters (meters to feet, mb to gb, etc...)
+    - [x] Maps
     - [x] Package Tracking (UPS, FedEx, USPS, etc...)
     - [x] Stack Overflow
     - [x] Stock Quotes & Charts    
@@ -109,20 +110,12 @@ Marked items indicate progress has been made in that category. There is much mor
     - [x] Wiktionary    
     - [ ] Many more instant answers (including from 3rd party APIs)
     - [ ] Translate trigger words and answers to other languages?
-- [ ] Maps
-- [ ] Image Search
+- [x] Image Search
 - [ ] Video Search
 - [ ] Flight Info & Status
 - [ ] News
 - [ ] Shopping
 - [ ] Custom Themes
-
-- [ ] New name/ logo
-- [ ] Documentation
-    - [ ] Translate to Chinese, French and other languages
-    - [ ] How does Jive Search work? (link to /about page)
-    - [ ] How do we take care of privacy?
-    - [ ] Test and benchmark
 
 <br>
 
