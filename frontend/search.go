@@ -259,9 +259,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 				}
 
 				res := f.DetectInstantAnswer(r, lang, d.Context.T == "maps")
-
-				//res := f.Instant.Detect(r, lang)
-
 				if res.Cache {
 					var d = f.Cache.Instant
 
@@ -316,6 +313,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			}
 
 			imageCH <- sr
+		case "maps":
 		default:
 			key := cacheKey("search", lang, region, r.URL)
 
@@ -446,8 +444,9 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 	// select all answers by default, unless user chooses maps
 	switch onlyMaps {
 	case true:
-		// TODO
-		answers = []instant.Answerer{}
+		answers = []instant.Answerer{
+			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},
+		}
 	default:
 		answers = []instant.Answerer{
 			&instant.BirthStone{},

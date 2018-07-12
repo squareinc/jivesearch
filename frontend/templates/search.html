@@ -82,8 +82,9 @@
     {{template "search_form" .}}
     <div class="pure-u-1" style="margin-bottom:-8px;font-size:16px;color:#444;cursor:pointer;">
       <div class="navbar">
-        <span id="all" {{if eq $context.T "images"}}class="nav"{{else}}class="nav_selected"{{end}} style="margin-right:20px;">All</span>
+        <span id="all" {{if eq $context.T "images" "maps"}}class="nav"{{else}}class="nav_selected"{{end}} style="margin-right:20px;">All</span>
         <span id="images" {{if eq $context.T "images"}}class="nav_selected"{{else}}class="nav"{{end}} style="margin-right:20px;">Images</span>
+        <span id="maps" {{if eq $context.T "maps"}}class="nav_selected"{{else}}class="nav"{{end}} style="margin-right:20px;">Maps</span>
         {{if eq $context.T "images"}}
         <div id="safesearch" style="float:right;">
           <button id="safesearchbtn">SafeSearch <span id="safesearch_selection">{{if eq $context.Safe false}}Off{{else}}On{{end}}</span></button>

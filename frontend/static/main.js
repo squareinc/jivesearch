@@ -187,5 +187,9 @@ $(document).ready(function() {
   $("#images").on("click", function(){
     changeParamAndRedirect("t", "images");
   });
+
+  $("#maps").on("click", function(){
+    changeParamAndRedirect("t", "maps");
+  });
 });
 
