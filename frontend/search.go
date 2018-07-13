@@ -227,7 +227,6 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	if d.Context.Page == 1 {
 		channels++
-
 		ac = make(chan error)
 		go func(q string, ch chan error) {
 			ch <- f.addQuery(q)
@@ -314,6 +313,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 			imageCH <- sr
 		case "maps":
+			channels--
 		default:
 			key := cacheKey("search", lang, region, r.URL)
 
