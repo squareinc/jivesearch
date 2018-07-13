@@ -45,7 +45,7 @@
           center: ol.proj.fromLonLat([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]),
           zoom: 10
         })
-      });
+      });      
     </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
