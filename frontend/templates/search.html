@@ -7,9 +7,9 @@
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "maps"}}
-      <link rel="stylesheet" href="/static/instant/maps/ol.css" type="text/css">
+      <link rel="stylesheet" href="/static/instant/maps/mapbox.css">
       <style>
-        .map {
+        #map {
           position:absolute; top:0; bottom:0; left:0; right:0; height: 100%; width: 100%;
         }
       </style>
@@ -32,20 +32,11 @@
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
     {{else if eq .Instant.Type "maps"}}
-    <script src="/static/instant/maps/ol.js"></script>
+    <script src="/static/instant/maps/mapbox.js"></script>
     <script>
-     var map = new ol.Map({
-        target: "map",
-        layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM()
-          })
-        ],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]),
-          zoom: 10
-        })
-      });      
+      L.mapbox.accessToken = {{.MapBoxKey}};
+      var map = L.mapbox.map('map', 'mapbox.streets')
+          .setView([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}], 9);
     </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
@@ -148,7 +139,7 @@
 
   {{if eq .Context.T "maps"}}
   <div class="pure-u-1">
-      <div id="map" class="map"></div>
+    <div id="map"></div>
   </div>
   {{end}}
 
