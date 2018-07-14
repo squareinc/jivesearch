@@ -106,7 +106,6 @@ func main() {
 	c.Limit(&colly.LimitRule{
 		DomainGlob:  "*",
 		Parallelism: v.GetInt("crawler.workers"), // Parallelism of 1 will give us only 1 worker for ALL domains...
-		Delay:       1 * time.Second,
 	},
 	)
 
