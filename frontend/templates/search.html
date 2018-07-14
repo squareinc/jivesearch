@@ -31,7 +31,7 @@
     <script>
       L.mapbox.accessToken = {{.MapBoxKey}};
       var map = L.mapbox.map('map', 'mapbox.streets')
-        .setView([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}], 9);
+        .setView([{{.Instant.Solution.Latitude}}, {{.Instant.Solution.Longitude}}], 9);
     </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
