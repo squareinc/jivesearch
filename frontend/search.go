@@ -313,6 +313,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 			imageCH <- sr
 		case "maps":
+			resp.template = "maps"
 			channels--
 		default:
 			key := cacheKey("search", lang, region, r.URL)

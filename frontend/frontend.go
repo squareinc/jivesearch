@@ -227,6 +227,13 @@ func (f *Frontend) autocompleteHandler(w http.ResponseWriter, r *http.Request) *
 // ParseTemplates parses our html templates.
 var ParseTemplates = func() {
 	templates = make(map[string]*template.Template)
+	templates["maps"] = template.Must(
+		template.New("maps.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/maps.html",
+			),
+	)
 	templates["search"] = template.Must(
 		template.New("base.html").
 			Funcs(funcMap).

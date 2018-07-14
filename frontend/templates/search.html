@@ -8,11 +8,6 @@
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "maps"}}
       <link rel="stylesheet" href="/static/instant/maps/mapbox.css">
-      <style>
-        #map {
-          position:absolute; top:0; bottom:0; left:0; right:0; height: 100%; width: 100%;
-        }
-      </style>
       {{else if eq .Instant.Type "stock quote"}}
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
@@ -36,7 +31,7 @@
     <script>
       L.mapbox.accessToken = {{.MapBoxKey}};
       var map = L.mapbox.map('map', 'mapbox.streets')
-          .setView([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}], 9);
+        .setView([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}], 9);
     </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
@@ -135,12 +130,6 @@
   {{if .Search.Count}}
   <div class="pure-u-1 pure-u-xl-2-24 spacer count"></div>
   <div class="pure-u-1 pure-u-xl-22-24 count">{{.Search.Count | Commafy}} results</div>
-  {{end}}
-
-  {{if eq .Context.T "maps"}}
-  <div class="pure-u-1">
-    <div id="map"></div>
-  </div>
   {{end}}
 
   {{if and .Instant .Instant.Triggered}}
