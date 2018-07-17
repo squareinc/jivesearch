@@ -62,6 +62,7 @@ func setup(v *viper.Viper) *http.Server {
 			Logo:      v.GetString("brand.logo"),
 			SmallLogo: v.GetString("brand.small_logo"),
 		},
+		Host: v.GetString("server.host"),
 	}
 
 	router := f.Router(v)
@@ -94,7 +95,28 @@ func main() {
 		},
 	}
 
-	f.Images = &img.ElasticSearch{
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			Dial: (&nett.Dialer{
+				Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
+				IPFilter: nett.DualStack,
+			}).Dial,
+			DisableKeepAlives: true,
+		},
+		Timeout: 3 * time.Second,
+	}
+
+	f.Images.Client = &http.Client{
+		Transport: &http.Transport{
+			Dial: (&nett.Dialer{
+				Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
+				IPFilter: nett.DualStack,
+			}).Dial,
+			DisableKeepAlives: true,
+		},
+		Timeout: 1 * time.Second,
+	}
+	f.Images.Fetcher = &img.ElasticSearch{
 		Client:        client,
 		Index:         v.GetString("elasticsearch.images.index"),
 		Type:          v.GetString("elasticsearch.images.type"),
@@ -200,17 +222,6 @@ func main() {
 	db.SetMaxIdleConns(0)
 
 	// Instant Answers
-	httpClient := &http.Client{
-		Transport: &http.Transport{
-			Dial: (&nett.Dialer{
-				Resolver: &nett.CacheResolver{TTL: 10 * time.Minute},
-				IPFilter: nett.DualStack,
-			}).Dial,
-			DisableKeepAlives: true,
-		},
-		Timeout: 5 * time.Second,
-	}
-
 	f.GitHub = frontend.GitHub{
 		HTTPClient: httpClient,
 	}

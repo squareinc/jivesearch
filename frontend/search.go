@@ -1,12 +1,15 @@
 package frontend
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jivesearch/jivesearch/bangs"
@@ -374,6 +377,36 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	for i := 0; i < channels; i++ {
 		select {
 		case d.Images = <-imageCH:
+			// fetch the image & convert to base64 for smoother user experience
+			tmp := make(chan *img.Image, len(d.Images.Images))
+
+			go func() {
+				for im := range tmp {
+					for i, o := range d.Images.Images {
+						if im.ID == o.ID {
+							d.Images.Images[i] = im
+						}
+					}
+				}
+			}()
+
+			var wg sync.WaitGroup
+
+			for _, im := range d.Images.Images {
+				wg.Add(1)
+				go func(im *img.Image) {
+					var err error
+					im, err = f.fetchImage(im)
+					if err != nil {
+						log.Debug.Println(err)
+					}
+					tmp <- im
+					wg.Done()
+				}(im)
+			}
+
+			wg.Wait()
+
 			stats.images = time.Since(strt).Round(time.Millisecond)
 		case d.Instant = <-ic:
 			if d.Instant.Err != nil {
@@ -402,6 +435,31 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	resp.data = d
 	return resp
+}
+
+// fetchImage fetches and converts an image to Base64
+func (f *Frontend) fetchImage(i *img.Image) (*img.Image, error) {
+	var err error
+
+	// go through image proxy to resize and cache the image
+	key := hmacKey(i.ID)
+	u := fmt.Sprintf("%v/image/225x,s%v/%v", f.Host, key, i.ID)
+	fmt.Println(u)
+
+	resp, err := f.Images.Client.Get(u)
+	if err != nil {
+		return i, err
+	}
+
+	defer resp.Body.Close()
+
+	bdy, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return i, err
+	}
+
+	i.Base64 = base64.StdEncoding.EncodeToString(bdy)
+	return i, err
 }
 
 func cacheKey(item string, lang language.Tag, region language.Region, u *url.URL) string {

@@ -191,16 +191,5 @@ $(document).ready(function() {
   $("#map, #maps").on("click", function(){
     changeParamAndRedirect("t", "maps");
   });
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
-  async function show_images() {
-    await sleep(500);
-    $("object").show();
-  }
-  
-  show_images();
 });
 

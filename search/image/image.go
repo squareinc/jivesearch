@@ -20,6 +20,7 @@ type Image struct {
 	Classification map[string]float64 `json:"classification,omitempty"`
 	MIME           string             `json:"mime,omitempty"`
 	Crawled        string             `json:"crawled,omitempty"`
+	Base64         string             `json:"base64,omitempty"`
 }
 
 // EXIF is the metadata of an image

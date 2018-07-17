@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -20,6 +21,8 @@ func TestSetDefaults(t *testing.T) {
 
 	SetDefaults(cfg)
 
+	port := 8000
+
 	values := []struct {
 		key   string
 		value interface{}
@@ -31,6 +34,9 @@ func TestSetDefaults(t *testing.T) {
 		{"brand.tagline", "The little search engine that could."},
 		{"brand.logo", ""},
 		{"brand.small_logo", ""},
+
+		// Server
+		{"server.host", fmt.Sprintf("http://127.0.0.1:%d", port)},
 
 		// Elasticsearch
 		{"elasticsearch.url", "http://127.0.0.1:9200"},

@@ -2,6 +2,7 @@
 package config
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -35,6 +36,10 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("brand.tagline", "The little search engine that could.")
 	cfg.SetDefault("brand.logo", "")
 	cfg.SetDefault("brand.small_logo", "")
+
+	// Server
+	port := 8000
+	cfg.SetDefault("server.host", fmt.Sprintf("http://127.0.0.1:%d", port))
 
 	// Frontend Cache
 	cfg.SetDefault("cache.instant", 1*time.Second)
@@ -149,7 +154,7 @@ func SetDefaults(cfg Provider) {
 	cmd.Flags().Duration("time", tme, "duration the crawler should run")
 	cfg.BindPFlag("crawler.time", cmd.Flags().Lookup("time"))
 
-	cmd.Flags().Int("port", 8000, "server port")
+	cmd.Flags().Int("port", port, "server port")
 	cfg.BindPFlag("frontend.port", cmd.Flags().Lookup("port"))
 
 	// control debug output

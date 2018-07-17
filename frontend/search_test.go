@@ -20,7 +20,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
-	"github.com/jivesearch/jivesearch/search/image"
+	img "github.com/jivesearch/jivesearch/search/image"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
@@ -380,12 +380,14 @@ func TestSearchHandler(t *testing.T) {
 				},
 				Suggest: &mockSuggester{},
 				Search:  &mockSearch{},
-				Images:  &mockImages{},
 				Wikipedia: Wikipedia{
 					Matcher: matcher,
 				},
 				Vote: &mockVoter{},
 			}
+
+			f.Images.Client = &http.Client{}
+			f.Images.Fetcher = &mockImages{}
 			f.Cache.Cacher = &mockCacher{}
 			f.Cache.Instant = 10 * time.Second
 			f.Cache.Search = 10 * time.Second
@@ -457,7 +459,7 @@ func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, 
 
 type mockImages struct{}
 
-func (i *mockImages) Fetch(q string, safe bool, number int, offset int) (*image.Results, error) {
+func (i *mockImages) Fetch(q string, safe bool, number int, offset int) (*img.Results, error) {
 	return mockImageResults, nil
 }
 
@@ -524,12 +526,12 @@ var mockSearchResults = &search.Results{
 	Documents:  []*document.Document{},
 }
 
-var mockImageResults = &image.Results{
+var mockImageResults = &img.Results{
 	Count:      int64(25),
 	Page:       "1",
 	Previous:   "",
 	Next:       "2",
 	Last:       "72",
 	Pagination: []string{"1"},
-	Images:     []*image.Image{},
+	Images:     []*img.Image{},
 }
