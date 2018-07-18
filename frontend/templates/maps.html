@@ -45,7 +45,7 @@
       var map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/" + styles[0],
-        center: [{{.Instant.Solution.Latitude}}, {{.Instant.Solution.Longitude}}],
+        center: [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
         zoom: 9
       });
       var previewUpdate;
