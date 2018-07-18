@@ -7,7 +7,7 @@
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "maps"}}
-      <link rel="stylesheet" href="/static/instant/maps/mapbox.css">
+      <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
       {{else if eq .Instant.Type "stock quote"}}
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
@@ -28,10 +28,15 @@
     <script src="/static/instant/calculator/calculator.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
+    <script src="/static/instant/maps/geo-viewport.js"></script>
     <script>
-      L.mapbox.accessToken = {{.MapBoxKey}};
-      var map = L.mapbox.map('map', 'mapbox.streets')
-        .setView([{{.Instant.Solution.Latitude}}, {{.Instant.Solution.Longitude}}], 9);
+      mapboxgl.accessToken = "{{.MapBoxKey}}";
+      var map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v9",
+        center: [{{.Instant.Solution.Latitude}}, {{.Instant.Solution.Longitude}}],
+        zoom: 9
+      });
     </script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
