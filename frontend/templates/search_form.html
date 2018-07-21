@@ -65,6 +65,14 @@
       </div>
     </div>
     {{end}}
+    {{if eq .Search.Provider "Yandex"}}
+    <div class="pure-u-1" style="display:table-cell;vertical-align:middle;">
+      <span class="image" style="margin-left:5px;">
+        <img src="/static/providers/yandex-for-white-background.png"/>
+        <span style="display:table-cell;font-size:16px;color:#444;">has found {{.Search.Count|Commafy}} answers</span>
+      </span>        
+    </div>
+    {{end}}
     {{if .Search.Pagination}}
     <div class="pure-u-1" style="text-align:center;padding-top:10px;padding-bottom:35px;">
       <div class="pure-u-1" style="display:inline-block;color:#3367e5;">
