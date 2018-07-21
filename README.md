@@ -91,6 +91,8 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Filetype
     - [ ] SafeSearch        
     - [ ] Time Search (past year/month/day/hour, etc.
+    - [x] 3rd party search providers
+        -[x] Yandex API
 - [x] Autocomplete
 - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
 - [x] Instant Answers
