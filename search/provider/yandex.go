@@ -143,6 +143,8 @@ func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, numb
 		return nil, err
 	}
 
+	fmt.Println(u.String())
+
 	resp, err := y.Client.Get(u.String())
 	if err != nil {
 		return nil, err
@@ -174,6 +176,13 @@ func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, numb
 
 		d.Title = r.Doc.Title.Title
 		d.Description = r.Doc.Headline.Headline
+		if d.Description == "" {
+			for _, p := range r.Doc.Passages.Passage {
+				d.Description = p.Passage
+				break
+			}
+		}
+
 		res.Documents = append(res.Documents, d)
 
 		for _, f := range yr.Response.Found {

@@ -68,10 +68,7 @@ var YandexHendrixResponse = `<?xml version="1.0" encoding="utf-8"?>
                         <size>911</size>
                         <charset>utf-8</charset>
                         <passages>
-                            <passage>Official Website of
-                                <hlword>Jimi</hlword>
-                                <hlword>Hendrix</hlword>
-                                with news, music, videos, album information and more!</passage>
+                            <passage>Official Website of Jimi Hendrix with news, music, videos, album information and more!</passage>
                             <passage>SIGN UP FOR THE
                                 <hlword>Jimi</hlword>
                                 <hlword>Hendrix</hlword>
@@ -117,6 +114,7 @@ func TestYandexFetch(t *testing.T) {
 	}
 
 	doc2.Title = "Jimi Hendrix | The Official Site"
+	doc2.Description = "Official Website of Jimi Hendrix with news, music, videos, album information and more!"
 
 	for _, tt := range []struct {
 		name string
