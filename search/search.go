@@ -12,7 +12,7 @@ import (
 
 // Fetcher outlines the methods used to retrieve the core search results
 type Fetcher interface {
-	Fetch(q string, lang language.Tag, region language.Region, number int, page int, votes []vote.Result) (*Results, error)
+	Fetch(q string, lang language.Tag, region language.Region, number int, offset int, votes []vote.Result) (*Results, error)
 }
 
 // Provider is a search provider
