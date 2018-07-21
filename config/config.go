@@ -131,6 +131,10 @@ func SetDefaults(cfg Provider) {
 	// MaxMind geolocation DB
 	cfg.SetDefault("maxmind.database", "/usr/share/GeoIP/GeoLite2-City.mmdb")
 
+	// Search Providers
+	cfg.SetDefault("yandex.key", "key")
+	cfg.SetDefault("yandex.user", "user")
+
 	// UPS package tracking API settings
 	cfg.SetDefault("ups.user", "user")
 	cfg.SetDefault("ups.password", "password")
@@ -160,6 +164,10 @@ func SetDefaults(cfg Provider) {
 	// control debug output
 	cmd.Flags().Bool("debug", false, "turn on debug output")
 	cfg.BindPFlag("debug", cmd.Flags().Lookup("debug"))
+
+	// change search provider
+	cmd.Flags().String("provider", "", "choose search provider")
+	cfg.BindPFlag("search.provider", cmd.Flags().Lookup("provider"))
 
 	// wikipedia dump file settings
 	cmd.Flags().String("dir", "", "path to save wiki dump files")

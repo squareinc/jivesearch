@@ -15,8 +15,12 @@ type Fetcher interface {
 	Fetch(q string, lang language.Tag, region language.Region, number int, page int, votes []vote.Result) (*Results, error)
 }
 
+// Provider is a search provider
+type Provider string
+
 // Results are the core search results from a query
 type Results struct {
+	Provider   Provider
 	Count      int64                `json:"count"`
 	Page       string               `json:"page"`
 	Previous   string               `json:"previous"`

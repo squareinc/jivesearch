@@ -32,6 +32,7 @@ import (
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
 	img "github.com/jivesearch/jivesearch/search/image"
+	"github.com/jivesearch/jivesearch/search/provider"
 	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/lib/pq"
@@ -87,14 +88,6 @@ func main() {
 		panic(err)
 	}
 
-	f.Search = &search.ElasticSearch{
-		ElasticSearch: &document.ElasticSearch{
-			Client: client,
-			Index:  v.GetString("elasticsearch.search.index"),
-			Type:   v.GetString("elasticsearch.search.type"),
-		},
-	}
-
 	httpClient := &http.Client{
 		Transport: &http.Transport{
 			Dial: (&nett.Dialer{
@@ -104,6 +97,23 @@ func main() {
 			DisableKeepAlives: true,
 		},
 		Timeout: 3 * time.Second,
+	}
+
+	switch v.GetString("search.provider") {
+	case "yandex":
+		f.Search = &provider.Yandex{
+			Client: httpClient,
+			Key:    v.GetString("yandex.key"),
+			User:   v.GetString("yandex.user"),
+		}
+	default:
+		f.Search = &search.ElasticSearch{
+			ElasticSearch: &document.ElasticSearch{
+				Client: client,
+				Index:  v.GetString("elasticsearch.search.index"),
+				Type:   v.GetString("elasticsearch.search.type"),
+			},
+		}
 	}
 
 	f.Images.Client = &http.Client{
