@@ -44,14 +44,16 @@ vm.max_map_count=262144
 
 For systemd settings (replace "myuser" below and edit env variables as needed):
 ```bash
-sudo curl -o /etc/systemd/system/crawler.service https://gist.githubusercontent.com/brentadamson/0880ef548130f69c2537049a550be8e8/raw/42269dfcba6d86aba49bc56ffa7e60a9eb7ebdf3/crawler
-```
-```bash
 sudo curl -o /etc/systemd/system/frontend.service https://gist.githubusercontent.com/brentadamson/7b8117347909cc38384fed589a3d785d/raw/1a0f14f7a8e61abd007224b3f0937e62e344a3e5/frontend
 ```
 ```bash
 sudo curl -o /etc/systemd/system/images.service https://gist.githubusercontent.com/brentadamson/daafa09f8d06eb401e0eb72c2b992261/raw/357e66de29d56739ae41d61cbe227d36819e0df4/images
 ```
+```bash
+sudo curl -o /etc/systemd/system/crawler.service https://gist.githubusercontent.com/brentadamson/0880ef548130f69c2537049a550be8e8/raw/42269dfcba6d86aba49bc56ffa7e60a9eb7ebdf3/crawler
+```
+(The crawler is only necessary if you don't use a third-party search provider like Yandex.)
+
 
 ##### Wikipedia Dump File
 ```bash
