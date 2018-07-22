@@ -235,52 +235,58 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			ch <- f.addQuery(q)
 		}(d.Context.Q, ac)
 
-		if d.Context.T != "images" {
-			channels++
-			ic = make(chan instant.Data)
-			go func(r *http.Request) {
-				lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
-				key := cacheKey("instant", lang, f.detectRegion(lang, r), r.URL)
+		//if d.Context.T != "images" {
+		channels++
+		ic = make(chan instant.Data)
+		go func(r *http.Request) {
+			lang, _, _ := f.Wikipedia.Matcher.Match(d.Context.Preferred...)
+			key := cacheKey("instant", lang, f.detectRegion(lang, r), r.URL)
 
-				v, err := f.Cache.Get(key)
-				if err != nil {
+			v, err := f.Cache.Get(key)
+			if err != nil {
+				log.Info.Println(err)
+			}
+
+			if v != nil {
+				ir := &Instant{
+					instant.Data{},
+				}
+
+				if err := json.Unmarshal(v.([]byte), &ir); err != nil {
 					log.Info.Println(err)
 				}
 
-				if v != nil {
-					ir := &Instant{
-						instant.Data{},
-					}
+				ic <- ir.Data
+				return
+			}
 
-					if err := json.Unmarshal(v.([]byte), &ir); err != nil {
-						log.Info.Println(err)
-					}
+			// only need to trigger the maps instant answer if maps or images nav selected
+			var onlyMaps bool
+			if d.Context.T == "maps" || d.Context.T == "images" {
+				onlyMaps = true
+			}
 
-					ic <- ir.Data
-					return
+			res := f.DetectInstantAnswer(r, lang, onlyMaps)
+			if res.Cache {
+				var d = f.Cache.Instant
+
+				switch res.Type {
+				case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
+					d = 1 * time.Minute
 				}
 
-				res := f.DetectInstantAnswer(r, lang, d.Context.T == "maps")
-				if res.Cache {
-					var d = f.Cache.Instant
-
-					switch res.Type {
-					case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
-						d = 1 * time.Minute
-					}
-
-					if d > f.Cache.Instant {
-						d = f.Cache.Instant
-					}
-
-					if err := f.Cache.Put(key, res, d); err != nil {
-						log.Info.Println(err)
-					}
+				if d > f.Cache.Instant {
+					d = f.Cache.Instant
 				}
 
-				ic <- res
-			}(r)
-		}
+				if err := f.Cache.Put(key, res, d); err != nil {
+					log.Info.Println(err)
+				}
+			}
+
+			ic <- res
+		}(r)
+		//}
 	}
 
 	go func(d data, lang language.Tag, region language.Region) {
