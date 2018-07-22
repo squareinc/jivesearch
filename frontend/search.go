@@ -532,6 +532,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.Temperature{},
 			&instant.USPS{Fetcher: f.Instant.USPSFetcher},
 			&instant.UPS{Fetcher: f.Instant.UPSFetcher},
+			&instant.URLEncode{},
 			&instant.UserAgent{},
 			&instant.StackOverflow{Fetcher: f.Instant.StackOverflowFetcher},
 			&instant.Weather{Fetcher: f.Instant.WeatherFetcher, LocationFetcher: f.Instant.LocationFetcher},
