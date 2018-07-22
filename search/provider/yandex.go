@@ -143,8 +143,6 @@ func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, numb
 		return nil, err
 	}
 
-	fmt.Println(u.String())
-
 	resp, err := y.Client.Get(u.String())
 	if err != nil {
 		return nil, err

@@ -48,6 +48,8 @@ func answers(i Instant) []Answerer {
 		&Temperature{},
 		&USPS{Fetcher: i.USPSFetcher},
 		&UPS{Fetcher: i.UPSFetcher},
+		&URLDecode{},
+		&URLEncode{},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
 		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},

@@ -36,8 +36,8 @@ func (u *URLEncode) setType() Answerer {
 
 func (u *URLEncode) setRegex() Answerer {
 	triggers := []string{
-		"urlencode", "encodeurl", "url encode", "encode url", "urlescape", "escapeurl", "url escape", "escape url",
-		"uriencode", "encodeuri", "uri encode", "encode uri", "uriescape", "escapeuri", "uri escape", "escape uri",
+		"urlencode", "encodeurl", "url encode", "encode url", "urlescape", "urlescaper", "escapeurl", "url escape", "url escaper", "escape url",
+		"uriencode", "encodeuri", "uri encode", "encode uri", "uriescape", "uriescaper", "escapeuri", "uri escape", "uri escaper", "escape uri",
 	}
 
 	t := strings.Join(triggers, "|")
@@ -62,7 +62,7 @@ func (u *URLEncode) tests() []test {
 
 	tests := []test{
 		{
-			query: "encode http://www.example.com?q=this|that",
+			query: "urlencode http://www.example.com?q=this|that",
 			expected: []Data{
 				{
 					Type:      typ,
