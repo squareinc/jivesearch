@@ -1,75 +1,88 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>{{if .Context.Q}}{{.Context.Q}} - {{end}}{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-      } 
-      #container {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-      }
-      #map {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-      }
-      img#preview {
-        position: absolute;
-        bottom: 35px;
-        left: 10px;
-        cursor: pointer;
-      }    
-    </style>
-  </head>
+  {{if ne .Instant.Type "maps"}}
+  <!--eg if user manually changes q param while looking at a map-->
   <body>
-    <div id="container">
-      <div id="map"></div>
-      <img id="preview" />
-    </div>
-    <script src="/static/instant/maps/mapbox.js"></script>
-    <script src="/static/instant/maps/geo-viewport.js"></script>
+    <script src="/static/jquery-1.12.2.min.js"></script>
+    <script src="/static/base.js"></script>
     <script>
-      mapboxgl.accessToken = "{{.MapBoxKey}}";
-      var styles = ["streets-v9", "satellite-v9"];
-      var map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/" + styles[0],
-        center: [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
-        zoom: 9
-      });
-      var previewUpdate;
-      map.on("render", function() {
-        clearTimeout(previewUpdate)
-        previewUpdate = setTimeout(setMapPreview, 100)
-      });
-
-      document.getElementById("preview").addEventListener("click", function () {
-        styles.push(styles.shift())
-        map.setStyle("mapbox://styles/mapbox/" + styles[0])
-      })
-
-      function setMapPreview() {
-        var bounds = map.getBounds().toArray();
-          bounds = [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
-        var size = [125, 125];
-        var vp = geoViewport.viewport(bounds, size, 0, 24, 512);
-
-        document.getElementById("preview").src =
-          "https://api.mapbox.com/styles/v1/mapbox/" + styles[1] + "/static/" +
-          vp.center.join(",") + "," + vp.zoom + "," + map.getBearing() + "," + map.getPitch() + "/" +
-          size.join("x") + "?" + "attribution=false&logo=false&access_token=" + mapboxgl.accessToken;
-      }
+      $(document).ready(function() {
+        changeParamAndRedirect("t", "");
+      });  
     </script>
   </body>
+  {{else}}
+    <head>
+      <meta charset="utf-8" />
+      <title>{{if .Context.Q}}{{.Context.Q}} - {{end}}{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</title>
+      <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+      <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
+      <style>
+        body {
+          margin: 0px;
+          padding: 0px;
+        } 
+        #container {
+          position: absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+        }
+        #map {
+          position: absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+        }
+        img#preview {
+          position: absolute;
+          bottom: 35px;
+          left: 10px;
+          cursor: pointer;
+        }    
+      </style>
+    </head>
+    <body>
+      <div id="container">
+        <div id="map"></div>
+        <img id="preview" />
+      </div>
+      <script src="/static/instant/maps/mapbox.js"></script>
+      <script src="/static/instant/maps/geo-viewport.js"></script>
+      <script>
+        mapboxgl.accessToken = "{{.MapBoxKey}}";
+        var styles = ["streets-v9", "satellite-v9"];
+        var map = new mapboxgl.Map({
+          container: "map",
+          style: "mapbox://styles/mapbox/" + styles[0],
+          center: [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
+          zoom: 9
+        });
+        var previewUpdate;
+        map.on("render", function() {
+          clearTimeout(previewUpdate)
+          previewUpdate = setTimeout(setMapPreview, 100)
+        });
+
+        document.getElementById("preview").addEventListener("click", function () {
+          styles.push(styles.shift())
+          map.setStyle("mapbox://styles/mapbox/" + styles[0])
+        })
+
+        function setMapPreview() {
+          var bounds = map.getBounds().toArray();
+            bounds = [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
+          var size = [125, 125];
+          var vp = geoViewport.viewport(bounds, size, 0, 24, 512);
+
+          document.getElementById("preview").src =
+            "https://api.mapbox.com/styles/v1/mapbox/" + styles[1] + "/static/" +
+            vp.center.join(",") + "," + vp.zoom + "," + map.getBearing() + "," + map.getPitch() + "/" +
+            size.join("x") + "?" + "attribution=false&logo=false&access_token=" + mapboxgl.accessToken;
+        }
+      </script>
+    </body>
+  {{end}}
 </html>
