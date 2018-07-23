@@ -37,6 +37,7 @@ func answers(i Instant) []Answerer {
 		&Length{},
 		&Maps{LocationFetcher: i.LocationFetcher},
 		&Minify{},
+		&MortgageCalculator{},
 		&Potus{},
 		&Power{},
 		&Prime{},

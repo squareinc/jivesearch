@@ -527,6 +527,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.Length{},
 			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},
 			&instant.Minify{},
+			&instant.MortgageCalculator{},
 			&instant.Potus{},
 			&instant.Power{},
 			&instant.Prime{},
