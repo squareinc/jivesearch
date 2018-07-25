@@ -455,7 +455,7 @@ var shaqWikidata = &Wikidata{
 
 var italyRawJSON = []byte(fmt.Sprintf(`{"type": "item", "id": "Q38", "claims": %v}`, italyRawClaims))
 
-var italyClaims = &Claims{ // coordinate not implemented yet
+var italyClaims = &Claims{
 	Coordinate: []Coordinate{
 		{
 			Latitude:  []float64{float64(43)},
