@@ -173,7 +173,7 @@ type claims struct {
 	Members     []claim `json:"P527"`
 	Residence   []claim `json:"P551"`
 	Hand        []claim `json:"P552"`
-	//Coordinate  []claim `json:"P625"`
+	Coordinate  []claim `json:"P625"`
 	Birthday    []claim `json:"P569"`
 	Death       []claim `json:"P570"`
 	Start       []claim `json:"P571"`
@@ -203,37 +203,37 @@ type claims struct {
 
 // Claims are the formatted and condensed version of the Wikidata claims
 type Claims struct {
-	Image       []string    `json:"image,omitempty"`
-	BirthPlace  []Wikidata  `json:"birthplace,omitempty"`
-	Sex         []Wikidata  `json:"sex,omitempty"`
-	Father      []Wikidata  `json:"father,omitempty"`
-	Mother      []Wikidata  `json:"mother,omitempty"`
-	Spouse      []Spouse    `json:"spouse,omitempty"`
-	Country     []Wikidata  `json:"country,omitempty"` // country of residence
-	Instance    []Wikidata  `json:"instance,omitempty"`
-	Capital     []Wikidata  `json:"capital,omitempty"`
-	Currency    []Wikidata  `json:"currency,omitempty"`
-	Flag        []string    `json:"flag,omitempty"`
-	Teams       []Team      `json:"teams,omitempty"` // sports teams
-	Education   []Education `json:"education,omitempty"`
-	Occupation  []Wikidata  `json:"occupation,omitempty"`
-	Signature   []string    `json:"signature,omitempty"`
-	Interment   []Interment `json:"interment,omitempty"` // burial/ashes location
-	Genre       []Wikidata  `json:"genre,omitempty"`
-	Religion    []Wikidata  `json:"religion,omitempty"`
-	Awards      []Award     `json:"awards,omitempty"`
-	Ethnicity   []Wikidata  `json:"ethnicity,omitempty"`
-	Military    []Military  `json:"military,omitempty"` // military branch
-	RecordLabel []Wikidata  `json:"record_label,omitempty"`
-	Position    []Wikidata  `json:"position,omitempty"` // e.g. position on team...forward, center, etc..
-	MusicBrainz []string    `json:"musicbrainz,omitempty"`
-	Partner     []Spouse    `json:"partner,omitempty"`
-	Origin      []Wikidata  `json:"origin,omitempty"`         // country of origin
-	DeathCause  []Wikidata  `json:"cause_of_death,omitempty"` // there is also P1196 "manner of death"
-	Members     []Member    `json:"members,omitempty"`
-	Residence   []Wikidata  `json:"residence,omitempty"`
-	Hand        []Wikidata  `json:"hand,omitempty"` // left or right-handed
-	//Coordinate  []Coordinate `json:"coordinate,omitempty"`
+	Image       []string     `json:"image,omitempty"`
+	BirthPlace  []Wikidata   `json:"birthplace,omitempty"`
+	Sex         []Wikidata   `json:"sex,omitempty"`
+	Father      []Wikidata   `json:"father,omitempty"`
+	Mother      []Wikidata   `json:"mother,omitempty"`
+	Spouse      []Spouse     `json:"spouse,omitempty"`
+	Country     []Wikidata   `json:"country,omitempty"` // country of residence
+	Instance    []Wikidata   `json:"instance,omitempty"`
+	Capital     []Wikidata   `json:"capital,omitempty"`
+	Currency    []Wikidata   `json:"currency,omitempty"`
+	Flag        []string     `json:"flag,omitempty"`
+	Teams       []Team       `json:"teams,omitempty"` // sports teams
+	Education   []Education  `json:"education,omitempty"`
+	Occupation  []Wikidata   `json:"occupation,omitempty"`
+	Signature   []string     `json:"signature,omitempty"`
+	Interment   []Interment  `json:"interment,omitempty"` // burial/ashes location
+	Genre       []Wikidata   `json:"genre,omitempty"`
+	Religion    []Wikidata   `json:"religion,omitempty"`
+	Awards      []Award      `json:"awards,omitempty"`
+	Ethnicity   []Wikidata   `json:"ethnicity,omitempty"`
+	Military    []Military   `json:"military,omitempty"` // military branch
+	RecordLabel []Wikidata   `json:"record_label,omitempty"`
+	Position    []Wikidata   `json:"position,omitempty"` // e.g. position on team...forward, center, etc..
+	MusicBrainz []string     `json:"musicbrainz,omitempty"`
+	Partner     []Spouse     `json:"partner,omitempty"`
+	Origin      []Wikidata   `json:"origin,omitempty"`         // country of origin
+	DeathCause  []Wikidata   `json:"cause_of_death,omitempty"` // there is also P1196 "manner of death"
+	Members     []Member     `json:"members,omitempty"`
+	Residence   []Wikidata   `json:"residence,omitempty"`
+	Hand        []Wikidata   `json:"hand,omitempty"` // left or right-handed
+	Coordinate  []Coordinate `json:"coordinate,omitempty"`
 	Birthday    []DateTime   `json:"birthday,omitempty"`
 	Death       []DateTime   `json:"death,omitempty"`
 	Start       []DateTime   `json:"start,omitempty"`

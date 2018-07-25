@@ -131,7 +131,12 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 				)`, tag, tag),
 			)
 		case []Coordinate:
-
+			stmts = append(stmts, fmt.Sprintf(`
+				"%v" AS (
+					SELECT build_coordinate(claims->'%v') item
+					FROM item
+				)`, tag, tag),
+			)
 		default: // e.g. has qualifiers
 			var elem reflect.Value
 			field := reflect.Indirect(reflect.ValueOf(item.Claims)).Field(i)
@@ -498,6 +503,22 @@ func (p *PostgreSQL) Setup() error {
 	$$;
 	`
 
+	buildCoordinate := `
+	CREATE OR REPLACE FUNCTION build_coordinate(jsonb) 
+	RETURNS jsonb immutable strict language sql as $$
+		SELECT jsonb_agg(                                               
+			jsonb_build_object(                                     
+				'latitude', x.d->'latitude',
+				'longitude', x.d->'longitude',
+				'altitude', x.d->'altitude',
+				'precision', x.d->'precision',				
+				'globe', x.d->'globe'                
+			)                                                       
+		)                                                               
+		FROM jsonb_array_elements($1) AS x(d)                           
+	$$; 
+	`
+
 	buildDateTime := `
 	CREATE OR REPLACE FUNCTION build_datetime(jsonb) 
 	RETURNS jsonb immutable strict language sql as $$
@@ -554,7 +575,7 @@ func (p *PostgreSQL) Setup() error {
 	$$;
 	`
 
-	for _, f := range []string{buildItem, buildDateTime, buildQuantity, buildImage} {
+	for _, f := range []string{buildItem, buildCoordinate, buildDateTime, buildQuantity, buildImage} {
 		if _, err := p.DB.Exec(f); err != nil {
 			return err
 		}

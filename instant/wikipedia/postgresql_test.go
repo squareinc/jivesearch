@@ -314,6 +314,7 @@ func TestSetup(t *testing.T) {
 	mock.ExpectExec("CREATE OR REPLACE FUNCTION").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectExec("CREATE OR REPLACE FUNCTION").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectExec("CREATE OR REPLACE FUNCTION").WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("CREATE OR REPLACE FUNCTION").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = p.Setup()
 	if err != nil {

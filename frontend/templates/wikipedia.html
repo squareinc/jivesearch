@@ -4,22 +4,36 @@
     {{if $wikipedia.Wikipedia.Text}}
     <div id="wikipedia" class="pure-u-1 pure-u-xl-9-24">
       <div id="wikipedia_image">
-      {{range $i, $img := $wikipedia.Claims.Flag}}
-        {{if eq $i 0}}
+        {{if $wikipedia.Claims.Image}}
+          {{$img := index $wikipedia.Claims.Image 0}}
           {{$key := $img | HMACKey}}
           <a href="/image/250x,s{{$key}}/{{$img}}">
             <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
           </a>
         {{end}}
-      {{end}}
-      {{range $i, $img := $wikipedia.Claims.Image}}
-        {{if eq $i 0}}
-        {{$key := $img | HMACKey}}
-        <a href="/image/250x,s{{$key}}/{{$img}}">
-          <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
-        </a>
+        <!--show either map or flag but not both (since we only have space for 1)-->
+        {{if $wikipedia.Claims.Coordinate}}
+          {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
+          <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
+          <div id="map" style="vertical-align:middle;width:250px;height:260px;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"></div>
+          <script src="/static/instant/maps/mapbox.js"></script>
+          <script src="/static/instant/maps/geo-viewport.js"></script>
+          <script>
+            mapboxgl.accessToken = "{{.MapBoxKey}}";
+            var map = new mapboxgl.Map({
+              container: "map",
+              style: "mapbox://styles/mapbox/streets-v9",
+              center:  [{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}],
+              zoom: 8
+            });
+          </script>
+        {{else if $wikipedia.Claims.Flag}}
+          {{$img := index $wikipedia.Claims.Flag 0}}
+          {{$key := $img | HMACKey}}
+          <a href="/image/250x,s{{$key}}/{{$img}}">
+            <img src="/image/250x,s{{$key}}/{{$img}}" title="{{$img}}" border="0" style="vertical-align:middle;max-height:100%;max-width:49.5%;display:inline-block;position:relative;padding:0px;margin:0px;"/>
+          </a>
         {{end}}
-      {{end}} 
       </div>
       <div id="wikipedia_box">
         <div class="pure-u-1" style="font-size:30px;margin-bottom:1px;font-weight:400;">
