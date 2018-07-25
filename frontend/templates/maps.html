@@ -61,12 +61,12 @@
         });
 
         {{if eq .Instant.Type "maps"}}
-          map.center = [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}];
+          map.setCenter([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]);
         {{else if eq .Instant.Type "wikipedia"}}
           {{$wikipedia := .Instant|WikipediaItem}}
           {{if $wikipedia.Claims.Coordinate}}
             {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
-            map.center = [{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}];
+            map.setCenter([{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}]);
           {{else}}
             $(document).ready(function() {
               changeParamAndRedirect("t", "");
