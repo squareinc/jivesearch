@@ -457,12 +457,12 @@ var italyRawJSON = []byte(fmt.Sprintf(`{"type": "item", "id": "Q38", "claims": %
 
 var italyClaims = &Claims{ // coordinate not implemented yet
 	Coordinate: []Coordinate{
-		Coordinate{
+		{
 			Latitude:  []float64{float64(43)},
 			Longitude: []float64{float64(12)},
 			Altitude:  []float64{float64(1)},
 			Precision: []float64{float64(1)},
-			Globe:     []Wikidata{Wikidata{ID: "Q2"}},
+			Globe:     []Wikidata{{ID: "Q2"}},
 		},
 	},
 }

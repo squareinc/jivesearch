@@ -2,7 +2,6 @@ package frontend
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -353,8 +352,9 @@ func TestSearchHandler(t *testing.T) {
 						T:            "images",
 					},
 					Results: Results{
-						Images: mockImageResults,
-						Search: &search.Results{},
+						Instant: mockInstantAnswer,
+						Images:  mockImageResults,
+						Search:  &search.Results{},
 					},
 				},
 			},
@@ -404,8 +404,6 @@ func TestSearchHandler(t *testing.T) {
 			q.Add("t", c.t)
 			q.Add("safe", c.safe)
 			req.URL.RawQuery = q.Encode()
-
-			fmt.Println("safe", c.safe)
 
 			got := f.searchHandler(httptest.NewRecorder(), req)
 

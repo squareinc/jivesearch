@@ -511,6 +511,9 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 	case true:
 		answers = []instant.Answerer{
 			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},
+			&instant.Wikipedia{
+				Fetcher: f.Instant.WikipediaFetcher,
+			},
 		}
 	default:
 		answers = []instant.Answerer{

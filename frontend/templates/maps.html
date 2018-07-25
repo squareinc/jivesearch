@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  {{if ne .Instant.Type "maps"}}
+  {{if and (ne .Instant.Type "maps") (ne .Instant.Type "wikipedia")}}
   <!--eg if user manually changes q param while looking at a map-->
   <body>
     <script src="/static/jquery-1.12.2.min.js"></script>
@@ -8,7 +8,7 @@
     <script>
       $(document).ready(function() {
         changeParamAndRedirect("t", "");
-      });  
+      });
     </script>
   </body>
   {{else}}
@@ -41,7 +41,7 @@
           bottom: 35px;
           left: 10px;
           cursor: pointer;
-        }    
+        }
       </style>
     </head>
     <body>
@@ -53,13 +53,27 @@
       <script src="/static/instant/maps/geo-viewport.js"></script>
       <script>
         mapboxgl.accessToken = "{{.MapBoxKey}}";
-        var styles = ["streets-v9", "satellite-v9"];
+        var styles = ["streets-v9", "satellite-v9"]; 
         var map = new mapboxgl.Map({
           container: "map",
           style: "mapbox://styles/mapbox/" + styles[0],
-          center: [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
           zoom: 9
         });
+
+        {{if eq .Instant.Type "maps"}}
+          map.center = [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}];
+        {{else if eq .Instant.Type "wikipedia"}}
+          {{$wikipedia := .Instant|WikipediaItem}}
+          {{if $wikipedia.Claims.Coordinate}}
+            {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
+            map.center = [{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}];
+          {{else}}
+            $(document).ready(function() {
+              changeParamAndRedirect("t", "");
+            });
+          {{end}}
+        {{end}}
+
         var previewUpdate;
         map.on("render", function() {
           clearTimeout(previewUpdate)
