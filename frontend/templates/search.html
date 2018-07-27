@@ -8,6 +8,7 @@
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "maps"}}
       <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
+      <link href="/static/instant/maps/mapbox_directions.css" rel="stylesheet" />
       {{else if eq .Instant.Type "stock quote"}}
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
@@ -28,7 +29,7 @@
     <script src="/static/instant/calculator/calculator.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
-    <script src="/static/instant/maps/geo-viewport.js"></script>
+    <script src="/static/instant/maps/mapbox_directions.js"></script>
     <script>
       mapboxgl.accessToken = "{{.MapBoxKey}}";
       var map = new mapboxgl.Map({
@@ -37,6 +38,15 @@
         center:  [{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}],
         zoom: 9
       });
+
+      if ({{.Instant.Solution.Directions}}){
+        var directions = new MapboxDirections({
+          accessToken: mapboxgl.accessToken
+        });
+        map.addControl(directions, 'top-left');
+        directions.setOrigin({{.Instant.Solution.Origin}});
+        directions.setDestination({{.Instant.Solution.Destination}});
+      }
     </script>
     {{else if eq .Instant.Type "mortgage calculator"}}
     <script src="/static/instant/mortgage_calculator/mortgage_calculator.js"></script>

@@ -61,17 +61,22 @@
           style: "mapbox://styles/mapbox/" + styles[0],
           zoom: 9
         });
-        map.addControl(new MapboxDirections({
+        
+        var directions = new MapboxDirections({
           accessToken: mapboxgl.accessToken
-        }), "top-left");
-
+        });
+        map.addControl(directions, 'top-left');
+      
         {{if eq .Instant.Type "maps"}}
           map.setCenter([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]);
+          directions.setOrigin({{.Instant.Solution.Origin}});
+          directions.setDestination({{.Instant.Solution.Destination}});
         {{else if eq .Instant.Type "wikipedia"}}
           {{$wikipedia := .Instant|WikipediaItem}}
           {{if $wikipedia.Claims.Coordinate}}
             {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
             map.setCenter([{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}]);
+            directions.setDestination({{WikiLabel .Instant.Solution.Labels .Context.Preferred}});
           {{else}}
             $(document).ready(function() {
               changeParamAndRedirect("t", "");

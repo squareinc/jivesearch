@@ -18,7 +18,6 @@ import (
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
-	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
 )
 
@@ -59,6 +58,7 @@ type Answer struct {
 	regex       []*regexp.Regexp
 	triggerWord string
 	remainder   string
+	remainderM  map[string]string
 	Data
 }
 
@@ -144,6 +144,8 @@ func getIPAddress(r *http.Request) net.IP {
 
 // trigger executes the regex for an instant answer
 func (a *Answer) trigger() bool {
+	a.remainderM = map[string]string{}
+
 	for _, re := range a.regex {
 		match := re.FindStringSubmatch(a.query)
 		if len(match) == 0 {
@@ -162,8 +164,7 @@ func (a *Answer) trigger() bool {
 			case "remainder":
 				a.remainder = match[i]
 			default:
-				log.Info.Printf("unknown named capture group %q", name)
-				return false
+				a.remainderM[name] = match[i]
 			}
 		}
 		break
