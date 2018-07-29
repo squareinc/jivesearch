@@ -249,6 +249,12 @@
   version = "v6.1.8"
 
 [[projects]]
+  name = "github.com/openprovider/ecbrates"
+  packages = ["."]
+  revision = "f3782097d0a7c0b8c5be121d9bea29632736c0d4"
+  version = "0.3.0"
+
+[[projects]]
   name = "github.com/oschwald/geoip2-golang"
   packages = ["."]
   revision = "7118115686e16b77967cdbf55d1b944fe14ad312"
@@ -471,17 +477,17 @@
   revision = "6a222229fa0697e6da06ec80f8ffd0ada346669d"
 
 [[projects]]
+  branch = "master"
   name = "willnorris.com/go/imageproxy"
   packages = [
     ".",
     "third_party/http"
   ]
-  revision = "82ba3b64454920e6e46aa9cce2b1609838877b6a"
-  version = "v0.7.0"
+  revision = "74c16f575efbf6deac13e2a87cdd4c94eedf29e0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "12fa18dde3d9b693d9f5b6f3fa8bab3f0f87e860e92709d7898aa7ea5332db0a"
+  inputs-digest = "86222c39de72d3351c79a5426863cccc83fc4fca45e97866736580a784f1c3e8"
   solver-name = "gps-cdcl"
   solver-version = 1

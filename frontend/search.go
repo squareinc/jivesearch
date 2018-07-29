@@ -526,6 +526,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.DigitalStorage{},
 			&instant.FedEx{Fetcher: f.Instant.FedExFetcher},
 			&instant.Frequency{},
+			&instant.FX{Fetcher: f.Instant.FXFetcher},
 			&instant.Speed{}, // trigger "miles per hour" b/f "miles"
 			&instant.Length{},
 			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},

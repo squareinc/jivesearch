@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/discography"
+	"github.com/jivesearch/jivesearch/instant/fx"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -33,6 +34,7 @@ func answers(i Instant) []Answerer {
 		&DigitalStorage{},
 		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
+		&FX{Fetcher: i.FXFetcher},
 		&Speed{},
 		&Length{},
 		&Maps{LocationFetcher: i.LocationFetcher},
@@ -67,6 +69,7 @@ func TestDetect(t *testing.T) {
 	i := Instant{
 		QueryVar:             "q",
 		DiscographyFetcher:   &mockDiscographyFetcher{},
+		FXFetcher:            &mockFXFetcher{},
 		FedExFetcher:         &mockFedExFetcher{},
 		LinkShortener:        &mockShortener{},
 		LocationFetcher:      &mockLocationFetcher{},
@@ -222,6 +225,37 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 	}
 
 	return r, nil
+}
+
+type mockFXFetcher struct{}
+
+func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
+	return &fx.Response{
+		Rates: []*fx.Rate{
+			{
+				Base:     fx.USD,
+				Currency: fx.BGN,
+				Rate:     .5944,
+			},
+			{
+				Base:     fx.USD,
+				Currency: fx.EUR,
+				Rate:     1.1625,
+			},
+			{
+				Base:     fx.USD,
+				Currency: fx.JPY,
+				Rate:     0.009,
+			},
+			{
+				Base:     fx.USD,
+				Currency: fx.USD,
+				Rate:     1.0,
+			},
+		},
+		DateTime: time.Date(2018, 07, 27, 0, 0, 0, 0, time.UTC),
+		Provider: fx.ECBProvider,
+	}, nil
 }
 
 // mock location fetcher

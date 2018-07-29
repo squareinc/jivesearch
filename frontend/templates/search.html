@@ -6,6 +6,8 @@
     {{if .Instant}}
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
+      {{else if eq .Instant.Type "fx"}}
+      <link rel="stylesheet" href="/static/instant/fx/fx.css">
       {{else if eq .Instant.Type "maps"}}
       <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
       <link href="/static/instant/maps/mapbox_directions.css" rel="stylesheet" />
@@ -27,6 +29,8 @@
   {{if .Instant}}
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
+    {{else if eq .Instant.Type "fx"}}
+    <script src="/static/instant/fx/fx.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
     <script src="/static/instant/maps/mapbox_directions.js"></script>
@@ -284,6 +288,33 @@
           </div>
         </div>
       </div>
+      {{else if eq .Instant.Type "fx"}}
+        {{$fx := .Instant.Solution}}
+        <div id="fx" class="pure-u-18-24" style="margin-bottom:25px;">
+          <div class="pure-g">
+            <div class="pure-u-11-24">
+              <form class="pure-form unit">
+                <input class="pure-input-1" value="{{$fx.Notional}}"/>
+                <select class="pure-input-1">
+                  {{range $i, $u := $fx.Rates}}
+                    <option {{if eq $u.Currency.Short $fx.From.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
+                  {{end}}
+                </select>
+              </form>
+            </div>
+            <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
+            <div class="pure-u-11-24">
+              <form class="pure-form unit">
+                <input class="pure-input-1"/>
+                <select class="pure-input-1">
+                  {{range $i, $u := .Instant.Solution.Rates}}
+                    <option {{if eq $u.Currency.Short $fx.To.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
+                  {{end}}
+                </select>
+              </form>
+            </div>
+          </div>
+        </div>
       {{else if eq .Instant.Type "mortgage calculator"}}
       <div class="pure-u-1" style="margin-bottom:5px;border-bottom:1px solid #efefef;">
         <form class="pure-form pure-form-stacked" action="">
