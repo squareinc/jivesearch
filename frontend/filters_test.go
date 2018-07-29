@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/fx"
+
 	"github.com/jivesearch/jivesearch/instant/shortener"
 
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -259,6 +261,20 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
+		},
+		{
+			name: "fx",
+			args: args{
+				instant.Data{
+					Type: "fx",
+					Solution: &instant.FXResponse{
+						Response: &fx.Response{
+							Provider: fx.ECBProvider,
+						},
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="European Central Bank" src="/image/32x,sojbRuJxSVjihgjhBCVOb63w6Xx3m8AdLx0eLr47VdA8=/http://www.ecb.europa.eu/favicon.ico"/> European Central Bank`,
 		},
 		{
 			name: "stackoverflow",

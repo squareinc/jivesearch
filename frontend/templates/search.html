@@ -290,30 +290,34 @@
       </div>
       {{else if eq .Instant.Type "fx"}}
         {{$fx := .Instant.Solution}}
-        <div id="fx" class="pure-u-18-24" style="margin-bottom:25px;">
-          <div class="pure-g">
-            <div class="pure-u-11-24">
-              <form class="pure-form unit">
-                <input class="pure-input-1" value="{{$fx.Notional}}"/>
-                <select class="pure-input-1">
-                  {{range $i, $u := $fx.Rates}}
-                    <option {{if eq $u.Currency.Short $fx.From.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
-                  {{end}}
-                </select>
-              </form>
+        <div id="answer" class="pure-u-1" style="margin-top:10px;height: 245px;">
+          <div id="fx" class="pure-u-17-24" style="margin-top:15px;margin-bottom:25px;margin-left:15px;">
+            <div class="pure-g" style="margin-bottom:50px;">
+              <div class="pure-u-11-24">
+                <form class="pure-form unit">
+                  <input class="pure-input-1" value="{{$fx.Notional}}"/>
+                  <select class="pure-input-1">
+                    {{range $i, $u := $fx.Rates}}
+                      <option {{if eq $u.Currency.Short $fx.From.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
+                    {{end}}
+                  </select>
+                </form>
+              </div>
+              <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
+              <div class="pure-u-11-24">
+                <form class="pure-form unit">
+                  <input class="pure-input-1"/>
+                  <select class="pure-input-1">
+                    {{range $i, $u := .Instant.Solution.Rates}}
+                      <option {{if eq $u.Currency.Short $fx.To.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
+                    {{end}}
+                  </select>
+                </form>
+              </div>
             </div>
-            <div class="pure-u-2-24" style="font-size:24px;color:#666;margin-top:15px;text-align:center;">=</div>
-            <div class="pure-u-11-24">
-              <form class="pure-form unit">
-                <input class="pure-input-1"/>
-                <select class="pure-input-1">
-                  {{range $i, $u := .Instant.Solution.Rates}}
-                    <option {{if eq $u.Currency.Short $fx.To.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
-                  {{end}}
-                </select>
-              </form>
-            </div>
+            <div class="pure-u-1">Last updated {{$fx.DateTime.Format "January 2, 2006"}}</div>
           </div>
+          {{template "source" .}}
         </div>
       {{else if eq .Instant.Type "mortgage calculator"}}
       <div class="pure-u-1" style="margin-bottom:5px;border-bottom:1px solid #efefef;">

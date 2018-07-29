@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/fx"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -135,6 +137,15 @@ func source(answer instant.Data) string {
 		txt, u = "FedEx", "https://www.fedex.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="fedex" src="%v"/>`, proxyFavIcon("http://www.fedex.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+	case "fx":
+		q := answer.Solution.(*instant.FXResponse)
+		switch q.Provider {
+		case fx.ECBProvider:
+			img = fmt.Sprintf(`<img width="12" height="12" alt="European Central Bank" src="%v"/>`, proxyFavIcon("http://www.ecb.europa.eu/favicon.ico"))
+			f = fmt.Sprintf(`%v European Central Bank`, img)
+		default:
+			log.Debug.Printf("unknown fx provider %v\n", q.Provider)
+		}
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
 		// Can select one or the other but not both in their filter.
