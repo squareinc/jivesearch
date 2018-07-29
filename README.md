@@ -102,7 +102,7 @@ Marked items indicate progress has been made in that category. There is much mor
         - [x] Basic calculator
             - [ ] Mortgage, financial and other calculators
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
-        - [x] Converters (meters to feet, mb to gb, etc...)
+        - [x] Converters (foreign exchange, meters to feet, mb to gb, etc...)
     - [x] Maps
     - [x] Package Tracking (UPS, FedEx, USPS, etc...)
     - [x] Stack Overflow
