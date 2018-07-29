@@ -578,6 +578,8 @@ func detectType(t string) interface{} {
 	switch t {
 	case "discography":
 		v = &[]discography.Album{}
+	case "fx":
+		v = &instant.FXResponse{}
 	case "fedex", "ups", "usps":
 		v = &parcel.Response{}
 	case "stackoverflow":

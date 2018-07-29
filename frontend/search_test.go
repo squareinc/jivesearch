@@ -421,6 +421,7 @@ func TestDetectType(t *testing.T) {
 	}{
 		{"birthstone", nil},
 		{"fedex", &parcel.Response{}},
+		{"fx", &instant.FXResponse{}},
 		{"stackoverflow", &instant.StackOverflowAnswer{}},
 		{"stock quote", &stock.Quote{}},
 		{"url shortener", &shortener.Response{}},
