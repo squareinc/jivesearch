@@ -30,6 +30,7 @@
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
     {{else if eq .Instant.Type "fx"}}
+    <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
     <script src="/static/instant/fx/fx.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
@@ -181,7 +182,7 @@
               {{else}}
                 <a class="album_link"><br>
                 <i class="icon-picture" aria-hidden="true" style="color:#444;text-shadow: 1px 1px 1px #ccc;font-size:26px;">
-                    <br><span style="font-size:24px;">Image not available</span>
+                  <br><span style="font-size:24px;">Image not available</span>
                 </i>
                 <br><br>                 
               {{end}}
@@ -297,9 +298,15 @@
                 <form class="pure-form unit">
                   <input class="pure-input-1" value="{{$fx.Notional}}"/>
                   <select class="pure-input-1">
-                    {{range $i, $u := $fx.Rates}}
-                      <option {{if eq $u.Currency.Short $fx.From.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
-                    {{end}}
+                    {{range $i, $c := $fx.Currencies -}}
+                      {{$hist := index $fx.History $c}}
+                      {{$n := len $hist}}
+                      {{range $i, $v := $hist -}}
+                        {{if eq (Plus1 $i) $n -}}
+                        <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}">{{$c.Long}} ({{$c.Short}})</option>
+                        {{- end}}
+                      {{- end}}
+                    {{- end}}
                   </select>
                 </form>
               </div>
@@ -308,14 +315,27 @@
                 <form class="pure-form unit">
                   <input class="pure-input-1"/>
                   <select class="pure-input-1">
-                    {{range $i, $u := .Instant.Solution.Rates}}
-                      <option {{if eq $u.Currency.Short $fx.To.Short}}selected{{end}} value="{{$u.Rate}}">{{$u.Currency.Long}} ({{$u.Currency.Short}})</option>
-                    {{end}}
+                    {{range $i, $c := $fx.Currencies -}}
+                      {{$hist := index $fx.History $c}}
+                      {{$n := len $hist}}
+                      {{range $i, $v := $hist -}}
+                        {{if eq (Plus1 $i) $n -}}
+                        <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}">{{$c.Long}} ({{$c.Short}})</option>
+                        {{- end}}
+                      {{- end}}
+                    {{- end}}
                   </select>
                 </form>
               </div>
             </div>
-            <div class="pure-u-1">Data last updated {{$fx.DateTime.Format "January 2, 2006"}}</div>
+            {{$c := index $fx.Currencies 0}}<!-- can be any currency...just need most recent -->
+            {{$hist := index $fx.History $c}}
+            {{$n := len $hist}}
+            {{range $i, $v := $hist -}}
+              {{if eq (Plus1 $i) $n -}}
+              <div class="pure-u-1">Data last updated {{$v.DateTime.Format "January 2, 2006"}}</div>
+              {{- end}}
+            {{- end}}
           </div>
           {{template "source" .}}
         </div>

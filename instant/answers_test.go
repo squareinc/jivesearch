@@ -231,29 +231,29 @@ type mockFXFetcher struct{}
 
 func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
 	return &fx.Response{
-		Rates: []*fx.Rate{
-			{
-				Base:     fx.USD,
-				Currency: fx.BGN,
-				Rate:     .5944,
+		Base: fx.USD,
+		History: map[fx.Currency][]*fx.Rate{
+			fx.JPY: {
+				{
+					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+					Rate:     1.12,
+				},
+				{
+					DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+					Rate:     1.1,
+				},
 			},
-			{
-				Base:     fx.USD,
-				Currency: fx.EUR,
-				Rate:     1.1625,
-			},
-			{
-				Base:     fx.USD,
-				Currency: fx.JPY,
-				Rate:     0.009,
-			},
-			{
-				Base:     fx.USD,
-				Currency: fx.USD,
-				Rate:     1.0,
+			fx.GBP: {
+				{
+					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+					Rate:     1.5,
+				},
+				{
+					DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+					Rate:     1.6,
+				},
 			},
 		},
-		DateTime: time.Date(2018, 07, 27, 0, 0, 0, 0, time.UTC),
 		Provider: fx.ECBProvider,
 	}, nil
 }

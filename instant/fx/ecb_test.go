@@ -2,7 +2,6 @@ package fx
 
 import (
 	"reflect"
-	"sort"
 	"testing"
 	"time"
 
@@ -21,16 +20,69 @@ func TestECBFetch(t *testing.T) {
 	}{
 		{
 			name: "basic",
-			u:    `http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`,
-			resp: `<?xml version="1.0" encoding="UTF-8"?><gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref"><gesmes:subject>Reference rates</gesmes:subject><gesmes:Sender><gesmes:name>European Central Bank</gesmes:name></gesmes:Sender><Cube><Cube time='2018-07-27'> <Cube currency='USD' rate='1.1625'/> <Cube currency='JPY' rate='129.25'/> <Cube currency='BGN' rate='1.9558'/> </Cube></Cube></gesmes:Envelope>`,
+			u:    `http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml`,
+			resp: `<?xml version="1.0" encoding="UTF-8"?><gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref"><gesmes:subject>Reference rates</gesmes:subject><gesmes:Sender><gesmes:name>European Central Bank</gesmes:name></gesmes:Sender><Cube><Cube time="2018-08-08"><Cube currency="USD" rate="1.1589"/><Cube currency="JPY" rate="128.72"/><Cube currency="GBP" rate="0.90085"/></Cube><Cube time="2018-08-07"><Cube currency="USD" rate="1.1602"/><Cube currency="JPY" rate="128.88"/><Cube currency="GBP" rate="0.89483"/></Cube><Cube time="2018-08-03"><Cube currency="USD" rate="1.1588"/><Cube currency="JPY" rate="129.3"/><Cube currency="GBP" rate="0.8905"/></Cube></Cube></gesmes:Envelope>`,
 			want: &Response{
-				Rates: []*Rate{
-					{USD, BGN, .5944},
-					{USD, EUR, 1.1625},
-					{USD, JPY, 0.009},
-					{USD, USD, 1.0},
+				Base:       USD,
+				Currencies: Currencies,
+				History: map[Currency][]*Rate{
+					EUR: {
+						{
+							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
+							Rate:     1.1589,
+						},
+						{
+							DateTime: time.Date(2018, 8, 7, 0, 0, 0, 0, time.UTC),
+							Rate:     1.1602,
+						},
+						{
+							DateTime: time.Date(2018, 8, 3, 0, 0, 0, 0, time.UTC),
+							Rate:     1.1588,
+						},
+					},
+					USD: {
+						{
+							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
+							Rate:     1,
+						},
+						{
+							DateTime: time.Date(2018, 8, 7, 0, 0, 0, 0, time.UTC),
+							Rate:     1,
+						},
+						{
+							DateTime: time.Date(2018, 8, 3, 0, 0, 0, 0, time.UTC),
+							Rate:     1,
+						},
+					},
+					JPY: {
+						{
+							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
+							Rate:     .009,
+						},
+						{
+							DateTime: time.Date(2018, 8, 7, 0, 0, 0, 0, time.UTC),
+							Rate:     .009,
+						},
+						{
+							DateTime: time.Date(2018, 8, 3, 0, 0, 0, 0, time.UTC),
+							Rate:     .009,
+						},
+					},
+					GBP: {
+						{
+							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
+							Rate:     1.2865,
+						},
+						{
+							DateTime: time.Date(2018, 8, 7, 0, 0, 0, 0, time.UTC),
+							Rate:     1.2966,
+						},
+						{
+							DateTime: time.Date(2018, 8, 3, 0, 0, 0, 0, time.UTC),
+							Rate:     1.3013,
+						},
+					},
 				},
-				DateTime: time.Date(2018, 07, 27, 0, 0, 0, 0, time.UTC),
 				Provider: ECBProvider,
 			},
 		},
@@ -44,10 +96,6 @@ func TestECBFetch(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			sort.Slice(got.Rates, func(i, j int) bool {
-				return got.Rates[i].Currency.Short < got.Rates[j].Currency.Short
-			})
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)

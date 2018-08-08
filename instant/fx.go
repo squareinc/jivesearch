@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -101,9 +100,7 @@ func (f *FX) solve(r *http.Request) Answerer {
 		return f
 	}
 
-	sort.Slice(resp.Rates, func(i, j int) bool {
-		return resp.Rates[i].Currency.Long < resp.Rates[j].Currency.Long
-	})
+	resp.Response.Sort()
 
 	f.Data.Solution = resp
 	return f
@@ -126,29 +123,29 @@ func (f *FX) tests() []test {
 					Triggered: true,
 					Solution: &FXResponse{
 						Response: &fx.Response{
-							Rates: []*fx.Rate{
-								{
-									Base:     fx.USD,
-									Currency: fx.BGN,
-									Rate:     .5944,
+							Base: fx.USD,
+							History: map[fx.Currency][]*fx.Rate{
+								fx.JPY: {
+									{
+										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+										Rate:     1.12,
+									},
+									{
+										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+										Rate:     1.1,
+									},
 								},
-								{
-									Base:     fx.USD,
-									Currency: fx.EUR,
-									Rate:     1.1625,
-								},
-								{
-									Base:     fx.USD,
-									Currency: fx.JPY,
-									Rate:     0.009,
-								},
-								{
-									Base:     fx.USD,
-									Currency: fx.USD,
-									Rate:     1.0,
+								fx.GBP: {
+									{
+										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+										Rate:     1.5,
+									},
+									{
+										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+										Rate:     1.6,
+									},
 								},
 							},
-							DateTime: time.Date(2018, 07, 27, 0, 0, 0, 0, time.UTC),
 							Provider: fx.ECBProvider,
 						},
 						Notional: 1,
@@ -167,29 +164,29 @@ func (f *FX) tests() []test {
 					Triggered: true,
 					Solution: &FXResponse{
 						Response: &fx.Response{
-							Rates: []*fx.Rate{
-								{
-									Base:     fx.USD,
-									Currency: fx.BGN,
-									Rate:     .5944,
+							Base: fx.USD,
+							History: map[fx.Currency][]*fx.Rate{
+								fx.JPY: {
+									{
+										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+										Rate:     1.12,
+									},
+									{
+										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+										Rate:     1.1,
+									},
 								},
-								{
-									Base:     fx.USD,
-									Currency: fx.EUR,
-									Rate:     1.1625,
-								},
-								{
-									Base:     fx.USD,
-									Currency: fx.JPY,
-									Rate:     0.009,
-								},
-								{
-									Base:     fx.USD,
-									Currency: fx.USD,
-									Rate:     1.0,
+								fx.GBP: {
+									{
+										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+										Rate:     1.5,
+									},
+									{
+										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+										Rate:     1.6,
+									},
 								},
 							},
-							DateTime: time.Date(2018, 07, 27, 0, 0, 0, 0, time.UTC),
 							Provider: fx.ECBProvider,
 						},
 						Notional: 125,

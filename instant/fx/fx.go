@@ -3,6 +3,7 @@ package fx
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -21,22 +22,38 @@ type provider string
 // ErrInvalidCurrency indicates the currency was invalid
 var ErrInvalidCurrency = fmt.Errorf("invalid currency")
 
-// Rate is an Currency and a exchange rate
+// Rate is an currency quote
 type Rate struct {
-	Base     Currency // the base currency
-	Currency Currency
+	DateTime time.Time
 	Rate     float64
 }
 
 // Response is an fx response
 type Response struct {
-	Rates    []*Rate
-	DateTime time.Time
-	Provider provider
+	Base       Currency // the base currency
+	Currencies []Currency
+	History    map[Currency][]*Rate
+	Provider   provider
 }
 
-func (r *Rate) setBase() *Rate {
-	r.Base = USD
+// New returns a new Response with the base currency set to USD
+func New() *Response {
+	return &Response{
+		Base:       USD,
+		Currencies: Currencies,
+		History:    make(map[Currency][]*Rate),
+		Provider:   ECBProvider,
+	}
+}
+
+// Sort sorts the historical rates by date in Asc order
+func (r *Response) Sort() *Response {
+	for k, v := range r.History {
+		sort.Slice(v, func(i, j int) bool {
+			return r.History[k][i].DateTime.Before(r.History[k][j].DateTime)
+		})
+	}
+
 	return r
 }
 
