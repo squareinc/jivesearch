@@ -232,8 +232,8 @@ type mockFXFetcher struct{}
 func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
 	return &fx.Response{
 		Base: fx.USD,
-		History: map[fx.Currency][]*fx.Rate{
-			fx.JPY: {
+		History: map[string][]*fx.Rate{
+			fx.JPY.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.12,
@@ -243,7 +243,7 @@ func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
 					Rate:     1.1,
 				},
 			},
-			fx.GBP: {
+			fx.GBP.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.5,

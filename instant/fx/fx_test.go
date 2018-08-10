@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 			want: &Response{
 				Base:       USD,
 				Currencies: Currencies,
-				History:    make(map[Currency][]*Rate),
+				History:    make(map[string][]*Rate),
 				Provider:   ECBProvider,
 			},
 		},
@@ -41,8 +41,8 @@ func TestSort(t *testing.T) {
 			name: "basic",
 			args: &Response{
 				Base: USD,
-				History: map[Currency][]*Rate{
-					JPY: {
+				History: map[string][]*Rate{
+					JPY.Short: {
 						{
 							DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
 							Rate:     1.1,
@@ -52,7 +52,7 @@ func TestSort(t *testing.T) {
 							Rate:     1.12,
 						},
 					},
-					GBP: {
+					GBP.Short: {
 						{
 							DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 							Rate:     1.5,
@@ -67,8 +67,8 @@ func TestSort(t *testing.T) {
 			},
 			want: &Response{
 				Base: USD,
-				History: map[Currency][]*Rate{
-					JPY: {
+				History: map[string][]*Rate{
+					JPY.Short: {
 						{
 							DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 							Rate:     1.12,
@@ -78,7 +78,7 @@ func TestSort(t *testing.T) {
 							Rate:     1.1,
 						},
 					},
-					GBP: {
+					GBP.Short: {
 						{
 							DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 							Rate:     1.5,

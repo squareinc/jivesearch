@@ -32,7 +32,7 @@ type Rate struct {
 type Response struct {
 	Base       Currency // the base currency
 	Currencies []Currency
-	History    map[Currency][]*Rate
+	History    map[string][]*Rate
 	Provider   provider
 }
 
@@ -41,7 +41,7 @@ func New() *Response {
 	return &Response{
 		Base:       USD,
 		Currencies: Currencies,
-		History:    make(map[Currency][]*Rate),
+		History:    make(map[string][]*Rate),
 		Provider:   ECBProvider,
 	}
 }

@@ -25,8 +25,8 @@ func TestECBFetch(t *testing.T) {
 			want: &Response{
 				Base:       USD,
 				Currencies: Currencies,
-				History: map[Currency][]*Rate{
-					EUR: {
+				History: map[string][]*Rate{
+					EUR.Short: {
 						{
 							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
 							Rate:     1.1589,
@@ -40,7 +40,7 @@ func TestECBFetch(t *testing.T) {
 							Rate:     1.1588,
 						},
 					},
-					USD: {
+					USD.Short: {
 						{
 							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
 							Rate:     1,
@@ -54,7 +54,7 @@ func TestECBFetch(t *testing.T) {
 							Rate:     1,
 						},
 					},
-					JPY: {
+					JPY.Short: {
 						{
 							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
 							Rate:     .009,
@@ -68,7 +68,7 @@ func TestECBFetch(t *testing.T) {
 							Rate:     .009,
 						},
 					},
-					GBP: {
+					GBP.Short: {
 						{
 							DateTime: time.Date(2018, 8, 8, 0, 0, 0, 0, time.UTC),
 							Rate:     1.2865,

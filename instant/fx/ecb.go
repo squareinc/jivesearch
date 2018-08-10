@@ -50,7 +50,7 @@ func (e *ECB) Fetch() (*Response, error) {
 				return nil, err
 			}
 
-			resp.History[currency] = append(resp.History[currency], rate)
+			resp.History[currency.Short] = append(resp.History[currency.Short], rate)
 		}
 	}
 

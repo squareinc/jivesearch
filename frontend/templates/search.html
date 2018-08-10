@@ -299,7 +299,7 @@
                   <input class="pure-input-1" value="{{$fx.Notional}}"/>
                   <select class="pure-input-1">
                     {{range $i, $c := $fx.Currencies -}}
-                      {{$hist := index $fx.History $c}}
+                      {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $i, $v := $hist -}}
                         {{if eq (Plus1 $i) $n -}}
@@ -316,7 +316,7 @@
                   <input class="pure-input-1"/>
                   <select class="pure-input-1">
                     {{range $i, $c := $fx.Currencies -}}
-                      {{$hist := index $fx.History $c}}
+                      {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $i, $v := $hist -}}
                         {{if eq (Plus1 $i) $n -}}
@@ -328,8 +328,9 @@
                 </form>
               </div>
             </div>
+            <div id="fx_chart" class="pure-u-1"></div>
             {{$c := index $fx.Currencies 0}}<!-- can be any currency...just need most recent -->
-            {{$hist := index $fx.History $c}}
+            {{$hist := index $fx.History $c.Short}}
             {{$n := len $hist}}
             {{range $i, $v := $hist -}}
               {{if eq (Plus1 $i) $n -}}
@@ -337,6 +338,23 @@
               {{- end}}
             {{- end}}
           </div>
+          <script>
+            // get from currency and to currency
+            var from=[
+              {{- $from := index $fx.History $fx.From.Short -}}
+              {{$n := len $hist -}}                        
+              {{range $i, $v := $from -}}
+                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
+              {{end -}}
+            ];
+            var to=[
+              {{- $to := index $fx.History $fx.To.Short -}}
+              {{$n := len $hist -}}                        
+              {{range $i, $v := $to -}}
+                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
+              {{end -}}
+            ];
+          </script>
           {{template "source" .}}
         </div>
       {{else if eq .Instant.Type "mortgage calculator"}}
