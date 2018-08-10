@@ -17655,6 +17655,13 @@
         default = "https://izsearch.com/?q={{{term}}}"
 
 [[bang]]
+    name = "J3 Information Services Group"
+    favicon = "http://www.j3sg.com/IncludeFiles/favicon.ico"
+    triggers = ["j3", "j3sg"]
+    [bang.regions]
+        default = "http://www.j3sg.com/Reports/Stock-Insider/Generate.php?DV=yes&tickerLookUp={{{term}}}&Submit232=GO"
+
+[[bang]]
     name = "J D Weatherpoon"
     favicon = "https://d1i2hi5dlrpq5n.cloudfront.net/Assets/Favicon/favicon.ico?d=20151110T152722Z"
     triggers = ["jdw"]
