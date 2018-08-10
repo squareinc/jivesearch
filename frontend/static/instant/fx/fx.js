@@ -13,11 +13,12 @@ window.onload = function() {
     });
 
     $(selects).each(function(i) {
-        // Selecting a different unit should ALWAYS
-        // change the second input box. Never the first.
+        // Reload page on change so chart reloads
         $(this).change(function() {
             if (!isNaN(inputs[i].value)){
-                inputs[1].value = convert(0);
+                curr1 = $(selects[0]).find(':selected').attr('currency');
+                curr2 = $(selects[1]).find(':selected').attr('currency');
+                changeParamAndRedirect("q", notional + " " + curr1 + " to " + curr2); 
             }
         });
     });
@@ -33,7 +34,6 @@ window.onload = function() {
     if (!isNaN(inputs[0].value)){
         inputs[1].value = convert(0);
     }
-
 
     // chart
     $("#answer").css("height", "400px");

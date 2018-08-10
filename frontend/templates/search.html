@@ -303,7 +303,7 @@
                       {{$n := len $hist}}
                       {{range $i, $v := $hist -}}
                         {{if eq (Plus1 $i) $n -}}
-                        <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}">{{$c.Long}} ({{$c.Short}})</option>
+                        <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
                     {{- end}}
@@ -320,7 +320,7 @@
                       {{$n := len $hist}}
                       {{range $i, $v := $hist -}}
                         {{if eq (Plus1 $i) $n -}}
-                        <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}">{{$c.Long}} ({{$c.Short}})</option>
+                        <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
                     {{- end}}
@@ -339,6 +339,8 @@
             {{- end}}
           </div>
           <script>
+            var notional = {{$fx.Notional}};
+
             // get from currency and to currency
             var from=[
               {{- $from := index $fx.History $fx.From.Short -}}
