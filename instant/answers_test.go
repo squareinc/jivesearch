@@ -30,6 +30,7 @@ func answers(i Instant) []Answerer {
 		&CamelCase{},
 		&Characters{},
 		&Coin{},
+		&CountryCode{},
 		&Discography{Fetcher: i.DiscographyFetcher},
 		&DigitalStorage{},
 		&FedEx{Fetcher: i.FedExFetcher},

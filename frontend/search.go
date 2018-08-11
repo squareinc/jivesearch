@@ -522,6 +522,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.CamelCase{},
 			&instant.Characters{},
 			&instant.Coin{},
+			&instant.CountryCode{},
 			&instant.Discography{Fetcher: f.Instant.DiscographyFetcher},
 			&instant.DigitalStorage{},
 			&instant.FedEx{Fetcher: f.Instant.FedExFetcher},
