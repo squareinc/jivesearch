@@ -35,6 +35,7 @@ func answers(i Instant) []Answerer {
 		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
 		&FX{Fetcher: i.FXFetcher},
+		&Hash{},
 		&Speed{},
 		&Length{},
 		&Maps{LocationFetcher: i.LocationFetcher},

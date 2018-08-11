@@ -598,6 +598,13 @@
           {{template "source" .}}
         </div>
         {{end}}
+      {{else if eq .Instant.Type "hash"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution.Solution}}</div>
+          <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution.HashAlgo}} hash: {{.Instant.Solution.Original}}</div>
+        </div>
+        {{end}}
       {{else}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1">
