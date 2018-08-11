@@ -578,6 +578,8 @@ func detectType(t string) interface{} {
 	var v interface{}
 
 	switch t {
+	case "country code":
+		v = &instant.CountryCodeResponse{}
 	case "discography":
 		v = &[]discography.Album{}
 	case "fx":
