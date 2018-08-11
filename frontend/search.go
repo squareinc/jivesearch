@@ -583,6 +583,8 @@ func detectType(t string) interface{} {
 		v = &instant.FXResponse{}
 	case "fedex", "ups", "usps":
 		v = &parcel.Response{}
+	case "hash":
+		v = &instant.HashResponse{}
 	case "stackoverflow":
 		v = &instant.StackOverflowAnswer{}
 	case "stock quote":
