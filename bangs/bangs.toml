@@ -28922,7 +28922,7 @@
     favicon = "https://www.opendns.com/favicon.ico"
     triggers = ["opendns"]
     [bang.regions]
-        default = "https://www.opendns.com/search/?s={{{term}}}"
+        default = "https://www.opendns.com/search/#?cludoquery={{{term}}}&cludopage=1"
 
 [[bang]]
     name = "OpenDota"
