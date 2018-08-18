@@ -36,19 +36,22 @@ window.onload = function() {
     }
 
     // chart
-    $("#answer").css("height", "400px");
+    $("#answer").css("height", "435px");
     draw();
 
     function draw(){
-        $("#fx_chart").html(""); // we can work on a transition another day
+        $("#currency_chart").html(""); // we can work on a transition another day
 
         // to and from are based in USD. Convert the data points.
         var data = [];
         for (var i = 0; i < from.length; i++) {
-          if (from[i].DateTime != to[i].DateTime){ // make sure the dates match
-            console.log("to/from dates do not match.")
+          // find the "to" data:
+          m = to.find(x => x.date === from[i].date);
+          if (typeof m === "undefined") {
+            continue
           }
-          data.push({"date": from[i].date, "rate": from[i].rate / to[i].rate});
+          data.push({"date": from[i].date, "rate": from[i].rate / m.rate});
+          
         }
 
         var date = new Date();
@@ -59,7 +62,7 @@ window.onload = function() {
 
         var tmp = JSON.parse(JSON.stringify(data));
         tmp = tmp.filter(function(e){
-            return parseTime(e.date) >= date; // 1 Week chart doesn't show 5 trading days...
+            return parseTime(e.date) >= date;
         });
         
         var xTicks = 5;
@@ -85,8 +88,8 @@ window.onload = function() {
 
         var line = d3.line().x(function(d){ return x(d.date); }).y(function(d){ return y(d.rate); });
         var area = d3.area().x(function(d){ return x(d.date); }).y1(function(d){ return y(d.rate); });
-        var div = d3.select("#fx_chart").append("div").attr("class", "tooltip").style("opacity", 0);
-        var svg = d3.select("#fx_chart").append("svg").attr("width", width + margin.left + margin.right)
+        var div = d3.select("#currency_chart").append("div").attr("class", "tooltip").style("opacity", 0);
+        var svg = d3.select("#currency_chart").append("svg").attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g").attr("transform","translate(" + margin.left + "," + margin.top + ")");
 

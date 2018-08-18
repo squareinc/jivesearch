@@ -1,4 +1,4 @@
-package fx
+package currency
 
 import (
 	"reflect"
@@ -9,20 +9,22 @@ import (
 func TestNew(t *testing.T) {
 	for _, tt := range []struct {
 		name string
+		args provider
 		want *Response
 	}{
 		{
 			name: "basic",
+			args: ECBProvider,
 			want: &Response{
-				Base:       USD,
-				Currencies: Currencies,
-				History:    make(map[string][]*Rate),
-				Provider:   ECBProvider,
+				Base:          USD,
+				History:       make(map[string][]*Rate),
+				ForexProvider: ECBProvider,
 			},
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := New()
+			got.ForexProvider = tt.args
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got %+v, want %+v", got, tt.want)
@@ -63,7 +65,7 @@ func TestSort(t *testing.T) {
 						},
 					},
 				},
-				Provider: ECBProvider,
+				ForexProvider: ECBProvider,
 			},
 			want: &Response{
 				Base: USD,
@@ -89,7 +91,7 @@ func TestSort(t *testing.T) {
 						},
 					},
 				},
-				Provider: ECBProvider,
+				ForexProvider: ECBProvider,
 			},
 		},
 	} {

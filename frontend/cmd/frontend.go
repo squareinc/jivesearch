@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/fx"
+	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 
 	"github.com/jivesearch/jivesearch/instant/location"
@@ -249,7 +249,12 @@ func main() {
 			Key:        v.GetString("fedex.key"),
 			Meter:      v.GetString("fedex.meter"),
 		},
-		FXFetcher: &fx.ECB{},
+		Currency: instant.Currency{
+			CryptoFetcher: &currency.CryptoCompare{
+				Client: httpClient,
+			},
+			FXFetcher: &currency.ECB{},
+		},
 		LinkShortener: &shortener.IsGd{
 			HTTPClient: httpClient,
 		},

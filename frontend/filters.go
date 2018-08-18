@@ -15,10 +15,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/fx"
-
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -140,14 +139,21 @@ func source(answer instant.Data) string {
 		txt, u = "FedEx", "https://www.fedex.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="fedex" src="%v"/>`, proxyFavIcon("http://www.fedex.com/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
-	case "fx":
-		q := answer.Solution.(*instant.FXResponse)
-		switch q.Provider {
-		case fx.ECBProvider:
+	case "currency":
+		q := answer.Solution.(*instant.CurrencyResponse)
+		switch q.ForexProvider {
+		case currency.ECBProvider:
 			img = fmt.Sprintf(`<img width="12" height="12" alt="European Central Bank" src="%v"/>`, proxyFavIcon("http://www.ecb.europa.eu/favicon.ico"))
-			f = fmt.Sprintf(`%v European Central Bank`, img)
+			f = fmt.Sprintf(`%v <a href="http://www.ecb.europa.eu/home/html/index.en.html">European Central Bank</a>`, img)
 		default:
-			log.Debug.Printf("unknown fx provider %v\n", q.Provider)
+			log.Debug.Printf("unknown forex provider %v\n", q.ForexProvider)
+		}
+		switch q.CryptoProvider {
+		case currency.CryptoCompareProvider:
+			img = fmt.Sprintf(`<img width="12" height="12" alt="CryptoCompare" src="%v"/>`, proxyFavIcon("https://www.cryptocompare.com/media/20562/favicon.png?v=2"))
+			f += fmt.Sprintf(`<br>%v <a href="https://www.cryptocompare.com/">CryptoCompare</a>`, img)
+		default:
+			log.Debug.Printf("unknown cryptocurrency provider %v\n", q.CryptoProvider)
 		}
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.

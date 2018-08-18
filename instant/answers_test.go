@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/discography"
-	"github.com/jivesearch/jivesearch/instant/fx"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -35,7 +35,10 @@ func answers(i Instant) []Answerer {
 		&DigitalStorage{},
 		&FedEx{Fetcher: i.FedExFetcher},
 		&Frequency{},
-		&FX{Fetcher: i.FXFetcher},
+		&Currency{
+			CryptoFetcher: i.CryptoFetcher,
+			FXFetcher:     i.FXFetcher,
+		},
 		&Hash{},
 		&Speed{},
 		&Length{},
@@ -69,9 +72,12 @@ func TestDetect(t *testing.T) {
 	cases := []test{}
 
 	i := Instant{
-		QueryVar:             "q",
-		DiscographyFetcher:   &mockDiscographyFetcher{},
-		FXFetcher:            &mockFXFetcher{},
+		QueryVar:           "q",
+		DiscographyFetcher: &mockDiscographyFetcher{},
+		Currency: Currency{
+			CryptoFetcher: &mockCryptoFetcher{},
+			FXFetcher:     &mockFXFetcher{},
+		},
 		FedExFetcher:         &mockFedExFetcher{},
 		LinkShortener:        &mockShortener{},
 		LocationFetcher:      &mockLocationFetcher{},
@@ -123,9 +129,11 @@ func TestDetect(t *testing.T) {
 					if !solved {
 						t.Errorf("Instant answer failed %v", ctx)
 						t.Errorf("got %+v;", got)
+						//t.Errorf("got %+v;", got.Solution.(*CurrencyResponse).Response)
 						t.Errorf("want ")
 						for _, expected := range c.expected {
 							t.Errorf("    %+v\n", expected)
+							//t.Errorf("    %+v\n", expected.Solution.(*CurrencyResponse).Response)
 						}
 						t.FailNow()
 					}
@@ -229,13 +237,13 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 	return r, nil
 }
 
-type mockFXFetcher struct{}
+type mockCryptoFetcher struct{}
 
-func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
-	return &fx.Response{
-		Base: fx.USD,
-		History: map[string][]*fx.Rate{
-			fx.JPY.Short: {
+func (m *mockCryptoFetcher) Fetch() (*currency.Response, error) {
+	return &currency.Response{
+		Base: currency.USD,
+		History: map[string][]*currency.Rate{
+			currency.BTC.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.12,
@@ -245,7 +253,7 @@ func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
 					Rate:     1.1,
 				},
 			},
-			fx.GBP.Short: {
+			currency.LTC.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.5,
@@ -256,7 +264,38 @@ func (m *mockFXFetcher) Fetch() (*fx.Response, error) {
 				},
 			},
 		},
-		Provider: fx.ECBProvider,
+		CryptoProvider: currency.CryptoCompareProvider,
+	}, nil
+}
+
+type mockFXFetcher struct{}
+
+func (m *mockFXFetcher) Fetch() (*currency.Response, error) {
+	return &currency.Response{
+		Base: currency.USD,
+		History: map[string][]*currency.Rate{
+			currency.JPY.Short: {
+				{
+					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+					Rate:     1.12,
+				},
+				{
+					DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+					Rate:     1.1,
+				},
+			},
+			currency.GBP.Short: {
+				{
+					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+					Rate:     1.5,
+				},
+				{
+					DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+					Rate:     1.6,
+				},
+			},
+		},
+		ForexProvider: currency.ECBProvider,
 	}, nil
 }
 

@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/discography"
-	"github.com/jivesearch/jivesearch/instant/fx"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -24,10 +23,10 @@ import (
 
 // Instant holds config information for the instant answers
 type Instant struct {
-	QueryVar             string
-	DiscographyFetcher   discography.Fetcher
-	FedExFetcher         parcel.Fetcher
-	FXFetcher            fx.Fetcher
+	QueryVar           string
+	DiscographyFetcher discography.Fetcher
+	FedExFetcher       parcel.Fetcher
+	Currency
 	LinkShortener        shortener.Service
 	LocationFetcher      location.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher

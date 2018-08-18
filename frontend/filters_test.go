@@ -7,8 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/fx"
-
+	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 
 	"github.com/jivesearch/jivesearch/instant/stock"
@@ -263,18 +262,19 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
 		},
 		{
-			name: "fx",
+			name: "currency",
 			args: args{
 				instant.Data{
-					Type: "fx",
-					Solution: &instant.FXResponse{
-						Response: &fx.Response{
-							Provider: fx.ECBProvider,
+					Type: "currency",
+					Solution: &instant.CurrencyResponse{
+						Response: &currency.Response{
+							CryptoProvider: currency.CryptoCompareProvider,
+							ForexProvider:  currency.ECBProvider,
 						},
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="European Central Bank" src="/image/32x,sojbRuJxSVjihgjhBCVOb63w6Xx3m8AdLx0eLr47VdA8=/http://www.ecb.europa.eu/favicon.ico"/> European Central Bank`,
+			want: `<img width="12" height="12" alt="European Central Bank" src="/image/32x,sojbRuJxSVjihgjhBCVOb63w6Xx3m8AdLx0eLr47VdA8=/http://www.ecb.europa.eu/favicon.ico"/> <a href="http://www.ecb.europa.eu/home/html/index.en.html">European Central Bank</a><br><img width="12" height="12" alt="CryptoCompare" src="/image/32x,stvpUZPbHHDno5wi-rZHX4YkppcMzE2yPC0FA2KyC4iM=/https://www.cryptocompare.com/media/20562/favicon.png?v=2"/> <a href="https://www.cryptocompare.com/">CryptoCompare</a>`,
 		},
 		{
 			name: "stackoverflow",

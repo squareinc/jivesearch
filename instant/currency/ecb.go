@@ -1,4 +1,4 @@
-package fx
+package currency
 
 import (
 	"time"
@@ -6,13 +6,13 @@ import (
 	"github.com/openprovider/ecbrates"
 )
 
-// ECBProvider is a fx provider
+// ECBProvider is a currency provider
 var ECBProvider provider = "European Central Bank"
 
 // ECB holds settings for ECB via openprovider
 type ECB struct{}
 
-// Fetch retrieves fx quotes from the ECB via openprovider
+// Fetch retrieves currency quotes from the ECB via openprovider
 func (e *ECB) Fetch() (*Response, error) {
 	//rates, err := ecbrates.LoadAll() // full history...takes longer (make method configurable)
 	rates, err := ecbrates.Load() // 90 days...sufficient?
@@ -21,7 +21,9 @@ func (e *ECB) Fetch() (*Response, error) {
 	}
 
 	resp := New()
+	resp.ForexProvider = ECBProvider
 
+	// just grab all the rates...why not?
 	for _, r := range rates {
 		d, err := time.Parse("2006-01-02", r.Date)
 		if err != nil {
@@ -31,14 +33,8 @@ func (e *ECB) Fetch() (*Response, error) {
 		for c := range r.Rate {
 			var currency Currency
 
-			for _, cc := range Currencies {
-				if cc.Short == string(c) {
-					currency = cc
-				}
-			}
-
-			if currency == (Currency{}) {
-				return nil, err
+			if ok, cc := Valid(string(c)); ok {
+				currency = cc
 			}
 
 			rate := &Rate{

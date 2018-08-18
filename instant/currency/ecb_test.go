@@ -1,4 +1,4 @@
-package fx
+package currency
 
 import (
 	"reflect"
@@ -23,8 +23,7 @@ func TestECBFetch(t *testing.T) {
 			u:    `http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml`,
 			resp: `<?xml version="1.0" encoding="UTF-8"?><gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref"><gesmes:subject>Reference rates</gesmes:subject><gesmes:Sender><gesmes:name>European Central Bank</gesmes:name></gesmes:Sender><Cube><Cube time="2018-08-08"><Cube currency="USD" rate="1.1589"/><Cube currency="JPY" rate="128.72"/><Cube currency="GBP" rate="0.90085"/></Cube><Cube time="2018-08-07"><Cube currency="USD" rate="1.1602"/><Cube currency="JPY" rate="128.88"/><Cube currency="GBP" rate="0.89483"/></Cube><Cube time="2018-08-03"><Cube currency="USD" rate="1.1588"/><Cube currency="JPY" rate="129.3"/><Cube currency="GBP" rate="0.8905"/></Cube></Cube></gesmes:Envelope>`,
 			want: &Response{
-				Base:       USD,
-				Currencies: Currencies,
+				Base: USD,
 				History: map[string][]*Rate{
 					EUR.Short: {
 						{
@@ -83,7 +82,7 @@ func TestECBFetch(t *testing.T) {
 						},
 					},
 				},
-				Provider: ECBProvider,
+				ForexProvider: ECBProvider,
 			},
 		},
 	} {

@@ -1,11 +1,11 @@
-#fx .unit{
+#currency .unit{
     height: 60px;
 }
-#fx .unit input{
+#currency .unit input{
     height:45px;
     text-align:right;
 }
-#fx .unit select{
+#currency .unit select{
     background-color:#f7f7f7;
     height:35px;
 }

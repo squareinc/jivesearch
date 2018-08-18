@@ -6,8 +6,8 @@
     {{if .Instant}}
       {{if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
-      {{else if eq .Instant.Type "fx"}}
-      <link rel="stylesheet" href="/static/instant/fx/fx.css">
+      {{else if eq .Instant.Type "currency"}}
+      <link rel="stylesheet" href="/static/instant/currency/currency.css">
       {{else if eq .Instant.Type "maps"}}
       <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
       <link href="/static/instant/maps/mapbox_directions.css" rel="stylesheet" />
@@ -29,9 +29,9 @@
   {{if .Instant}}
     {{if eq .Instant.Type "calculator"}}
     <script src="/static/instant/calculator/calculator.js"></script>
-    {{else if eq .Instant.Type "fx"}}
-    <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
-    <script src="/static/instant/fx/fx.js"></script>
+    {{else if eq .Instant.Type "currency"}}
+    <script src="/static/instant/currency/d3.v4.min.js"></script>
+    <script src="/static/instant/currency/currency.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
     <script src="/static/instant/maps/mapbox_directions.js"></script>
@@ -296,24 +296,37 @@
           <div style="margin:15px;margin-bottom:5px;">{{.Instant.Solution.Format}} Country: {{.Instant.Solution.Country}}</div>
         </div>
         {{end}}
-      {{else if eq .Instant.Type "fx"}}
+      {{else if eq .Instant.Type "currency"}}
         {{$fx := .Instant.Solution}}
         <div id="answer" class="pure-u-1" style="margin-top:12px;height:240px;">
-          <div id="fx" class="pure-u-17-24" style="margin-top:5px;margin-bottom:0px;margin-left:15px;">
+          <div id="currency" class="pure-u-17-24" style="margin-top:5px;margin-bottom:0px;margin-left:15px;">
             <div class="pure-g" style="margin-bottom:50px;">
               <div class="pure-u-11-24">
                 <form class="pure-form unit">
                   <input class="pure-input-1" value="{{$fx.Notional}}"/>
                   <select class="pure-input-1">
-                    {{range $i, $c := $fx.Currencies -}}
+                    <optgroup label="Foreign currencies">
+                    {{range $i, $c := $fx.ForexCurrencies -}}
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
-                      {{range $i, $v := $hist -}}
-                        {{if eq (Plus1 $i) $n -}}
+                      {{range $j, $v := $hist -}}
+                        {{if eq (Plus1 $j) $n -}}
                         <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
                     {{- end}}
+                    </optgroup>
+                    <optgroup label="Cryptocurrencies">
+                    {{range $i, $c := $fx.CryptoCurrencies -}}
+                      {{$hist := index $fx.History $c.Short}}
+                      {{$n := len $hist}}
+                      {{range $j, $v := $hist -}}
+                        {{if eq (Plus1 $j) $n -}}
+                        <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
+                        {{- end}}
+                      {{- end}}
+                    {{- end}}
+                    </optgroup>
                   </select>
                 </form>
               </div>
@@ -322,26 +335,47 @@
                 <form class="pure-form unit">
                   <input class="pure-input-1"/>
                   <select class="pure-input-1">
-                    {{range $i, $c := $fx.Currencies -}}
+                    <optgroup label="Foreign currencies">
+                    {{range $i, $c := $fx.ForexCurrencies -}}
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
-                      {{range $i, $v := $hist -}}
-                        {{if eq (Plus1 $i) $n -}}
+                      {{range $j, $v := $hist -}}
+                        {{if eq (Plus1 $j) $n -}}
                         <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
                     {{- end}}
+                    </optgroup>
+                    <optgroup label="Cryptocurrencies">
+                    {{range $i, $c := $fx.CryptoCurrencies -}}
+                      {{$hist := index $fx.History $c.Short}}
+                      {{$n := len $hist}}
+                      {{range $j, $v := $hist -}}
+                        {{if eq (Plus1 $j) $n -}}
+                        <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
+                        {{- end}}
+                      {{- end}}
+                    {{- end}}
+                    </optgroup>
                   </select>
                 </form>
               </div>
             </div>
-            <div id="fx_chart" class="pure-u-1"></div>
-            {{$c := index $fx.Currencies 0}}<!-- can be any currency...just need most recent -->
+            <div id="currency_chart" class="pure-u-1"></div>
+            {{$c := index $fx.ForexCurrencies 0}}<!-- can be any currency... -->
             {{$hist := index $fx.History $c.Short}}
             {{$n := len $hist}}
             {{range $i, $v := $hist -}}
               {{if eq (Plus1 $i) $n -}}
-              <div class="pure-u-1">Data last updated {{$v.DateTime.Format "January 2, 2006"}}</div>
+              <div class="pure-u-1">Forex data last updated {{$v.DateTime.Format "January 2, 2006"}}</div>
+              {{- end}}
+            {{- end}}
+            {{$c := index $fx.CryptoCurrencies 0}}<!-- can be any currency... -->
+            {{$hist := index $fx.History $c.Short}}
+            {{$n := len $hist}}
+            {{range $i, $v := $hist -}}
+              {{if eq (Plus1 $i) $n -}}
+              <div class="pure-u-1">Cryptocurrency data last updated {{$v.DateTime.Format "January 2, 2006 UTC"}}</div>
               {{- end}}
             {{- end}}
           </div>
@@ -351,14 +385,14 @@
             // get from currency and to currency
             var from=[
               {{- $from := index $fx.History $fx.From.Short -}}
-              {{$n := len $hist -}}                        
+              {{$n := len $from -}}                        
               {{range $i, $v := $from -}}
                 {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
               {{end -}}
             ];
             var to=[
               {{- $to := index $fx.History $fx.To.Short -}}
-              {{$n := len $hist -}}                        
+              {{$n := len $to -}}                        
               {{range $i, $v := $to -}}
                 {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
               {{end -}}

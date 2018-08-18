@@ -527,7 +527,10 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.DigitalStorage{},
 			&instant.FedEx{Fetcher: f.Instant.FedExFetcher},
 			&instant.Frequency{},
-			&instant.FX{Fetcher: f.Instant.FXFetcher},
+			&instant.Currency{
+				CryptoFetcher: f.Instant.CryptoFetcher,
+				FXFetcher:     f.Instant.FXFetcher,
+			},
 			&instant.Hash{},
 			&instant.Speed{}, // trigger "miles per hour" b/f "miles"
 			&instant.Length{},
@@ -582,8 +585,8 @@ func detectType(t string) interface{} {
 		v = &instant.CountryCodeResponse{}
 	case "discography":
 		v = &[]discography.Album{}
-	case "fx":
-		v = &instant.FXResponse{}
+	case "currency":
+		v = &instant.CurrencyResponse{}
 	case "fedex", "ups", "usps":
 		v = &parcel.Response{}
 	case "hash":

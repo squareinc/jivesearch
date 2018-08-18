@@ -1,9 +1,10 @@
-// Package fx fetches foreign exchange quotes
-package fx
+// Package currency fetches foreign exchange quotes
+package currency
 
 import (
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -12,8 +13,13 @@ import (
 // 2: "12 usd to jpy"
 // 3: "convert 1 usd to jpy"
 
-// Fetcher retrieves fx quotes
-type Fetcher interface {
+// FXFetcher retrieves fx quotes
+type FXFetcher interface {
+	Fetch() (*Response, error)
+}
+
+// CryptoFetcher retrieves cryptocurrency quotes
+type CryptoFetcher interface {
 	Fetch() (*Response, error)
 }
 
@@ -28,21 +34,19 @@ type Rate struct {
 	Rate     float64
 }
 
-// Response is an fx response
+// Response is a currency response
 type Response struct {
-	Base       Currency // the base currency
-	Currencies []Currency
-	History    map[string][]*Rate
-	Provider   provider
+	Base           Currency // the base currency
+	History        map[string][]*Rate
+	ForexProvider  provider
+	CryptoProvider provider
 }
 
 // New returns a new Response with the base currency set to USD
 func New() *Response {
 	return &Response{
-		Base:       USD,
-		Currencies: Currencies,
-		History:    make(map[string][]*Rate),
-		Provider:   ECBProvider,
+		Base:    USD,
+		History: make(map[string][]*Rate),
 	}
 }
 
@@ -63,6 +67,7 @@ type Currency struct {
 	Long  string
 }
 
+// fx currencies
 var (
 	// USD is a Currency
 	USD = Currency{"USD", "US Dollar"}
@@ -134,8 +139,18 @@ var (
 	ZAR = Currency{"ZAR", "South African Rand"}
 )
 
-// Currencies are valid values for Currency
-var Currencies = []Currency{
+// crypto currencies
+var (
+	BTC  = Currency{"BTC", "Bitcoin"}
+	DOGE = Currency{"DOGE", "Dogecoin"}
+	ETH  = Currency{"ETH", "Ethereum"}
+	LTC  = Currency{"LTC", "Litecoin"}
+	XMR  = Currency{"XMR", "Monero"}
+	XRP  = Currency{"XRP", "Ripple"}
+)
+
+// ForexCurrencies are valid forex currencies
+var ForexCurrencies = []Currency{
 	AUD,
 	BGN,
 	BRL,
@@ -170,4 +185,27 @@ var Currencies = []Currency{
 	TRY,
 	USD,
 	ZAR,
+}
+
+// CryptoCurrencies are valid crypto currencies
+var CryptoCurrencies = []Currency{
+	BTC,
+	DOGE,
+	ETH,
+	LTC,
+	XMR,
+	XRP,
+}
+
+// Valid checks if a given currency is supported
+func Valid(c string) (bool, Currency) {
+	ac := append(ForexCurrencies, CryptoCurrencies...)
+
+	for _, cu := range ac {
+		if strings.ToLower(c) == strings.ToLower(cu.Short) {
+			return true, cu
+		}
+	}
+
+	return false, Currency{}
 }
