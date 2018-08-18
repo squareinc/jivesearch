@@ -53,9 +53,21 @@ func (c *Currency) setType() Answerer {
 
 func (c *Currency) setRegex() Answerer {
 	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<notional>\d+) (?P<from>.*) to (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<notional>\d+) (?P<from>.*) (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<notional>\d+) (?P<from>.*)$`))
+
 	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<from>.*) to (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<from>.*) (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^convert (?P<from>.*)$`))
+
 	c.regex = append(c.regex, regexp.MustCompile(`^(?P<notional>\d+) (?P<from>.*) to (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^(?P<notional>\d+) (?P<from>.*) (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^(?P<notional>\d+) (?P<from>.*)$`))
+
 	c.regex = append(c.regex, regexp.MustCompile(`^(?P<from>.*) to (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^(?P<from>.*) (?P<to>.*)$`))
+	c.regex = append(c.regex, regexp.MustCompile(`^(?P<from>.*)$`))
+
 	return c
 }
 
@@ -89,8 +101,11 @@ func (c *Currency) solve(r *http.Request) Answerer {
 	to := c.remainderM["to"]
 	ok, resp.To = currency.Valid(to)
 	if !ok {
-		c.Err = ErrInvalidCurrency
-		return c
+		if resp.From == currency.PHP { // chances are they are looking for a programming answer for PHP
+			c.Err = ErrInvalidCurrency
+			return c
+		}
+		resp.To = currency.USD // assume USD for second if not specified "125 BTC"
 	}
 
 	cch := make(chan *currency.Response)
@@ -150,6 +165,49 @@ func (c *Currency) setCache() Answerer {
 func (c *Currency) tests() []test {
 	typ := "currency"
 
+	history := map[string][]*currency.Rate{
+		currency.JPY.Short: {
+			{
+				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+				Rate:     1.12,
+			},
+			{
+				DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+				Rate:     1.1,
+			},
+		},
+		currency.GBP.Short: {
+			{
+				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+				Rate:     1.5,
+			},
+			{
+				DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+				Rate:     1.6,
+			},
+		},
+		currency.BTC.Short: {
+			{
+				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+				Rate:     1.12,
+			},
+			{
+				DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+				Rate:     1.1,
+			},
+		},
+		currency.LTC.Short: {
+			{
+				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
+				Rate:     1.5,
+			},
+			{
+				DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
+				Rate:     1.6,
+			},
+		},
+	}
+
 	tests := []test{
 		{
 			query: "convert JPY to USD",
@@ -159,49 +217,8 @@ func (c *Currency) tests() []test {
 					Triggered: true,
 					Solution: &CurrencyResponse{
 						Response: &currency.Response{
-							Base: currency.USD,
-							History: map[string][]*currency.Rate{
-								currency.JPY.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.12,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.1,
-									},
-								},
-								currency.GBP.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.5,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.6,
-									},
-								},
-								currency.BTC.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.12,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.1,
-									},
-								},
-								currency.LTC.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.5,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.6,
-									},
-								},
-							},
+							Base:           currency.USD,
+							History:        history,
 							CryptoProvider: currency.CryptoCompareProvider,
 							ForexProvider:  currency.ECBProvider,
 						},
@@ -224,55 +241,62 @@ func (c *Currency) tests() []test {
 					Triggered: true,
 					Solution: &CurrencyResponse{
 						Response: &currency.Response{
-							Base: currency.USD,
-							History: map[string][]*currency.Rate{
-								currency.JPY.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.12,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.1,
-									},
-								},
-								currency.GBP.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.5,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.6,
-									},
-								},
-								currency.BTC.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.12,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.1,
-									},
-								},
-								currency.LTC.Short: {
-									{
-										DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
-										Rate:     1.5,
-									},
-									{
-										DateTime: time.Date(2018, 1, 31, 0, 0, 0, 0, time.UTC),
-										Rate:     1.6,
-									},
-								},
-							},
+							Base:           currency.USD,
+							History:        history,
 							CryptoProvider: currency.CryptoCompareProvider,
 							ForexProvider:  currency.ECBProvider,
 						},
 						Notional:         125,
 						From:             currency.EUR,
 						To:               currency.JPY,
+						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
+						ForexCurrencies:  currency.ForexCurrencies,
+						CryptoCurrencies: currency.CryptoCurrencies,
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "BTC",
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution: &CurrencyResponse{
+						Response: &currency.Response{
+							Base:           currency.USD,
+							History:        history,
+							CryptoProvider: currency.CryptoCompareProvider,
+							ForexProvider:  currency.ECBProvider,
+						},
+						Notional:         1,
+						From:             currency.BTC,
+						To:               currency.USD,
+						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
+						ForexCurrencies:  currency.ForexCurrencies,
+						CryptoCurrencies: currency.CryptoCurrencies,
+					},
+					Cache: true,
+				},
+			},
+		},
+		{
+			query: "125 BTC",
+			expected: []Data{
+				{
+					Type:      typ,
+					Triggered: true,
+					Solution: &CurrencyResponse{
+						Response: &currency.Response{
+							Base:           currency.USD,
+							History:        history,
+							CryptoProvider: currency.CryptoCompareProvider,
+							ForexProvider:  currency.ECBProvider,
+						},
+						Notional:         125,
+						From:             currency.BTC,
+						To:               currency.USD,
 						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
 						ForexCurrencies:  currency.ForexCurrencies,
 						CryptoCurrencies: currency.CryptoCurrencies,
