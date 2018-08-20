@@ -125,7 +125,7 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Flight Info & Status
 - [ ] News
 - [ ] Shopping
-- [ ] Custom Themes
+- [ ] Custom CSS Themes
 
 <br>
 
