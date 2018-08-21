@@ -8,7 +8,7 @@
 
 
 <p align="center">
-Jive Search is the open source search engine that does not track you. Pages are ranked based on their upvotes. Search privately, now : https://www.jivesearch.com
+Jive Search is the open source search engine that does not track you. Search privately, now : https://www.jivesearch.com
 </p>
 
 <br>
@@ -18,6 +18,11 @@ Jive Search is the open source search engine that does not track you. Pages are 
    <a href="https://travis-ci.org/jivesearch/jivesearch"><img src="https://travis-ci.org/jivesearch/jivesearch.svg?branch=master"></a>
   <a href="https://github.com/jivesearch/jivesearch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache-brightgreen.svg"></a>
 </p>
+
+<br>
+
+## 💾 Overview
+By default, pages are ranked by votes received. This works great for a domain that has a small amount of traffic but you may want to customize it to include other factors as well. [The default algorithm can be found here](https://github.com/jivesearch/jivesearch/blob/master/search/vote/postgresql.go#L77-L92).
 
 <br>
  
