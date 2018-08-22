@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/currency"
+	"github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 
 	"github.com/jivesearch/jivesearch/instant/location"
@@ -254,6 +255,9 @@ func main() {
 				Client: httpClient,
 			},
 			FXFetcher: &currency.ECB{},
+		},
+		PopulationFetcher: &population.WorldBank{
+			HTTPClient: httpClient,
 		},
 		LinkShortener: &shortener.IsGd{
 			HTTPClient: httpClient,

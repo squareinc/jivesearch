@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ/population"
+
 	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 
@@ -228,6 +230,37 @@ func TestSafeHTML(t *testing.T) {
 	}
 }
 
+func TestSubtract(t *testing.T) {
+	type args struct {
+		x int
+		y int
+	}
+
+	for _, tt := range []struct {
+		name string
+		args
+		want int
+	}{
+		{
+			name: "1-1",
+			args: args{1, 1},
+			want: 0,
+		},
+		{
+			name: "103-10",
+			args: args{103, 10},
+			want: 93,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := subtract(tt.args.x, tt.args.y)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSource(t *testing.T) {
 	type args struct {
 		src instant.Data
@@ -253,15 +286,6 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="musicbrainz" src="/image/32x,sv4p1VZOkfT_gjscSjDjuToOCXgNXhcOxdBDjhYmwmsk=/https://musicbrainz.org/favicon.ico"/> <a href="https://musicbrainz.org/">MusicBrainz</a>`,
 		},
 		{
-			name: "fedex",
-			args: args{
-				instant.Data{
-					Type: "fedex",
-				},
-			},
-			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
-		},
-		{
 			name: "currency",
 			args: args{
 				instant.Data{
@@ -275,6 +299,29 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `<img width="12" height="12" alt="European Central Bank" src="/image/32x,sojbRuJxSVjihgjhBCVOb63w6Xx3m8AdLx0eLr47VdA8=/http://www.ecb.europa.eu/favicon.ico"/> <a href="http://www.ecb.europa.eu/home/html/index.en.html">European Central Bank</a><br><img width="12" height="12" alt="CryptoCompare" src="/image/32x,stvpUZPbHHDno5wi-rZHX4YkppcMzE2yPC0FA2KyC4iM=/https://www.cryptocompare.com/media/20562/favicon.png?v=2"/> <a href="https://www.cryptocompare.com/">CryptoCompare</a>`,
+		},
+		{
+			name: "fedex",
+			args: args{
+				instant.Data{
+					Type: "fedex",
+				},
+			},
+			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
+		},
+		{
+			name: "population",
+			args: args{
+				instant.Data{
+					Type: "population",
+					Solution: &instant.PopulationResponse{
+						Response: &population.Response{
+							Provider: population.TheWorldBankProvider,
+						},
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="TheWorldBank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
 		},
 		{
 			name: "stackoverflow",

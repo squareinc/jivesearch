@@ -537,6 +537,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.Maps{LocationFetcher: f.Instant.LocationFetcher},
 			&instant.Minify{},
 			&instant.MortgageCalculator{},
+			&instant.Population{PopulationFetcher: f.Instant.PopulationFetcher},
 			&instant.Potus{},
 			&instant.Power{},
 			&instant.Prime{},
@@ -591,6 +592,8 @@ func detectType(t string) interface{} {
 		v = &parcel.Response{}
 	case "hash":
 		v = &instant.HashResponse{}
+	case "population":
+		v = &instant.PopulationResponse{}
 	case "stackoverflow":
 		v = &instant.StackOverflowAnswer{}
 	case "stock quote":

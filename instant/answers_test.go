@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ/population"
+
 	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
@@ -81,6 +83,7 @@ func TestDetect(t *testing.T) {
 		FedExFetcher:         &mockFedExFetcher{},
 		LinkShortener:        &mockShortener{},
 		LocationFetcher:      &mockLocationFetcher{},
+		PopulationFetcher:    &mockPopulationFetcher{},
 		StackOverflowFetcher: &mockStackOverflowFetcher{},
 		StockQuoteFetcher:    &mockStockQuoteFetcher{},
 		UPSFetcher:           &mockUPSFetcher{},
@@ -308,6 +311,28 @@ func (l *mockLocationFetcher) Fetch(ip net.IP) (*geoip2.City, error) {
 	c.Location.Latitude = 12
 	c.Location.Longitude = 18
 	return c, nil
+}
+
+type mockPopulationFetcher struct{}
+
+func (m *mockPopulationFetcher) Fetch(country string, start time.Time, end time.Time) (*population.Response, error) {
+	return &population.Response{
+		History: []population.Instant{
+			{
+				Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 4,
+			},
+			{
+				Date:  time.Date(2003, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 2,
+			},
+			{
+				Date:  time.Date(2017, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 18,
+			},
+		},
+		Provider: population.TheWorldBankProvider,
+	}, nil
 }
 
 // mock Stack Overflow Fetcher

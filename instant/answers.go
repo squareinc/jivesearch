@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/discography"
+	"github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -29,6 +30,7 @@ type Instant struct {
 	Currency
 	LinkShortener        shortener.Service
 	LocationFetcher      location.Fetcher
+	PopulationFetcher    population.Fetcher
 	StackOverflowFetcher stackoverflow.Fetcher
 	StockQuoteFetcher    stock.Fetcher
 	UPSFetcher           parcel.Fetcher

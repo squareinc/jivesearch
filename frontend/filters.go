@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ/population"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/currency"
@@ -39,6 +41,7 @@ var funcMap = template.FuncMap{
 	},
 	"SafeHTML":             safeHTML,
 	"Source":               source,
+	"Subtract":             subtract,
 	"Truncate":             truncate,
 	"WeatherCode":          weatherCode,
 	"WeatherDailyForecast": weatherDailyForecast,
@@ -54,6 +57,10 @@ var funcMap = template.FuncMap{
 
 func add(x, y int) int {
 	return x + y
+}
+
+func subtract(x, y int) int {
+	return x - y
 }
 
 func commafy(v interface{}) string {
@@ -154,6 +161,15 @@ func source(answer instant.Data) string {
 			f += fmt.Sprintf(`<br>%v <a href="https://www.cryptocompare.com/">CryptoCompare</a>`, img)
 		default:
 			log.Debug.Printf("unknown cryptocurrency provider %v\n", q.CryptoProvider)
+		}
+	case "population":
+		p := answer.Solution.(*instant.PopulationResponse)
+		switch p.Provider {
+		case population.TheWorldBankProvider:
+			img = fmt.Sprintf(`<img width="12" height="12" alt="TheWorldBank" src="%v"/>`, proxyFavIcon("https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"))
+			f += fmt.Sprintf(`%v <a href="https://www.worldbank.org/">%v</a>`, img, p.Provider)
+		default:
+			log.Debug.Printf("unknown population provider %v\n", p.Provider)
 		}
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.

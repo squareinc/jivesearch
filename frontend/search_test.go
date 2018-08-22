@@ -420,8 +420,10 @@ func TestDetectType(t *testing.T) {
 		want interface{}
 	}{
 		{"birthstone", nil},
-		{"fedex", &parcel.Response{}},
 		{"currency", &instant.CurrencyResponse{}},
+		{"discography", &[]discography.Album{}},
+		{"fedex", &parcel.Response{}},
+		{"population", &instant.PopulationResponse{}},
 		{"stackoverflow", &instant.StackOverflowAnswer{}},
 		{"stock quote", &stock.Quote{}},
 		{"url shortener", &shortener.Response{}},
@@ -435,7 +437,7 @@ func TestDetectType(t *testing.T) {
 		},
 		{"wikidata birthday", &instant.Birthday{}},
 		{"wikidata death", &instant.Death{}},
-		{"discography", &[]discography.Album{}},
+
 		{"wikidata height", &[]wikipedia.Quantity{}},
 		{"wikiquote", &[]string{}},
 		{"wiktionary", &wikipedia.Wiktionary{}},

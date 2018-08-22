@@ -11,6 +11,8 @@
       {{else if eq .Instant.Type "maps"}}
       <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
       <link href="/static/instant/maps/mapbox_directions.css" rel="stylesheet" />
+      {{else if eq .Instant.Type "population"}}
+      <link rel="stylesheet" href="/static/instant/population/population.css">
       {{else if eq .Instant.Type "stock quote"}}
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
@@ -56,6 +58,9 @@
     </script>
     {{else if eq .Instant.Type "mortgage calculator"}}
     <script src="/static/instant/mortgage_calculator/mortgage_calculator.js"></script>
+    {{else if eq .Instant.Type "population"}}
+    <script src="/static/instant/population/d3.v4.min.js"></script>
+    <script src="/static/instant/population/population.js"></script>
     {{else if eq .Instant.Type "stock quote"}}
     <script src="/static/instant/stock_quotes/d3.v4.min.js"></script>
     <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
@@ -424,6 +429,23 @@
           </fieldset>
         </form>
       </div>
+      {{else if eq .Instant.Type "population"}}
+      {{if .Instant.Solution}}
+      <div id="answer" class="pure-u-1">
+        <div style="margin:15px;margin-bottom:5px;">
+          <div class="pure-u-1">
+            {{$n := len .Instant.Solution.History}}
+            {{$last := Subtract $n 1}}
+            {{$latest := index .Instant.Solution.History $last}}<!-- get latest... -->
+            <div class="pure-u-1" style="font-size:16px;">{{.Instant.Solution.Country}} Population</div>
+            <div class="pure-u-1" style="font-size:20px;">{{$latest.Value | Commafy}} ({{$latest.Date.Format "2006"}})</div>
+          </div>
+          <div id="population_chart" class="pure-u-1"></div>
+        </div>
+        <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
+        {{template "source" .}}
+      </div>
+      {{end}}
       {{else if (or (eq .Instant.Type "fedex") (eq .Instant.Type "ups") (eq .Instant.Type "usps"))}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1">
