@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/econ/gdp"
+
 	"github.com/jivesearch/jivesearch/instant/currency"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -256,7 +258,7 @@ func main() {
 			},
 			FXFetcher: &currency.ECB{},
 		},
-		PopulationFetcher: &population.WorldBank{
+		GDPFetcher: &gdp.WorldBank{
 			HTTPClient: httpClient,
 		},
 		LinkShortener: &shortener.IsGd{
@@ -264,6 +266,9 @@ func main() {
 		},
 		LocationFetcher: &location.MaxMind{
 			DB: v.GetString("maxmind.database"),
+		},
+		PopulationFetcher: &population.WorldBank{
+			HTTPClient: httpClient,
 		},
 		StackOverflowFetcher: &stackoverflow.API{
 			HTTPClient: httpClient,

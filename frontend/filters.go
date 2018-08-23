@@ -15,11 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/econ/population"
-
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/currency"
+	"github.com/jivesearch/jivesearch/instant/econ"
 	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
@@ -162,15 +161,30 @@ func source(answer instant.Data) string {
 		default:
 			log.Debug.Printf("unknown cryptocurrency provider %v\n", q.CryptoProvider)
 		}
-	case "population":
-		p := answer.Solution.(*instant.PopulationResponse)
-		switch p.Provider {
-		case population.TheWorldBankProvider:
-			img = fmt.Sprintf(`<img width="12" height="12" alt="TheWorldBank" src="%v"/>`, proxyFavIcon("https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"))
-			f += fmt.Sprintf(`%v <a href="https://www.worldbank.org/">%v</a>`, img, p.Provider)
-		default:
-			log.Debug.Printf("unknown population provider %v\n", p.Provider)
+	case "gdp", "population":
+		var provider econ.Provider
+
+		switch answer.Type {
+		case "gdp":
+			provider = answer.Solution.(*instant.GDPResponse).Provider
+		case "population":
+			provider = answer.Solution.(*instant.PopulationResponse).Provider
 		}
+
+		var makeSource = func(p econ.Provider) string {
+			var f string
+
+			switch p {
+			case econ.TheWorldBankProvider:
+				img = fmt.Sprintf(`<img width="12" height="12" alt="TheWorldBank" src="%v"/>`, proxyFavIcon("https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"))
+				f += fmt.Sprintf(`%v <a href="https://www.worldbank.org/">%v</a>`, img, p)
+			default:
+				log.Debug.Printf("unknown population provider %v\n", p)
+			}
+			return f
+		}
+
+		f = makeSource(provider)
 	case "stackoverflow":
 		// TODO: I wasn't able to get both the User's display name and link to their profile or id.
 		// Can select one or the other but not both in their filter.

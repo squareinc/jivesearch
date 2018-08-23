@@ -423,6 +423,7 @@ func TestDetectType(t *testing.T) {
 		{"currency", &instant.CurrencyResponse{}},
 		{"discography", &[]discography.Album{}},
 		{"fedex", &parcel.Response{}},
+		{"gdp", &instant.GDPResponse{}},
 		{"population", &instant.PopulationResponse{}},
 		{"stackoverflow", &instant.StackOverflowAnswer{}},
 		{"stock quote", &stock.Quote{}},

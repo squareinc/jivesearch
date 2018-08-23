@@ -1,5 +1,5 @@
-// Package population retrieves population data
-package population
+// Package gdp retrieves gdp data
+package gdp
 
 import (
 	"sort"
@@ -8,19 +8,22 @@ import (
 	"github.com/jivesearch/jivesearch/instant/econ"
 )
 
-// Instant is the population for a point in time
+// Provider indicates the source of the data
+type Provider string
+
+// Instant is the gdp for a point in time
 type Instant struct {
 	Date  time.Time `json:"date"`
 	Value float64   `json:"value"`
 }
 
-// Response is a population response
+// Response is a gdp response
 type Response struct {
 	History []Instant
 	econ.Provider
 }
 
-// Fetcher outlines methods to retrieve population data
+// Fetcher outlines methods to retrieve gdp data
 type Fetcher interface {
 	Fetch(country string, start time.Time, end time.Time) (*Response, error)
 }

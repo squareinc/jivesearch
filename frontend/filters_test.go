@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ"
+	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
 
 	"github.com/jivesearch/jivesearch/instant/currency"
@@ -310,13 +312,27 @@ func TestSource(t *testing.T) {
 			want: `<img width="12" height="12" alt="fedex" src="/image/32x,sFXu9XPvd6hRjlea7BzoMkT0rEHPf0u7TawtAlUzQxvY=/http://www.fedex.com/favicon.ico"/> <a href="https://www.fedex.com">FedEx</a>`,
 		},
 		{
+			name: "gdp",
+			args: args{
+				instant.Data{
+					Type: "gdp",
+					Solution: &instant.GDPResponse{
+						Response: &gdp.Response{
+							Provider: econ.TheWorldBankProvider,
+						},
+					},
+				},
+			},
+			want: `<img width="12" height="12" alt="TheWorldBank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
+		},
+		{
 			name: "population",
 			args: args{
 				instant.Data{
 					Type: "population",
 					Solution: &instant.PopulationResponse{
 						Response: &population.Response{
-							Provider: population.TheWorldBankProvider,
+							Provider: econ.TheWorldBankProvider,
 						},
 					},
 				},

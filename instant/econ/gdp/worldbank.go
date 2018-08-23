@@ -1,4 +1,4 @@
-package population
+package gdp
 
 import (
 	"encoding/xml"
@@ -16,7 +16,7 @@ type WorldBank struct {
 	HTTPClient *http.Client
 }
 
-// Fetch retrieves population data from The World Bank
+// Fetch retrieves GDP data from The World Bank
 func (w *WorldBank) Fetch(country string, from, to time.Time) (*Response, error) {
 	u, err := w.buildURL(country, from, to)
 	if err != nil {
@@ -57,15 +57,11 @@ func (w *WorldBank) Fetch(country string, from, to time.Time) (*Response, error)
 }
 
 func (w *WorldBank) buildURL(country string, from, to time.Time) (*url.URL, error) {
-	// http://api.worldbank.org/v2/countries/it/indicators/SP.POP.TOTL?date=1960:2018
-	u, err := url.Parse(fmt.Sprintf("http://api.worldbank.org/v2/countries/%v/indicators/SP.POP.TOTL", country))
+	// http://api.worldbank.org/v2/countries/it/indicators/NY.GDP.MKTP.CD
+	u, err := url.Parse(fmt.Sprintf("http://api.worldbank.org/v2/countries/%v/indicators/NY.GDP.MKTP.CD", country))
 	if err != nil {
 		return nil, err
 	}
-
-	q := u.Query()
-	q.Add("date", fmt.Sprintf("%d:%d", from.Year(), to.Year()))
-	u.RawQuery = q.Encode()
 
 	return u, err
 }

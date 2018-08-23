@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/pariz/gountries"
 	"golang.org/x/text/language"
@@ -22,8 +23,8 @@ type PopulationResponse struct {
 	*population.Response
 }
 
-// ErrInvalidCountry indicates a country is not valid
-var ErrInvalidCountry error
+// ErrInvalidGDPCountry indicates a country is not valid
+var ErrInvalidGDPCountry error
 
 func (p *Population) setQuery(r *http.Request, qv string) Answerer {
 	p.Answer.setQuery(r, qv)
@@ -56,7 +57,7 @@ func (p *Population) setRegex() Answerer {
 func (p *Population) solve(r *http.Request) Answerer {
 	c, ok := p.remainderM["country"]
 	if !ok {
-		p.Err = ErrInvalidCountry
+		p.Err = ErrInvalidGDPCountry
 		return p
 	}
 
@@ -109,7 +110,7 @@ func (p *Population) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution: &PopulationResponse{
-						Country: "IT",
+						Country: "Italy",
 						Response: &population.Response{
 							History: []population.Instant{
 								{
@@ -125,7 +126,7 @@ func (p *Population) tests() []test {
 									Value: 18,
 								},
 							},
-							Provider: population.TheWorldBankProvider,
+							Provider: econ.TheWorldBankProvider,
 						},
 					},
 					Cache: true,

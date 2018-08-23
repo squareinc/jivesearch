@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ"
+	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
 
 	"github.com/jivesearch/jivesearch/instant/currency"
@@ -41,12 +43,14 @@ func answers(i Instant) []Answerer {
 			CryptoFetcher: i.CryptoFetcher,
 			FXFetcher:     i.FXFetcher,
 		},
+		&GDP{GDPFetcher: i.GDPFetcher},
 		&Hash{},
 		&Speed{},
 		&Length{},
 		&Maps{LocationFetcher: i.LocationFetcher},
 		&Minify{},
 		&MortgageCalculator{},
+		&Population{PopulationFetcher: i.PopulationFetcher},
 		&Potus{},
 		&Power{},
 		&Prime{},
@@ -81,6 +85,7 @@ func TestDetect(t *testing.T) {
 			FXFetcher:     &mockFXFetcher{},
 		},
 		FedExFetcher:         &mockFedExFetcher{},
+		GDPFetcher:           &mockGDPFetcher{},
 		LinkShortener:        &mockShortener{},
 		LocationFetcher:      &mockLocationFetcher{},
 		PopulationFetcher:    &mockPopulationFetcher{},
@@ -132,11 +137,12 @@ func TestDetect(t *testing.T) {
 					if !solved {
 						t.Errorf("Instant answer failed %v", ctx)
 						t.Errorf("got %+v;", got)
-						//t.Errorf("got %+v;", got.Solution.(*CurrencyResponse).Response)
+						//t.Errorf("got %+v;", got.Solution.(*PopulationResponse).Response)
 						t.Errorf("want ")
 						for _, expected := range c.expected {
 							t.Errorf("    %+v\n", expected)
-							//t.Errorf("    %+v\n", expected.Solution.(*CurrencyResponse).Response)
+							t.Errorf("    %+v\n", expected.Solution.(*PopulationResponse).Response)
+							//t.Error(expected.Solution.(*PopulationResponse).Country, got.Solution.(*PopulationResponse).Country)
 						}
 						t.FailNow()
 					}
@@ -302,6 +308,29 @@ func (m *mockFXFetcher) Fetch() (*currency.Response, error) {
 	}, nil
 }
 
+// mock gdp fetcher
+type mockGDPFetcher struct{}
+
+func (m *mockGDPFetcher) Fetch(country string, start time.Time, end time.Time) (*gdp.Response, error) {
+	return &gdp.Response{
+		History: []gdp.Instant{
+			{
+				Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 4,
+			},
+			{
+				Date:  time.Date(2003, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 2,
+			},
+			{
+				Date:  time.Date(2017, 12, 31, 0, 0, 0, 0, time.UTC),
+				Value: 18,
+			},
+		},
+		Provider: econ.TheWorldBankProvider,
+	}, nil
+}
+
 // mock location fetcher
 type mockLocationFetcher struct{}
 
@@ -331,7 +360,7 @@ func (m *mockPopulationFetcher) Fetch(country string, start time.Time, end time.
 				Value: 18,
 			},
 		},
-		Provider: population.TheWorldBankProvider,
+		Provider: econ.TheWorldBankProvider,
 	}, nil
 }
 

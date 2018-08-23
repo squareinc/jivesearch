@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/econ/gdp"
+
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/jivesearch/jivesearch/instant/location"
@@ -28,6 +30,7 @@ type Instant struct {
 	DiscographyFetcher discography.Fetcher
 	FedExFetcher       parcel.Fetcher
 	Currency
+	GDPFetcher           gdp.Fetcher
 	LinkShortener        shortener.Service
 	LocationFetcher      location.Fetcher
 	PopulationFetcher    population.Fetcher

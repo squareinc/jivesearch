@@ -8,6 +8,8 @@
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "currency"}}
       <link rel="stylesheet" href="/static/instant/currency/currency.css">
+      {{else if eq .Instant.Type "gdp"}}
+      <link rel="stylesheet" href="/static/instant/gdp/gdp.css">
       {{else if eq .Instant.Type "maps"}}
       <link href="/static/instant/maps/mapbox.css" rel="stylesheet" />
       <link href="/static/instant/maps/mapbox_directions.css" rel="stylesheet" />
@@ -34,6 +36,9 @@
     {{else if eq .Instant.Type "currency"}}
     <script src="/static/instant/currency/d3.v4.min.js"></script>
     <script src="/static/instant/currency/currency.js"></script>
+    {{else if eq .Instant.Type "gdp"}}
+    <script src="/static/instant/gdp/d3.v4.min.js"></script>
+    <script src="/static/instant/gdp/gdp.js"></script>
     {{else if eq .Instant.Type "maps"}}
     <script src="/static/instant/maps/mapbox.js"></script>
     <script src="/static/instant/maps/mapbox_directions.js"></script>
@@ -405,6 +410,23 @@
           </script>
           {{template "source" .}}
         </div>
+      {{else if eq .Instant.Type "gdp"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1">
+          <div style="margin:15px;margin-bottom:5px;">
+            <div class="pure-u-1">
+              {{$n := len .Instant.Solution.History}}
+              {{$last := Subtract $n 1}}
+              {{$latest := index .Instant.Solution.History $last}}<!-- get latest... -->
+              <div class="pure-u-1" style="font-size:16px;">{{.Instant.Solution.Country}} GDP</div>
+              <div class="pure-u-1" style="font-size:20px;">{{$latest.Value | Commafy}} ({{$latest.Date.Format "2006"}})</div>
+            </div>
+            <div id="gdp_chart" class="pure-u-1"></div>
+          </div>
+          <script>var data = {{.Instant.Solution.History|JSONMarshal}};</script>
+          {{template "source" .}}
+        </div>
+        {{end}}
       {{else if eq .Instant.Type "mortgage calculator"}}
       <div class="pure-u-1" style="margin-bottom:5px;border-bottom:1px solid #efefef;">
         <form class="pure-form pure-form-stacked" action="">
