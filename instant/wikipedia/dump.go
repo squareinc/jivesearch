@@ -287,7 +287,7 @@ func isSupported(w string, supported []language.Tag) (language.Tag, bool) {
 		"labs", "labtest", "login", "mediawiki", "meta", "nostalgia", "outreach",
 		"quality", "species", "simple", "sources", "strategy", "test",
 		"testwikidata", "usability", "vote", "wikidata", // we get wikidata from another source ;)
-		"atj", "eml", "roa_tara", "ten", "zh_classical",
+		"atj", "eml", "roa_tara", "ten", "zh_classical", "wikimania",
 	}
 
 	for _, s := range skip {

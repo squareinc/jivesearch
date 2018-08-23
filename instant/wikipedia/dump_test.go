@@ -230,8 +230,8 @@ func TestCirrusLinks(t *testing.T) {
 					<a href="enwikiquote-20171218-cirrussearch-general.json.gz">enwikiquote-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 5620413
 					<a href="enwiktionary-20171218-cirrussearch-content.json.gz">enwiktionary-20171218-cirrussearch-content.json.gz</a>19-Dec-2017 10:33 78247011
 					<a href="enwiktionary-20171218-cirrussearch-general.json.gz">enwiktionary-20171218-cirrussearch-general.json.gz</a>19-Dec-2017 15:25 5620413
-					<a href="usabilitywiki-20171218-cirrussearch-content.json.gz">usabilitywiki-20171218-cirrussearch-content.jso..&gt;</a>20-Dec-2017 12:56 386462
-					<a href="usabilitywiki-20171218-cirrussearch-general.json.gz">usabilitywiki-20171218-cirrussearch-general.jso..&gt;</a>20-Dec-2017 12:56 813441
+					<a href="usabilitywiki-20171218-cirrussearch-content.json.gz">usabilitywiki-20171218-cirrussearch-content.json.gz</a>20-Dec-2017 12:56 386462
+					<a href="usabilitywiki-20171218-cirrussearch-general.json.gz">usabilitywiki-20171218-cirrussearch-general.json.gz</a>20-Dec-2017 12:56 813441
 					</body>
 				</html>`,
 			)
