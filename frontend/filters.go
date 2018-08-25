@@ -128,33 +128,29 @@ func source(answer instant.Data) string {
 		return fmt.Sprintf("/image/32x,s%v/%v", hmacKey(u), u)
 	}
 
-	var txt string
-	var u string
 	var img string
 	var f string
 
 	switch answer.Type {
 	case "discography":
-		txt, u = "MusicBrainz", "https://musicbrainz.org/"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="musicbrainz" src="%v"/>`, proxyFavIcon("https://musicbrainz.org/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://musicbrainz.org/">MusicBrainz</a>`, img)
 	case "fedex":
-		txt, u = "FedEx", "https://www.fedex.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="fedex" src="%v"/>`, proxyFavIcon("http://www.fedex.com/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.fedex.com">FedEx</a>`, img)
 	case "currency":
 		q := answer.Solution.(*instant.CurrencyResponse)
 		switch q.ForexProvider {
 		case currency.ECBProvider:
-			img = fmt.Sprintf(`<img width="12" height="12" alt="European Central Bank" src="%v"/>`, proxyFavIcon("http://www.ecb.europa.eu/favicon.ico"))
-			f = fmt.Sprintf(`%v <a href="http://www.ecb.europa.eu/home/html/index.en.html">European Central Bank</a>`, img)
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, currency.ECBProvider, proxyFavIcon("http://www.ecb.europa.eu/favicon.ico"))
+			f = fmt.Sprintf(`%v <a href="http://www.ecb.europa.eu/home/html/index.en.html">%v</a>`, img, currency.ECBProvider)
 		default:
 			log.Debug.Printf("unknown forex provider %v\n", q.ForexProvider)
 		}
 		switch q.CryptoProvider {
 		case currency.CryptoCompareProvider:
-			img = fmt.Sprintf(`<img width="12" height="12" alt="CryptoCompare" src="%v"/>`, proxyFavIcon("https://www.cryptocompare.com/media/20562/favicon.png?v=2"))
-			f += fmt.Sprintf(`<br>%v <a href="https://www.cryptocompare.com/">CryptoCompare</a>`, img)
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, currency.CryptoCompareProvider, proxyFavIcon("https://www.cryptocompare.com/media/20562/favicon.png?v=2"))
+			f += fmt.Sprintf(`<br>%v <a href="https://www.cryptocompare.com/">%v</a>`, img, currency.CryptoCompareProvider)
 		default:
 			log.Debug.Printf("unknown cryptocurrency provider %v\n", q.CryptoProvider)
 		}
@@ -173,7 +169,7 @@ func source(answer instant.Data) string {
 
 			switch p {
 			case econ.TheWorldBankProvider:
-				img = fmt.Sprintf(`<img width="12" height="12" alt="TheWorldBank" src="%v"/>`, proxyFavIcon("https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"))
+				img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, econ.TheWorldBankProvider, proxyFavIcon("https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"))
 				f += fmt.Sprintf(`%v <a href="https://www.worldbank.org/">%v</a>`, img, p)
 			default:
 				log.Debug.Printf("unknown population provider %v\n", p)
@@ -192,26 +188,23 @@ func source(answer instant.Data) string {
 		q := answer.Solution.(*stock.Quote)
 		switch q.Provider {
 		case stock.IEXProvider:
-			img = fmt.Sprintf(`<img width="12" height="12" alt="iex" src="%v"/>`, proxyFavIcon("https://iextrading.com/favicon.ico"))
-			f = fmt.Sprintf(`%v Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`, img) // MUST say "Data provided for free by <a href="https://iextrading.com/developer">IEX</a>."
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, q.Provider, proxyFavIcon("https://iextrading.com/favicon.ico"))
+			f = fmt.Sprintf(`%v Data provided for free by <a href="https://iextrading.com/developer">%v</a>.`, img, q.Provider) // MUST say "Data provided for free by <a href="https://iextrading.com/developer">IEX</a>."
 		default:
 			log.Debug.Printf("unknown stock quote provider %v\n", q.Provider)
 		}
 	case "ups":
-		txt, u = "UPS", "https://www.ups.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="ups" src="%v"/>`, proxyFavIcon("https://www.ups.com/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.ups.com">UPS</a>`, img)
 	case "usps":
-		txt, u = "USPS", "https://www.usps.com"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="usps" src="%v"/>`, proxyFavIcon("https://www.usps.com/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.usps.com">USPS</a>`, img)
 	case "url shortener":
 		s := answer.Solution.(*shortener.Response)
 		switch s.Provider {
 		case shortener.IsGdProvider:
-			txt, u = "is.gd", "https://is.gd/"
-			img = fmt.Sprintf(`<img width="12" height="12" alt="is.gd" src="%v"/>`, proxyFavIcon("https://is.gd/isgd_favicon.ico"))
-			f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, shortener.IsGdProvider, proxyFavIcon("https://is.gd/isgd_favicon.ico"))
+			f = fmt.Sprintf(`%v <a href="https://is.gd/">%v</a>`, img, shortener.IsGdProvider)
 		default:
 			log.Debug.Printf("unknown link shortening service %v\n", s.Provider)
 		}
@@ -219,24 +212,20 @@ func source(answer instant.Data) string {
 		w := answer.Solution.(*weather.Weather)
 		switch w.Provider {
 		case weather.OpenWeatherMapProvider:
-			txt, u = "OpenWeatherMap", "http://openweathermap.org"
-			img = fmt.Sprintf(`<img width="12" height="12" alt="openweathermap" src="%v"/>`, proxyFavIcon("http://openweathermap.org/favicon.ico"))
-			f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, weather.OpenWeatherMapProvider, proxyFavIcon("http://openweathermap.org/favicon.ico"))
+			f = fmt.Sprintf(`%v <a href="http://openweathermap.org">%v</a>`, img, weather.OpenWeatherMapProvider)
 		default:
 			log.Debug.Printf("unknown weather provider %v\n", w.Provider)
 		}
 	case "wikidata age", "wikidata birthday", "wikidata death", "wikidata height", "wikidata weight":
-		txt, u = "Wikipedia", "https://www.wikipedia.org/"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="wikipedia" src="%v"/>`, proxyFavIcon("https://en.wikipedia.org/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.wikipedia.org/">Wikipedia</a>`, img)
 	case "wikiquote":
-		txt, u = "Wikiquote", "https://www.wikiquote.org/"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="wikiquote" src="%v"/>`, proxyFavIcon("https://en.wikiquote.org/favicon.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.wikiquote.org/">Wikiquote</a>`, img)
 	case "wiktionary":
-		txt, u = "Wiktionary", "https://www.wiktionary.org/"
 		img = fmt.Sprintf(`<img width="12" height="12" alt="wiktionary" src="%v"/>`, proxyFavIcon("https://www.wiktionary.org/static/favicon/piece.ico"))
-		f = fmt.Sprintf(`%v <a href="%v">%v</a>`, img, u, txt)
+		f = fmt.Sprintf(`%v <a href="https://www.wiktionary.org/">Wiktionary</a>`, img)
 	default:
 		log.Debug.Printf("unknown instant answer type %v\n", answer.Type)
 	}

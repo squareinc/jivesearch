@@ -323,7 +323,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="TheWorldBank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
+			want: `<img width="12" height="12" alt="The World Bank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
 		},
 		{
 			name: "population",
@@ -337,7 +337,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="TheWorldBank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
+			want: `<img width="12" height="12" alt="The World Bank" src="/image/32x,sr79IepQNuB0JCCgfeNKd5TpbGm4JSKlr9E4pUtiw9Ig=/https://www.worldbank.org/content/dam/wbr-redesign/logos/wbg-favicon.png"/> <a href="https://www.worldbank.org/">The World Bank</a>`,
 		},
 		{
 			name: "stackoverflow",
@@ -363,7 +363,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="iex" src="/image/32x,sHbfM3QKtrjDw8v0skAKSmNQfZJ-C1OtMtjfBMNwsALI=/https://iextrading.com/favicon.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
+			want: `<img width="12" height="12" alt="IEX" src="/image/32x,sHbfM3QKtrjDw8v0skAKSmNQfZJ-C1OtMtjfBMNwsALI=/https://iextrading.com/favicon.ico"/> Data provided for free by <a href="https://iextrading.com/developer">IEX</a>.`,
 		},
 		{
 			name: "url shortener",
@@ -405,7 +405,7 @@ func TestSource(t *testing.T) {
 					},
 				},
 			},
-			want: `<img width="12" height="12" alt="openweathermap" src="/image/32x,scZVABsAW_b194omixXeIrSTCiy1clQD-lTg3-51Lo84=/http://openweathermap.org/favicon.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
+			want: `<img width="12" height="12" alt="OpenWeatherMap" src="/image/32x,scZVABsAW_b194omixXeIrSTCiy1clQD-lTg3-51Lo84=/http://openweathermap.org/favicon.ico"/> <a href="http://openweathermap.org">OpenWeatherMap</a>`,
 		},
 		{
 			name: "wikidata age",
