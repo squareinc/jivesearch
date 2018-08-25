@@ -320,7 +320,7 @@
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $j, $v := $hist -}}
-                        {{if eq (Plus1 $j) $n -}}
+                        {{if eq (Add $j 1) $n -}}
                         <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
@@ -331,7 +331,7 @@
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $j, $v := $hist -}}
-                        {{if eq (Plus1 $j) $n -}}
+                        {{if eq (Add $j 1) $n -}}
                         <option {{if eq $c.Short $fx.From.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
@@ -350,7 +350,7 @@
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $j, $v := $hist -}}
-                        {{if eq (Plus1 $j) $n -}}
+                        {{if eq (Add $j 1) $n -}}
                         <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
@@ -361,7 +361,7 @@
                       {{$hist := index $fx.History $c.Short}}
                       {{$n := len $hist}}
                       {{range $j, $v := $hist -}}
-                        {{if eq (Plus1 $j) $n -}}
+                        {{if eq (Add $j 1) $n -}}
                         <option {{if eq $c.Short $fx.To.Short}}selected{{end}} value="{{$v.Rate}}" currency="{{$c.Short}}">{{$c.Long}} ({{$c.Short}})</option>
                         {{- end}}
                       {{- end}}
@@ -376,7 +376,7 @@
             {{$hist := index $fx.History $c.Short}}
             {{$n := len $hist}}
             {{range $i, $v := $hist -}}
-              {{if eq (Plus1 $i) $n -}}
+              {{if eq (Add $i 1) $n -}}
               <div class="pure-u-1">Forex data last updated {{$v.DateTime.Format "January 2, 2006"}}</div>
               {{- end}}
             {{- end}}
@@ -384,7 +384,7 @@
             {{$hist := index $fx.History $c.Short}}
             {{$n := len $hist}}
             {{range $i, $v := $hist -}}
-              {{if eq (Plus1 $i) $n -}}
+              {{if eq (Add $i 1) $n -}}
               <div class="pure-u-1">Cryptocurrency data last updated {{$v.DateTime.Format "January 2, 2006 UTC"}}</div>
               {{- end}}
             {{- end}}
@@ -397,14 +397,14 @@
               {{- $from := index $fx.History $fx.From.Short -}}
               {{$n := len $from -}}                        
               {{range $i, $v := $from -}}
-                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
+                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Add $i 1) $n -}}{{else}},{{end -}}
               {{end -}}
             ];
             var to=[
               {{- $to := index $fx.History $fx.To.Short -}}
               {{$n := len $to -}}                        
               {{range $i, $v := $to -}}
-                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Plus1 $i) $n -}}{{else}},{{end -}}
+                {"date": {{$v.DateTime.Format "2006-01-02T00:00:00Z"}}, "rate": {{$v.Rate}}}{{if eq (Add $i 1) $n -}}{{else}},{{end -}}
               {{end -}}
             ];
           </script>

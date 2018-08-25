@@ -28,16 +28,13 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"Add":         add,
-	"Commafy":     commafy,
-	"HMACKey":     hmacKey,
-	"Join":        join,
-	"JSONMarshal": jsonMarshal,
-	"Now":         now,
-	"Percent":     percent,
-	"Plus1": func(x int) int {
-		return x + 1
-	},
+	"Add":                  add,
+	"Commafy":              commafy,
+	"HMACKey":              hmacKey,
+	"Join":                 join,
+	"JSONMarshal":          jsonMarshal,
+	"Now":                  now,
+	"Percent":              percent,
 	"SafeHTML":             safeHTML,
 	"Source":               source,
 	"Subtract":             subtract,
