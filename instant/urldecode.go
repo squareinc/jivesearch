@@ -52,11 +52,6 @@ func (u *URLDecode) solve(r *http.Request) Answerer {
 	return u
 }
 
-func (u *URLDecode) setCache() Answerer {
-	u.Cache = true
-	return u
-}
-
 func (u *URLDecode) tests() []test {
 	typ := "urldecode"
 
@@ -68,7 +63,6 @@ func (u *URLDecode) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "http://www.example.com?q=this|that",
-					Cache:     true,
 				},
 			},
 		},

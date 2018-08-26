@@ -70,11 +70,6 @@ func (f *Frequency) solve(r *http.Request) Answerer {
 	return f
 }
 
-func (f *Frequency) setCache() Answerer {
-	f.Cache = true
-	return f
-}
-
 func (f *Frequency) tests() []test {
 	typ := "frequency"
 
@@ -86,7 +81,6 @@ func (f *Frequency) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "5",
-					Cache:     true,
 				},
 			},
 		},
@@ -97,7 +91,6 @@ func (f *Frequency) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "5",
-					Cache:     true,
 				},
 			},
 		},
@@ -108,7 +101,6 @@ func (f *Frequency) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "2",
-					Cache:     true,
 				},
 			},
 		},
@@ -119,7 +111,6 @@ func (f *Frequency) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "0",
-					Cache:     true,
 				},
 			},
 		},
@@ -130,7 +121,6 @@ func (f *Frequency) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "2",
-					Cache:     true,
 				},
 			},
 		},

@@ -63,11 +63,6 @@ func (l *Length) solve(r *http.Request) Answerer {
 	return l
 }
 
-func (l *Length) setCache() Answerer {
-	l.Cache = true
-	return l
-}
-
 func (l *Length) tests() []test {
 	typ := "unit converter"
 
@@ -75,7 +70,6 @@ func (l *Length) tests() []test {
 		Type:      typ,
 		Triggered: true,
 		Solution:  "length",
-		Cache:     true,
 	}
 
 	tests := []test{

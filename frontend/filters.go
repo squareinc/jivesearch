@@ -208,7 +208,7 @@ func source(answer instant.Data) string {
 		default:
 			log.Debug.Printf("unknown link shortening service %v\n", s.Provider)
 		}
-	case "weather":
+	case "local weather", "weather":
 		w := answer.Solution.(*weather.Weather)
 		switch w.Provider {
 		case weather.OpenWeatherMapProvider:

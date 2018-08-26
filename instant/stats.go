@@ -81,11 +81,6 @@ func (s *Stats) solve(r *http.Request) Answerer {
 	return s
 }
 
-func (s *Stats) setCache() Answerer {
-	s.Cache = true
-	return s
-}
-
 func (s *Stats) tests() []test {
 	typ := "stats"
 
@@ -97,7 +92,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Average: 2000001.5",
-					Cache:     true,
 				},
 			},
 		},
@@ -108,7 +102,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Average: -37.666666666666664",
-					Cache:     true,
 				},
 			},
 		},
@@ -119,7 +112,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Median: 4.5",
-					Cache:     true,
 				},
 			},
 		},
@@ -130,7 +122,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Median: 12",
-					Cache:     true,
 				},
 			},
 		},
@@ -141,7 +132,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Sum: 113",
-					Cache:     true,
 				},
 			},
 		},
@@ -152,7 +142,6 @@ func (s *Stats) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Sum: -403",
-					Cache:     true,
 				},
 			},
 		},

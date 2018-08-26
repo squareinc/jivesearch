@@ -94,11 +94,6 @@ func (p *Population) solve(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Population) setCache() Answerer {
-	p.Cache = true
-	return p
-}
-
 func (p *Population) tests() []test {
 	typ := "population"
 
@@ -129,7 +124,6 @@ func (p *Population) tests() []test {
 							Provider: econ.TheWorldBankProvider,
 						},
 					},
-					Cache: true,
 				},
 			},
 		},

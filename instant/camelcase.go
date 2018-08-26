@@ -57,11 +57,6 @@ func (c *CamelCase) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *CamelCase) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *CamelCase) tests() []test {
 	typ := "camelcase"
 
@@ -73,7 +68,6 @@ func (c *CamelCase) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "MetallicaRocks",
-					Cache:     true,
 				},
 			},
 		},
@@ -84,7 +78,6 @@ func (c *CamelCase) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "AliceInChainsIsBetter",
-					Cache:     true,
 				},
 			},
 		},
@@ -95,7 +88,6 @@ func (c *CamelCase) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "O'DoyleRules",
-					Cache:     true,
 				},
 			},
 		},

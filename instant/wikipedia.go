@@ -180,11 +180,6 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 	return w
 }
 
-func (w *Wikipedia) setCache() Answerer {
-	w.Cache = true
-	return w
-}
-
 func (w *Wikipedia) tests() []test {
 
 	tests := []test{
@@ -208,7 +203,6 @@ func (w *Wikipedia) tests() []test {
 							},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -224,7 +218,6 @@ func (w *Wikipedia) tests() []test {
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -240,7 +233,6 @@ func (w *Wikipedia) tests() []test {
 							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -256,7 +248,6 @@ func (w *Wikipedia) tests() []test {
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -272,7 +263,6 @@ func (w *Wikipedia) tests() []test {
 							Unit:   wikipedia.Wikidata{ID: "Q11573"},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -286,7 +276,6 @@ func (w *Wikipedia) tests() []test {
 						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
 						"ball is life",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -302,7 +291,6 @@ func (w *Wikipedia) tests() []test {
 							{Part: "noun", Meaning: "musical instrument"},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -330,7 +318,6 @@ func (w *Wikipedia) tests() []test {
 							},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},

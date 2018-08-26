@@ -68,11 +68,6 @@ func (s *Shortener) solve(r *http.Request) Answerer {
 	return s
 }
 
-func (s *Shortener) setCache() Answerer {
-	s.Cache = true
-	return s
-}
-
 func (s *Shortener) tests() []test {
 	typ := "url shortener"
 	u := "https://verylong.com/link"
@@ -91,7 +86,6 @@ func (s *Shortener) tests() []test {
 						Short:    shrt,
 						Provider: "mockShortener",
 					},
-					Cache: true,
 				},
 			},
 		},

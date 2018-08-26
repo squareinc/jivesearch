@@ -60,12 +60,12 @@ func (w *Weather) solve(r *http.Request) Answerer {
 			if err != nil {
 				w.Err = err
 			}
-			w.Cache = true
 			return w
 		}
 	}
 
 	// fetch by lat/long. On localhost this will likely give you weather for "Earth"
+	w.Type = "local weather"
 	ip := getIPAddress(r)
 
 	city, err := w.LocationFetcher.Fetch(ip)
@@ -81,21 +81,14 @@ func (w *Weather) solve(r *http.Request) Answerer {
 	return w
 }
 
-func (w *Weather) setCache() Answerer {
-	// caching is set in solve()
-	return w
-}
-
 func (w *Weather) tests() []test {
-	typ := "weather"
-
 	tests := []test{
 		{
-			query: "weather",
+			query: "local weather",
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      "local weather",
 					Triggered: true,
 					Solution: &weather.Weather{
 						City: "Bountiful",
@@ -137,7 +130,6 @@ func (w *Weather) tests() []test {
 						Provider: weather.OpenWeatherMapProvider,
 						TimeZone: "America/Denver",
 					},
-					Cache: false,
 				},
 			},
 		},
@@ -146,7 +138,7 @@ func (w *Weather) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      "weather",
 					Triggered: true,
 					Solution: &weather.Weather{
 						City: "Bountiful",
@@ -187,7 +179,6 @@ func (w *Weather) tests() []test {
 						},
 						Provider: weather.OpenWeatherMapProvider,
 					},
-					Cache: true,
 				},
 			},
 		},

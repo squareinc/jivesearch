@@ -515,7 +515,6 @@ var mockInstantAnswer = instant.Data{
 	Triggered: true,
 	Solution:  &wikipedia.Item{},
 	Err:       nil,
-	Cache:     true,
 }
 
 var mockSearchResults = &search.Results{

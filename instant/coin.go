@@ -53,11 +53,6 @@ func (c *Coin) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Coin) setCache() Answerer {
-	c.Cache = false
-	return c
-}
-
 func (c *Coin) tests() []test {
 	tests := []test{}
 
@@ -69,13 +64,11 @@ func (c *Coin) tests() []test {
 					Type:      "coin toss",
 					Triggered: true,
 					Solution:  "Heads",
-					Cache:     false,
 				},
 				{
 					Type:      "coin toss",
 					Triggered: true,
 					Solution:  "Tails",
-					Cache:     false,
 				},
 			},
 		}

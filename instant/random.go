@@ -74,11 +74,6 @@ func (r *Random) solve(req *http.Request) Answerer {
 	return r
 }
 
-func (r *Random) setCache() Answerer {
-	r.Cache = false
-	return r
-}
-
 func (r *Random) tests() []test {
 	typ := "random"
 
@@ -93,7 +88,6 @@ func (r *Random) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  c,
-					Cache:     false,
 				},
 			)
 		}

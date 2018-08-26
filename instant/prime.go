@@ -69,11 +69,6 @@ func (p *Prime) solve(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Prime) setCache() Answerer {
-	p.Cache = true
-	return p
-}
-
 func (p *Prime) tests() []test {
 	typ := "prime"
 
@@ -85,7 +80,6 @@ func (p *Prime) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113",
-					Cache:     true,
 				},
 			},
 		},
@@ -96,7 +90,6 @@ func (p *Prime) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607",
-					Cache:     true,
 				},
 			},
 		},
@@ -107,7 +100,6 @@ func (p *Prime) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83",
-					Cache:     true,
 				},
 			},
 		},

@@ -59,11 +59,6 @@ func (u *USPS) solve(req *http.Request) Answerer {
 	return u
 }
 
-func (u *USPS) setCache() Answerer {
-	u.Cache = true
-	return u
-}
-
 func (u *USPS) tests() []test {
 	testNumbers := []string{
 		//"70160910000108310009", // certified...trips fedex
@@ -109,7 +104,6 @@ func (u *USPS) tests() []test {
 						},
 						URL: fmt.Sprintf("https://tools.usps.com/go/TrackConfirmAction?origTrackNum=%v", strings.ToUpper(n)),
 					},
-					Cache: true,
 				},
 			},
 		}

@@ -266,15 +266,23 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 				onlyMaps = true
 			}
 
+			var d = f.Cache.Instant
+
 			res := f.DetectInstantAnswer(r, lang, onlyMaps)
-			if res.Cache {
-				var d = f.Cache.Instant
 
-				switch res.Type {
-				case "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
-					d = 1 * time.Minute
-				}
+			var cache bool
 
+			switch res.Type {
+			case "coin toss", "local weather", "random", "user agent":
+				cache = false
+			case "currency", "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
+				d = 1 * time.Minute
+				cache = true
+			default:
+				cache = true
+			}
+
+			if cache {
 				if d > f.Cache.Instant {
 					d = f.Cache.Instant
 				}
@@ -603,7 +611,7 @@ func detectType(t string) interface{} {
 		v = &stock.Quote{}
 	case "url shortener":
 		v = &shortener.Response{}
-	case "weather":
+	case "local weather", "weather":
 		v = &weather.Weather{}
 	case "wikipedia":
 		v = &wikipedia.Item{}

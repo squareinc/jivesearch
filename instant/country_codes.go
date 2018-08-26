@@ -76,11 +76,6 @@ func (c *CountryCode) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *CountryCode) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *CountryCode) tests() []test {
 	typ := "country code"
 
@@ -96,7 +91,6 @@ func (c *CountryCode) tests() []test {
 						Country:  "United States",
 						Solution: "US",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -111,7 +105,6 @@ func (c *CountryCode) tests() []test {
 						Country:  "Germany",
 						Solution: "DE",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -126,7 +119,6 @@ func (c *CountryCode) tests() []test {
 						Country:  "Denmark",
 						Solution: "DK",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -141,7 +133,6 @@ func (c *CountryCode) tests() []test {
 						Country:  "Sweden",
 						Solution: "SE",
 					},
-					Cache: true,
 				},
 			},
 		},

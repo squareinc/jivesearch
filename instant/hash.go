@@ -109,11 +109,6 @@ func (h *Hash) solve(r *http.Request) Answerer {
 	return h
 }
 
-func (h *Hash) setCache() Answerer {
-	h.Cache = true
-	return h
-}
-
 func (h *Hash) tests() []test {
 	typ := "hash"
 
@@ -129,7 +124,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: MD5,
 						Solution: "9e925e9341b490bfd3b4c4ca3b0c1ef2",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -144,7 +138,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: SHA1,
 						Solution: "dd5c370a950f4dbb48a6212b0bde03eb3a021897",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -159,7 +152,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: SHA1,
 						Solution: "dd5c370a950f4dbb48a6212b0bde03eb3a021897",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -174,7 +166,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: SHA224,
 						Solution: "f9cbc8589549f186e44921d765a93719f380097e0af88070bf6607a9",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -189,7 +180,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: SHA256,
 						Solution: "820b0b1b609e77038b1f37e623e7f05cce9f7727fd1f557607e9badd431d208f",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -204,7 +194,6 @@ func (h *Hash) tests() []test {
 						HashAlgo: SHA512,
 						Solution: "410f7993f53b148c5b439c8e48fd5083860d648a00ff7579b0046257822c35658591bddc662ea8bda650cd729f1f3f876038240fa0422a811cc00eeff170e500",
 					},
-					Cache: true,
 				},
 			},
 		},

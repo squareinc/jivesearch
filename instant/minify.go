@@ -51,18 +51,12 @@ func (m *Minify) solve(r *http.Request) Answerer {
 	return m
 }
 
-func (m *Minify) setCache() Answerer {
-	m.Cache = true
-	return m
-}
-
 func (m *Minify) tests() []test {
 	typ := "minify"
 
 	d := Data{
 		Type:      typ,
 		Triggered: true,
-		Cache:     true,
 	}
 
 	tests := []test{

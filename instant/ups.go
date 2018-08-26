@@ -77,11 +77,6 @@ func (u *UPS) solve(req *http.Request) Answerer {
 	return u
 }
 
-func (u *UPS) setCache() Answerer {
-	u.Cache = true
-	return u
-}
-
 func (u *UPS) tests() []test {
 	testNumbers := []string{
 		// Test numbers from "Tracking Web Service Developer Guide.pdf"
@@ -129,7 +124,6 @@ func (u *UPS) tests() []test {
 						},
 						URL: fmt.Sprintf("https://wwwapps.ups.com/WebTracking/processInputRequest?AgreeToTermsAndConditions=yes&InquiryNumber1=%v&TypeOfInquiryNumber=T&error_carried=true&loc=en-us&sort_by=status&tracknums_displayed=1", strings.ToUpper(n)),
 					},
-					Cache: true,
 				},
 			},
 		}

@@ -103,11 +103,6 @@ func (m *Maps) solve(r *http.Request) Answerer {
 	return m
 }
 
-func (m *Maps) setCache() Answerer {
-	m.Cache = true
-	return m
-}
-
 func (m *Maps) tests() []test {
 	typ := "maps"
 
@@ -122,7 +117,6 @@ func (m *Maps) tests() []test {
 					Solution: Map{
 						Location: location.Location{Latitude: 12, Longitude: 18},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -137,7 +131,6 @@ func (m *Maps) tests() []test {
 						Location:   location.Location{Latitude: 12, Longitude: 18},
 						Directions: true,
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -154,7 +147,6 @@ func (m *Maps) tests() []test {
 						Origin:      "",
 						Destination: "new york city",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -171,7 +163,6 @@ func (m *Maps) tests() []test {
 						Origin:      "",
 						Destination: "new york city",
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -188,7 +179,6 @@ func (m *Maps) tests() []test {
 						Origin:      "san francisco",
 						Destination: "ohio",
 					},
-					Cache: true,
 				},
 			},
 		},

@@ -157,11 +157,6 @@ func (c *Currency) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Currency) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *Currency) tests() []test {
 	typ := "currency"
 
@@ -229,7 +224,6 @@ func (c *Currency) tests() []test {
 						ForexCurrencies:  currency.ForexCurrencies,
 						CryptoCurrencies: currency.CryptoCurrencies,
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -253,7 +247,6 @@ func (c *Currency) tests() []test {
 						ForexCurrencies:  currency.ForexCurrencies,
 						CryptoCurrencies: currency.CryptoCurrencies,
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -277,7 +270,6 @@ func (c *Currency) tests() []test {
 						ForexCurrencies:  currency.ForexCurrencies,
 						CryptoCurrencies: currency.CryptoCurrencies,
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -301,7 +293,6 @@ func (c *Currency) tests() []test {
 						ForexCurrencies:  currency.ForexCurrencies,
 						CryptoCurrencies: currency.CryptoCurrencies,
 					},
-					Cache: true,
 				},
 			},
 		},

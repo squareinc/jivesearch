@@ -58,11 +58,6 @@ func (p *Power) solve(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Power) setCache() Answerer {
-	p.Cache = true
-	return p
-}
-
 func (p *Power) tests() []test {
 	typ := "unit converter"
 
@@ -70,7 +65,6 @@ func (p *Power) tests() []test {
 		Type:      typ,
 		Triggered: true,
 		Solution:  "power",
-		Cache:     true,
 	}
 
 	tests := []test{

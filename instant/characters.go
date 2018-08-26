@@ -63,11 +63,6 @@ func (c *Characters) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Characters) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *Characters) tests() []test {
 	typ := "characters"
 
@@ -79,7 +74,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "12",
-					Cache:     true,
 				},
 			},
 		},
@@ -90,7 +84,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "10",
-					Cache:     true,
 				},
 			},
 		},
@@ -101,7 +94,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "9",
-					Cache:     true,
 				},
 			},
 		},
@@ -112,7 +104,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "12",
-					Cache:     true,
 				},
 			},
 		},
@@ -123,7 +114,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "12",
-					Cache:     true,
 				},
 			},
 		},
@@ -134,7 +124,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "4",
-					Cache:     true,
 				},
 			},
 		},
@@ -145,7 +134,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "7",
-					Cache:     true,
 				},
 			},
 		},
@@ -156,7 +144,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "9",
-					Cache:     true,
 				},
 			},
 		},
@@ -167,7 +154,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "17",
-					Cache:     true,
 				},
 			},
 		},
@@ -178,7 +164,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "7",
-					Cache:     true,
 				},
 			},
 		},
@@ -189,7 +174,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "14",
-					Cache:     true,
 				},
 			},
 		},
@@ -200,7 +184,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "7",
-					Cache:     true,
 				},
 			},
 		},
@@ -211,7 +194,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "8",
-					Cache:     true,
 				},
 			},
 		},
@@ -222,7 +204,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "6",
-					Cache:     true,
 				},
 			},
 		},
@@ -233,7 +214,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "4",
-					Cache:     true,
 				},
 			},
 		},
@@ -244,7 +224,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "4",
-					Cache:     true,
 				},
 			},
 		},
@@ -255,7 +234,6 @@ func (c *Characters) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "8",
-					Cache:     true,
 				},
 			},
 		},

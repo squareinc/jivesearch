@@ -69,11 +69,6 @@ func (s *StockQuote) solve(r *http.Request) Answerer {
 	return s
 }
 
-func (s *StockQuote) setCache() Answerer {
-	s.Cache = true
-	return s
-}
-
 func (s *StockQuote) tests() []test {
 	typ := "stock quote"
 
@@ -102,7 +97,6 @@ func (s *StockQuote) tests() []test {
 						},
 						Provider: stock.IEXProvider,
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -128,7 +122,6 @@ func (s *StockQuote) tests() []test {
 						},
 						Provider: stock.IEXProvider,
 					},
-					Cache: true,
 				},
 			},
 		},

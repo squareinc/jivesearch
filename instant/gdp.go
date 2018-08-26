@@ -103,11 +103,6 @@ func (g *GDP) solve(r *http.Request) Answerer {
 	return g
 }
 
-func (g *GDP) setCache() Answerer {
-	g.Cache = true
-	return g
-}
-
 func (g *GDP) tests() []test {
 	typ := "gdp"
 
@@ -138,7 +133,6 @@ func (g *GDP) tests() []test {
 							Provider: econ.TheWorldBankProvider,
 						},
 					},
-					Cache: true,
 				},
 			},
 		},

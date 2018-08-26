@@ -61,11 +61,6 @@ func (d *Discography) solve(r *http.Request) Answerer {
 	return d
 }
 
-func (d *Discography) setCache() Answerer {
-	d.Cache = true
-	return d
-}
-
 func (d *Discography) tests() []test {
 	typ := "discography"
 
@@ -85,7 +80,6 @@ func (d *Discography) tests() []test {
 							},
 						},
 					},
-					Cache: true,
 				},
 			},
 		},

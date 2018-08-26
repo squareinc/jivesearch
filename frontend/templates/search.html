@@ -19,7 +19,7 @@
       <link rel="stylesheet" href="/static/instant/stock_quotes/stock_quotes.css">
       {{else if eq .Instant.Type "unit converter"}}
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
-      {{else if eq .Instant.Type "weather"}}
+      {{else if (or (eq .Instant.Type "local weather") (eq .Instant.Type "weather"))}}
       <link rel="stylesheet" href="/static/instant/weather/weather.css">
       {{else if eq .Instant.Type "discography"}}
       <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
@@ -579,7 +579,7 @@
           {{template "source" .}}
         </div>
         {{end}}
-      {{else if eq .Instant.Type "weather"}}
+      {{else if (or (eq .Instant.Type "local weather") (eq .Instant.Type "weather"))}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1" style="height:375px;">
           <div style="margin:15px;margin-bottom:5px;">

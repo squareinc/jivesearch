@@ -69,11 +69,6 @@ func (r *Reverse) solve(req *http.Request) Answerer {
 	return r
 }
 
-func (r *Reverse) setCache() Answerer {
-	r.Cache = true
-	return r
-}
-
 func (r *Reverse) tests() []test {
 	typ := "reverse"
 
@@ -85,7 +80,6 @@ func (r *Reverse) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "me' ees hha....sthgil hha",
-					Cache:     true,
 				},
 			},
 		},
@@ -96,7 +90,6 @@ func (r *Reverse) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "んせませ話は語本日私",
-					Cache:     true,
 				},
 			},
 		},
@@ -107,7 +100,6 @@ func (r *Reverse) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "haey hha",
-					Cache:     true,
 				},
 			},
 		},

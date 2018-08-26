@@ -135,13 +135,14 @@ func TestDetect(t *testing.T) {
 						}
 					}
 					if !solved {
+						fmt.Println(got.Type)
 						t.Errorf("Instant answer failed %v", ctx)
 						t.Errorf("got %+v;", got)
 						//t.Errorf("got %+v;", got.Solution.(*PopulationResponse).Response)
 						t.Errorf("want ")
 						for _, expected := range c.expected {
 							t.Errorf("    %+v\n", expected)
-							t.Errorf("    %+v\n", expected.Solution.(*PopulationResponse).Response)
+							//t.Errorf("    %+v\n", expected.Solution.(*weather.Weather))
 							//t.Error(expected.Solution.(*PopulationResponse).Country, got.Solution.(*PopulationResponse).Country)
 						}
 						t.FailNow()

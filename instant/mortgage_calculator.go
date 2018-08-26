@@ -44,18 +44,12 @@ func (c *MortgageCalculator) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *MortgageCalculator) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *MortgageCalculator) tests() []test {
 	typ := "mortgage calculator"
 
 	d := Data{
 		Type:      typ,
 		Triggered: true,
-		Cache:     true,
 	}
 
 	tests := []test{

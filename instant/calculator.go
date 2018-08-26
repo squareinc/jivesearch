@@ -90,18 +90,12 @@ func (c *Calculator) solve(r *http.Request) Answerer {
 	return c
 }
 
-func (c *Calculator) setCache() Answerer {
-	c.Cache = true
-	return c
-}
-
 func (c *Calculator) tests() []test {
 	typ := "calculator"
 
 	d := Data{
 		Type:      typ,
 		Triggered: true,
-		Cache:     true,
 	}
 
 	tests := []test{
@@ -116,7 +110,6 @@ func (c *Calculator) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  4.0,
-					Cache:     true,
 				},
 			},
 		},
@@ -127,7 +120,6 @@ func (c *Calculator) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  18.3,
-					Cache:     true,
 				},
 			},
 		},
@@ -138,7 +130,6 @@ func (c *Calculator) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  1.875,
-					Cache:     true,
 				},
 			},
 		},

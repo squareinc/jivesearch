@@ -57,12 +57,6 @@ func (u *UserAgent) solve(r *http.Request) Answerer {
 	return u
 }
 
-func (u *UserAgent) setCache() Answerer {
-	// caching would cache the query but the browser could change
-	u.Cache = false
-	return u
-}
-
 func (u *UserAgent) tests() []test {
 	typ := "user agent"
 
@@ -75,7 +69,6 @@ func (u *UserAgent) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "firefox",
-					Cache:     false,
 				},
 			},
 		},
@@ -87,7 +80,6 @@ func (u *UserAgent) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "opera",
-					Cache:     false,
 				},
 			},
 		},
@@ -99,7 +91,6 @@ func (u *UserAgent) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "some random ua",
-					Cache:     false,
 				},
 			},
 		},
@@ -111,7 +102,6 @@ func (u *UserAgent) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "chrome",
-					Cache:     false,
 				},
 			},
 		},
@@ -123,7 +113,6 @@ func (u *UserAgent) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "internet explorer",
-					Cache:     false,
 				},
 			},
 		},

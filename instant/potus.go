@@ -99,11 +99,6 @@ func (p *Potus) solve(r *http.Request) Answerer {
 	return p
 }
 
-func (p *Potus) setCache() Answerer {
-	p.Cache = true
-	return p
-}
-
 func (p *Potus) tests() []test {
 	// there is an obvious flaw in the tests below:
 	// e.g. "2st", etc. Also, we need to support the
@@ -118,7 +113,6 @@ func (p *Potus) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Donald Trump",
-					Cache:     true,
 				},
 			},
 		},
@@ -195,7 +189,6 @@ func (p *Potus) tests() []test {
 						Type:      typ,
 						Triggered: true,
 						Solution:  pres,
-						Cache:     true,
 					},
 				},
 			}

@@ -56,11 +56,6 @@ func (f *FedEx) solve(req *http.Request) Answerer {
 	return f
 }
 
-func (f *FedEx) setCache() Answerer {
-	f.Cache = true
-	return f
-}
-
 func (f *FedEx) tests() []test {
 	testNumbers := []string{
 		// Express and Ground
@@ -127,7 +122,6 @@ func (f *FedEx) tests() []test {
 						},
 						URL: fmt.Sprintf("https://www.fedex.com/apps/fedextrack/?action=track&tracknumbers=%v", strings.ToUpper(n)),
 					},
-					Cache: true,
 				},
 			},
 		}

@@ -73,17 +73,11 @@ func (s *Speed) solve(r *http.Request) Answerer {
 	return s
 }
 
-func (s *Speed) setCache() Answerer {
-	s.Cache = true
-	return s
-}
-
 func (s *Speed) tests() []test {
 	d := Data{
 		Type:      "unit converter",
 		Triggered: true,
 		Solution:  "speed",
-		Cache:     true,
 	}
 
 	tests := []test{

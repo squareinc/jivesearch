@@ -77,11 +77,6 @@ func (d *DigitalStorage) solve(r *http.Request) Answerer {
 	return d
 }
 
-func (d *DigitalStorage) setCache() Answerer {
-	d.Cache = true
-	return d
-}
-
 func (d *DigitalStorage) tests() []test {
 	typ := "unit converter"
 
@@ -89,7 +84,6 @@ func (d *DigitalStorage) tests() []test {
 		Type:      typ,
 		Triggered: true,
 		Solution:  "digital storage",
-		Cache:     true,
 	}
 
 	tests := []test{

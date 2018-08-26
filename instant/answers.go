@@ -51,7 +51,6 @@ type Answerer interface {
 	setRegex() Answerer
 	trigger() bool
 	solve(r *http.Request) Answerer
-	setCache() Answerer
 	solution() Data
 	tests() []test
 }
@@ -74,7 +73,6 @@ type Data struct {
 	Triggered bool        `json:"triggered"`
 	Solution  interface{} `json:"answer,omitempty"`
 	Err       error       `json:"-"`
-	Cache     bool        `json:"cache,omitempty"`
 }
 
 // Triggerer detects if the answer has been triggered
@@ -90,7 +88,7 @@ func (i *Instant) Trigger(ia Answerer, r *http.Request, lang language.Tag) bool 
 
 // Solve solves an instant answer
 func (i *Instant) Solve(ia Answerer, r *http.Request) Data {
-	ia.setType().setCache().solve(r)
+	ia.setType().solve(r)
 	return ia.solution()
 }
 

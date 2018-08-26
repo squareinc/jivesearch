@@ -61,11 +61,6 @@ func (t *Temperature) solve(r *http.Request) Answerer {
 	return t
 }
 
-func (t *Temperature) setCache() Answerer {
-	t.Cache = true
-	return t
-}
-
 func (t *Temperature) tests() []test {
 	typ := "unit converter"
 
@@ -73,7 +68,6 @@ func (t *Temperature) tests() []test {
 		Type:      typ,
 		Triggered: true,
 		Solution:  "temperature",
-		Cache:     true,
 	}
 
 	tests := []test{

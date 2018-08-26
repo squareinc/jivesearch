@@ -52,11 +52,6 @@ func (u *URLEncode) solve(r *http.Request) Answerer {
 	return u
 }
 
-func (u *URLEncode) setCache() Answerer {
-	u.Cache = true
-	return u
-}
-
 func (u *URLEncode) tests() []test {
 	typ := "urlencode"
 
@@ -68,7 +63,6 @@ func (u *URLEncode) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "http%3A%2F%2Fwww.example.com%3Fq%3Dthis%7Cthat",
-					Cache:     true,
 				},
 			},
 		},

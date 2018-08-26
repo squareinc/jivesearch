@@ -133,11 +133,6 @@ func (s *StackOverflow) solve(r *http.Request) Answerer {
 	return s
 }
 
-func (s *StackOverflow) setCache() Answerer {
-	s.Cache = true
-	return s
-}
-
 func (s *StackOverflow) tests() []test {
 	typ := "stackoverflow"
 
@@ -156,7 +151,6 @@ func (s *StackOverflow) tests() []test {
 							Text: "an answer",
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -174,7 +168,6 @@ func (s *StackOverflow) tests() []test {
 							Text: "a very good answer",
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -192,7 +185,6 @@ func (s *StackOverflow) tests() []test {
 							Text: "a superbly good answer",
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -210,7 +202,6 @@ func (s *StackOverflow) tests() []test {
 							Text: "a superbly good answer",
 						},
 					},
-					Cache: true,
 				},
 			},
 		},
@@ -228,7 +219,6 @@ func (s *StackOverflow) tests() []test {
 							Text: "a superbly good answer",
 						},
 					},
-					Cache: true,
 				},
 			},
 		},

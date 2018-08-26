@@ -79,11 +79,6 @@ func (b *BirthStone) solve(r *http.Request) Answerer {
 	return b
 }
 
-func (b *BirthStone) setCache() Answerer {
-	b.Cache = true
-	return b
-}
-
 func (b *BirthStone) tests() []test {
 	typ := "birthstone"
 
@@ -95,7 +90,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Garnet",
-					Cache:     true,
 				},
 			},
 		},
@@ -106,7 +100,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Amethyst",
-					Cache:     true,
 				},
 			},
 		},
@@ -117,7 +110,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Aquamarine, Bloodstone",
-					Cache:     true,
 				},
 			},
 		},
@@ -128,7 +120,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Diamond",
-					Cache:     true,
 				},
 			},
 		},
@@ -139,7 +130,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Emerald",
-					Cache:     true,
 				},
 			},
 		},
@@ -150,7 +140,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Pearl, Moonstone, Alexandrite",
-					Cache:     true,
 				},
 			},
 		},
@@ -161,7 +150,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Ruby",
-					Cache:     true,
 				},
 			},
 		},
@@ -172,7 +160,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Peridot, Spinel",
-					Cache:     true,
 				},
 			},
 		},
@@ -183,7 +170,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Sapphire",
-					Cache:     true,
 				},
 			},
 		},
@@ -194,7 +180,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Opal, Tourmaline",
-					Cache:     true,
 				},
 			},
 		},
@@ -205,7 +190,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Topaz, Citrine",
-					Cache:     true,
 				},
 			},
 		},
@@ -216,7 +200,6 @@ func (b *BirthStone) tests() []test {
 					Type:      typ,
 					Triggered: true,
 					Solution:  "Turquoise, Zircon, Tanzanite",
-					Cache:     true,
 				},
 			},
 		},
