@@ -416,34 +416,34 @@ func TestSearchHandler(t *testing.T) {
 
 func TestDetectType(t *testing.T) {
 	for _, c := range []struct {
-		name string
+		name instant.Type
 		want interface{}
 	}{
-		{"birthstone", nil},
-		{"currency", &instant.CurrencyResponse{}},
-		{"discography", &[]discography.Album{}},
-		{"fedex", &parcel.Response{}},
-		{"gdp", &instant.GDPResponse{}},
-		{"population", &instant.PopulationResponse{}},
-		{"stackoverflow", &instant.StackOverflowAnswer{}},
-		{"stock quote", &stock.Quote{}},
-		{"url shortener", &shortener.Response{}},
-		{"weather", &weather.Weather{}},
-		{"wikipedia", &wikipedia.Item{}},
+		{instant.BirthStoneType, nil},
+		{instant.CurrencyType, &instant.CurrencyResponse{}},
+		{instant.DiscographyType, &[]discography.Album{}},
+		{instant.FedExType, &parcel.Response{}},
+		{instant.GDPType, &instant.GDPResponse{}},
+		{instant.PopulationType, &instant.PopulationResponse{}},
+		{instant.StackOverflowType, &instant.StackOverflowAnswer{}},
+		{instant.StockQuoteType, &stock.Quote{}},
+		{instant.URLShortenerType, &shortener.Response{}},
+		{instant.WeatherType, &weather.Weather{}},
+		{instant.WikipediaType, &wikipedia.Item{}},
 		{
 			"wikidata age", &instant.Age{
 				Birthday: &instant.Birthday{},
 				Death:    &instant.Death{},
 			},
 		},
-		{"wikidata birthday", &instant.Birthday{}},
-		{"wikidata death", &instant.Death{}},
+		{instant.WikidataBirthdayType, &instant.Birthday{}},
+		{instant.WikidataDeathType, &instant.Death{}},
 
-		{"wikidata height", &[]wikipedia.Quantity{}},
-		{"wikiquote", &[]string{}},
-		{"wiktionary", &wikipedia.Wiktionary{}},
+		{instant.WikidataHeightType, &[]wikipedia.Quantity{}},
+		{instant.WikiquoteType, &[]string{}},
+		{instant.WiktionaryType, &wikipedia.Wiktionary{}},
 	} {
-		t.Run(c.name, func(t *testing.T) {
+		t.Run(string(c.name), func(t *testing.T) {
 			got := detectType(c.name)
 
 			if !reflect.DeepEqual(got, c.want) {

@@ -7,26 +7,29 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/currency"
+	curr "github.com/jivesearch/jivesearch/instant/currency"
 	"golang.org/x/text/language"
 )
 
+// CurrencyType is an answer Type
+const CurrencyType Type = "currency"
+
 // Currency is an instant answer
 type Currency struct {
-	FXFetcher     currency.FXFetcher
-	CryptoFetcher currency.CryptoFetcher
+	FXFetcher     curr.FXFetcher
+	CryptoFetcher curr.CryptoFetcher
 	Answer
 }
 
 // CurrencyResponse is an instant answer response
 type CurrencyResponse struct {
-	*currency.Response
+	*curr.Response
 	Notional         float64
-	From             currency.Currency
-	To               currency.Currency
-	ForexCurrencies  []currency.Currency
-	CryptoCurrencies []currency.Currency
-	Currencies       []currency.Currency
+	From             curr.Currency
+	To               curr.Currency
+	ForexCurrencies  []curr.Currency
+	CryptoCurrencies []curr.Currency
+	Currencies       []curr.Currency
 }
 
 // ErrInvalidCurrency indicates the currency was invalid
@@ -47,7 +50,7 @@ func (c *Currency) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *Currency) setType() Answerer {
-	c.Type = "currency"
+	c.Type = CurrencyType
 	return c
 }
 
@@ -73,11 +76,11 @@ func (c *Currency) setRegex() Answerer {
 
 func (c *Currency) solve(r *http.Request) Answerer {
 	resp := &CurrencyResponse{
-		Response:         currency.New(),
+		Response:         curr.New(),
 		Notional:         1,
-		Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
-		ForexCurrencies:  currency.ForexCurrencies,
-		CryptoCurrencies: currency.CryptoCurrencies,
+		Currencies:       append(curr.ForexCurrencies, curr.CryptoCurrencies...),
+		ForexCurrencies:  curr.ForexCurrencies,
+		CryptoCurrencies: curr.CryptoCurrencies,
 	}
 
 	if n, ok := c.remainderM["notional"]; ok {
@@ -92,27 +95,27 @@ func (c *Currency) solve(r *http.Request) Answerer {
 	var ok bool
 
 	from := c.remainderM["from"]
-	ok, resp.From = currency.Valid(from)
+	ok, resp.From = curr.Valid(from)
 	if !ok {
 		c.Err = ErrInvalidCurrency
 		return c
 	}
 
 	to := c.remainderM["to"]
-	ok, resp.To = currency.Valid(to)
+	ok, resp.To = curr.Valid(to)
 	if !ok {
-		if resp.From == currency.PHP { // chances are they are looking for a programming answer for PHP
+		if resp.From == curr.PHP { // chances are they are looking for a programming answer for PHP
 			c.Err = ErrInvalidCurrency
 			return c
 		}
-		resp.To = currency.USD // assume USD for second if not specified "125 BTC"
+		resp.To = curr.USD // assume USD for second if not specified "125 BTC"
 	}
 
-	cch := make(chan *currency.Response)
-	fch := make(chan *currency.Response)
+	cch := make(chan *curr.Response)
+	fch := make(chan *curr.Response)
 	ech := make(chan error)
 
-	go func(ch chan *currency.Response) {
+	go func(ch chan *curr.Response) {
 		crytopResp, err := c.CryptoFetcher.Fetch()
 		if err != nil {
 			ech <- err
@@ -120,7 +123,7 @@ func (c *Currency) solve(r *http.Request) Answerer {
 		cch <- crytopResp
 	}(cch)
 
-	go func(ch chan *currency.Response) {
+	go func(ch chan *curr.Response) {
 		forexResp, err := c.FXFetcher.Fetch()
 		if err != nil {
 			ech <- err
@@ -128,7 +131,7 @@ func (c *Currency) solve(r *http.Request) Answerer {
 		fch <- forexResp
 	}(fch)
 
-	cresp := &currency.Response{}
+	cresp := &curr.Response{}
 
 	for i := 0; i <= 1; i++ {
 		select {
@@ -158,10 +161,8 @@ func (c *Currency) solve(r *http.Request) Answerer {
 }
 
 func (c *Currency) tests() []test {
-	typ := "currency"
-
-	history := map[string][]*currency.Rate{
-		currency.JPY.Short: {
+	history := map[string][]*curr.Rate{
+		curr.JPY.Short: {
 			{
 				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 				Rate:     1.12,
@@ -171,7 +172,7 @@ func (c *Currency) tests() []test {
 				Rate:     1.1,
 			},
 		},
-		currency.GBP.Short: {
+		curr.GBP.Short: {
 			{
 				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 				Rate:     1.5,
@@ -181,7 +182,7 @@ func (c *Currency) tests() []test {
 				Rate:     1.6,
 			},
 		},
-		currency.BTC.Short: {
+		curr.BTC.Short: {
 			{
 				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 				Rate:     1.12,
@@ -191,7 +192,7 @@ func (c *Currency) tests() []test {
 				Rate:     1.1,
 			},
 		},
-		currency.LTC.Short: {
+		curr.LTC.Short: {
 			{
 				DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 				Rate:     1.5,
@@ -208,21 +209,21 @@ func (c *Currency) tests() []test {
 			query: "convert JPY to USD",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CurrencyType,
 					Triggered: true,
 					Solution: &CurrencyResponse{
-						Response: &currency.Response{
-							Base:           currency.USD,
+						Response: &curr.Response{
+							Base:           curr.USD,
 							History:        history,
-							CryptoProvider: currency.CryptoCompareProvider,
-							ForexProvider:  currency.ECBProvider,
+							CryptoProvider: curr.CryptoCompareProvider,
+							ForexProvider:  curr.ECBProvider,
 						},
 						Notional:         1,
-						From:             currency.JPY,
-						To:               currency.USD,
-						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
-						ForexCurrencies:  currency.ForexCurrencies,
-						CryptoCurrencies: currency.CryptoCurrencies,
+						From:             curr.JPY,
+						To:               curr.USD,
+						Currencies:       append(curr.ForexCurrencies, curr.CryptoCurrencies...),
+						ForexCurrencies:  curr.ForexCurrencies,
+						CryptoCurrencies: curr.CryptoCurrencies,
 					},
 				},
 			},
@@ -231,21 +232,21 @@ func (c *Currency) tests() []test {
 			query: "125 EUR to JPY",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CurrencyType,
 					Triggered: true,
 					Solution: &CurrencyResponse{
-						Response: &currency.Response{
-							Base:           currency.USD,
+						Response: &curr.Response{
+							Base:           curr.USD,
 							History:        history,
-							CryptoProvider: currency.CryptoCompareProvider,
-							ForexProvider:  currency.ECBProvider,
+							CryptoProvider: curr.CryptoCompareProvider,
+							ForexProvider:  curr.ECBProvider,
 						},
 						Notional:         125,
-						From:             currency.EUR,
-						To:               currency.JPY,
-						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
-						ForexCurrencies:  currency.ForexCurrencies,
-						CryptoCurrencies: currency.CryptoCurrencies,
+						From:             curr.EUR,
+						To:               curr.JPY,
+						Currencies:       append(curr.ForexCurrencies, curr.CryptoCurrencies...),
+						ForexCurrencies:  curr.ForexCurrencies,
+						CryptoCurrencies: curr.CryptoCurrencies,
 					},
 				},
 			},
@@ -254,21 +255,21 @@ func (c *Currency) tests() []test {
 			query: "BTC",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CurrencyType,
 					Triggered: true,
 					Solution: &CurrencyResponse{
-						Response: &currency.Response{
-							Base:           currency.USD,
+						Response: &curr.Response{
+							Base:           curr.USD,
 							History:        history,
-							CryptoProvider: currency.CryptoCompareProvider,
-							ForexProvider:  currency.ECBProvider,
+							CryptoProvider: curr.CryptoCompareProvider,
+							ForexProvider:  curr.ECBProvider,
 						},
 						Notional:         1,
-						From:             currency.BTC,
-						To:               currency.USD,
-						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
-						ForexCurrencies:  currency.ForexCurrencies,
-						CryptoCurrencies: currency.CryptoCurrencies,
+						From:             curr.BTC,
+						To:               curr.USD,
+						Currencies:       append(curr.ForexCurrencies, curr.CryptoCurrencies...),
+						ForexCurrencies:  curr.ForexCurrencies,
+						CryptoCurrencies: curr.CryptoCurrencies,
 					},
 				},
 			},
@@ -277,21 +278,21 @@ func (c *Currency) tests() []test {
 			query: "125 BTC",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CurrencyType,
 					Triggered: true,
 					Solution: &CurrencyResponse{
-						Response: &currency.Response{
-							Base:           currency.USD,
+						Response: &curr.Response{
+							Base:           curr.USD,
 							History:        history,
-							CryptoProvider: currency.CryptoCompareProvider,
-							ForexProvider:  currency.ECBProvider,
+							CryptoProvider: curr.CryptoCompareProvider,
+							ForexProvider:  curr.ECBProvider,
 						},
 						Notional:         125,
-						From:             currency.BTC,
-						To:               currency.USD,
-						Currencies:       append(currency.ForexCurrencies, currency.CryptoCurrencies...),
-						ForexCurrencies:  currency.ForexCurrencies,
-						CryptoCurrencies: currency.CryptoCurrencies,
+						From:             curr.BTC,
+						To:               curr.USD,
+						Currencies:       append(curr.ForexCurrencies, curr.CryptoCurrencies...),
+						ForexCurrencies:  curr.ForexCurrencies,
+						CryptoCurrencies: curr.CryptoCurrencies,
 					},
 				},
 			},

@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// MapsType is an answer Type
+const MapsType Type = "maps"
+
 // Maps is an instant answer
 type Maps struct {
 	LocationFetcher location.Fetcher
@@ -40,7 +43,7 @@ func (m *Maps) setLanguage(lang language.Tag) Answerer {
 }
 
 func (m *Maps) setType() Answerer {
-	m.Type = "maps"
+	m.Type = MapsType
 	return m
 }
 
@@ -104,15 +107,13 @@ func (m *Maps) solve(r *http.Request) Answerer {
 }
 
 func (m *Maps) tests() []test {
-	typ := "maps"
-
 	tests := []test{
 		{
 			query: "map",
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      MapsType,
 					Triggered: true,
 					Solution: Map{
 						Location: location.Location{Latitude: 12, Longitude: 18},
@@ -125,7 +126,7 @@ func (m *Maps) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      MapsType,
 					Triggered: true,
 					Solution: Map{
 						Location:   location.Location{Latitude: 12, Longitude: 18},
@@ -139,7 +140,7 @@ func (m *Maps) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      MapsType,
 					Triggered: true,
 					Solution: Map{
 						Location:    location.Location{Latitude: 12, Longitude: 18},
@@ -155,7 +156,7 @@ func (m *Maps) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      MapsType,
 					Triggered: true,
 					Solution: Map{
 						Location:    location.Location{Latitude: 12, Longitude: 18},
@@ -171,7 +172,7 @@ func (m *Maps) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      MapsType,
 					Triggered: true,
 					Solution: Map{
 						Location:    location.Location{Latitude: 12, Longitude: 18},

@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// URLDecodeType is an answer Type
+const URLDecodeType Type = "urldecode"
+
 // URLDecode is an instant answer
 type URLDecode struct {
 	Answer
@@ -30,7 +33,7 @@ func (u *URLDecode) setLanguage(lang language.Tag) Answerer {
 }
 
 func (u *URLDecode) setType() Answerer {
-	u.Type = "urldecode"
+	u.Type = URLDecodeType
 	return u
 }
 
@@ -53,14 +56,12 @@ func (u *URLDecode) solve(r *http.Request) Answerer {
 }
 
 func (u *URLDecode) tests() []test {
-	typ := "urldecode"
-
 	tests := []test{
 		{
 			query: "urldecode http%3A%2F%2Fwww.example.com%3Fq%3Dthis%7Cthat",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      URLDecodeType,
 					Triggered: true,
 					Solution:  "http://www.example.com?q=this|that",
 				},

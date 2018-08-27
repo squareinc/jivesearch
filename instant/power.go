@@ -29,7 +29,7 @@ func (p *Power) setLanguage(lang language.Tag) Answerer {
 }
 
 func (p *Power) setType() Answerer {
-	p.Type = "unit converter"
+	p.Type = UnitConverterType
 	return p
 }
 
@@ -59,10 +59,8 @@ func (p *Power) solve(r *http.Request) Answerer {
 }
 
 func (p *Power) tests() []test {
-	typ := "unit converter"
-
 	d := Data{
-		Type:      typ,
+		Type:      UnitConverterType,
 		Triggered: true,
 		Solution:  "power",
 	}

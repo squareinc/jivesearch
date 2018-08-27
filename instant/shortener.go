@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// URLShortenerType is an answer Type
+const URLShortenerType Type = "url shortener"
+
 // Shortener is an instant answer
 type Shortener struct {
 	Service shortener.Service
@@ -35,7 +38,7 @@ func (s *Shortener) setLanguage(lang language.Tag) Answerer {
 }
 
 func (s *Shortener) setType() Answerer {
-	s.Type = "url shortener"
+	s.Type = URLShortenerType
 	return s
 }
 
@@ -69,7 +72,6 @@ func (s *Shortener) solve(r *http.Request) Answerer {
 }
 
 func (s *Shortener) tests() []test {
-	typ := "url shortener"
 	u := "https://verylong.com/link"
 	original, _ := url.Parse(u)
 	shrt, _ := url.Parse("http://shrt.url")
@@ -79,7 +81,7 @@ func (s *Shortener) tests() []test {
 			query: fmt.Sprintf("shorten %v", u),
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      URLShortenerType,
 					Triggered: true,
 					Solution: &shortener.Response{
 						Original: original,

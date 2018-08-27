@@ -13,6 +13,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// HashType is an answer Type
+const HashType Type = "hash"
+
 // Hash is an instant answer
 type Hash struct {
 	Answer
@@ -56,7 +59,7 @@ func (h *Hash) setLanguage(lang language.Tag) Answerer {
 }
 
 func (h *Hash) setType() Answerer {
-	h.Type = "hash"
+	h.Type = HashType
 	return h
 }
 
@@ -110,14 +113,12 @@ func (h *Hash) solve(r *http.Request) Answerer {
 }
 
 func (h *Hash) tests() []test {
-	typ := "hash"
-
 	tests := []test{
 		{
 			query: "md5 this",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "this",
@@ -131,7 +132,7 @@ func (h *Hash) tests() []test {
 			query: `sha hash of "this entire string"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "this entire string",
@@ -145,7 +146,7 @@ func (h *Hash) tests() []test {
 			query: `sha1 "this entire string"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "this entire string",
@@ -159,7 +160,7 @@ func (h *Hash) tests() []test {
 			query: `sha224 hash of "this entire string"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "this entire string",
@@ -173,7 +174,7 @@ func (h *Hash) tests() []test {
 			query: `sha256 hash of "this entire string"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "this entire string",
@@ -187,7 +188,7 @@ func (h *Hash) tests() []test {
 			query: `sha512 of another string`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      HashType,
 					Triggered: true,
 					Solution: HashResponse{
 						Original: "another string",

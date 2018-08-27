@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// CalculatorType is an answer Type
+const CalculatorType Type = "calculator"
+
 // Calculator is an instant answer
 type Calculator struct {
 	Answer
@@ -31,7 +34,7 @@ func (c *Calculator) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *Calculator) setType() Answerer {
-	c.Type = "calculator"
+	c.Type = CalculatorType
 	return c
 }
 
@@ -91,23 +94,21 @@ func (c *Calculator) solve(r *http.Request) Answerer {
 }
 
 func (c *Calculator) tests() []test {
-	typ := "calculator"
-
-	d := Data{
-		Type:      typ,
-		Triggered: true,
-	}
-
 	tests := []test{
 		{
-			query:    "calculator",
-			expected: []Data{d},
+			query: "calculator",
+			expected: []Data{
+				{
+					Type:      CalculatorType,
+					Triggered: true,
+				},
+			},
 		},
 		{
 			query: "calculate 2+2",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CalculatorType,
 					Triggered: true,
 					Solution:  4.0,
 				},
@@ -117,7 +118,7 @@ func (c *Calculator) tests() []test {
 			query: "(2+2)*3+6.3",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CalculatorType,
 					Triggered: true,
 					Solution:  18.3,
 				},
@@ -127,7 +128,7 @@ func (c *Calculator) tests() []test {
 			query: "(2+2)*3/6.4 compute",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CalculatorType,
 					Triggered: true,
 					Solution:  1.875,
 				},

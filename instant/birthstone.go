@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// BirthStoneType is an answer Type
+const BirthStoneType Type = "birthstone"
+
 // BirthStone is an instant answer
 type BirthStone struct {
 	Answer
@@ -29,7 +32,7 @@ func (b *BirthStone) setLanguage(lang language.Tag) Answerer {
 }
 
 func (b *BirthStone) setType() Answerer {
-	b.Type = "birthstone"
+	b.Type = BirthStoneType
 	return b
 }
 
@@ -80,14 +83,12 @@ func (b *BirthStone) solve(r *http.Request) Answerer {
 }
 
 func (b *BirthStone) tests() []test {
-	typ := "birthstone"
-
 	tests := []test{
 		{
 			query: "January birthstone",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Garnet",
 				},
@@ -97,7 +98,7 @@ func (b *BirthStone) tests() []test {
 			query: "birthstone february",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Amethyst",
 				},
@@ -107,7 +108,7 @@ func (b *BirthStone) tests() []test {
 			query: "march birth stone",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Aquamarine, Bloodstone",
 				},
@@ -117,7 +118,7 @@ func (b *BirthStone) tests() []test {
 			query: "birth stone April",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Diamond",
 				},
@@ -127,7 +128,7 @@ func (b *BirthStone) tests() []test {
 			query: "birth stones may",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Emerald",
 				},
@@ -137,7 +138,7 @@ func (b *BirthStone) tests() []test {
 			query: "birthstones June",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Pearl, Moonstone, Alexandrite",
 				},
@@ -147,7 +148,7 @@ func (b *BirthStone) tests() []test {
 			query: "July Birth Stones",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Ruby",
 				},
@@ -157,7 +158,7 @@ func (b *BirthStone) tests() []test {
 			query: "birthstones August",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Peridot, Spinel",
 				},
@@ -167,7 +168,7 @@ func (b *BirthStone) tests() []test {
 			query: "september birthstones",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Sapphire",
 				},
@@ -177,7 +178,7 @@ func (b *BirthStone) tests() []test {
 			query: "October birthstone",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Opal, Tourmaline",
 				},
@@ -187,7 +188,7 @@ func (b *BirthStone) tests() []test {
 			query: "birthstone November",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Topaz, Citrine",
 				},
@@ -197,7 +198,7 @@ func (b *BirthStone) tests() []test {
 			query: "December birthstone",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      BirthStoneType,
 					Triggered: true,
 					Solution:  "Turquoise, Zircon, Tanzanite",
 				},

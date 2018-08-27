@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// UnitConverterType is an answer Type
+const UnitConverterType Type = "unit converter"
+
 // DigitalStorage is an instant answer
 type DigitalStorage struct {
 	Answer
@@ -29,7 +32,7 @@ func (d *DigitalStorage) setLanguage(lang language.Tag) Answerer {
 }
 
 func (d *DigitalStorage) setType() Answerer {
-	d.Type = "unit converter"
+	d.Type = UnitConverterType
 	return d
 }
 
@@ -78,10 +81,8 @@ func (d *DigitalStorage) solve(r *http.Request) Answerer {
 }
 
 func (d *DigitalStorage) tests() []test {
-	typ := "unit converter"
-
 	dd := Data{
-		Type:      typ,
+		Type:      UnitConverterType,
 		Triggered: true,
 		Solution:  "digital storage",
 	}

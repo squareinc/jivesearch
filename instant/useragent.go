@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// UserAgentType is an answer Type
+const UserAgentType Type = "user agent"
+
 // UserAgent is an instant answer
 type UserAgent struct {
 	Answer
@@ -30,7 +33,7 @@ func (u *UserAgent) setLanguage(lang language.Tag) Answerer {
 }
 
 func (u *UserAgent) setType() Answerer {
-	u.Type = "user agent"
+	u.Type = UserAgentType
 	return u
 }
 
@@ -58,15 +61,13 @@ func (u *UserAgent) solve(r *http.Request) Answerer {
 }
 
 func (u *UserAgent) tests() []test {
-	typ := "user agent"
-
 	tests := []test{
 		{
 			query:     "user agent",
 			userAgent: "firefox",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      UserAgentType,
 					Triggered: true,
 					Solution:  "firefox",
 				},
@@ -77,7 +78,7 @@ func (u *UserAgent) tests() []test {
 			userAgent: "opera",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      UserAgentType,
 					Triggered: true,
 					Solution:  "opera",
 				},
@@ -88,7 +89,7 @@ func (u *UserAgent) tests() []test {
 			userAgent: "some random ua",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      UserAgentType,
 					Triggered: true,
 					Solution:  "some random ua",
 				},
@@ -99,7 +100,7 @@ func (u *UserAgent) tests() []test {
 			userAgent: "chrome",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      UserAgentType,
 					Triggered: true,
 					Solution:  "chrome",
 				},
@@ -110,7 +111,7 @@ func (u *UserAgent) tests() []test {
 			userAgent: "internet explorer",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      UserAgentType,
 					Triggered: true,
 					Solution:  "internet explorer",
 				},

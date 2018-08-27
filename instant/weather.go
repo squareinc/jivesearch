@@ -14,6 +14,12 @@ import (
 	"golang.org/x/text/language"
 )
 
+// LocalWeatherType is an answer Type
+const LocalWeatherType Type = "local weather"
+
+// WeatherType is an answer Type
+const WeatherType Type = "weather"
+
 // Weather is an instant answer
 type Weather struct {
 	Fetcher         weather.Fetcher
@@ -36,7 +42,7 @@ func (w *Weather) setLanguage(lang language.Tag) Answerer {
 }
 
 func (w *Weather) setType() Answerer {
-	w.Type = "weather"
+	w.Type = WeatherType
 	return w
 }
 
@@ -88,7 +94,7 @@ func (w *Weather) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      "local weather",
+					Type:      LocalWeatherType,
 					Triggered: true,
 					Solution: &weather.Weather{
 						City: "Bountiful",
@@ -138,7 +144,7 @@ func (w *Weather) tests() []test {
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
-					Type:      "weather",
+					Type:      WeatherType,
 					Triggered: true,
 					Solution: &weather.Weather{
 						City: "Bountiful",

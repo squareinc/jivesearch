@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// USPSType is an answer Type
+const USPSType Type = "usps"
+
 // USPS is an instant answer
 type USPS struct {
 	parcel.Fetcher
@@ -32,7 +35,7 @@ func (u *USPS) setLanguage(lang language.Tag) Answerer {
 }
 
 func (u *USPS) setType() Answerer {
-	u.Type = "usps"
+	u.Type = USPSType
 	return u
 }
 
@@ -75,7 +78,7 @@ func (u *USPS) tests() []test {
 			query: n,
 			expected: []Data{
 				{
-					Type:      "usps",
+					Type:      USPSType,
 					Triggered: true,
 					Solution: parcel.Response{
 						TrackingNumber: strings.ToUpper(n),

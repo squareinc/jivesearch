@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// CountryCodeType is an answer Type
+const CountryCodeType Type = "country code"
+
 // CountryCode is an instant answer
 type CountryCode struct {
 	Answer
@@ -40,7 +43,7 @@ func (c *CountryCode) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *CountryCode) setType() Answerer {
-	c.Type = "country code"
+	c.Type = CountryCodeType
 	return c
 }
 
@@ -77,14 +80,12 @@ func (c *CountryCode) solve(r *http.Request) Answerer {
 }
 
 func (c *CountryCode) tests() []test {
-	typ := "country code"
-
 	tests := []test{
 		{
 			query: "country code united states",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CountryCodeType,
 					Triggered: true,
 					Solution: CountryCodeResponse{
 						Format:   ISO3166,
@@ -98,7 +99,7 @@ func (c *CountryCode) tests() []test {
 			query: "iso DE",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CountryCodeType,
 					Triggered: true,
 					Solution: CountryCodeResponse{
 						Format:   ISO3166,
@@ -112,7 +113,7 @@ func (c *CountryCode) tests() []test {
 			query: "iso code denmark",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CountryCodeType,
 					Triggered: true,
 					Solution: CountryCodeResponse{
 						Format:   ISO3166,
@@ -126,7 +127,7 @@ func (c *CountryCode) tests() []test {
 			query: "iso 3166 sweden",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CountryCodeType,
 					Triggered: true,
 					Solution: CountryCodeResponse{
 						Format:   ISO3166,

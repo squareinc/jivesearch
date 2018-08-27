@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// FrequencyType is an answer Type
+const FrequencyType Type = "frequency"
+
 var reFrequency *regexp.Regexp
 
 // Frequency is an instant answer
@@ -32,7 +35,7 @@ func (f *Frequency) setLanguage(lang language.Tag) Answerer {
 }
 
 func (f *Frequency) setType() Answerer {
-	f.Type = "frequency"
+	f.Type = FrequencyType
 	return f
 }
 
@@ -71,14 +74,12 @@ func (f *Frequency) solve(r *http.Request) Answerer {
 }
 
 func (f *Frequency) tests() []test {
-	typ := "frequency"
-
 	tests := []test{
 		{
 			query: "a in abracadabra frequency of",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      FrequencyType,
 					Triggered: true,
 					Solution:  "5",
 				},
@@ -88,7 +89,7 @@ func (f *Frequency) tests() []test {
 			query: "frequency of a in abracadabra",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      FrequencyType,
 					Triggered: true,
 					Solution:  "5",
 				},
@@ -98,7 +99,7 @@ func (f *Frequency) tests() []test {
 			query: "frequency of o in cooler",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      FrequencyType,
 					Triggered: true,
 					Solution:  "2",
 				},
@@ -108,7 +109,7 @@ func (f *Frequency) tests() []test {
 			query: "frequency of s in jimi hendrix",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      FrequencyType,
 					Triggered: true,
 					Solution:  "0",
 				},
@@ -118,7 +119,7 @@ func (f *Frequency) tests() []test {
 			query: "frequency of e in fred astaire",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      FrequencyType,
 					Triggered: true,
 					Solution:  "2",
 				},

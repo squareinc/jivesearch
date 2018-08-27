@@ -273,9 +273,9 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			var cache bool
 
 			switch res.Type {
-			case "coin toss", "local weather", "random", "user agent":
+			case instant.CoinTossType, instant.LocalWeatherType, instant.RandomType, instant.UserAgentType: // only local weather
 				cache = false
-			case "currency", "fedex", "ups", "usps", "stock quote", "weather": // only weather with a zip code gets cached "weather 90210"
+			case instant.CurrencyType, instant.StockQuoteType, instant.FedExType, instant.UPSType, instant.USPSType:
 				d = 1 * time.Minute
 				cache = true
 			default:
@@ -587,48 +587,48 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 }
 
 // detectType returns the proper data structure for an instant answer type
-func detectType(t string) interface{} {
+func detectType(t instant.Type) interface{} {
 	var v interface{}
 
 	switch t {
-	case "country code":
+	case instant.CountryCodeType:
 		v = &instant.CountryCodeResponse{}
-	case "discography":
+	case instant.DiscographyType:
 		v = &[]discography.Album{}
-	case "currency":
+	case instant.CurrencyType:
 		v = &instant.CurrencyResponse{}
-	case "fedex", "ups", "usps":
+	case instant.FedExType, instant.UPSType, instant.USPSType:
 		v = &parcel.Response{}
-	case "gdp":
+	case instant.GDPType:
 		v = &instant.GDPResponse{}
-	case "hash":
+	case instant.HashType:
 		v = &instant.HashResponse{}
-	case "population":
+	case instant.PopulationType:
 		v = &instant.PopulationResponse{}
-	case "stackoverflow":
+	case instant.StackOverflowType:
 		v = &instant.StackOverflowAnswer{}
-	case "stock quote":
+	case instant.StockQuoteType:
 		v = &stock.Quote{}
-	case "url shortener":
+	case instant.URLShortenerType:
 		v = &shortener.Response{}
-	case "local weather", "weather":
+	case instant.LocalWeatherType, instant.WeatherType:
 		v = &weather.Weather{}
-	case "wikipedia":
+	case instant.WikipediaType:
 		v = &wikipedia.Item{}
-	case "wikidata age":
+	case instant.WikidataAgeType:
 		v = &instant.Age{
 			Birthday: &instant.Birthday{},
 			Death:    &instant.Death{},
 		}
-	case "wikidata birthday":
+	case instant.WikidataBirthdayType:
 		v = &instant.Birthday{}
-	case "wikidata death":
+	case instant.WikidataDeathType:
 		v = &instant.Death{}
-	case "wikidata height", "wikidata weight":
+	case instant.WikidataHeightType, instant.WikidataWeightType:
 		v = &[]wikipedia.Quantity{}
-	case "wikiquote":
+	case instant.WikiquoteType:
 		v = &[]string{}
-	case "wiktionary":
+	case instant.WiktionaryType:
 		v = &wikipedia.Wiktionary{}
 	default: // a string
 		return nil

@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// FedExType is an answer Type
+const FedExType Type = "fedex"
+
 // FedEx is an instant answer
 type FedEx struct {
 	parcel.Fetcher
@@ -32,7 +35,7 @@ func (f *FedEx) setLanguage(lang language.Tag) Answerer {
 }
 
 func (f *FedEx) setType() Answerer {
-	f.Type = "fedex"
+	f.Type = FedExType
 	return f
 }
 
@@ -96,7 +99,7 @@ func (f *FedEx) tests() []test {
 			query: n,
 			expected: []Data{
 				{
-					Type:      "fedex",
+					Type:      FedExType,
 					Triggered: true,
 					Solution: parcel.Response{
 						TrackingNumber: strings.ToUpper(n),

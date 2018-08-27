@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// CamelCaseType is an answer Type
+const CamelCaseType Type = "camelcase"
+
 // CamelCase is an instant answer
 type CamelCase struct {
 	Answer
@@ -29,7 +32,7 @@ func (c *CamelCase) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *CamelCase) setType() Answerer {
-	c.Type = "camelcase"
+	c.Type = CamelCaseType
 	return c
 }
 
@@ -58,14 +61,12 @@ func (c *CamelCase) solve(r *http.Request) Answerer {
 }
 
 func (c *CamelCase) tests() []test {
-	typ := "camelcase"
-
 	tests := []test{
 		{
 			query: "camelcase metallica rocks",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CamelCaseType,
 					Triggered: true,
 					Solution:  "MetallicaRocks",
 				},
@@ -75,7 +76,7 @@ func (c *CamelCase) tests() []test {
 			query: "aliCE in chAins Is better camel case",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CamelCaseType,
 					Triggered: true,
 					Solution:  "AliceInChainsIsBetter",
 				},
@@ -85,7 +86,7 @@ func (c *CamelCase) tests() []test {
 			query: "camel case O'doyle ruLES",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CamelCaseType,
 					Triggered: true,
 					Solution:  "O'DoyleRules",
 				},

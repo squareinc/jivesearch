@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// StatsType is an answer Type
+const StatsType Type = "stats"
+
 // Stats is an instant answer that
 // returns the average, median, etc.
 type Stats struct {
@@ -34,7 +37,7 @@ func (s *Stats) setLanguage(lang language.Tag) Answerer {
 }
 
 func (s *Stats) setType() Answerer {
-	s.Type = "stats"
+	s.Type = StatsType
 	return s
 }
 
@@ -82,14 +85,12 @@ func (s *Stats) solve(r *http.Request) Answerer {
 }
 
 func (s *Stats) tests() []test {
-	typ := "stats"
-
 	tests := []test{
 		{
 			query: "avg 3 4e6",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Average: 2000001.5",
 				},
@@ -99,7 +100,7 @@ func (s *Stats) tests() []test {
 			query: "11 18 -142 Average",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Average: -37.666666666666664",
 				},
@@ -109,7 +110,7 @@ func (s *Stats) tests() []test {
 			query: "6 3 -5 23 Median",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Median: 4.5",
 				},
@@ -119,7 +120,7 @@ func (s *Stats) tests() []test {
 			query: "median 17 12 -18",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Median: 12",
 				},
@@ -129,7 +130,7 @@ func (s *Stats) tests() []test {
 			query: "58 96 -41 sum",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Sum: 113",
 				},
@@ -139,7 +140,7 @@ func (s *Stats) tests() []test {
 			query: "Total -17 3 87 -476",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StatsType,
 					Triggered: true,
 					Solution:  "Sum: -403",
 				},

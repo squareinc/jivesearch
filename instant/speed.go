@@ -29,7 +29,7 @@ func (s *Speed) setLanguage(lang language.Tag) Answerer {
 }
 
 func (s *Speed) setType() Answerer {
-	s.Type = "unit converter"
+	s.Type = UnitConverterType
 	return s
 }
 
@@ -75,7 +75,7 @@ func (s *Speed) solve(r *http.Request) Answerer {
 
 func (s *Speed) tests() []test {
 	d := Data{
-		Type:      "unit converter",
+		Type:      UnitConverterType,
 		Triggered: true,
 		Solution:  "speed",
 	}

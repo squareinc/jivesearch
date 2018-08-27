@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
+	curr "github.com/jivesearch/jivesearch/instant/currency"
+	disc "github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/econ"
-	"github.com/jivesearch/jivesearch/instant/econ/gdp"
-	"github.com/jivesearch/jivesearch/instant/econ/population"
+	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
+	pop "github.com/jivesearch/jivesearch/instant/econ/population"
 
-	"github.com/jivesearch/jivesearch/instant/currency"
-	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
-	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	so "github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -249,11 +249,11 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 
 type mockCryptoFetcher struct{}
 
-func (m *mockCryptoFetcher) Fetch() (*currency.Response, error) {
-	return &currency.Response{
-		Base: currency.USD,
-		History: map[string][]*currency.Rate{
-			currency.BTC.Short: {
+func (m *mockCryptoFetcher) Fetch() (*curr.Response, error) {
+	return &curr.Response{
+		Base: curr.USD,
+		History: map[string][]*curr.Rate{
+			curr.BTC.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.12,
@@ -263,7 +263,7 @@ func (m *mockCryptoFetcher) Fetch() (*currency.Response, error) {
 					Rate:     1.1,
 				},
 			},
-			currency.LTC.Short: {
+			curr.LTC.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.5,
@@ -274,17 +274,17 @@ func (m *mockCryptoFetcher) Fetch() (*currency.Response, error) {
 				},
 			},
 		},
-		CryptoProvider: currency.CryptoCompareProvider,
+		CryptoProvider: curr.CryptoCompareProvider,
 	}, nil
 }
 
 type mockFXFetcher struct{}
 
-func (m *mockFXFetcher) Fetch() (*currency.Response, error) {
-	return &currency.Response{
-		Base: currency.USD,
-		History: map[string][]*currency.Rate{
-			currency.JPY.Short: {
+func (m *mockFXFetcher) Fetch() (*curr.Response, error) {
+	return &curr.Response{
+		Base: curr.USD,
+		History: map[string][]*curr.Rate{
+			curr.JPY.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.12,
@@ -294,7 +294,7 @@ func (m *mockFXFetcher) Fetch() (*currency.Response, error) {
 					Rate:     1.1,
 				},
 			},
-			currency.GBP.Short: {
+			curr.GBP.Short: {
 				{
 					DateTime: time.Date(2018, 1, 30, 0, 0, 0, 0, time.UTC),
 					Rate:     1.5,
@@ -305,16 +305,16 @@ func (m *mockFXFetcher) Fetch() (*currency.Response, error) {
 				},
 			},
 		},
-		ForexProvider: currency.ECBProvider,
+		ForexProvider: curr.ECBProvider,
 	}, nil
 }
 
 // mock gdp fetcher
 type mockGDPFetcher struct{}
 
-func (m *mockGDPFetcher) Fetch(country string, start time.Time, end time.Time) (*gdp.Response, error) {
-	return &gdp.Response{
-		History: []gdp.Instant{
+func (m *mockGDPFetcher) Fetch(country string, start time.Time, end time.Time) (*ggdp.Response, error) {
+	return &ggdp.Response{
+		History: []ggdp.Instant{
 			{
 				Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
 				Value: 4,
@@ -345,9 +345,9 @@ func (l *mockLocationFetcher) Fetch(ip net.IP) (*geoip2.City, error) {
 
 type mockPopulationFetcher struct{}
 
-func (m *mockPopulationFetcher) Fetch(country string, start time.Time, end time.Time) (*population.Response, error) {
-	return &population.Response{
-		History: []population.Instant{
+func (m *mockPopulationFetcher) Fetch(country string, start time.Time, end time.Time) (*pop.Response, error) {
+	return &pop.Response{
+		History: []pop.Instant{
 			{
 				Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
 				Value: 4,
@@ -368,18 +368,18 @@ func (m *mockPopulationFetcher) Fetch(country string, start time.Time, end time.
 // mock Stack Overflow Fetcher
 type mockStackOverflowFetcher struct{}
 
-func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackoverflow.Response, error) {
-	resp := stackoverflow.Response{}
+func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (so.Response, error) {
+	resp := so.Response{}
 
 	switch query {
 	case "loop":
 		if reflect.DeepEqual(tags, []string{"php"}) {
-			resp = stackoverflow.Response{
-				Items: []stackoverflow.Item{
+			resp = so.Response{
+				Items: []so.Item{
 					{
-						Answers: []stackoverflow.Answer{
+						Answers: []so.Answer{
 							{
-								Owner: stackoverflow.Owner{
+								Owner: so.Owner{
 									DisplayName: "NikiC",
 								},
 								Score: 1273,
@@ -394,12 +394,12 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 				QuotaRemaining: 197,
 			}
 		} else if reflect.DeepEqual(tags, []string{"c++"}) {
-			resp = stackoverflow.Response{
-				Items: []stackoverflow.Item{
+			resp = so.Response{
+				Items: []so.Item{
 					{
-						Answers: []stackoverflow.Answer{
+						Answers: []so.Answer{
 							{
-								Owner: stackoverflow.Owner{
+								Owner: so.Owner{
 									DisplayName: "JamesT",
 								},
 								Score: 90210,
@@ -414,12 +414,12 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 				QuotaRemaining: 197,
 			}
 		} else if reflect.DeepEqual(tags, []string{"go"}) {
-			resp = stackoverflow.Response{
-				Items: []stackoverflow.Item{
+			resp = so.Response{
+				Items: []so.Item{
 					{
-						Answers: []stackoverflow.Answer{
+						Answers: []so.Answer{
 							{
-								Owner: stackoverflow.Owner{
+								Owner: so.Owner{
 									DisplayName: "Danny Zuko",
 								},
 								Score: 90210,
@@ -434,12 +434,12 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 				QuotaRemaining: 197,
 			}
 		} else if reflect.DeepEqual(tags, []string{"macos"}) {
-			resp = stackoverflow.Response{
-				Items: []stackoverflow.Item{
+			resp = so.Response{
+				Items: []so.Item{
 					{
-						Answers: []stackoverflow.Answer{
+						Answers: []so.Answer{
 							{
-								Owner: stackoverflow.Owner{
+								Owner: so.Owner{
 									DisplayName: "Danny Zuko",
 								},
 								Score: 90210,
@@ -454,12 +454,12 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 				QuotaRemaining: 197,
 			}
 		} else if reflect.DeepEqual(tags, []string{"regex"}) {
-			resp = stackoverflow.Response{
-				Items: []stackoverflow.Item{
+			resp = so.Response{
+				Items: []so.Item{
 					{
-						Answers: []stackoverflow.Answer{
+						Answers: []so.Answer{
 							{
-								Owner: stackoverflow.Owner{
+								Owner: so.Owner{
 									DisplayName: "Danny Zuko",
 								},
 								Score: 90210,
@@ -768,13 +768,13 @@ func (mf *mockWikipediaFetcher) Setup() error {
 
 type mockDiscographyFetcher struct{}
 
-func (m *mockDiscographyFetcher) Fetch(artist string) ([]discography.Album, error) {
+func (m *mockDiscographyFetcher) Fetch(artist string) ([]disc.Album, error) {
 	u, _ := url.Parse("http://coverartarchive.org/release/1/2-250..jpg")
-	return []discography.Album{
+	return []disc.Album{
 		{
 			Name:      "Are You Experienced",
 			Published: time.Date(1970, 9, 18, 0, 0, 0, 0, time.UTC),
-			Image: discography.Image{
+			Image: disc.Image{
 				URL: u,
 			},
 		},
@@ -791,5 +791,4 @@ func (m *mockShortener) Shorten(u *url.URL) (*shortener.Response, error) {
 		Short:    shrt,
 		Provider: "mockShortener",
 	}, nil
-
 }

@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// PotusType is an answer Type
+const PotusType Type = "potus"
+
 // Potus is an instant answer
 type Potus struct {
 	Answer
@@ -46,7 +49,7 @@ func (p *Potus) setLanguage(lang language.Tag) Answerer {
 }
 
 func (p *Potus) setType() Answerer {
-	p.Type = "potus"
+	p.Type = PotusType
 	return p
 }
 
@@ -103,14 +106,12 @@ func (p *Potus) tests() []test {
 	// there is an obvious flaw in the tests below:
 	// e.g. "2st", etc. Also, we need to support the
 	// numbers spelled out ("first", "second", etc.)
-	typ := "potus"
-
 	tests := []test{
 		{
 			query: "current POTUS",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      PotusType,
 					Triggered: true,
 					Solution:  "Donald Trump",
 				},
@@ -186,7 +187,7 @@ func (p *Potus) tests() []test {
 				query: fmt.Sprintf(q, i+1),
 				expected: []Data{
 					{
-						Type:      typ,
+						Type:      PotusType,
 						Triggered: true,
 						Solution:  pres,
 					},

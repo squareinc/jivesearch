@@ -6,14 +6,17 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	so "github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"golang.org/x/text/language"
 )
+
+// StackOverflowType is an answer Type
+const StackOverflowType Type = "stackoverflow"
 
 // StackOverflow is an instant answer
 // Alternative (but out-of-date): http://archive.org/download/stackexchange/
 type StackOverflow struct {
-	stackoverflow.Fetcher
+	so.Fetcher
 	Answer
 }
 
@@ -45,7 +48,7 @@ func (s *StackOverflow) setLanguage(lang language.Tag) Answerer {
 }
 
 func (s *StackOverflow) setType() Answerer {
-	s.Type = "stackoverflow"
+	s.Type = StackOverflowType
 	return s
 }
 
@@ -134,14 +137,12 @@ func (s *StackOverflow) solve(r *http.Request) Answerer {
 }
 
 func (s *StackOverflow) tests() []test {
-	typ := "stackoverflow"
-
 	tests := []test{
 		{
 			query: "php loop",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StackOverflowType,
 					Triggered: true,
 					Solution: &StackOverflowAnswer{
 						Question: "How does PHP &#39;foreach&#39; actually work?",
@@ -158,7 +159,7 @@ func (s *StackOverflow) tests() []test {
 			query: "loop c++",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StackOverflowType,
 					Triggered: true,
 					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
@@ -175,7 +176,7 @@ func (s *StackOverflow) tests() []test {
 			query: "golang loop",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StackOverflowType,
 					Triggered: true,
 					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
@@ -192,7 +193,7 @@ func (s *StackOverflow) tests() []test {
 			query: "mac os loop",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StackOverflowType,
 					Triggered: true,
 					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",
@@ -209,7 +210,7 @@ func (s *StackOverflow) tests() []test {
 			query: "regexp loop",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StackOverflowType,
 					Triggered: true,
 					Solution: &StackOverflowAnswer{
 						Question: "Some made-up question",

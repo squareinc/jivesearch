@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// RandomType is an answer Type
+const RandomType Type = "random"
+
 // Random is an instant answer
 type Random struct {
 	Answer
@@ -33,7 +36,7 @@ func (r *Random) setLanguage(lang language.Tag) Answerer {
 }
 
 func (r *Random) setType() Answerer {
-	r.Type = "random"
+	r.Type = RandomType
 	return r
 }
 
@@ -75,8 +78,6 @@ func (r *Random) solve(req *http.Request) Answerer {
 }
 
 func (r *Random) tests() []test {
-	typ := "random"
-
 	tests := []test{}
 
 	solutions := func(choices []string) []Data {
@@ -85,7 +86,7 @@ func (r *Random) tests() []test {
 		for _, c := range choices {
 			sol = append(sol,
 				Data{
-					Type:      typ,
+					Type:      RandomType,
 					Triggered: true,
 					Solution:  c,
 				},

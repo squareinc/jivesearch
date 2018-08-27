@@ -29,7 +29,7 @@ func (t *Temperature) setLanguage(lang language.Tag) Answerer {
 }
 
 func (t *Temperature) setType() Answerer {
-	t.Type = "unit converter"
+	t.Type = UnitConverterType
 	return t
 }
 
@@ -62,10 +62,8 @@ func (t *Temperature) solve(r *http.Request) Answerer {
 }
 
 func (t *Temperature) tests() []test {
-	typ := "unit converter"
-
 	d := Data{
-		Type:      typ,
+		Type:      UnitConverterType,
 		Triggered: true,
 		Solution:  "temperature",
 	}

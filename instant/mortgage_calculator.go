@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// MortageCalculatorType is an answer Type
+const MortageCalculatorType Type = "mortgage calculator"
+
 // MortgageCalculator is an instant answer
 type MortgageCalculator struct {
 	Answer
@@ -29,7 +32,7 @@ func (c *MortgageCalculator) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *MortgageCalculator) setType() Answerer {
-	c.Type = "mortgage calculator"
+	c.Type = MortageCalculatorType
 	return c
 }
 
@@ -45,10 +48,8 @@ func (c *MortgageCalculator) solve(r *http.Request) Answerer {
 }
 
 func (c *MortgageCalculator) tests() []test {
-	typ := "mortgage calculator"
-
 	d := Data{
-		Type:      typ,
+		Type:      MortageCalculatorType,
 		Triggered: true,
 	}
 

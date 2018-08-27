@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// CoinTossType is an answer Type
+const CoinTossType Type = "coin toss"
+
 // Coin is an instant answer
 type Coin struct {
 	Answer
@@ -30,7 +33,7 @@ func (c *Coin) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *Coin) setType() Answerer {
-	c.Type = "coin toss"
+	c.Type = CoinTossType
 	return c
 }
 
@@ -61,12 +64,12 @@ func (c *Coin) tests() []test {
 			query: q,
 			expected: []Data{
 				{
-					Type:      "coin toss",
+					Type:      CoinTossType,
 					Triggered: true,
 					Solution:  "Heads",
 				},
 				{
-					Type:      "coin toss",
+					Type:      CoinTossType,
 					Triggered: true,
 					Solution:  "Tails",
 				},

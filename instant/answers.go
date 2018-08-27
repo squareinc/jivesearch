@@ -10,14 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/econ/gdp"
+	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
 
-	"github.com/jivesearch/jivesearch/instant/discography"
-	"github.com/jivesearch/jivesearch/instant/econ/population"
+	disc "github.com/jivesearch/jivesearch/instant/discography"
+	pop "github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
-	"github.com/jivesearch/jivesearch/instant/stackoverflow"
+	so "github.com/jivesearch/jivesearch/instant/stackoverflow"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
@@ -27,14 +27,14 @@ import (
 // Instant holds config information for the instant answers
 type Instant struct {
 	QueryVar           string
-	DiscographyFetcher discography.Fetcher
+	DiscographyFetcher disc.Fetcher
 	FedExFetcher       parcel.Fetcher
 	Currency
-	GDPFetcher           gdp.Fetcher
+	GDPFetcher           ggdp.Fetcher
 	LinkShortener        shortener.Service
 	LocationFetcher      location.Fetcher
-	PopulationFetcher    population.Fetcher
-	StackOverflowFetcher stackoverflow.Fetcher
+	PopulationFetcher    pop.Fetcher
+	StackOverflowFetcher so.Fetcher
 	StockQuoteFetcher    stock.Fetcher
 	UPSFetcher           parcel.Fetcher
 	USPSFetcher          parcel.Fetcher
@@ -67,9 +67,12 @@ type Answer struct {
 	Data
 }
 
+// Type is the answer type
+type Type string
+
 // Data holds the returned data of an answer
 type Data struct {
-	Type      string      `json:"type,omitempty"`
+	Type      `json:"type,omitempty"`
 	Triggered bool        `json:"triggered"`
 	Solution  interface{} `json:"answer,omitempty"`
 	Err       error       `json:"-"`

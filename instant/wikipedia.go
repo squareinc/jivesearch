@@ -10,6 +10,18 @@ import (
 	"golang.org/x/text/language"
 )
 
+// WikipediaType is a Wikipedia answer Type
+const (
+	WikipediaType        Type = "wikipedia"
+	WikidataBirthdayType Type = "wikidata birthday"
+	WikidataAgeType      Type = "wikidata age"
+	WikidataDeathType    Type = "wikidata death"
+	WikidataHeightType   Type = "wikidata Height"
+	WikidataWeightType   Type = "wikidata weight"
+	WikiquoteType        Type = "wikiquote"
+	WiktionaryType       Type = "wiktionary"
+)
+
 // Wikipedia is a Wiki* instant answer,
 // including Wikidata/Wikiquote/Wiktionary
 type Wikipedia struct {
@@ -32,7 +44,7 @@ func (w *Wikipedia) setLanguage(lang language.Tag) Answerer {
 }
 
 func (w *Wikipedia) setType() Answerer {
-	w.Type = "wiki"
+	w.Type = WikipediaType
 	return w
 }
 
@@ -119,11 +131,11 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 			return w
 		}
 
-		w.Type = "wikidata birthday"
+		w.Type = WikidataBirthdayType
 		b := &Birthday{item.Birthday[0]}
 
 		if w.triggerWord == "age" || w.triggerWord == "how old is" {
-			w.Type = "wikidata age"
+			w.Type = WikidataAgeType
 
 			a := &Age{
 				Birthday: b,
@@ -141,7 +153,7 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 		w.Data.Solution = b
 	case death, died:
 		if len(item.Death) > 0 {
-			w.Type = "wikidata death"
+			w.Type = WikidataDeathType
 			w.Data.Solution = &Death{item.Death[0]}
 		}
 	case howTallis, howTallwas, height:
@@ -149,31 +161,31 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 			return w
 		}
 
-		w.Type = "wikidata height"
+		w.Type = WikidataHeightType
 		w.Data.Solution = item.Height
 	case mass, weigh, weight:
 		if len(item.Weight) == 0 {
 			return w
 		}
 
-		w.Type = "wikidata weight"
+		w.Type = WikidataWeightType
 		w.Data.Solution = item.Weight
 	case quote, quotes:
 		if len(item.Wikiquote.Quotes) == 0 {
 			return w
 		}
 
-		w.Type = "wikiquote"
+		w.Type = WikiquoteType
 		w.Data.Solution = item.Wikiquote.Quotes
 	case define, definition:
 		if len(item.Wiktionary.Definitions) == 0 {
 			return w
 		}
 
-		w.Type = "wiktionary"
+		w.Type = WiktionaryType
 		w.Data.Solution = item.Wiktionary
 	default: // full Wikipedia box
-		w.Type = "wikipedia"
+		w.Type = WikipediaType
 		w.Data.Solution = item
 	}
 
@@ -187,7 +199,7 @@ func (w *Wikipedia) tests() []test {
 			query: "Bob Marley age",
 			expected: []Data{
 				{
-					Type:      "wikidata age",
+					Type:      WikidataAgeType,
 					Triggered: true,
 					Solution: &Age{
 						Birthday: &Birthday{
@@ -210,7 +222,7 @@ func (w *Wikipedia) tests() []test {
 			query: "Jimi hendrix birthday",
 			expected: []Data{
 				{
-					Type:      "wikidata birthday",
+					Type:      WikidataBirthdayType,
 					Triggered: true,
 					Solution: &Birthday{
 						Birthday: wikipedia.DateTime{
@@ -225,7 +237,7 @@ func (w *Wikipedia) tests() []test {
 			query: "death jimi hendrix",
 			expected: []Data{
 				{
-					Type:      "wikidata death",
+					Type:      WikidataDeathType,
 					Triggered: true,
 					Solution: &Death{
 						Death: wikipedia.DateTime{
@@ -240,7 +252,7 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal height",
 			expected: []Data{
 				{
-					Type:      "wikidata height",
+					Type:      WikidataHeightType,
 					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{
@@ -255,7 +267,7 @@ func (w *Wikipedia) tests() []test {
 			query: "shaquille o'neal weight",
 			expected: []Data{
 				{
-					Type:      "wikidata weight",
+					Type:      WikidataWeightType,
 					Triggered: true,
 					Solution: []wikipedia.Quantity{
 						{
@@ -270,7 +282,7 @@ func (w *Wikipedia) tests() []test {
 			query: "Michael Jordan quotes",
 			expected: []Data{
 				{
-					Type:      "wikiquote",
+					Type:      WikiquoteType,
 					Triggered: true,
 					Solution: []string{
 						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
@@ -283,7 +295,7 @@ func (w *Wikipedia) tests() []test {
 			query: "define guitar",
 			expected: []Data{
 				{
-					Type:      "wiktionary",
+					Type:      WiktionaryType,
 					Triggered: true,
 					Solution: wikipedia.Wiktionary{
 						Title: "guitar",
@@ -298,7 +310,7 @@ func (w *Wikipedia) tests() []test {
 			query: "jimi hendrix",
 			expected: []Data{
 				{
-					Type:      "wikipedia",
+					Type:      WikipediaType,
 					Triggered: true,
 					Solution: &wikipedia.Item{
 						Wikidata: &wikipedia.Wikidata{

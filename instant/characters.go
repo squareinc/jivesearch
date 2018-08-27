@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// CharactersType is an answer Type
+const CharactersType Type = "characters"
+
 // Characters is an instant answer
 type Characters struct {
 	Answer
@@ -30,7 +33,7 @@ func (c *Characters) setLanguage(lang language.Tag) Answerer {
 }
 
 func (c *Characters) setType() Answerer {
-	c.Type = "characters"
+	c.Type = CharactersType
 	return c
 }
 
@@ -64,14 +67,12 @@ func (c *Characters) solve(r *http.Request) Answerer {
 }
 
 func (c *Characters) tests() []test {
-	typ := "characters"
-
 	tests := []test{
 		{
 			query: `number of chars in "Jimi Hendrix"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "12",
 				},
@@ -81,7 +82,7 @@ func (c *Characters) tests() []test {
 			query: "number of chars   in Pink   Floyd",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "10",
 				},
@@ -91,7 +92,7 @@ func (c *Characters) tests() []test {
 			query: "Bob Dylan   number of characters in",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "9",
 				},
@@ -101,7 +102,7 @@ func (c *Characters) tests() []test {
 			query: "number of characters Janis   Joplin",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "12",
 				},
@@ -111,7 +112,7 @@ func (c *Characters) tests() []test {
 			query: "char count Led Zeppelin",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "12",
 				},
@@ -121,7 +122,7 @@ func (c *Characters) tests() []test {
 			query: "char count of ' 87 '",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "4",
 				},
@@ -131,7 +132,7 @@ func (c *Characters) tests() []test {
 			query: "they're chars count",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "7",
 				},
@@ -141,7 +142,7 @@ func (c *Characters) tests() []test {
 			query: "chars count of something",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "9",
 				},
@@ -151,7 +152,7 @@ func (c *Characters) tests() []test {
 			query: "Another something chars count of",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "17",
 				},
@@ -161,7 +162,7 @@ func (c *Characters) tests() []test {
 			query: "1234567 character count",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "7",
 				},
@@ -171,7 +172,7 @@ func (c *Characters) tests() []test {
 			query: "character count of house of cards",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "14",
 				},
@@ -181,7 +182,7 @@ func (c *Characters) tests() []test {
 			query: "characters count 50 cent",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "7",
 				},
@@ -191,7 +192,7 @@ func (c *Characters) tests() []test {
 			query: "characters count of 1 dollar",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "8",
 				},
@@ -201,7 +202,7 @@ func (c *Characters) tests() []test {
 			query: "char count equity",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "6",
 				},
@@ -211,7 +212,7 @@ func (c *Characters) tests() []test {
 			query: "characters count seal",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "4",
 				},
@@ -221,7 +222,7 @@ func (c *Characters) tests() []test {
 			query: "length in chars lion",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "4",
 				},
@@ -231,7 +232,7 @@ func (c *Characters) tests() []test {
 			query: "length in characters mountain",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      CharactersType,
 					Triggered: true,
 					Solution:  "8",
 				},

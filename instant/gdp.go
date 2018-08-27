@@ -7,21 +7,24 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/econ"
-	"github.com/jivesearch/jivesearch/instant/econ/gdp"
+	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
 	"github.com/pariz/gountries"
 	"golang.org/x/text/language"
 )
 
+// GDPType is an answer Type
+const GDPType Type = "gdp"
+
 // GDP is an instant answer
 type GDP struct {
-	GDPFetcher gdp.Fetcher
+	GDPFetcher ggdp.Fetcher
 	Answer
 }
 
 // GDPResponse is an instant answer response
 type GDPResponse struct {
 	Country string
-	*gdp.Response
+	*ggdp.Response
 }
 
 // ErrInvalidCountry indicates a country is not valid
@@ -42,7 +45,7 @@ func (g *GDP) setLanguage(lang language.Tag) Answerer {
 }
 
 func (g *GDP) setType() Answerer {
-	g.Type = "gdp"
+	g.Type = GDPType
 	return g
 }
 
@@ -104,19 +107,17 @@ func (g *GDP) solve(r *http.Request) Answerer {
 }
 
 func (g *GDP) tests() []test {
-	typ := "gdp"
-
 	tests := []test{
 		{
 			query: "Italy gdp",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      GDPType,
 					Triggered: true,
 					Solution: &GDPResponse{
 						Country: "Italy",
-						Response: &gdp.Response{
-							History: []gdp.Instant{
+						Response: &ggdp.Response{
+							History: []ggdp.Instant{
 								{
 									Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
 									Value: 4,

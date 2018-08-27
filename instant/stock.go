@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// StockQuoteType is an answer Type
+const StockQuoteType Type = "stock quote"
+
 // StockQuote is an instant answer
 type StockQuote struct {
 	Fetcher stock.Fetcher
@@ -32,7 +35,7 @@ func (s *StockQuote) setLanguage(lang language.Tag) Answerer {
 }
 
 func (s *StockQuote) setType() Answerer {
-	s.Type = "stock quote"
+	s.Type = StockQuoteType
 	return s
 }
 
@@ -70,8 +73,6 @@ func (s *StockQuote) solve(r *http.Request) Answerer {
 }
 
 func (s *StockQuote) tests() []test {
-	typ := "stock quote"
-
 	location, _ := time.LoadLocation("America/New_York")
 
 	tests := []test{
@@ -79,7 +80,7 @@ func (s *StockQuote) tests() []test {
 			query: "AAPL quote",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StockQuoteType,
 					Triggered: true,
 					Solution: &stock.Quote{
 						Ticker:   "AAPL",
@@ -104,7 +105,7 @@ func (s *StockQuote) tests() []test {
 			query: "brk.a", // test for lowercase and has "."
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      StockQuoteType,
 					Triggered: true,
 					Solution: &stock.Quote{
 						Ticker:   "BRK.A",

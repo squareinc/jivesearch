@@ -10,6 +10,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// URLEncodeType is an answer Type
+const URLEncodeType Type = "urlencode"
+
 // URLEncode is an instant answer
 type URLEncode struct {
 	Answer
@@ -30,7 +33,7 @@ func (u *URLEncode) setLanguage(lang language.Tag) Answerer {
 }
 
 func (u *URLEncode) setType() Answerer {
-	u.Type = "urlencode"
+	u.Type = URLEncodeType
 	return u
 }
 
@@ -53,14 +56,12 @@ func (u *URLEncode) solve(r *http.Request) Answerer {
 }
 
 func (u *URLEncode) tests() []test {
-	typ := "urlencode"
-
 	tests := []test{
 		{
 			query: "urlencode http://www.example.com?q=this|that",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      URLEncodeType,
 					Triggered: true,
 					Solution:  "http%3A%2F%2Fwww.example.com%3Fq%3Dthis%7Cthat",
 				},

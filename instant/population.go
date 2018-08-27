@@ -6,21 +6,24 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/econ"
-	"github.com/jivesearch/jivesearch/instant/econ/population"
+	pop "github.com/jivesearch/jivesearch/instant/econ/population"
 	"github.com/pariz/gountries"
 	"golang.org/x/text/language"
 )
 
+// PopulationType is an answer Type
+const PopulationType Type = "population"
+
 // Population is an instant answer
 type Population struct {
-	PopulationFetcher population.Fetcher
+	PopulationFetcher pop.Fetcher
 	Answer
 }
 
 // PopulationResponse is an instant answer response
 type PopulationResponse struct {
 	Country string
-	*population.Response
+	*pop.Response
 }
 
 // ErrInvalidGDPCountry indicates a country is not valid
@@ -41,7 +44,7 @@ func (p *Population) setLanguage(lang language.Tag) Answerer {
 }
 
 func (p *Population) setType() Answerer {
-	p.Type = "population"
+	p.Type = PopulationType
 	return p
 }
 
@@ -95,19 +98,17 @@ func (p *Population) solve(r *http.Request) Answerer {
 }
 
 func (p *Population) tests() []test {
-	typ := "population"
-
 	tests := []test{
 		{
 			query: "Italy population",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      PopulationType,
 					Triggered: true,
 					Solution: &PopulationResponse{
 						Country: "Italy",
-						Response: &population.Response{
-							History: []population.Instant{
+						Response: &pop.Response{
+							History: []pop.Instant{
 								{
 									Date:  time.Date(1994, 12, 31, 0, 0, 0, 0, time.UTC),
 									Value: 4,

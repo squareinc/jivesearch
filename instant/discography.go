@@ -8,14 +8,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jivesearch/jivesearch/instant/discography"
+	disc "github.com/jivesearch/jivesearch/instant/discography"
 
 	"golang.org/x/text/language"
 )
 
+// DiscographyType is an answer Type
+const DiscographyType Type = "discography"
+
 // Discography is an instant answer
 type Discography struct {
-	discography.Fetcher
+	disc.Fetcher
 	Answer
 }
 
@@ -34,7 +37,7 @@ func (d *Discography) setLanguage(lang language.Tag) Answerer {
 }
 
 func (d *Discography) setType() Answerer {
-	d.Type = "discography"
+	d.Type = DiscographyType
 	return d
 }
 
@@ -62,20 +65,18 @@ func (d *Discography) solve(r *http.Request) Answerer {
 }
 
 func (d *Discography) tests() []test {
-	typ := "discography"
-
 	tests := []test{
 		{
 			query: "jimi hendrix discography",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      DiscographyType,
 					Triggered: true,
-					Solution: []discography.Album{
+					Solution: []disc.Album{
 						{
 							Name:      "Are You Experienced",
 							Published: time.Date(1970, 9, 18, 0, 0, 0, 0, time.UTC),
-							Image: discography.Image{
+							Image: disc.Image{
 								URL: discURL,
 							},
 						},

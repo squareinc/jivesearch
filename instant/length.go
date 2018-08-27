@@ -29,7 +29,7 @@ func (l *Length) setLanguage(lang language.Tag) Answerer {
 }
 
 func (l *Length) setType() Answerer {
-	l.Type = "unit converter"
+	l.Type = UnitConverterType
 	return l
 }
 
@@ -64,10 +64,8 @@ func (l *Length) solve(r *http.Request) Answerer {
 }
 
 func (l *Length) tests() []test {
-	typ := "unit converter"
-
 	d := Data{
-		Type:      typ,
+		Type:      UnitConverterType,
 		Triggered: true,
 		Solution:  "length",
 	}

@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// ReverseType is an answer Type
+const ReverseType Type = "reverse"
+
 // Reverse is an instant answer
 type Reverse struct {
 	Answer
@@ -29,7 +32,7 @@ func (r *Reverse) setLanguage(lang language.Tag) Answerer {
 }
 
 func (r *Reverse) setType() Answerer {
-	r.Type = "reverse"
+	r.Type = ReverseType
 	return r
 }
 
@@ -70,14 +73,12 @@ func (r *Reverse) solve(req *http.Request) Answerer {
 }
 
 func (r *Reverse) tests() []test {
-	typ := "reverse"
-
 	tests := []test{
 		{
 			query: "reverse ahh lights....ahh see 'em",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      ReverseType,
 					Triggered: true,
 					Solution:  "me' ees hha....sthgil hha",
 				},
@@ -87,7 +88,7 @@ func (r *Reverse) tests() []test {
 			query: "reverse 私日本語は話せません",
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      ReverseType,
 					Triggered: true,
 					Solution:  "んせませ話は語本日私",
 				},
@@ -97,7 +98,7 @@ func (r *Reverse) tests() []test {
 			query: `reverse "ahh yeah"`,
 			expected: []Data{
 				{
-					Type:      typ,
+					Type:      ReverseType,
 					Triggered: true,
 					Solution:  "haey hha",
 				},

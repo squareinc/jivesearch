@@ -11,6 +11,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// UPSType is an answer Type
+const UPSType Type = "ups"
+
 // UPS is an instant answer
 type UPS struct {
 	parcel.Fetcher
@@ -32,7 +35,7 @@ func (u *UPS) setLanguage(lang language.Tag) Answerer {
 }
 
 func (u *UPS) setType() Answerer {
-	u.Type = "ups"
+	u.Type = UPSType
 	return u
 }
 
@@ -105,7 +108,7 @@ func (u *UPS) tests() []test {
 			query: n,
 			expected: []Data{
 				{
-					Type:      "ups",
+					Type:      UPSType,
 					Triggered: true,
 					Solution: parcel.Response{
 						TrackingNumber: strings.ToUpper(n),

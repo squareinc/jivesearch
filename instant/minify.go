@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/language"
 )
 
+// MinifyType is an answer Type
+const MinifyType Type = "minify"
+
 // Minify is an instant answer
 type Minify struct {
 	Answer
@@ -29,7 +32,7 @@ func (m *Minify) setLanguage(lang language.Tag) Answerer {
 }
 
 func (m *Minify) setType() Answerer {
-	m.Type = "minify"
+	m.Type = MinifyType
 	return m
 }
 
@@ -52,10 +55,8 @@ func (m *Minify) solve(r *http.Request) Answerer {
 }
 
 func (m *Minify) tests() []test {
-	typ := "minify"
-
 	d := Data{
-		Type:      typ,
+		Type:      MinifyType,
 		Triggered: true,
 	}
 
