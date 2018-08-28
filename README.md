@@ -144,7 +144,7 @@ Want to contribute? Great!
 
 Search for existing and closed issues. If your problem or idea is not addressed yet, please open a new issue [here](https://github.com/jivesearch/jivesearch/issues/new).
 
-You can also join us in our chatroom at https://discord.gg/cfxQkuh.
+You can also join us in our chatroom at https://discord.gg/cfxQkuh or contact us on Twitter @jivesearch.
 
 <br>
 
