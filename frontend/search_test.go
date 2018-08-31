@@ -422,10 +422,12 @@ func TestDetectType(t *testing.T) {
 	}{
 		{instant.BirthStoneType, nil},
 		{instant.BreachType, &breach.Response{}},
+		{instant.CountryCodeType, &instant.CountryCodeResponse{}},
 		{instant.CurrencyType, &instant.CurrencyResponse{}},
 		{instant.DiscographyType, &[]discography.Album{}},
 		{instant.FedExType, &parcel.Response{}},
 		{instant.GDPType, &instant.GDPResponse{}},
+		{instant.HashType, &instant.HashResponse{}},
 		{instant.PopulationType, &instant.PopulationResponse{}},
 		{instant.StackOverflowType, &instant.StackOverflowAnswer{}},
 		{instant.StockQuoteType, &stock.Quote{}},
