@@ -5,14 +5,14 @@
     <link rel="stylesheet" href="/static/search.css">
     {{if .Instant}}
       {{if eq .Instant.Type "breach"}}
-      <link rel="stylesheet" href="/static/instant/breach/owl.carousel.min.css">
+      <link rel="stylesheet" href="/static/instant/owl.carousel.min.css">
       <link rel="stylesheet" href="/static/instant/breach/breach.css">
       {{else if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "currency"}}
       <link rel="stylesheet" href="/static/instant/currency/currency.css">
       {{else if eq .Instant.Type "discography"}}
-      <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
+      <link rel="stylesheet" href="/static/instant/owl.carousel.min.css">
       <link rel="stylesheet" href="/static/instant/discography/discography.css">
       {{else if eq .Instant.Type "gdp"}}
       <link rel="stylesheet" href="/static/instant/gdp/gdp.css">
@@ -40,8 +40,11 @@
     <script src="/static/instant/d3.v4.min.js"></script>
     <script src="/static/instant/currency/currency.js"></script>
     {{else if eq .Instant.Type "breach"}}
-    <script src="/static/instant/breach/owl.carousel.min.js"></script>
+    <script src="/static/instant/owl.carousel.min.js"></script>
     <script src="/static/instant/breach/breach.js"></script>
+    {{else if eq .Instant.Type "discography"}}
+    <script src="/static/instant/owl.carousel.min.js"></script>
+    <script src="/static/instant/discography/discography.js"></script>
     {{else if eq .Instant.Type "gdp"}}
     <script src="/static/instant/d3.v4.min.js"></script>
     <script src="/static/instant/gdp/gdp.js"></script>
