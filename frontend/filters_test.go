@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/breach"
+
 	"github.com/jivesearch/jivesearch/instant/econ"
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 	"github.com/jivesearch/jivesearch/instant/econ/population"
@@ -232,6 +234,30 @@ func TestSafeHTML(t *testing.T) {
 	}
 }
 
+func TestStripHTML(t *testing.T) {
+	for _, tt := range []struct {
+		arg  string
+		want string
+	}{
+		{
+			arg:  `<a href="https://www.example.com">We want this!</a>`,
+			want: "We want this!",
+		},
+		{
+			arg:  `<div class="a bit" style="no style">this is the text we want</div>`,
+			want: "this is the text we want",
+		},
+	} {
+		t.Run(tt.arg, func(t *testing.T) {
+			got := stripHTML(tt.arg)
+
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSubtract(t *testing.T) {
 	type args struct {
 		x int
@@ -277,6 +303,18 @@ func TestSource(t *testing.T) {
 			name: "empty",
 			args: args{instant.Data{}},
 			want: "",
+		},
+		{
+			name: "breach",
+			args: args{
+				instant.Data{
+					Type: "breach",
+					Solution: &breach.Response{
+						Provider: breach.HaveIBeenPwnedProvider,
+					},
+				},
+			},
+			want: `<br><img width="12" height="12" alt="Have I Been Pwned" src="/image/32x,s65582g6BoRK4EuPj871JNgrZwATF6AX6F7TF0uFh-F8=/https://haveibeenpwned.com/favicon.ico"/> <a href="https://haveibeenpwned.com/">Have I Been Pwned</a>`,
 		},
 		{
 			name: "discography",

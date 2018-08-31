@@ -10,6 +10,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -420,6 +421,7 @@ func TestDetectType(t *testing.T) {
 		want interface{}
 	}{
 		{instant.BirthStoneType, nil},
+		{instant.BreachType, &breach.Response{}},
 		{instant.CurrencyType, &instant.CurrencyResponse{}},
 		{instant.DiscographyType, &[]discography.Album{}},
 		{instant.FedExType, &parcel.Response{}},

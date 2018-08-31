@@ -4,10 +4,16 @@
   {{if .Context.Q}}
     <link rel="stylesheet" href="/static/search.css">
     {{if .Instant}}
-      {{if eq .Instant.Type "calculator"}}
+      {{if eq .Instant.Type "breach"}}
+      <link rel="stylesheet" href="/static/instant/breach/owl.carousel.min.css">
+      <link rel="stylesheet" href="/static/instant/breach/breach.css">
+      {{else if eq .Instant.Type "calculator"}}
       <link rel="stylesheet" href="/static/instant/calculator/calculator.css">
       {{else if eq .Instant.Type "currency"}}
       <link rel="stylesheet" href="/static/instant/currency/currency.css">
+      {{else if eq .Instant.Type "discography"}}
+      <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
+      <link rel="stylesheet" href="/static/instant/discography/discography.css">
       {{else if eq .Instant.Type "gdp"}}
       <link rel="stylesheet" href="/static/instant/gdp/gdp.css">
       {{else if eq .Instant.Type "maps"}}
@@ -20,10 +26,7 @@
       {{else if eq .Instant.Type "unit converter"}}
       <link rel="stylesheet" href="/static/instant/unit_converter/unit_converter.css">
       {{else if (or (eq .Instant.Type "local weather") (eq .Instant.Type "weather"))}}
-      <link rel="stylesheet" href="/static/instant/weather/weather.css">
-      {{else if eq .Instant.Type "discography"}}
-      <link rel="stylesheet" href="/static/instant/discography/owl.carousel.min.css">
-      <link rel="stylesheet" href="/static/instant/discography/discography.css">
+      <link rel="stylesheet" href="/static/instant/weather/weather.css">      
       {{end}}
     {{end}}
   {{end}}
@@ -36,6 +39,9 @@
     {{else if eq .Instant.Type "currency"}}
     <script src="/static/instant/d3.v4.min.js"></script>
     <script src="/static/instant/currency/currency.js"></script>
+    {{else if eq .Instant.Type "breach"}}
+    <script src="/static/instant/breach/owl.carousel.min.js"></script>
+    <script src="/static/instant/breach/breach.js"></script>
     {{else if eq .Instant.Type "gdp"}}
     <script src="/static/instant/d3.v4.min.js"></script>
     <script src="/static/instant/gdp/gdp.js"></script>
@@ -71,9 +77,6 @@
     <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
     {{else if eq .Instant.Type "unit converter"}}
     <script src="/static/instant/unit_converter/unit_converter.js"></script>
-    {{else if eq .Instant.Type "discography"}}
-    <script src="/static/instant/discography/owl.carousel.min.js"></script>
-    <script src="/static/instant/discography/discography.js"></script>
     {{else if eq .Instant.Type "minify"}}
     <!-- 
       prettydiff.js combines prettydiff barebones example files to 1: 
@@ -176,6 +179,36 @@
       {{template "wikipedia" .}}
       {{template "search_results" .}}
     </div>
+    {{else if eq .Instant.Type "breach"}}<!--100% width instant answer-->
+      {{if .Instant.Solution.Breaches}}
+      <div id="answer" class="pure-u-1" style="height:305px;background-color:#fcfcfc;resize:none;padding-top:5px;margin-bottom:15px;">
+        {{$account:= .Instant.Solution.Account}}
+        {{$account}} has been compromised:
+        <div style="margin:2px;margin-bottom:0px;">
+          <div class="carousel-wrap">
+            <div class="owl-carousel">
+            {{range $j, $b := .Instant.Solution.Breaches}}
+            <div class="breach">
+              <br>
+              <a class="breach_link" href="https://haveibeenpwned.com/account/{{$account}}">
+                {{$des := $b.Description | StripHTML}}
+                <span style="color:#000;font-size:16px;"><em>{{Truncate $b.Name 40 false}}</em></span><br>
+                <span style="color:#333;font-size:14px;"><em>{{Truncate $b.Domain 40 false}}</em></span><br>
+                <span style="color:#555;font-size:12px;">{{Truncate $des 165 true}}</span><br>
+                <span style="color:#777;font-size:10px;">Breached: {{$b.Date.Format "Jan 2, 2006"}}</span><br>
+              </a>
+            </div>
+            {{end}}
+            </div>
+          </div>
+        </div>
+        {{template "source" .}}
+      </div>
+      {{end}}
+      <div class="pure-u-1">
+        <div class="pure-u-1 pure-u-xl-2-24 spacer"></div>
+        <div id="results_container" class="pure-u-1 pure-u-xl-22-24">{{template "search_results" .}}</div>
+      </div>
     {{else if eq .Instant.Type "discography"}}<!--100% width instant answer-->
       {{$length := len .Instant.Solution}} 
       {{if ne $length 0 }}

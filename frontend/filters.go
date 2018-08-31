@@ -15,6 +15,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
+	"github.com/jivesearch/jivesearch/instant/breach"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/currency"
@@ -37,6 +40,7 @@ var funcMap = template.FuncMap{
 	"Percent":              percent,
 	"SafeHTML":             safeHTML,
 	"Source":               source,
+	"StripHTML":            stripHTML,
 	"Subtract":             subtract,
 	"Truncate":             truncate,
 	"WeatherCode":          weatherCode,
@@ -122,6 +126,12 @@ func safeHTML(value string) template.HTML {
 	return template.HTML(value)
 }
 
+func stripHTML(s string) string {
+	p := strings.NewReader(s)
+	doc, _ := goquery.NewDocumentFromReader(p)
+	return doc.Text()
+}
+
 // source will show the source of an instant answer if data comes from a 3rd party
 func source(answer instant.Data) string {
 	var proxyFavIcon = func(u string) string {
@@ -132,6 +142,15 @@ func source(answer instant.Data) string {
 	var f string
 
 	switch answer.Type {
+	case "breach":
+		b := answer.Solution.(*breach.Response)
+		switch b.Provider {
+		case breach.HaveIBeenPwnedProvider:
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, breach.HaveIBeenPwnedProvider, proxyFavIcon("https://haveibeenpwned.com/favicon.ico"))
+			f += fmt.Sprintf(`<br>%v <a href="https://haveibeenpwned.com/">%v</a>`, img, breach.HaveIBeenPwnedProvider)
+		default:
+			log.Debug.Printf("unknown breach provider %v\n", b.Provider)
+		}
 	case "discography":
 		img = fmt.Sprintf(`<img width="12" height="12" alt="musicbrainz" src="%v"/>`, proxyFavIcon("https://musicbrainz.org/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="https://musicbrainz.org/">MusicBrainz</a>`, img)

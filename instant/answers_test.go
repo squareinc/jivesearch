@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/breach"
 	curr "github.com/jivesearch/jivesearch/instant/currency"
 	disc "github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/econ"
@@ -30,6 +31,7 @@ import (
 func answers(i Instant) []Answerer {
 	return []Answerer{
 		&BirthStone{},
+		&Breach{Fetcher: i.BreachFetcher},
 		&Calculator{},
 		&CamelCase{},
 		&Characters{},
@@ -79,6 +81,7 @@ func TestDetect(t *testing.T) {
 
 	i := Instant{
 		QueryVar:           "q",
+		BreachFetcher:      &mockBreachFetcher{},
 		DiscographyFetcher: &mockDiscographyFetcher{},
 		Currency: Currency{
 			CryptoFetcher: &mockCryptoFetcher{},
@@ -764,6 +767,35 @@ func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikiped
 
 func (mf *mockWikipediaFetcher) Setup() error {
 	return nil
+}
+
+type mockBreachFetcher struct{}
+
+func (m *mockBreachFetcher) Fetch(account string) (*breach.Response, error) {
+	r := &breach.Response{
+		Account: "test@example.com",
+		Breaches: []breach.Breach{
+			{
+				Name:        "000webhost",
+				Domain:      "000webhost.com",
+				Date:        time.Date(2015, 3, 1, 0, 0, 0, 0, time.UTC),
+				Count:       14936670,
+				Description: "Some description here.",
+				Items:       []string{"Email addresses", "IP addresses", "Names", "Passwords"},
+			},
+			{
+				Name:        "8tracks",
+				Domain:      "8tracks.com",
+				Date:        time.Date(2017, 6, 27, 0, 0, 0, 0, time.UTC),
+				Count:       7990619,
+				Description: "Another description here.",
+				Items:       []string{"Email addresses", "Passwords"},
+			},
+		},
+		Provider: breach.HaveIBeenPwnedProvider,
+	}
+
+	return r, nil
 }
 
 type mockDiscographyFetcher struct{}

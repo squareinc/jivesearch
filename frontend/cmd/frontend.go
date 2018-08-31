@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jivesearch/jivesearch/instant/breach"
+
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 
 	"github.com/jivesearch/jivesearch/instant/currency"
@@ -242,6 +244,9 @@ func main() {
 
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
+		BreachFetcher: &breach.Pwned{
+			HTTPClient: httpClient,
+		},
 		DiscographyFetcher: &musicbrainz.PostgreSQL{
 			DB: db,
 		},

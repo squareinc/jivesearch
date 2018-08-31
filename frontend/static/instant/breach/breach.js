@@ -15,48 +15,48 @@ $(document).ready(function() {
         ],
         autoplay: true,
         autoplayHoverPause: true,
-        responsive:{
+        responsive:{ // e.g. 1950 / 175 width of each = 11.14 -> round down to 11.
             0:{
                 items:1
             },
             300:{
-                items:2 
+                items:1
             },        
             425:{
-                items:3
+                items:2
             },
             550:{
-                items:4
+                items:3
             },
             675:{
-                items:5
+                items:3
             },
             1000:{
-                items:6
+                items:5
             },
             1125:{
-                items:7
+                items:6
             },
             1250:{
-                items:8
+                items:7
             },
             1375:{
-                items:9
+                items:7
             },
             1450:{
-                items:11
+                items:8
             },
             1575:{
-                items:12
+                items:8
             },
             1700:{
-                items:13
+                items:8
             },
             1825:{
-                items:14
+                items:9
             },
             1950:{
-                items:15
+                items:10
             }
         }
     });
@@ -69,5 +69,3 @@ $(document).ready(function() {
     });
 
 });
-
-

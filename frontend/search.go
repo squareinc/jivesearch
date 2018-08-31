@@ -14,6 +14,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
+	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/parcel"
 	"github.com/jivesearch/jivesearch/instant/shortener"
@@ -526,6 +527,9 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 	default:
 		answers = []instant.Answerer{
 			&instant.BirthStone{},
+			&instant.Breach{
+				Fetcher: f.Instant.BreachFetcher,
+			},
 			&instant.Calculator{},
 			&instant.CamelCase{},
 			&instant.Characters{},
@@ -591,6 +595,8 @@ func detectType(t instant.Type) interface{} {
 	var v interface{}
 
 	switch t {
+	case instant.BreachType:
+		v = &breach.Response{}
 	case instant.CountryCodeType:
 		v = &instant.CountryCodeResponse{}
 	case instant.DiscographyType:

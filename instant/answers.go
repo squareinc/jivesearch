@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/breach"
+
 	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
 
 	disc "github.com/jivesearch/jivesearch/instant/discography"
@@ -27,6 +29,7 @@ import (
 // Instant holds config information for the instant answers
 type Instant struct {
 	QueryVar           string
+	BreachFetcher      breach.Fetcher
 	DiscographyFetcher disc.Fetcher
 	FedExFetcher       parcel.Fetcher
 	Currency
