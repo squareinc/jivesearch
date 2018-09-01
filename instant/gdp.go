@@ -27,9 +27,6 @@ type GDPResponse struct {
 	*ggdp.Response
 }
 
-// ErrInvalidCountry indicates a country is not valid
-var ErrInvalidCountry error
-
 func (g *GDP) setQuery(r *http.Request, qv string) Answerer {
 	g.Answer.setQuery(r, qv)
 	return g
@@ -69,7 +66,7 @@ func (g *GDP) setRegex() Answerer {
 func (g *GDP) solve(r *http.Request) Answerer {
 	c, ok := g.remainderM["country"]
 	if !ok {
-		g.Err = ErrInvalidCountry
+		g.Err = econ.ErrInvalidCountry
 		return g
 	}
 
