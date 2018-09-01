@@ -41,6 +41,8 @@ $ cd $GOPATH/src/github.com/jivesearch/jivesearch/docker
 $ domain=example.com && data_directory=/path/to/data && sudo mkdir -p $data_directory/elasticsearch && sudo chown 1000:1000 $data_directory/elasticsearch && sudo DATA_DIRECTORY=$data_directory ES_HEAP=2g NGINX_DOMAIN=$domain docker-compose up
 ```
 
+**For local development you don't need a Let's Encrypt certificate. You can simply access http://127.0.0.1:8000 directly.** 
+
 Elasticsearch may give you an error about max virtual memory areas. In that case:
 ```bash
 # Add the following to the bottom of /etc/sysctl.conf:
@@ -51,8 +53,6 @@ For local development we recommend setting an environment variable for your !ban
 ```bash
 export JIVESEARCH_BANGS_PATH="/path/to/file"
 ```
-
-
 For systemd settings (replace "myuser" below and edit env variables as needed):
 ```bash
 sudo curl -o /etc/systemd/system/frontend.service https://gist.githubusercontent.com/brentadamson/7b8117347909cc38384fed589a3d785d/raw/19a4249931adf0ea60326a6bcb89813bf328e87a/frontend
