@@ -108,6 +108,7 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
 - [x] Instant Answers
     - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent, etc. 
+    - [x] Breach (a.k.a. have i been pwned)
     - [x] Discography/Music albums
     - [x] JavaScript-based answers
         - [x] Basic calculator
