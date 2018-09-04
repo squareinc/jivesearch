@@ -39,13 +39,21 @@ func (c *Congress) setType() Answerer {
 }
 
 func (c *Congress) setRegex() Answerer {
-	triggers := []string{
+	senate := []string{
 		"senate", "senator", "senators",
 	}
 
-	t := strings.Join(triggers, "|")
-	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<state>.*)$`, t)))
-	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<state>.*) (?P<trigger>%s)$`, t)))
+	t := strings.Join(senate, "|")
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<senate>%s) (?P<state>.*)$`, t)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<state>.*) (?P<senate>%s)$`, t)))
+
+	members := []string{
+		"member", "members", "house", "congress",
+	}
+
+	t = strings.Join(members, "|")
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<members>%s) (?P<state>.*)$`, t)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<state>.*) (?P<members>%s)$`, t)))
 
 	return c
 }
@@ -63,6 +71,17 @@ func (c *Congress) solve(r *http.Request) Answerer {
 		return c
 	}
 
+	if _, ok := c.remainderM["members"]; ok {
+		resp, err := c.Fetcher.FetchMembers(loc)
+		if err != nil {
+			c.Err = err
+			return c
+		}
+		c.Data.Solution = resp
+		return c
+	}
+
+	// Senate
 	resp, err := c.Fetcher.FetchSenators(loc)
 	if err != nil {
 		c.Err = err
@@ -75,6 +94,61 @@ func (c *Congress) solve(r *http.Request) Answerer {
 
 func (c *Congress) tests() []test {
 	tests := []test{
+		{
+			query: "utah members",
+			expected: []Data{
+				{
+					Type:      CongressType,
+					Triggered: true,
+					Solution: &congress.Response{
+						Location: &congress.Location{
+							Short: "UT",
+							State: "Utah",
+						},
+						Role: congress.House,
+						Members: []congress.Member{
+							{
+								Name:         "Rob Bishop",
+								District:     1,
+								Gender:       "M",
+								Party:        "R",
+								Twitter:      "RepRobBishop",
+								Facebook:     "RepRobBishop",
+								NextElection: 2018,
+							},
+							{
+								Name:         "Chris Stewart",
+								District:     2,
+								Gender:       "M",
+								Party:        "R",
+								Twitter:      "RepChrisStewart",
+								Facebook:     "RepChrisStewart",
+								NextElection: 2018,
+							},
+							{
+								Name:         "John Curtis",
+								District:     3,
+								Gender:       "M",
+								Party:        "R",
+								Twitter:      "RepJohnCurtis",
+								Facebook:     "",
+								NextElection: 2018,
+							},
+							{
+								Name:         "Mia Love",
+								District:     4,
+								Gender:       "F",
+								Party:        "R",
+								Twitter:      "repmialove",
+								Facebook:     "",
+								NextElection: 2018,
+							},
+						},
+						Provider: congress.ProPublicaProvider,
+					},
+				},
+			},
+		},
 		{
 			query: "utah senators",
 			expected: []Data{

@@ -255,6 +255,55 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 
 type mockCongressFetcher struct{}
 
+func (m *mockCongressFetcher) FetchMembers(location *congress.Location) (*congress.Response, error) {
+	return &congress.Response{
+		Location: &congress.Location{
+			Short: "UT",
+			State: "Utah",
+		},
+		Role: congress.House,
+		Members: []congress.Member{
+			{
+				Name:         "Rob Bishop",
+				District:     1,
+				Gender:       "M",
+				Party:        "R",
+				Twitter:      "RepRobBishop",
+				Facebook:     "RepRobBishop",
+				NextElection: 2018,
+			},
+			{
+				Name:         "Chris Stewart",
+				District:     2,
+				Gender:       "M",
+				Party:        "R",
+				Twitter:      "RepChrisStewart",
+				Facebook:     "RepChrisStewart",
+				NextElection: 2018,
+			},
+			{
+				Name:         "John Curtis",
+				District:     3,
+				Gender:       "M",
+				Party:        "R",
+				Twitter:      "RepJohnCurtis",
+				Facebook:     "",
+				NextElection: 2018,
+			},
+			{
+				Name:         "Mia Love",
+				District:     4,
+				Gender:       "F",
+				Party:        "R",
+				Twitter:      "repmialove",
+				Facebook:     "",
+				NextElection: 2018,
+			},
+		},
+		Provider: congress.ProPublicaProvider,
+	}, nil
+}
+
 func (m *mockCongressFetcher) FetchSenators(location *congress.Location) (*congress.Response, error) {
 	return &congress.Response{
 		Location: location,

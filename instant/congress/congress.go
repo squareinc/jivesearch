@@ -28,8 +28,8 @@ type Role string
 const (
 	// Senators are United States Senators
 	Senators Role = "Senators"
-	// Congressman is a United States Congressman
-	Congressman Role = "Congressman"
+	// House are United States House Members
+	House Role = "House Members"
 )
 
 // Provider is a data source
@@ -38,6 +38,7 @@ type Provider string
 // Member is a member of Congress
 type Member struct {
 	Name         string
+	District     int
 	Gender       string
 	Party        string
 	Twitter      string
@@ -48,6 +49,7 @@ type Member struct {
 // Fetcher implements methods to retrieve members of Congress/Senate for a district/state
 type Fetcher interface {
 	FetchSenators(location *Location) (*Response, error)
+	FetchMembers(location *Location) (*Response, error)
 }
 
 // ValidateState returns a valid code for a State
