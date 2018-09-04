@@ -48,7 +48,7 @@ func (c *Congress) setRegex() Answerer {
 	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<state>.*) (?P<senate>%s)$`, t)))
 
 	members := []string{
-		"member", "members", "house", "congress",
+		"member", "members", "house members", "congress",
 	}
 
 	t = strings.Join(members, "|")
