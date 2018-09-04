@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jivesearch/jivesearch/instant/congress"
+
 	"github.com/jivesearch/jivesearch/bangs"
 	"github.com/jivesearch/jivesearch/instant"
 	"github.com/jivesearch/jivesearch/instant/breach"
@@ -600,6 +602,8 @@ func detectType(t instant.Type) interface{} {
 	switch t {
 	case instant.BreachType:
 		v = &breach.Response{}
+	case instant.CongressType:
+		v = &congress.Response{}
 	case instant.CountryCodeType:
 		v = &instant.CountryCodeResponse{}
 	case instant.DiscographyType:
