@@ -113,6 +113,9 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("nsfw.workers", 10)
 	cfg.SetDefault("nsfw.since", now().AddDate(0, -1, 0))
 
+	// ProPublica API
+	cfg.SetDefault("propublica.key", "my_key")
+
 	// useragent for fetching api's, images, etc.
 	cfg.SetDefault("useragent", "https://github.com/jivesearch/jivesearch")
 

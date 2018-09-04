@@ -17,6 +17,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jivesearch/jivesearch/instant/breach"
+	"github.com/jivesearch/jivesearch/instant/congress"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
@@ -150,6 +151,15 @@ func source(answer instant.Data) string {
 			f += fmt.Sprintf(`<br>%v <a href="https://haveibeenpwned.com/">%v</a>`, img, breach.HaveIBeenPwnedProvider)
 		default:
 			log.Debug.Printf("unknown breach provider %v\n", b.Provider)
+		}
+	case "congress":
+		c := answer.Solution.(*congress.Response)
+		switch c.Provider {
+		case congress.ProPublicaProvider:
+			img = fmt.Sprintf(`<img width="12" height="12" alt="%v" src="%v"/>`, congress.ProPublicaProvider, proxyFavIcon("https://assets.propublica.org/prod/v3/images/favicon.ico"))
+			f += fmt.Sprintf(`<br>%v <a href="https://www.propublica.org/">%v</a>`, img, congress.ProPublicaProvider)
+		default:
+			log.Debug.Printf("unknown congress provider %v\n", c.Provider)
 		}
 	case "discography":
 		img = fmt.Sprintf(`<img width="12" height="12" alt="musicbrainz" src="%v"/>`, proxyFavIcon("https://musicbrainz.org/favicon.ico"))

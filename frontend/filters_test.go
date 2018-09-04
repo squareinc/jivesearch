@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/breach"
+	"github.com/jivesearch/jivesearch/instant/congress"
 
 	"github.com/jivesearch/jivesearch/instant/econ"
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
@@ -315,6 +316,18 @@ func TestSource(t *testing.T) {
 				},
 			},
 			want: `<br><img width="12" height="12" alt="Have I Been Pwned" src="/image/32x,s65582g6BoRK4EuPj871JNgrZwATF6AX6F7TF0uFh-F8=/https://haveibeenpwned.com/favicon.ico"/> <a href="https://haveibeenpwned.com/">Have I Been Pwned</a>`,
+		},
+		{
+			name: "congress",
+			args: args{
+				instant.Data{
+					Type: "congress",
+					Solution: &congress.Response{
+						Provider: congress.ProPublicaProvider,
+					},
+				},
+			},
+			want: `<br><img width="12" height="12" alt="ProPublica" src="/image/32x,s0OxD1aX5YGmf_Oi5xwt4iZ3ADaCio841_AVRWR0XZiI=/https://assets.propublica.org/prod/v3/images/favicon.ico"/> <a href="https://www.propublica.org/">ProPublica</a>`,
 		},
 		{
 			name: "discography",

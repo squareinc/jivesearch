@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/breach"
+	"github.com/jivesearch/jivesearch/instant/congress"
 	curr "github.com/jivesearch/jivesearch/instant/currency"
 	disc "github.com/jivesearch/jivesearch/instant/discography"
 	"github.com/jivesearch/jivesearch/instant/econ"
@@ -36,6 +37,7 @@ func answers(i Instant) []Answerer {
 		&CamelCase{},
 		&Characters{},
 		&Coin{},
+		&Congress{Fetcher: i.CongressFetcher},
 		&CountryCode{},
 		&Discography{Fetcher: i.DiscographyFetcher},
 		&DigitalStorage{},
@@ -80,13 +82,14 @@ func TestDetect(t *testing.T) {
 	cases := []test{}
 
 	i := Instant{
-		QueryVar:           "q",
-		BreachFetcher:      &mockBreachFetcher{},
-		DiscographyFetcher: &mockDiscographyFetcher{},
+		QueryVar:        "q",
+		BreachFetcher:   &mockBreachFetcher{},
+		CongressFetcher: &mockCongressFetcher{},
 		Currency: Currency{
 			CryptoFetcher: &mockCryptoFetcher{},
 			FXFetcher:     &mockFXFetcher{},
 		},
+		DiscographyFetcher:   &mockDiscographyFetcher{},
 		FedExFetcher:         &mockFedExFetcher{},
 		GDPFetcher:           &mockGDPFetcher{},
 		LinkShortener:        &mockShortener{},
@@ -248,6 +251,34 @@ func (f *mockFedExFetcher) Fetch(trackingNumber string) (parcel.Response, error)
 	}
 
 	return r, nil
+}
+
+type mockCongressFetcher struct{}
+
+func (m *mockCongressFetcher) FetchSenators(location *congress.Location) (*congress.Response, error) {
+	return &congress.Response{
+		Location: location,
+		Role:     congress.Senators,
+		Members: []congress.Member{
+			{
+				Name:         "Orrin G. Hatch",
+				Gender:       "M",
+				Party:        "R",
+				Twitter:      "SenOrrinHatch",
+				Facebook:     "senatororrinhatch",
+				NextElection: 2018,
+			},
+			{
+				Name:         "Mike Lee",
+				Gender:       "M",
+				Party:        "R",
+				Twitter:      "SenMikeLee",
+				Facebook:     "senatormikelee",
+				NextElection: 2022,
+			},
+		},
+		Provider: congress.ProPublicaProvider,
+	}, nil
 }
 
 type mockCryptoFetcher struct{}

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/jivesearch/jivesearch/instant/breach"
+	"github.com/jivesearch/jivesearch/instant/congress"
 
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 
@@ -245,6 +246,10 @@ func main() {
 	f.Instant = &instant.Instant{
 		QueryVar: "q",
 		BreachFetcher: &breach.Pwned{
+			HTTPClient: httpClient,
+		},
+		CongressFetcher: &congress.ProPublica{
+			Key:        v.GetString("propublica.key"),
 			HTTPClient: httpClient,
 		},
 		DiscographyFetcher: &musicbrainz.PostgreSQL{

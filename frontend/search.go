@@ -534,6 +534,9 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.CamelCase{},
 			&instant.Characters{},
 			&instant.Coin{},
+			&instant.Congress{
+				Fetcher: f.Instant.CongressFetcher,
+			},
 			&instant.CountryCode{},
 			&instant.Currency{
 				CryptoFetcher: f.Instant.CryptoFetcher,

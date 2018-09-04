@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jivesearch/jivesearch/instant/breach"
+	"github.com/jivesearch/jivesearch/instant/congress"
 
 	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
 
@@ -30,6 +31,7 @@ import (
 type Instant struct {
 	QueryVar           string
 	BreachFetcher      breach.Fetcher
+	CongressFetcher    congress.Fetcher
 	DiscographyFetcher disc.Fetcher
 	FedExFetcher       parcel.Fetcher
 	Currency

@@ -335,6 +335,30 @@
           </div>
         </div>
       </div>
+      {{else if eq .Instant.Type "congress"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1" style="height:225px;">
+          <div style="margin-top:10px;margin-left:15px;font-size:18px;">
+            <em>{{.Instant.Solution.Location.State}} {{.Instant.Solution.Role}}</em>
+          </div><br>
+          {{range $i, $m := .Instant.Solution.Members}}
+            <div class="pure-u-22-24" style="margin-bottom:10px;">
+              <div style="margin-left:15px;margin-bottom:3px;font-size:16px;color:#444;">
+                <em>{{$m.Name}} <span style="color:#444;font-size:14px;">({{$m.Party}})</span></em>&nbsp;
+                <a href="https://twitter.com/{{$m.Twitter}}" style="text-decoration: none !important;">
+                  <i class="icon-twitter" aria-hidden="true" style="color: #1DA1F2; text-shadow: 1px 1px 1px #ccc;"></i>
+                  <span class="social_media">{{$m.Twitter}}</span>
+                </a>&nbsp;
+                <a href="https://www.facebook.com/{{$m.Facebook}}" style="text-decoration: none !important;">
+                  <i class="icon-facebook-official" aria-hidden="true" style="color: #3b5998; text-shadow: 1px 1px 1px #ccc;"></i>
+                  <span class="social_media">{{$m.Facebook}}</span>
+                </a>
+              </div>
+            </div>
+          {{end}}
+          {{template "source" .}}
+        </div>
+        {{end}}
       {{else if eq .Instant.Type "country code"}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1">

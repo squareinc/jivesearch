@@ -97,14 +97,14 @@ TODO: display via themes
     margin-top: 4px;
     padding: 2px;
 }
-.wikipedia_social_media {
+.social_media {
     color: #111;
 }
 i {
     font-size: 20px;
     vertical-align: middle;
 }
-.wikipedia_social_media:hover {
+.social_media:hover {
     text-decoration: underline;
 }
 .vote {

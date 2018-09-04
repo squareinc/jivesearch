@@ -91,6 +91,9 @@ func TestSetDefaults(t *testing.T) {
 		{"nsfw.workers", 10},
 		{"nsfw.since", time.Date(2018, 01, 06, 20, 34, 58, 651387237, time.UTC)},
 
+		// ProPublica API
+		{"propublica.key", "my_key"},
+
 		// stackoverflow API settings
 		{"stackoverflow.key", "app key"},
 
