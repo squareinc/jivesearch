@@ -46,12 +46,12 @@ and (min-width: 80em) { /* .pure-u-xl-*, >=1280px */
     font-size: 16px;
     color: #666;
 }
-#tagline > a{
+#about_us > a{
     font-family: 'Open Sans',sans-serif;
     font-size: 16px;
     color: #4285f4;
 }
-#tagline > a:hover{
+#about_us > a:hover{
     text-decoration: underline;
 }
 #search_container {
