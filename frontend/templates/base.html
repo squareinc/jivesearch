@@ -24,6 +24,10 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/167x167.png">
     <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/180x180.png">
+    {{if eq .Context.Q ""}}
+    <!--OpenSearch....for setting default search engine in Chrome, Firefox, etc-->
+    <link rel="search" title="{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}" type="application/opensearchdescription+xml" href="http://example.com/opensearchdescription.xml" />
+    {{end}}
   </head>
   <body>
     {{template "content" .}}
