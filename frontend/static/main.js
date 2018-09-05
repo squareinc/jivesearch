@@ -169,7 +169,7 @@ $(document).ready(function() {
   });
 
   var b = browser();
-  $("#add_to_browser").html("Add "+brand+" to " + b);
+  $("#add_me").html("Add "+brand+" to " + b);
 
   $("#add_to_browser").on("click", function(){
     $("#instructions").toggle();

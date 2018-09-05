@@ -808,7 +808,12 @@
           {{.Brand.TagLine}}{{else}}The little search engine that could.
           </div>
         {{end}}
-        <div id="add_to_browser" style="margin-top:50px;color:#4285f4;cursor:pointer;"></div>
+        <div style="margin-top:125px;cursor:pointer;">
+          <button id="add_to_browser" class="button-error pure-button " style="background:#4285f4;color:white;border-radius:4px;text-shadow:0 1px 1px rgba(0, 0, 0, 0.2);">
+            <span>Protect your privacy!</span>
+            <span id="add_me"></span>
+          </button>
+        </div>
         <div id="instructions" class="pure-u-6-24" style="text-align:left;font-size:16px;padding:15px;box-shadow:rgba(0,0,0,.25) 0 1px 2px 0;display:none;">
           <div id="chrome_instructions" style="display:none;">
             <div class="">1. Right click on the search bar.</div>
