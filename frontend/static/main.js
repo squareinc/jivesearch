@@ -219,12 +219,9 @@ var browser = function() {
 function installSearchEngine() {
   if (window.external && ("AddSearchProvider" in window.external)) {
     // Firefox 2 and IE 7, OpenSearch
-    window.external.AddSearchProvider("http://127.0.0.1:8000/opensearch.xml");
+    window.external.AddSearchProvider("/opensearch.xml");
   } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
     // Firefox <= 1.5, Sherlock
-    window.sidebar.addSearchEngine("http://example.com/search-plugin.src", "http://example.com/search-icon.png", "Search Plugin", "");
-  } else {
-    // No search engine support (IE 6, Opera, etc).
-    alert("No search engine support");
-  }
+    //window.sidebar.addSearchEngine("http://example.com/search-plugin.src", "/static/icons/favicon.ico", "Search Plugin", "");
+  } 
  }
