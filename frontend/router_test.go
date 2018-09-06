@@ -46,6 +46,11 @@ func TestRouter(t *testing.T) {
 			method: "GET",
 			url:    "https://example.com/static/main.js",
 		},
+		{
+			name:   "opensearch",
+			method: "GET",
+			url:    "http://localhost/opensearch.xml",
+		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			cfg := &mockProvider{

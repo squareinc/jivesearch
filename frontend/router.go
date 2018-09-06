@@ -29,6 +29,9 @@ func (f *Frontend) Router(cfg config.Provider) *mux.Router {
 	router.NewRoute().Name("favicon").Methods("GET").Path("/favicon.ico").Handler(
 		http.FileServer(http.Dir("static")),
 	)
+	router.NewRoute().Name("opensearch").Methods("GET").Path("/opensearch.xml").Handler(
+		f.middleware(appHandler(f.openSearchHandler)),
+	)
 
 	// How do we exclude viewing the entire static directory of /static path?
 	router.NewRoute().Name("static").Methods("GET").PathPrefix("/static/").Handler(

@@ -112,8 +112,13 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					errHandler(w, rsp)
 					return
 				}
-			default: // html by default
-				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			default: // parse the template
+				switch rsp.template {
+				case "opensearch":
+					w.Header().Set("Content-Type", "application/xml")
+				default:
+					w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				}
 
 				tmpl, ok := templates[rsp.template]
 				if !ok {
@@ -231,11 +236,26 @@ func (f *Frontend) autocompleteHandler(w http.ResponseWriter, r *http.Request) *
 // ParseTemplates parses our html templates.
 var ParseTemplates = func() {
 	templates = make(map[string]*template.Template)
+	templates["about"] = template.Must(
+		template.New("base.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/base.html",
+				"templates/search_form.html",
+				"templates/about.html",
+			),
+	)
 	templates["maps"] = template.Must(
 		template.New("maps.html").
 			Funcs(funcMap).
 			ParseFiles(
 				"templates/maps.html",
+			),
+	)
+	templates["opensearch"] = template.Must(
+		template.New("opensearch.xml").
+			ParseFiles(
+				"templates/opensearch.xml",
 			),
 	)
 	templates["search"] = template.Must(
@@ -246,15 +266,6 @@ var ParseTemplates = func() {
 				"templates/search_form.html",
 				"templates/search.html",
 				"templates/wikipedia.html",
-			),
-	)
-	templates["about"] = template.Must(
-		template.New("base.html").
-			Funcs(funcMap).
-			ParseFiles(
-				"templates/base.html",
-				"templates/search_form.html",
-				"templates/about.html",
 			),
 	)
 }
