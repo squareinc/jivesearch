@@ -147,3 +147,7 @@ and (orientation: landscape) {
         padding-right: 100px;
     }
 }
+
+.instructions{
+    line-height: 1.5;
+}

@@ -816,9 +816,13 @@
         </div>
         <div id="instructions" class="pure-u-6-24" style="text-align:left;font-size:16px;padding:15px;box-shadow:rgba(0,0,0,.25) 0 1px 2px 0;display:none;">
           <div id="chrome_instructions" style="display:none;">
-            <div class="">1. Right click on the search bar.</div>
-            <div class="">2. Select "Edit search engines..." in the dropdown menu.</div>
-            <div class="">3. Find "{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}" and click "Make default".</div>
+            <div class="instructions">1. Right click on the search bar.</div>
+            <div class="instructions">2. Select "Edit search engines..." in the dropdown menu.</div>
+            <div class="instructions">3. Find "{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}" and click "Make default".</div>
+          </div>
+          <div id="firefox_instructions" style="display:none;">
+            <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add the {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} add-on to Firefox.</div>
+            <div class="instructions">2. Click <em>Allow,</em> then <em>Add.</em></div>
           </div>
         </div>
       </div>

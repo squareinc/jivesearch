@@ -171,17 +171,26 @@ $(document).ready(function() {
   var b = browser();
   $("#add_me").html("Add "+brand+" to " + b);
 
+  // Firefox add-on
+  $("#load_ff_addon").on("click", function(){
+    if (window.external && ("AddSearchProvider" in window.external)) {
+      // Firefox 2 and IE 7, OpenSearch
+      window.external.AddSearchProvider("/opensearch.xml");
+    } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
+      //TODO: Firefox <= 1.5, Sherlock
+      //window.sidebar.addSearchEngine("http://example.com/search-plugin.src", "/static/icons/favicon.ico", "Search Plugin", "");
+    } 
+  });
+
   $("#add_to_browser").on("click", function(){
     $("#instructions").toggle();
     if (b === "Chrome"){
       $("#chrome_instructions").show();
     }else if (b==="Firefox"){
-      installSearchEngine();
+      $("#firefox_instructions").show();      
     }
   });
 });
-
-
 
 // Browser detection for instructions to set your search engine
 // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769
@@ -217,11 +226,5 @@ var browser = function() {
 
 // Add search engine to Firefox
 function installSearchEngine() {
-  if (window.external && ("AddSearchProvider" in window.external)) {
-    // Firefox 2 and IE 7, OpenSearch
-    window.external.AddSearchProvider("/opensearch.xml");
-  } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
-    // Firefox <= 1.5, Sherlock
-    //window.sidebar.addSearchEngine("http://example.com/search-plugin.src", "/static/icons/favicon.ico", "Search Plugin", "");
-  } 
+  
  }
