@@ -186,8 +186,8 @@ $(document).ready(function() {
       // Firefox 2 and IE 7, OpenSearch
       window.external.AddSearchProvider("/opensearch.xml");
     } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
-      // Firefox <= 1.5, Sherlock
-      window.sidebar.addSearchEngine("/search-plugin.src", "/search-icon.png", "Search Plugin", "");
+      // TODO: Firefox <= 1.5, Sherlock
+      // window.sidebar.addSearchEngine("/search-plugin.src", "/search-icon.png", "Search Plugin", "");
     } else {
       // No search engine support (IE 6, Opera, etc).
       alert("No search engine support");
