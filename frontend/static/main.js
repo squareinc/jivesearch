@@ -171,23 +171,26 @@ $(document).ready(function() {
   var b = browser();
   $("#add_me").html("Add "+brand+" to " + b);
 
-  // Firefox add-on
-  $("#load_ff_addon").on("click", function(){
-    if (window.external && ("AddSearchProvider" in window.external)) {
-      // Firefox 2 and IE 7, OpenSearch
-      window.external.AddSearchProvider("/opensearch.xml");
-    } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
-      //TODO: Firefox <= 1.5, Sherlock
-      //window.sidebar.addSearchEngine("http://example.com/search-plugin.src", "/static/icons/favicon.ico", "Search Plugin", "");
-    } 
-  });
-
   $("#add_to_browser").on("click", function(){
     $("#instructions").toggle();
     if (b === "Chrome"){
       $("#chrome_instructions").show();
     }else if (b==="Firefox"){
       $("#firefox_instructions").show();      
+    }
+  });
+
+  // Firefox add-on
+  $("#load_ff_addon").on("click", function(){
+    if (window.external && ("AddSearchProvider" in window.external)) {
+      // Firefox 2 and IE 7, OpenSearch
+      window.external.AddSearchProvider("/opensearch.xml");
+    } else if (window.sidebar && ("addSearchEngine" in window.sidebar)) {
+      // Firefox <= 1.5, Sherlock
+      window.sidebar.addSearchEngine("/search-plugin.src", "/search-icon.png", "Search Plugin", "");
+    } else {
+      // No search engine support (IE 6, Opera, etc).
+      alert("No search engine support");
     }
   });
 });
@@ -223,8 +226,3 @@ var browser = function() {
       isBlink ? 'Blink' :
       'Chrome'; // give them Chrome instructions...better than nothing????
 };
-
-// Add search engine to Firefox
-function installSearchEngine() {
-  
- }
