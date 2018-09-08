@@ -821,8 +821,13 @@
             <div class="instructions">3. Find "{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}" and click "Make default".</div>
           </div>
           <div id="firefox_instructions" style="display:none;">
+            <!--Add-on instructions-->
+            <!--
             <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add the {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} add-on to Firefox.</div>
             <div class="instructions">2. Click <em>Allow,</em> then <em>Add.</em></div>
+            -->
+            <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} to your list of search engines.</div>
+            <div class="instructions">2. Check the box in the pop-up then click <em>Add.</em></div>
           </div>
         </div>
       </div>

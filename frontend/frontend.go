@@ -40,7 +40,6 @@ type Frontend struct {
 	MapBoxKey string
 	Suggest   suggest.Suggester
 	Search    search.Fetcher
-	Host      string
 	Wikipedia
 	Vote vote.Voter
 	GitHub
@@ -49,6 +48,7 @@ type Frontend struct {
 // Brand allows for customization of the name and tagline
 type Brand struct {
 	Name      string
+	Host      string
 	TagLine   string
 	Logo      string
 	SmallLogo string
@@ -115,7 +115,7 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			default: // parse the template
 				switch rsp.template {
 				case "opensearch":
-					w.Header().Set("Content-Type", "application/xml")
+					w.Header().Set("Content-Type", "application/opensearchdescription+xml")
 				default:
 					w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				}

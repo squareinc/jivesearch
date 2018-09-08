@@ -66,11 +66,11 @@ func setup(v *viper.Viper) *http.Server {
 	f = &frontend.Frontend{
 		Brand: frontend.Brand{
 			Name:      v.GetString("brand.name"),
+			Host:      v.GetString("server.host"),
 			TagLine:   v.GetString("brand.tagline"),
 			Logo:      v.GetString("brand.logo"),
 			SmallLogo: v.GetString("brand.small_logo"),
 		},
-		Host: v.GetString("server.host"),
 	}
 
 	router := f.Router(v)
