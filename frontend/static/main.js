@@ -173,7 +173,7 @@ $(document).ready(function() {
 
   $("#add_to_browser").on("click", function(){
     $("#instructions").toggle();
-    if (b === "Chrome"){
+    if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
       $("#chrome_instructions").show();
     }else if (b==="Firefox"){
       $("#firefox_instructions").show();      
@@ -211,8 +211,17 @@ var browser = function() {
   var isIE = /*@cc_on!@*/false || !!document.documentMode;
   // Edge 20+
   var isEdge = !isIE && !!window.StyleMedia;
-  // Chrome 1+
-  var isChrome = !!window.chrome && !!window.chrome.webstore;
+  // Chrome 1+, Chromium, etc.
+  var chrome = !!window.chrome && !!window.chrome.webstore;
+  var isChrome = false;
+  var isChromium = false;
+  if (chrome){
+    if (chromium()){
+      isChromium = true;
+    }else{
+      isChrome = true;
+    }
+  }
   // Blink engine detection
   var isBlink = (isChrome || isOpera) && !!window.CSS;
 
@@ -221,8 +230,18 @@ var browser = function() {
       isFirefox ? 'Firefox' :
       isSafari ? 'Safari' :
       isChrome ? 'Chrome' :
+      isChromium ? 'Chromium' :
       isIE ? 'Internet Explorer' :
       isEdge ? 'Edge' :
       isBlink ? 'Blink' :
       'Chrome'; // give them Chrome instructions...better than nothing????
 };
+
+function chromium(){ 
+  for (var i = 0, u="Chromium", l =u.length; i < navigator.plugins.length; i++){
+    if (navigator.plugins[i].name != null && navigator.plugins[i].name.substr(0, l) === u){
+      return true;
+    }
+  }
+  return false;
+}
