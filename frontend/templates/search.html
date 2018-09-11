@@ -829,6 +829,11 @@
             <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} to your list of search engines.</div>
             <div class="instructions">2. Check the box in the pop-up then click <em>Add.</em></div>
           </div>
+          <div id="safari_instructions" style="display:none;">
+            <div class="instructions">1. Install the <a href="https://safari-extensions.apple.com/details/?id=com.matt-swain.anysearch-6M853ET88Q">AnySearch extension</a>.</div>
+            <div class="instructions">2. In Safari select <em>Safari > Preferences > Extensions > AnySearch</em></div>
+            <div class="instructions">3. Select <em>Custom</em> in the dropdown and type in "{{if .Brand.Host}}{{.Brand.Host}}{{else}}https://jivesearch.com/{{end}}?q=@@@"</div>
+          </div>
         </div>
       </div>
       <div id="about_us" style="position:absolute;right:0;bottom:0;left:0;padding:1rem;background-color:#efefef;text-align:center;">

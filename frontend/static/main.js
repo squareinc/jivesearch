@@ -175,8 +175,10 @@ $(document).ready(function() {
     $("#instructions").toggle();
     if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
       $("#chrome_instructions").show();
-    }else if (b==="Firefox"){
+    } else if (b==="Firefox"){
       $("#firefox_instructions").show();      
+    } else if (b==="Safari"){
+      $("#safari_instructions").show();      
     }
   });
 
