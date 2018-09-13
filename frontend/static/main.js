@@ -177,6 +177,8 @@ $(document).ready(function() {
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
     } else if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
       $("#chrome_instructions").show();
+    } else if (b==="Edge"){
+      $("#edge_instructions").show();
     } else if (b==="Firefox"){
       $("#firefox_instructions").show();      
     } else if (b==="Safari"){
