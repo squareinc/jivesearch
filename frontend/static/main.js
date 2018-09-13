@@ -172,6 +172,7 @@ $(document).ready(function() {
   $("#add_me").html("Add "+brand+" to " + b);
 
   $("#add_to_browser").on("click", function(){
+    $("#about_us").toggle();
     $("#instructions").toggle();
     if (b==="Brave"){ // Brave isn't available yet until new browser launches. We'll show them for when it does launch late 2018.
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
