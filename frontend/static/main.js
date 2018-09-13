@@ -173,7 +173,9 @@ $(document).ready(function() {
 
   $("#add_to_browser").on("click", function(){
     $("#instructions").toggle();
-    if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
+    if (b==="Brave"){ // Brave isn't available yet until new browser launches. We'll show them for when it does launch late 2018.
+      $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
+    } else if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
       $("#chrome_instructions").show();
     } else if (b==="Firefox"){
       $("#firefox_instructions").show();      
