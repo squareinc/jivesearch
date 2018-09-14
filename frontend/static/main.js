@@ -176,7 +176,7 @@ $(document).ready(function() {
     $("#instructions").toggle();
     if (b==="Brave"){ // Brave isn't available yet until new browser launches. We'll show them for when it does launch late 2018.
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
-    } else if (b === "Chrome" || b === "Chromium"){ // what flavor of Chrome???
+    } else if (b === "Chrome" || b === "Chromium" || b === "Iridium"){
       $("#chrome_instructions").show();
     } else if (b==="Edge"){
       $("#edge_instructions").show();
@@ -216,6 +216,8 @@ var browser = function() {
   var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
   // Internet Explorer 6-11
   var isIE = /*@cc_on!@*/false || !!document.documentMode;
+  // Iridium
+  var isIridium = false;
   // Edge 20+
   var isEdge = !isIE && !!window.StyleMedia;
   // Chrome 1+, Chromium, etc.
@@ -223,8 +225,12 @@ var browser = function() {
   var isChrome = false;
   var isChromium = false;
   if (chrome){
-    if (chromium()){
-      isChromium = true;
+    if (chromium()){ // what flavor of Chrome???
+      if (navigator.userAgent.includes("Iridium")){ // better way to detect Iridium???
+        isIridium = true;
+      } else {
+        isChromium = true;
+      }
     }else{
       isChrome = true;
     }
@@ -239,6 +245,7 @@ var browser = function() {
       isChrome ? 'Chrome' :
       isChromium ? 'Chromium' :
       isIE ? 'Internet Explorer' :
+      isIridium ? 'Iridium' :
       isEdge ? 'Edge' :
       isBlink ? 'Blink' :
       'Chrome'; // give them Chrome instructions...better than nothing????
