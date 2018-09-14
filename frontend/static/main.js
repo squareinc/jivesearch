@@ -174,10 +174,8 @@ $(document).ready(function() {
   $("#add_to_browser").on("click", function(){
     $("#about_us").toggle();
     $("#instructions").toggle();
-    if (b==="Brave"){ // Brave isn't available yet until new browser launches. We'll show them for when it does launch late 2018.
+    if (b === "Brave" || b === "Chrome" || b === "Chromium" || b === "Iridium"){
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
-    } else if (b === "Chrome" || b === "Chromium" || b === "Iridium"){
-      $("#chrome_instructions").show();
     } else if (b==="Edge"){
       $("#edge_instructions").show();
     } else if (b==="Firefox"){
@@ -216,6 +214,8 @@ var browser = function() {
   var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
   // Internet Explorer 6-11
   var isIE = /*@cc_on!@*/false || !!document.documentMode;
+  // Brave
+  var isBrave = false;
   // Iridium
   var isIridium = false;
   // Edge 20+
@@ -224,14 +224,16 @@ var browser = function() {
   var chrome = !!window.chrome && !!window.chrome.webstore;
   var isChrome = false;
   var isChromium = false;
-  if (chrome){
-    if (chromium()){ // what flavor of Chrome???
+  if (chrome){ // what flavor of Chrome???
+    if (chromium()){ 
       if (navigator.userAgent.includes("Iridium")){ // better way to detect Iridium???
         isIridium = true;
       } else {
         isChromium = true;
       }
-    }else{
+    } else if (brave()){
+      isBrave = true;
+    } else{
       isChrome = true;
     }
   }
@@ -245,6 +247,7 @@ var browser = function() {
       isChrome ? 'Chrome' :
       isChromium ? 'Chromium' :
       isIE ? 'Internet Explorer' :
+      isBrave ? 'Brave' :
       isIridium ? 'Iridium' :
       isEdge ? 'Edge' :
       isBlink ? 'Blink' :
@@ -258,4 +261,25 @@ function chromium(){
     }
   }
   return false;
+}
+
+function brave() {
+  // initial assertions
+  if (!window.google_onload_fired &&
+       navigator.userAgent &&
+      !navigator.userAgent.includes('Chrome'))
+    return false;
+
+  // set up test
+  var test = document.createElement('iframe');
+  test.style.display = 'none';
+  document.body.appendChild(test);
+
+  // empty frames only have this attribute set in Brave Shield
+  var is_brave = (test.contentWindow.google_onload_fired === true);
+
+  // teardown test
+  test.parentNode.removeChild(test);
+
+  return is_brave;
 }
