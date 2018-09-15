@@ -178,7 +178,7 @@ $(document).ready(function() {
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
     } else if (b==="Edge"){
       $("#edge_instructions").show();
-    } else if (b==="Firefox"){
+    } else if (b==="Firefox" || b==="PaleMoon"){
       $("#firefox_instructions").show();      
     } else if (b==="Safari"){
       $("#safari_instructions").show();      
@@ -209,7 +209,18 @@ var browser = function() {
   // Opera 8.0+
   var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
   // Firefox 1.0+
-  var isFirefox = typeof InstallTrigger !== 'undefined';
+  var firefox = typeof InstallTrigger !== 'undefined';
+  var isFirefox = false;
+  var isPaleMoon = false;
+  if (firefox){
+    // what flavor??? (Can't identify Waterfox???)
+    if (navigator.userAgent.includes("PaleMoon")){ // better way to detect Iridium???
+      isPaleMoon = true;
+    } else {
+      isFirefox = true;
+    }
+  }
+  
   // Safari 3.0+ "[object HTMLElementConstructor]" 
   var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
   // Internet Explorer 6-11
@@ -243,6 +254,7 @@ var browser = function() {
   return browser.prototype._cachedResult =
       isOpera ? 'Opera' :
       isFirefox ? 'Firefox' :
+      isPaleMoon ? 'PaleMoon' :
       isSafari ? 'Safari' :
       isChrome ? 'Chrome' :
       isChromium ? 'Chromium' :
