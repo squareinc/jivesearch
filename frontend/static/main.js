@@ -176,9 +176,11 @@ $(document).ready(function() {
     $("#instructions").toggle();
     if (b === "Brave" || b === "Chrome" || b === "Chromium" || b === "Iridium" || b === "Opera"){
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
+    } else if (b==="Vivaldi"){
+      $("#vivaldi_instructions").show(); 
     } else if (b==="Edge"){
       $("#edge_instructions").show();
-    } else if (b==="Firefox" || b==='Cyberfox' || b==="PaleMoon"){
+    } else if (b==="Firefox" || b==="Cyberfox" || b==="PaleMoon"){
       $("#firefox_instructions").show();      
     } else if (b==="Safari"){
       $("#safari_instructions").show();      
@@ -232,6 +234,8 @@ var browser = function() {
   var isBrave = false;
   // Iridium
   var isIridium = false;
+  // Vivaldi
+  var isVivaldi = false;
   // Edge 20+
   var isEdge = !isIE && !!window.StyleMedia;
   // Chrome 1+, Chromium, etc.
@@ -242,6 +246,8 @@ var browser = function() {
     if (chromium()){ 
       if (navigator.userAgent.includes("Iridium")){ // better way to detect Iridium???
         isIridium = true;
+      } else if (/Vivaldi\/\d*\.?\d*/g.test(navigator.userAgent)){
+        isVivaldi = true;
       } else {
         isChromium = true;
       }
@@ -262,6 +268,7 @@ var browser = function() {
       isSafari ? 'Safari' :
       isChrome ? 'Chrome' :
       isChromium ? 'Chromium' :
+      isVivaldi ? 'Vivaldi' :
       isIE ? 'Internet Explorer' :
       isBrave ? 'Brave' :
       isIridium ? 'Iridium' :
