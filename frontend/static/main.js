@@ -174,7 +174,7 @@ $(document).ready(function() {
   $("#add_to_browser").on("click", function(){
     $("#about_us").toggle();
     $("#instructions").toggle();
-    if (b === "Brave" || b === "Chrome" || b === "Chromium" || b === "Iridium"){
+    if (b === "Brave" || b === "Chrome" || b === "Chromium" || b === "Iridium" || b === "Opera"){
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
     } else if (b==="Edge"){
       $("#edge_instructions").show();
