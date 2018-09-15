@@ -178,7 +178,7 @@ $(document).ready(function() {
       $("#chrome_instructions").show(); // Brave's new release will be same as Chrome for setting search engine???
     } else if (b==="Edge"){
       $("#edge_instructions").show();
-    } else if (b==="Firefox" || b==="PaleMoon"){
+    } else if (b==="Firefox" || b==='Cyberfox' || b==="PaleMoon"){
       $("#firefox_instructions").show();      
     } else if (b==="Safari"){
       $("#safari_instructions").show();      
@@ -212,10 +212,13 @@ var browser = function() {
   var firefox = typeof InstallTrigger !== 'undefined';
   var isFirefox = false;
   var isPaleMoon = false;
+  var isCyberfox = false;
   if (firefox){
     // what flavor??? (Can't identify Waterfox???)
-    if (navigator.userAgent.includes("PaleMoon")){ // better way to detect Iridium???
+    if (navigator.userAgent.includes("PaleMoon")){ // better way to detect???
       isPaleMoon = true;
+    } else if (navigator.userAgent.includes("Cyberfox")){ // better way to detect???
+      isCyberfox = true;
     } else {
       isFirefox = true;
     }
@@ -255,6 +258,7 @@ var browser = function() {
       isOpera ? 'Opera' :
       isFirefox ? 'Firefox' :
       isPaleMoon ? 'PaleMoon' :
+      isCyberfox ? 'Cyberfox' :
       isSafari ? 'Safari' :
       isChrome ? 'Chrome' :
       isChromium ? 'Chromium' :
