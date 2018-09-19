@@ -17,6 +17,9 @@ func (f *Frontend) Router(cfg config.Provider) *mux.Router {
 	router.NewRoute().Name("search").Methods("GET").Path("/").Handler(
 		f.middleware(appHandler(f.searchHandler)),
 	)
+	router.NewRoute().Name("answer").Methods("GET").Path("/answer").Handler(
+		f.middleware(appHandler(f.answerHandler)),
+	)
 	router.NewRoute().Name("about").Methods("GET").Path("/about").Handler(
 		f.middleware(appHandler(f.aboutHandler)),
 	)

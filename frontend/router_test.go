@@ -22,6 +22,11 @@ func TestRouter(t *testing.T) {
 			url:    "https://www.example.com/?q=search+term",
 		},
 		{
+			name:   "answer",
+			method: "GET",
+			url:    "https://www.example.com/answer/?q=search+term",
+		},
+		{
 			name:   "about",
 			method: "GET",
 			url:    "http://localhost/about",
