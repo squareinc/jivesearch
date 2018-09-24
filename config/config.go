@@ -33,7 +33,7 @@ func SetDefaults(cfg Provider) {
 
 	// Brand
 	cfg.SetDefault("brand.name", "Jive Search")
-	cfg.SetDefault("brand.tagline", "The little search engine that could.")
+	cfg.SetDefault("brand.tagline", "A search engine that doesn't track you.")
 	cfg.SetDefault("brand.logo", "")
 	cfg.SetDefault("brand.small_logo", "")
 

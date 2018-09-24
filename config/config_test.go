@@ -31,7 +31,7 @@ func TestSetDefaults(t *testing.T) {
 
 		// Brand
 		{"brand.name", "Jive Search"},
-		{"brand.tagline", "The little search engine that could."},
+		{"brand.tagline", "A search engine that doesn't track you."},
 		{"brand.logo", ""},
 		{"brand.small_logo", ""},
 
