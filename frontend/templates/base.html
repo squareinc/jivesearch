@@ -41,3 +41,46 @@
     {{template "javascript" .}}
   </body>
 </html>
+
+{{define "instructions"}}
+<div class="pure-u-1">
+  <button id="add_to_browser" class="pure-button pure-button-primary" style="font-size:18px;border-radius:4px;text-shadow:0 1px 1px rgba(0, 0, 0, 0.2);cursor:pointer;">
+    <span>Protect your privacy!</span>
+    <span id="add_me"></span>
+  </button>
+</div>
+<div id="instructions" class="pure-u-6-24" style="text-align:left;font-size:16px;padding:15px;box-shadow:rgba(0,0,0,.25) 0 1px 2px 0;display:none;">
+  <div id="chrome_instructions" style="display:none;">
+    <div class="instructions">1. Right click on the address bar.</div>
+    <div class="instructions">2. Select <em>Edit search engines...</em> in the dropdown menu.</div>
+    <div class="instructions">3. Click on the three-dot menu next to "{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}".</div>
+    <div class="instructions">4. Click <em>Make default</em>.</div>
+  </div>
+  <div id="edge_instructions" style="display:none;">
+    <div class="instructions">1. Click the <em>...</em> icon in the top right.</div>
+    <div class="instructions">2. Select <em>Settings</em> at the bottom.</div>
+    <div class="instructions">3. Select <em>View advanced settings</em> towards the bottom.</div>
+    <div class="instructions">4. Select <em>Change search engine.</em></div>
+    <div class="instructions">3. Find "{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}" and click <em>Set as default</em>.</div>
+  </div>
+  <div id="firefox_instructions" style="display:none;">
+    <!--Add-on instructions-->
+    <!--
+    <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add the {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} add-on to Firefox.</div>
+    <div class="instructions">2. Click <em>Allow,</em> then <em>Add.</em></div>
+    -->
+    <div class="instructions">1. <span id="load_ff_addon" style="cursor:pointer;text-decoration:underline;"><em>Click here</em></span> to add {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} to your list of search engines.</div>
+    <div class="instructions">2. Check the box in the pop-up then click <em>Add.</em></div>
+  </div>
+  <div id="safari_instructions" style="display:none;">
+    <div class="instructions">1. Install the <a href="https://safari-extensions.apple.com/details/?id=com.matt-swain.anysearch-6M853ET88Q">AnySearch extension</a>.</div>
+    <div class="instructions">2. In Safari select <em>Safari > Preferences > Extensions > AnySearch</em></div>
+    <div class="instructions">3. Select <em>Custom</em> in the dropdown and type in "{{if .Brand.Host}}{{.Brand.Host}}{{else}}https://jivesearch.com/{{end}}?q=@@@"</div>
+  </div>
+  <div id="vivaldi_instructions" style="display:none;">
+    <div class="instructions">1. Right click on the {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}} search field.</div>
+    <div class="instructions">2. Select <em>Add as Search Engine...</em> in the dropdown menu.</div>
+    <div class="instructions">3. Check <em>Set as Default Search</em> then click <em>Add</em>.</div>
+  </div>
+</div>
+{{end}}

@@ -41,7 +41,7 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 	resp := &response{
 		status:   http.StatusOK,
 		template: "about",
-		data: data{
+		data: about{
 			Brand: f.Brand,
 		},
 	}
@@ -50,8 +50,6 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 		For more detail on additions, deletions and commits: https://api.github.com/repos/jivesearch/jivesearch/stats/contributors
 		The below is sorted by # of contributions (in descending order).
 	*/
-	cont := []*contributor{}
-
 	rsp, err := f.GitHub.HTTPClient.Get("https://api.github.com/repos/jivesearch/jivesearch/contributors")
 	if err != nil {
 		resp.err = err
@@ -60,6 +58,7 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	defer rsp.Body.Close()
 
+	cont := []*contributor{}
 	err = json.NewDecoder(rsp.Body).Decode(&cont)
 	if err != nil {
 		resp.err = err
