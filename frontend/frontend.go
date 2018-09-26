@@ -245,6 +245,14 @@ var ParseTemplates = func() {
 				"templates/about.html",
 			),
 	)
+	templates["answer"] = template.Must(
+		template.New("answer.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/answer.html",
+				"templates/wikipedia.html",
+			),
+	)
 	templates["maps"] = template.Must(
 		template.New("maps.html").
 			Funcs(funcMap).
