@@ -287,24 +287,10 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 				return
 			}
 
-			// get the votes
 			offset := d.Context.Page*d.Context.Number - d.Context.Number
-			votes, err := f.Vote.Get(d.Context.Q, d.Context.Number*10) // get votes for first 10 pages
+			sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset)
 			if err != nil {
 				log.Info.Println(err)
-			}
-
-			sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset, votes)
-			if err != nil {
-				log.Info.Println(err)
-			}
-
-			for _, doc := range sr.Documents {
-				for _, v := range votes {
-					if doc.ID == v.URL {
-						doc.Votes = v.Votes
-					}
-				}
 			}
 
 			sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)

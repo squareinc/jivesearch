@@ -11,7 +11,6 @@ import (
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"golang.org/x/text/language"
 )
 
@@ -135,7 +134,7 @@ type Response struct {
 // Fetch retrieves search results from the Yandex API.
 // https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
 // https://xml.yandex.com/test/
-func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, number int, offset int, votes []vote.Result) (*search.Results, error) {
+func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*search.Results, error) {
 	page := (offset / number) + 1
 
 	u, err := y.buildYandexURL(q, lang, region, number, page)

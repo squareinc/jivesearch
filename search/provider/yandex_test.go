@@ -8,7 +8,6 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"golang.org/x/text/language"
 )
 
@@ -94,7 +93,6 @@ func TestYandexFetch(t *testing.T) {
 		region language.Region
 		number int
 		page   int
-		votes  []vote.Result
 	}
 
 	httpmock.Activate()
@@ -125,7 +123,7 @@ func TestYandexFetch(t *testing.T) {
 	}{
 		{
 			name:  "basic",
-			args:  args{"jimi hendrix", language.English, language.MustParseRegion("US"), 25, 1, []vote.Result{}},
+			args:  args{"jimi hendrix", language.English, language.MustParseRegion("US"), 25, 1},
 			u:     `https://yandex.com/search/xml?groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&lr=US&page=1&query=jimi+hendrix&showmecaptcha=no&user=user`,
 			yresp: YandexHendrixResponse,
 			want: &search.Results{
@@ -146,7 +144,7 @@ func TestYandexFetch(t *testing.T) {
 				User:   "user",
 				Key:    "key",
 			}
-			got, err := y.Fetch(tt.args.q, tt.args.lang, tt.args.region, tt.args.number, tt.args.page, tt.args.votes)
+			got, err := y.Fetch(tt.args.q, tt.args.lang, tt.args.region, tt.args.number, tt.args.page)
 			if err != nil {
 				t.Fatal(err)
 			}

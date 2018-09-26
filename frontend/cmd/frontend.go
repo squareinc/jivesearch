@@ -40,9 +40,7 @@ import (
 	"github.com/jivesearch/jivesearch/search/document"
 	img "github.com/jivesearch/jivesearch/search/image"
 	"github.com/jivesearch/jivesearch/search/provider"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
-	"github.com/lib/pq"
 	"github.com/olivere/elastic"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
@@ -309,23 +307,6 @@ func main() {
 
 	if err := f.Instant.WikipediaFetcher.Setup(); err != nil {
 		log.Info.Println(err)
-	}
-
-	// Voting
-	f.Vote = &vote.PostgreSQL{
-		DB:    db,
-		Table: v.GetString("postgresql.votes.table"),
-	}
-
-	if err := f.Vote.Setup(); err != nil {
-		switch err.(type) {
-		case *pq.Error:
-			if err.(*pq.Error).Error() != vote.ErrScoreFnExists.Error() {
-				panic(err)
-			}
-		default:
-			panic(err)
-		}
 	}
 
 	// supported languages

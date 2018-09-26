@@ -37,11 +37,6 @@ func TestRouter(t *testing.T) {
 			url:    "http://127.0.0.1/autocomplete",
 		},
 		{
-			name:   "vote",
-			method: "POST",
-			url:    "http://localhost/vote",
-		},
-		{
 			name:   "favicon",
 			method: "GET",
 			url:    "http://example.com/favicon.ico",

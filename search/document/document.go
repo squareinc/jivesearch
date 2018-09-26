@@ -40,7 +40,6 @@ type Document struct {
 	MIME      string `json:"mime,omitempty"`
 	tokenizer *html.Tokenizer
 	Content
-	Votes int `json:"-"`
 }
 
 // Content is set from the response

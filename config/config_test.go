@@ -50,15 +50,12 @@ func TestSetDefaults(t *testing.T) {
 		{"elasticsearch.query.type", "query"},
 		{"elasticsearch.robots.index", "test-robots"},
 		{"elasticsearch.robots.type", "robots"},
-		{"elasticsearch.votes.index", "test-votes"},
-		{"elasticsearch.votes.type", "vote"},
 
 		// PostgreSQL
 		{"postgresql.host", "localhost"},
 		{"postgresql.user", "jivesearch"},
 		{"postgresql.password", "mypassword"},
 		{"postgresql.database", "jivesearch"},
-		{"postgresql.votes.table", "votes"},
 
 		// Redis
 		{"redis.host", ""},

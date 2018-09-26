@@ -52,12 +52,7 @@
   {{if .Search.Documents}}
     {{range $i, $doc := .Search.Documents}}
     <div class="pure-u-1">
-      <div class="pure-u-2-24 pure-u-md-1-24 vote" data-url="{{$doc.ID}}">
-        <div class="up arrow" data-vote="1"></div>
-        <div class="votes">{{$doc.Votes}}</div>
-        <div class="down arrow" data-vote="-1"></div>
-      </div>
-      <div class="pure-u-20-24 pure-u-md-21-24 result">
+      <div class="pure-u-22-24 pure-u-md-21-24 result">
         <div class="title"><a href="{{$doc.ID}}" rel="noopener">{{Truncate $doc.Title 60 true}}</a></div>
         <div class="url">{{Truncate $doc.ID 80 false}}</div>
         <div class="description">{{Truncate $doc.Description 215 true}}</div>

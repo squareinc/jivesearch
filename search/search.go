@@ -6,13 +6,12 @@ import (
 	"strconv"
 
 	"github.com/jivesearch/jivesearch/search/document"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"golang.org/x/text/language"
 )
 
 // Fetcher outlines the methods used to retrieve the core search results
 type Fetcher interface {
-	Fetch(q string, lang language.Tag, region language.Region, number int, offset int, votes []vote.Result) (*Results, error)
+	Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*Results, error)
 }
 
 // Provider is a search provider

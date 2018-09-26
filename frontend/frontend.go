@@ -16,7 +16,6 @@ import (
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	img "github.com/jivesearch/jivesearch/search/image"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/oxtoacart/bpool"
 	"golang.org/x/text/language"
@@ -41,7 +40,6 @@ type Frontend struct {
 	Suggest   suggest.Suggester
 	Search    search.Fetcher
 	Wikipedia
-	Vote vote.Voter
 	GitHub
 }
 

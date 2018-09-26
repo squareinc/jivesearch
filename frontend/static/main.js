@@ -22,40 +22,6 @@ $(document).ready(function() {
     changeParamAndRedirect("q", $(this).data('location'));
   });
 
-  // voting
-  // TODO: HMAC key
-  $(document).on('click', '.arrow', function(){
-    var t = $(this);
-    var v = $(t).data('vote');
-    var removing = false;
-
-    if ($(t).hasClass('voted')){ // already vote for that link?
-      removing = true;
-      $(t).removeClass('voted');
-      v = -1*v;      
-    }
-
-    d = {
-      'q': $('#query').data('query'), 
-      'u': $(t).parent('.vote').data('url'), 
-      'v': v
-    };
-    
-    $.ajax({
-      type: "POST",
-      dataType: "json",
-      url: "/vote",
-      data: d
-    }).done(function(data) {
-      $(t).siblings('.arrow').removeClass('voted'); // remove prior vote if it is different
-      if (removing != true){
-        $(t).addClass('voted');
-      }
-    }).fail(function(data) {
-      $(t).siblings('.arrow').removeClass('voted');
-    });
-  });
-
   // Traditional Pagination
   $(document).on('click', '.pagination', function(){
     changeParamAndRedirect("p", $(this).data('page')); 

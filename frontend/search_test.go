@@ -21,7 +21,6 @@ import (
 	"github.com/jivesearch/jivesearch/search"
 	"github.com/jivesearch/jivesearch/search/document"
 	img "github.com/jivesearch/jivesearch/search/image"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )
@@ -384,7 +383,6 @@ func TestSearchHandler(t *testing.T) {
 				Wikipedia: Wikipedia{
 					Matcher: matcher,
 				},
-				Vote: &mockVoter{},
 			}
 
 			f.Images.Client = &http.Client{}
@@ -459,7 +457,7 @@ func TestDetectType(t *testing.T) {
 
 type mockSearch struct{}
 
-func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, page int, number int, votes []vote.Result) (*search.Results, error) {
+func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, page int, number int) (*search.Results, error) {
 	return mockSearchResults, nil
 }
 

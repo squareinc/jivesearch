@@ -68,9 +68,6 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("elasticsearch.robots.index", "test-robots")
 	cfg.SetDefault("elasticsearch.robots.type", "robots")
 
-	cfg.SetDefault("elasticsearch.votes.index", "test-votes")
-	cfg.SetDefault("elasticsearch.votes.type", "vote")
-
 	// PostgreSQL
 	// Note: there is a security concern if postgres password is stored in env variable
 	// but setting it as an env var w/in systemd nullifies this.
@@ -78,7 +75,6 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("postgresql.user", "jivesearch")
 	cfg.SetDefault("postgresql.password", "mypassword")
 	cfg.SetDefault("postgresql.database", "jivesearch")
-	cfg.SetDefault("postgresql.votes.table", "votes")
 
 	// Redis
 	cfg.SetDefault("redis.host", "")

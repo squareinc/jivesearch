@@ -26,9 +26,6 @@ func (f *Frontend) Router(cfg config.Provider) *mux.Router {
 	router.NewRoute().Name("autocomplete").Methods("GET").Path("/autocomplete").Handler(
 		f.middleware(appHandler(f.autocompleteHandler)),
 	)
-	router.NewRoute().Name("vote").Methods("POST").Path("/vote").Handler(
-		f.middleware(appHandler(f.voteHandler)),
-	)
 	router.NewRoute().Name("favicon").Methods("GET").Path("/favicon.ico").Handler(
 		http.FileServer(http.Dir("static")),
 	)

@@ -107,18 +107,6 @@ i {
 .social_media:hover {
     text-decoration: underline;
 }
-.vote {
-    margin-top: 1px;
-}
-.votes {
-    text-align: center;
-    color: #adadad;
-    margin: 0;
-    padding: 0;
-    display: block;
-    font-size: small;
-    min-height: 5px;
-}
 .arrow {
     margin: 2px 0;
     display: block;
@@ -135,12 +123,6 @@ i {
 }
 .down {
     background: url("/static/icons/sprite.png") no-repeat 0 -3px;
-}
-.up.voted {
-    background: url("/static/icons/sprite.png") no-repeat -63px -3px;
-}
-.down.voted {
-    background: url("/static/icons/sprite.png") no-repeat -21px -3px;
 }
 .result {
     margin-bottom: 23px;

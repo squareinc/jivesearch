@@ -32,7 +32,7 @@ type Crawler struct {
 	maxBytes       int64         // max number of bytes of doc to download...-1 for no limit
 	maxQueueLinks  int64         // max links for our queue
 	maxLinks       int           // max links to extract from a document
-	maxDomainLinks int           // max links to store for a domain by default (votes will increase this)
+	maxDomainLinks int           // max links to store for a domain by default
 	truncate
 	Robots robots.Cacher
 	Queue  queue.Queuer
@@ -239,7 +239,6 @@ func (c *Crawler) work(lnk string) {
 	}
 
 	// new doc? only crawl if we have room for that domain
-	// TODO: make count dependent on votes
 	if crawled == (time.Time{}) && cnt > c.maxDomainLinks {
 		return
 	}

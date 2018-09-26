@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/jivesearch/jivesearch/search/document"
-	"github.com/jivesearch/jivesearch/search/vote"
 	"github.com/olivere/elastic"
 	"golang.org/x/text/language"
 )
@@ -25,7 +24,6 @@ func TestFetch(t *testing.T) {
 		region language.Region
 		number int
 		page   int
-		votes  []vote.Result
 		status int
 		resp   string
 		want
@@ -180,7 +178,7 @@ func TestFetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			got, err := e.Fetch(c.query, c.lang, c.region, c.number, c.page, c.votes)
+			got, err := e.Fetch(c.query, c.lang, c.region, c.number, c.page)
 			if err != c.want.err {
 				t.Fatalf("got err %q; want %q", err, c.want.err)
 			}
