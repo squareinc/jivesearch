@@ -213,6 +213,6 @@ func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language
 	q.Add("showmecaptcha", "no")
 
 	u.RawQuery = q.Encode()
-	fmt.Println(u.String())
+	//log.Debug.Println(u.String())
 	return u, err
 }
