@@ -1,11 +1,9 @@
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-<ShortName>{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</ShortName>
-<Description>{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</Description>
-<InputEncoding>UTF-8</InputEncoding>
-<Image width="16" height="16" type="image/x-icon">{{.Brand.Host}}/static/icons/favicon.ico</Image>
-<Url type="text/html" template="{{.Brand.Host}}">
-  <Param name="q" value="{searchTerms}"/>
-  <Param name="d" value="true"/>
-</Url>
-<Url type="application/x-suggestions+json" template="/autocomplete?q={searchTerms}"/>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</ShortName>
+  <Description>Search {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">{{.Brand.Host}}/static/icons/favicon.ico</Image>
+  <Url type="text/html" method="get" template="{{.Brand.Host}}?q={searchTerms}&d=true"/>
+  <Url type="application/x-suggestions+json" template="/autocomplete?q={searchTerms}"/>
+  <moz:SearchForm>{{.Brand.Host}}</moz:SearchForm>
 </OpenSearchDescription>
