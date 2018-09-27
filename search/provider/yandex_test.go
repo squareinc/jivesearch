@@ -124,7 +124,7 @@ func TestYandexFetch(t *testing.T) {
 		{
 			name:  "basic",
 			args:  args{"jimi hendrix", language.English, language.MustParseRegion("US"), 25, 1},
-			u:     `https://yandex.com/search/xml?groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&lr=US&page=1&query=jimi+hendrix&showmecaptcha=no&user=user`,
+			u:     `https://yandex.com/search/xml?groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
 			yresp: YandexHendrixResponse,
 			want: &search.Results{
 				Provider: YandexProvider,

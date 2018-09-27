@@ -203,15 +203,16 @@ func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language
 	q.Add("user", y.User)
 	q.Add("key", y.Key)
 	q.Add("query", query)
-	q.Add("lr", region.String()) // ID of the search country/region...only applies to Russian and Turkey search types
-	q.Add("l10n", lang.String()) // notification language
-	//q.Add("sortby", "") // relevancy by default
+	//q.Add("lr", region.String()) // ID of the search country/region...only applies to Russian and Turkey search types
+	q.Add("l10n", "en") // notification language
+	//q.Add("sortby", "rlv") // relevancy by default
 	//q.Add("filter", "")
 	//q.Add("maxpassages", "")
 	q.Add("groupby", fmt.Sprintf("attr=d.mode=deep.groups-on-page=%v.docs-in-group=1", number))
-	q.Add("page", strconv.Itoa(page))
+	q.Add("page", strconv.Itoa(page-1))
 	q.Add("showmecaptcha", "no")
 
 	u.RawQuery = q.Encode()
+	fmt.Println(u.String())
 	return u, err
 }
