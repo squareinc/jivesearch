@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
@@ -22,6 +23,97 @@ type Yandex struct {
 	*http.Client
 	User string
 	Key  string
+}
+
+// Fetch retrieves search results from the Yandex API.
+// https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
+// https://xml.yandex.com/test/
+func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*search.Results, error) {
+	page := (offset / number) + 1
+
+	u, err := y.buildYandexURL(q, lang, region, number, page)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := y.Client.Get(u.String())
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	bdy, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	yr := &YandexResponse{}
+
+	if err = xml.Unmarshal(bdy, &yr); err != nil {
+		return nil, err
+	}
+
+	res := &search.Results{
+		Provider: YandexProvider,
+	}
+
+	for _, r := range yr.Response.Results.Grouping.Group {
+		d, err := document.New(r.Doc.URL)
+		if err != nil {
+			log.Debug.Println(err)
+			continue
+		}
+
+		d.Title = r.Doc.Title.Title
+		d.Description = r.Doc.Headline.Headline
+		if d.Description == "" {
+			for _, p := range r.Doc.Passages.Passage {
+				d.Description = p.Passage
+				break
+			}
+		}
+
+		d.Title = strings.Replace(d.Title, `<hlword>`, "", -1)
+		d.Title = strings.Replace(d.Title, `</hlword>`, "", -1)
+		d.Description = strings.Replace(d.Description, `<hlword>`, "", -1)
+		d.Description = strings.Replace(d.Description, `</hlword>`, "", -1)
+
+		res.Documents = append(res.Documents, d)
+
+		for _, f := range yr.Response.Found {
+			if f.Attrpriority == "all" {
+				res.Count = f.Found
+			}
+		}
+	}
+
+	return res, err
+}
+
+// https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
+func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language.Region, number int, page int) (*url.URL, error) {
+	u, err := url.Parse("https://yandex.com/search/xml")
+	if err != nil {
+		return nil, err
+	}
+
+	q := u.Query()
+	q.Add("user", y.User)
+	q.Add("key", y.Key)
+	q.Add("query", query)
+	//q.Add("lr", region.String()) // ID of the search country/region...only applies to Russian and Turkey search types
+	q.Add("l10n", "en") // notification language
+	//q.Add("sortby", "rlv") // relevancy by default
+	//q.Add("filter", "")
+	//q.Add("maxpassages", "")
+	q.Add("groupby", fmt.Sprintf("attr=d.mode=deep.groups-on-page=%v.docs-in-group=1", number))
+	q.Add("page", strconv.Itoa(page-1))
+	q.Add("showmecaptcha", "no")
+
+	u.RawQuery = q.Encode()
+	log.Debug.Println(u.String())
+	return u, err
 }
 
 // YandexResponse is the request and XML response from the Yandex API
@@ -86,19 +178,13 @@ type Response struct {
 					Charset  string `xml:"charset,omitempty" json:"charset,omitempty"`
 					Domain   string `xml:"domain,omitempty" json:"domain,omitempty"`
 					Headline struct {
-						Hlword []struct {
-							Hlword string `xml:",chardata" json:",omitempty"`
-						} `xml:"hlword,omitempty" json:"hlword,omitempty"`
-						Headline string `xml:",chardata" json:",omitempty"`
+						Headline string `xml:",innerxml" json:",omitempty"`
 					} `xml:"headline,omitempty" json:"headline,omitempty"`
 					MimeType string `xml:"mime-type,omitempty" json:"mime-type,omitempty"`
 					Modtime  string `xml:"modtime,omitempty" json:"modtime,omitempty"`
 					Passages struct {
 						Passage []struct {
-							Hlword []struct {
-								Hlword string `xml:",chardata" json:",omitempty"`
-							} `xml:"hlword,omitempty" json:"hlword,omitempty"`
-							Passage string `xml:",chardata" json:",omitempty"`
+							Passage string `xml:",innerxml" json:",omitempty"`
 						} `xml:"passage,omitempty" json:"passage,omitempty"`
 					} `xml:"passages,omitempty" json:"passages,omitempty"`
 					Properties struct {
@@ -112,10 +198,7 @@ type Response struct {
 					SavedDashCopyDashURL string `xml:"saved-copy-url,omitempty" json:"saved-copy-url,omitempty"`
 					Size                 string `xml:"size,omitempty" json:"size,omitempty"`
 					Title                struct {
-						Hlword []struct {
-							Hlword string `xml:",chardata" json:",omitempty"`
-						} `xml:"hlword,omitempty" json:"hlword,omitempty"`
-						Title string `xml:",chardata" json:",omitempty"`
+						Title string `xml:",innerxml" json:",omitempty"`
 					} `xml:"title,omitempty" json:"title,omitempty"`
 					URL string `xml:"url,omitempty" json:"url,omitempty"`
 				} `xml:"doc,omitempty" json:"doc,omitempty"`
@@ -129,90 +212,4 @@ type Response struct {
 			} `xml:"page,omitempty" json:"page,omitempty"`
 		} `xml:"grouping,omitempty" json:"grouping,omitempty"`
 	} `xml:"results,omitempty" json:"results,omitempty"`
-}
-
-// Fetch retrieves search results from the Yandex API.
-// https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
-// https://xml.yandex.com/test/
-func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*search.Results, error) {
-	page := (offset / number) + 1
-
-	u, err := y.buildYandexURL(q, lang, region, number, page)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := y.Client.Get(u.String())
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	bdy, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	yr := &YandexResponse{}
-
-	if err = xml.Unmarshal(bdy, &yr); err != nil {
-		return nil, err
-	}
-
-	res := &search.Results{
-		Provider: YandexProvider,
-	}
-
-	for _, r := range yr.Response.Results.Grouping.Group {
-		d, err := document.New(r.Doc.URL)
-		if err != nil {
-			log.Debug.Println(err)
-			continue
-		}
-
-		d.Title = r.Doc.Title.Title
-		d.Description = r.Doc.Headline.Headline
-		if d.Description == "" {
-			for _, p := range r.Doc.Passages.Passage {
-				d.Description = p.Passage
-				break
-			}
-		}
-
-		res.Documents = append(res.Documents, d)
-
-		for _, f := range yr.Response.Found {
-			if f.Attrpriority == "all" {
-				res.Count = f.Found
-			}
-		}
-	}
-
-	return res, err
-}
-
-// https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
-func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language.Region, number int, page int) (*url.URL, error) {
-	u, err := url.Parse("https://yandex.com/search/xml")
-	if err != nil {
-		return nil, err
-	}
-
-	q := u.Query()
-	q.Add("user", y.User)
-	q.Add("key", y.Key)
-	q.Add("query", query)
-	//q.Add("lr", region.String()) // ID of the search country/region...only applies to Russian and Turkey search types
-	q.Add("l10n", "en") // notification language
-	//q.Add("sortby", "rlv") // relevancy by default
-	//q.Add("filter", "")
-	//q.Add("maxpassages", "")
-	q.Add("groupby", fmt.Sprintf("attr=d.mode=deep.groups-on-page=%v.docs-in-group=1", number))
-	q.Add("page", strconv.Itoa(page-1))
-	q.Add("showmecaptcha", "no")
-
-	u.RawQuery = q.Encode()
-	//log.Debug.Println(u.String())
-	return u, err
 }

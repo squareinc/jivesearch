@@ -41,7 +41,7 @@ var YandexHendrixResponse = `<?xml version="1.0" encoding="utf-8"?>
                     <doc id="Z76637E6EFB3E0BD5"><relevance/>
                         <url>https://en.wikipedia.org/wiki/Jimi_Hendrix</url>
                         <domain>en.wikipedia.org</domain>
-                        <title>Jimi Hendrix - Wikipedia</title>
+                        <title><hlword>Jimi Hendrix</hlword> - Wikipedia</title>
                         <headline>James Marshall (born Johnny Allen Hendrix)</headline>
                         <modtime>20070519T040000</modtime>
                         <size>27507</size>
@@ -62,12 +62,12 @@ var YandexHendrixResponse = `<?xml version="1.0" encoding="utf-8"?>
                     <doc id="ZF2145B92CD33CFC5"><relevance/>
                         <url>http://www.jimihendrix.com/</url>
                         <domain>www.jimihendrix.com</domain>
-                        <title>Jimi Hendrix | The Official Site</title>
+                        <title><hlword>Jimi Hendrix</hlword> | The Official Site</title>
                         <modtime>20080113T030000</modtime>
                         <size>911</size>
                         <charset>utf-8</charset>
                         <passages>
-                            <passage>Official Website of Jimi Hendrix with news, music, videos, album information and more!</passage>
+                            <passage>Official Website of <hlword>Jimi Hendrix</hlword> with news, music, videos, album information and more!</passage>
                             <passage>SIGN UP FOR THE
                                 <hlword>Jimi</hlword>
                                 <hlword>Hendrix</hlword>
