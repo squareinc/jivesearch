@@ -8,7 +8,7 @@
 
 
 <p align="center">
-Jive Search is the open source search engine that does not track you. Search privately, now : https://www.jivesearch.com
+Jive Search is the open source search engine that does not track you. Search privately, now : https://jivesearch.com
 </p>
 
 <br>
@@ -21,11 +21,6 @@ Jive Search is the open source search engine that does not track you. Search pri
 
 <br>
 
-## 💾 Overview
-By default, pages are ranked by votes received. This works great for a domain that has a small amount of traffic but you may want to customize it to include other factors as well. [The default algorithm can be found here](https://github.com/jivesearch/jivesearch/blob/master/search/vote/postgresql.go#L77-L92).
-
-<br>
- 
 ## 💾 Installation
 The below will build and run a Docker Compose file for Elasticsearch, OpenResty (Nginx), PostgreSQL, Redis, and a NSFW/image classification server. The OpenResty build assumes you have a domain name as well as a Let's Encrypt SSL certificate. However, in order for the nginx.conf file to dynamically load your SSL certificate you will need to create a symlink to a generic "domain" folder (replace "example.com" with your domain). For local development you can skip this step.
 
@@ -96,11 +91,12 @@ Instructions for MusicBrainz (to show the album discography instant answer) can 
 Marked items indicate progress has been made in that category. There is much more to do in each area. Suggestions are welcome!
 - [x] Privacy
 - [x] !Bangs
-- [x] Core Search Results & Distributed Crawler
-    - [x] Language & Region
+- [x] Core Search Results & Distributed Crawler    
     - [ ] Advanced Search (exact phrase, dogs OR cats,  -cats, site/domain search, etc.)
-    - [ ] Filetype
-    - [ ] SafeSearch        
+    - [ ] Filetype search
+    - [x] Language & Region
+    - [ ] Proxy
+    - [ ] SafeSearch    
     - [ ] Time Search (past year/month/day/hour, etc.
     - [x] 3rd party search providers
         - [x] Yandex API
