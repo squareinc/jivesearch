@@ -6693,6 +6693,13 @@
         default = "https://d.tube/#!/s/{{{term}}}"
 
 [[bang]]
+    name = "DuckDuckGo"
+    favicon = "https://duckduckgo.com/favicon.ico"
+    triggers = ["ddg", "duck"]
+    [bang.regions]
+        default = "https://duckduckgo.com/?q={{{term}}}"
+
+[[bang]]
     name = "Dub Package Registry"
     favicon = "https://code.dlang.org/favicon.ico"
     triggers = ["dub"]
