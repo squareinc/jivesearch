@@ -4,7 +4,7 @@ $(document).ready(function() {
   // This is not ideal and should be replaced with a template 
   // function in Go as this will break if javascript is disabled.
   $(".description").each(function(index, value){
-    var q = $("#query").data("query").split(" ");
+    var q = String($("#query").data("query")).split(" ");
     var content = $(value).html();
     var c = content.split(" ");
     for (var i = 0; i < c.length; i++){
