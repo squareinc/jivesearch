@@ -48,7 +48,9 @@ func (w *Weather) setType() Answerer {
 
 func (w *Weather) setRegex() Answerer {
 	triggers := []string{
-		"climate", "forecast", "weather forecast", "weather",
+		"climate for", "climate",
+		"forecast for", "forecast",
+		"weather forecast for", "weather forecast", "weather for", "weather in", "weather",
 	}
 
 	t := strings.Join(triggers, "|")
@@ -111,7 +113,7 @@ func (w *Weather) local(r *http.Request) *Weather {
 func (w *Weather) tests() []test {
 	tests := []test{
 		{
-			query: "local weather",
+			query: "local weather for",
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
@@ -161,7 +163,7 @@ func (w *Weather) tests() []test {
 			},
 		},
 		{
-			query: "weather 84014",
+			query: "weather for 84014",
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
@@ -210,7 +212,7 @@ func (w *Weather) tests() []test {
 			},
 		},
 		{
-			query: "weather bogota",
+			query: "weather in bogota",
 			ip:    net.ParseIP("161.59.224.138"),
 			expected: []Data{
 				{
