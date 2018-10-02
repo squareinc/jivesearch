@@ -93,6 +93,18 @@ type OwmInstant struct {
 	} `json:"sys"`
 }
 
+// FetchByCity retrieves weather for a city from the OpenWeatherMap api
+func (o *OpenWeatherMap) FetchByCity(city string) (*Weather, error) {
+	c := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?APPID=%v&q=%v&units=imperial", o.Key, city)
+	f := fmt.Sprintf("https://api.openweathermap.org/data/2.5/forecast?APPID=%v&q=%v&units=imperial", o.Key, city)
+	w, err := o.fetchCurrentAndForecast(c, f)
+	if err != nil {
+		return nil, err
+	}
+
+	return w, err
+}
+
 // FetchByLatLong retrieves weather for a latitude/longitude location from the OpenWeatherMap api
 func (o *OpenWeatherMap) FetchByLatLong(lat, long float64, timeZone string) (*Weather, error) {
 	c := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?APPID=%v&lat=%v&lon=%v&units=imperial", o.Key, lat, long)
@@ -169,7 +181,7 @@ func (o *OpenWeatherMap) fetchCurrentAndForecast(currentURL, forecastURL string)
 				return nil, err
 			}
 
-			w.City = t.Name
+			w.City = t.Name // for "Peru" return country of "US"
 
 			d, err := t.instant()
 			if err != nil {

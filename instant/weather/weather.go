@@ -8,6 +8,7 @@ import "time"
 // http://download.geonames.org/export/zip/? gives lat/long of a zipcode then
 // https://stackoverflow.com/a/16086964/522962 for the timezone.
 type Fetcher interface {
+	FetchByCity(city string) (*Weather, error)
 	FetchByLatLong(lat, long float64, timeZone string) (*Weather, error)
 	FetchByZip(zip int) (*Weather, error)
 }
