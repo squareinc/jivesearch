@@ -50,7 +50,7 @@ func (w *Weather) setRegex() Answerer {
 	triggers := []string{
 		"climate for", "climate",
 		"forecast for", "forecast",
-		"weather forecast for", "weather forecast", "weather for", "weather in", "weather",
+		"weather forecast for", "weather forecast in", "weather forecast", "weather for", "weather in", "weather",
 	}
 
 	t := strings.Join(triggers, "|")
