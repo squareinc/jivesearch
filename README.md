@@ -95,18 +95,19 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Advanced Search (exact phrase, dogs OR cats,  -cats, site/domain search, etc.)
     - [ ] Filetype search
     - [x] Language & Region
+    - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
     - [ ] Proxy
     - [ ] SafeSearch    
     - [ ] Time Search (past year/month/day/hour, etc.
     - [x] 3rd party search providers
         - [x] Yandex API
 - [x] Autocomplete
-- [ ] Phrase Suggester (a.k.a. "Did You Mean?")
 - [x] Instant Answers
     - [x] Birthstone, camelcase, characters, coin toss, frequency, POTUS, prime, random, reverse, stats, user agent, etc. 
     - [x] Breach (a.k.a. have i been pwned)
     - [x] Discography/Music albums
     - [x] Economic stats (GDP, population)
+    - [ ] Flight Info & Status
     - [x] JavaScript-based answers
         - [x] Basic calculator
             - [ ] Mortgage, financial and other calculators
@@ -125,7 +126,6 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Translate trigger words and answers to other languages?
 - [x] Image Search
 - [ ] Video Search
-- [ ] Flight Info & Status
 - [ ] News
 - [ ] Shopping
 - [ ] Custom CSS Themes
