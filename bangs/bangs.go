@@ -88,7 +88,7 @@ func (b *Bangs) Suggest(term string, size int) (Results, error) {
 }
 
 // Detect lets us know if we have a !bang match.
-func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string, bool) {
+func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (Bang, string, bool) {
 	fields := strings.Fields(q)
 
 	for i, field := range fields {
@@ -111,12 +111,12 @@ func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (string
 			for _, reg := range []string{strings.ToLower(region.String()), def} { // use default region if no region specified
 				if u, ok := bng.Regions[reg]; ok {
 					u = strings.Replace(u, "{{{term}}}", remainder, -1)
-					return strings.Replace(u, "{{{lang}}}", l.String(), -1), true
+					return bng, strings.Replace(u, "{{{lang}}}", l.String(), -1), true
 				}
 			}
 		}
 	}
-	return "", false
+	return Bang{}, "", false
 }
 
 type fn func(string) string

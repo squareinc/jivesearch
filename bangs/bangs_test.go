@@ -104,6 +104,7 @@ func TestSuggest(t *testing.T) {
 
 func TestDetect(t *testing.T) {
 	type data struct {
+		b   Bang
 		loc string
 		ok  bool
 	}
@@ -117,6 +118,17 @@ func TestDetect(t *testing.T) {
 		{
 			q: "!g bob", r: "US", l: language.French,
 			want: data{
+				b: Bang{
+					Name:     "Google",
+					FavIcon:  "https://www.google.com/favicon.ico",
+					Triggers: []string{"g", "google"},
+					Regions: map[string]string{
+						"ru":      "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
+						"default": "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
+						"ca":      "https://www.google.ca/search?q={{{term}}}",
+						"fr":      "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
+					},
+				},
 				loc: "https://encrypted.google.com/search?hl=fr&q=bob",
 				ok:  true,
 			},
@@ -124,6 +136,17 @@ func TestDetect(t *testing.T) {
 		{
 			q: "!g bob french", r: "fr", l: language.English,
 			want: data{
+				b: Bang{
+					Name:     "Google",
+					FavIcon:  "https://www.google.com/favicon.ico",
+					Triggers: []string{"g", "google"},
+					Regions: map[string]string{
+						"ru":      "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
+						"default": "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
+						"ca":      "https://www.google.ca/search?q={{{term}}}",
+						"fr":      "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
+					},
+				},
 				loc: "https://www.google.fr/search?hl=en&q=bob french",
 				ok:  true,
 			},
@@ -131,6 +154,14 @@ func TestDetect(t *testing.T) {
 		{
 			q: "!gfr something french", r: "fr", l: language.English,
 			want: data{
+				b: Bang{
+					Name:     "Google France",
+					FavIcon:  "https://www.google.com/favicon.ico",
+					Triggers: []string{"gfr", "googlefr"},
+					Regions: map[string]string{
+						"default": "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
+					},
+				},
 				loc: "https://www.google.fr/search?hl=en&q=something french",
 				ok:  true,
 			},
@@ -138,6 +169,19 @@ func TestDetect(t *testing.T) {
 		{
 			q: "!W bob maRLey", r: "US", l: language.French,
 			want: data{
+				b: Bang{
+					Name:     "Wikipedia",
+					FavIcon:  "https://en.wikipedia.org/favicon.ico",
+					Triggers: []string{"w", "wikipedia", "wiki", "encyclopedia", "wen"},
+					Regions: map[string]string{
+						"default": "https://en.wikipedia.org/wiki/{{{term}}}",
+						"es":      "https://es.wikipedia.org/wiki/{{{term}}}",
+						"de":      "https://de.wikipedia.org/wiki/{{{term}}}",
+						"fr":      "https://fr.wikipedia.org/wiki/{{{term}}}",
+					},
+					Functions: []string{"wikipediaCanonical"},
+					Funcs:     []fn{wikipediaCanonical},
+				},
 				loc: "https://en.wikipedia.org/wiki/Bob_Marley",
 				ok:  true,
 			},
@@ -145,6 +189,7 @@ func TestDetect(t *testing.T) {
 		{
 			q: "nonexistent! some query", r: "US", l: language.French,
 			want: data{
+				b:   Bang{},
 				loc: "",
 				ok:  false,
 			},
@@ -152,6 +197,7 @@ func TestDetect(t *testing.T) {
 		{
 			q: "this is not a bang", r: "US", l: language.English,
 			want: data{
+				b:   Bang{},
 				loc: "",
 				ok:  false,
 			},
@@ -159,6 +205,7 @@ func TestDetect(t *testing.T) {
 		{
 			q: "this is not a bang g", r: "US", l: language.English,
 			want: data{
+				b:   Bang{},
 				loc: "",
 				ok:  false,
 			},
@@ -166,6 +213,7 @@ func TestDetect(t *testing.T) {
 		{
 			q: "this is not a bang google", r: "US", l: language.English,
 			want: data{
+				b:   Bang{},
 				loc: "",
 				ok:  false,
 			},
@@ -184,9 +232,12 @@ func TestDetect(t *testing.T) {
 			r := language.MustParseRegion(c.r)
 
 			var got = data{}
-			got.loc, got.ok = b.Detect(c.q, r, c.l)
-			if got != c.want {
-				t.Fatalf("got %+v; want %+v", got, c.want)
+			got.b, got.loc, got.ok = b.Detect(c.q, r, c.l)
+
+			if !reflect.DeepEqual(got, c.want) {
+				if got.b.Name != c.want.b.Name || got.loc != c.want.loc || got.ok != c.want.ok {
+					t.Fatalf("got %+v; want %+v", got, c.want)
+				}
 			}
 		})
 	}

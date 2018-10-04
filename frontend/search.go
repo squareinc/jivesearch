@@ -193,7 +193,8 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	d.Context.Region = f.detectRegion(lang, r)
 
 	// is it a !bang? Redirect them
-	if loc, ok := f.Bangs.Detect(d.Context.Q, d.Context.Region, lang); ok {
+	if bng, loc, ok := f.Bangs.Detect(d.Context.Q, d.Context.Region, lang); ok {
+		log.Info.Printf("!bang (%v)", bng.Name)
 		return &response{
 			status:   302,
 			redirect: loc,
