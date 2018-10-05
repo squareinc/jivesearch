@@ -246,61 +246,32 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			}
 
 			if v != nil {
-				sr := &img.Results{}
-				if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+				ir := &img.Results{}
+				if err := json.Unmarshal(v.([]byte), &ir); err != nil {
 					log.Info.Println(err)
 				}
 
-				imageCH <- sr
+				imageCH <- ir
 				return
 			}
 
 			num := 100
 			offset := d.Context.Page*num - num
-			sr, err := f.Images.Fetch(d.Context.Q, d.Context.Safe, num, offset) // .8 is Yahoo's open_nsfw cutoff for nsfw
+			ir, err := f.Images.Fetch(d.Context.Q, d.Context.Safe, num, offset) // .8 is Yahoo's open_nsfw cutoff for nsfw
 			if err != nil {
 				log.Info.Println(err)
 			}
 
-			if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
+			if err := f.Cache.Put(key, ir, f.Cache.Search); err != nil {
 				log.Info.Println(err)
 			}
 
-			imageCH <- sr
+			imageCH <- ir
 		case "maps":
 			resp.template = "maps"
 			channels--
 		default:
-			key := cacheKey("search", lang, region, r.URL)
-
-			v, err := f.Cache.Get(key)
-			if err != nil {
-				log.Info.Println(err)
-			}
-
-			if v != nil {
-				sr := &search.Results{}
-				if err := json.Unmarshal(v.([]byte), &sr); err != nil {
-					log.Info.Println(err)
-				}
-
-				sc <- sr
-				return
-			}
-
-			offset := d.Context.Page*d.Context.Number - d.Context.Number
-			sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset)
-			if err != nil {
-				log.Info.Println(err)
-			}
-
-			sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
-
-			if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
-				log.Info.Println(err)
-			}
-
-			sc <- sr
+			sc <- f.searchResults(d, lang, region, r.URL)
 		}
 
 	}(d, lang, d.Context.Region)
@@ -373,6 +344,37 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 	resp.data = d
 	return resp
+}
+
+func (f *Frontend) searchResults(d data, lang language.Tag, region language.Region, u *url.URL) *search.Results {
+	key := cacheKey("search", lang, region, u)
+
+	v, err := f.Cache.Get(key)
+	if err != nil {
+		log.Info.Println(err)
+	}
+
+	if v != nil {
+		sr := &search.Results{}
+		if err := json.Unmarshal(v.([]byte), &sr); err != nil {
+			log.Info.Println(err)
+		}
+		return sr
+	}
+
+	offset := d.Context.Page*d.Context.Number - d.Context.Number
+	sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset)
+	if err != nil {
+		log.Info.Println(err)
+	}
+
+	sr = sr.AddPagination(d.Context.Number, d.Context.Page) // move this to javascript??? (Wouldn't be available in API....)
+
+	if err := f.Cache.Put(key, sr, f.Cache.Search); err != nil {
+		log.Info.Println(err)
+	}
+
+	return sr
 }
 
 // fetchImage fetches and converts an image to Base64
