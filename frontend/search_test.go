@@ -264,6 +264,7 @@ func TestSearchHandler(t *testing.T) {
 					Context: Context{
 						Q:            "some query",
 						L:            "en",
+						lang:         language.MustParse("en"),
 						DefaultBangs: db,
 						Preferred:    []language.Tag{language.MustParse("en")},
 						Region:       language.MustParseRegion("US"),
@@ -288,6 +289,7 @@ func TestSearchHandler(t *testing.T) {
 					Context: Context{
 						Q:            "not cached",
 						L:            "en",
+						lang:         language.MustParse("en"),
 						DefaultBangs: db,
 						Preferred:    []language.Tag{language.MustParse("en")},
 						Region:       language.MustParseRegion("US"),
@@ -312,6 +314,7 @@ func TestSearchHandler(t *testing.T) {
 					Context: Context{
 						Q:            "some query",
 						L:            "en",
+						lang:         language.MustParse("en"),
 						DefaultBangs: db,
 						Preferred:    []language.Tag{language.MustParse("en")},
 						Region:       language.MustParseRegion("US"),
@@ -343,6 +346,7 @@ func TestSearchHandler(t *testing.T) {
 					Context: Context{
 						Q:            "some query",
 						L:            "en",
+						lang:         language.MustParse("en"),
 						DefaultBangs: db,
 						Preferred:    []language.Tag{language.MustParse("en")},
 						Region:       language.MustParseRegion("US"),

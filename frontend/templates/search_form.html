@@ -78,7 +78,7 @@
         <span class="pagination" data-page="{{$p}}" {{if eq $.Search.Page $p}}style="color:#000;margin-right:7px;"{{else}}style="color:#3367e5;margin-right:7px;"{{end}}>{{$p}}</span>
         {{end}}
         {{if .Search.Next}}
-        <span class="pagination" data-page="{{.Search.Next}}" style="margin-left:35px;cursor:pointer;">Next</span>
+        <span id="next_page" class="pagination" data-page="{{.Search.Next}}" style="margin-left:35px;cursor:pointer;">Next</span>
         {{end}}
       </div>
     </div>

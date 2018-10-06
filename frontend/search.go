@@ -24,8 +24,9 @@ import (
 // Context holds a user's request context so we can pass it to our template's form.
 // Query, Language, and Region are the RAW query string variables.
 type Context struct {
-	Q            string          `json:"query"`
-	L            string          `json:"-"`
+	Q            string `json:"query"`
+	L            string `json:"-"`
+	lang         language.Tag
 	R            string          `json:"-"`
 	N            string          `json:"-"`
 	T            string          `json:"-"`
@@ -145,64 +146,37 @@ func (f *Frontend) addQuery(q string) error {
 	return f.Suggest.Increment(q)
 }
 
-func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
-	q := strings.TrimSpace(r.FormValue("q"))
-	var safe = true
-	if strings.TrimSpace(r.FormValue("safe")) == "f" {
-		safe = false
-	}
-
-	resp := &response{
-		status: http.StatusOK,
-		data: data{
-			Brand:     f.Brand,
-			MapBoxKey: f.MapBoxKey,
-			Context: Context{
-				Safe: safe,
-			},
-		},
-		template: "search",
-		err:      nil,
-	}
-
-	// render start page if no query
-	if q == "" {
-		return resp
-	}
-
+func (f *Frontend) getData(r *http.Request) data {
 	d := data{
-		f.Brand,
-		f.MapBoxKey,
-		Context{
-			Q:            q,
-			L:            strings.TrimSpace(r.FormValue("l")),
-			N:            strings.TrimSpace(r.FormValue("n")),
-			R:            strings.TrimSpace(r.FormValue("r")),
-			T:            strings.TrimSpace(r.FormValue("t")),
-			Safe:         safe,
-			DefaultBangs: f.defaultBangs(r),
-		},
-		Results{
-			Search: &search.Results{},
+		Brand:     f.Brand,
+		MapBoxKey: f.MapBoxKey,
+		Context: Context{
+			Q:    strings.TrimSpace(r.FormValue("q")),
+			Safe: true,
 		},
 	}
 
+	if strings.TrimSpace(r.FormValue("safe")) == "f" {
+		d.Context.Safe = false
+	}
+
+	if d.Context.Q == "" {
+		return d
+	}
+
+	d.Context.L = strings.TrimSpace(r.FormValue("l"))
+	d.Context.N = strings.TrimSpace(r.FormValue("n"))
+	d.Context.R = strings.TrimSpace(r.FormValue("r"))
+	d.Context.T = strings.TrimSpace(r.FormValue("t"))
+	d.Context.DefaultBangs = f.defaultBangs(r)
 	d.Context.Preferred = f.detectLanguage(r)
-	lang, _, _ := f.Document.Matcher.Match(d.Context.Preferred...) // will use first supported tag in case of error
-
-	d.Context.Region = f.detectRegion(lang, r)
-
-	// is it a !bang? Redirect them
-	if bng, loc, ok := f.Bangs.Detect(d.Context.Q, d.Context.Region, lang); ok {
-		log.Info.Printf("!bang (%v)", bng.Name)
-		return &response{
-			status:   302,
-			redirect: loc,
-		}
+	d.Results = Results{
+		Search: &search.Results{},
 	}
 
-	// Let's get them their results
-	// what page are they on? Give them first page by default
+	d.Context.lang, _, _ = f.Document.Matcher.Match(d.Context.Preferred...) // will use first supported tag in case of error
+	d.Context.Region = f.detectRegion(d.Context.lang, r)
+
 	var err error
 	d.Context.Page, err = strconv.Atoi(strings.TrimSpace(r.FormValue("p")))
 	if err != nil || d.Context.Page < 1 {
@@ -213,6 +187,33 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	d.Context.Number, err = strconv.Atoi(strings.TrimSpace(r.FormValue("n")))
 	if err != nil || d.Context.Number > 100 {
 		d.Context.Number = 25
+	}
+
+	return d
+}
+
+func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *response {
+	d := f.getData(r)
+
+	resp := &response{
+		status:   http.StatusOK,
+		data:     d,
+		template: "search",
+		err:      nil,
+	}
+
+	// render start page if no query
+	if d.Context.Q == "" {
+		return resp
+	}
+
+	// is it a !bang? Redirect them
+	if bng, loc, ok := f.Bangs.Detect(d.Context.Q, d.Context.Region, d.Context.lang); ok {
+		log.Info.Printf("!bang (%v)", bng.Name)
+		return &response{
+			status:   302,
+			redirect: loc,
+		}
 	}
 
 	channels := 1
@@ -274,7 +275,7 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			sc <- f.searchResults(d, lang, region, r.URL)
 		}
 
-	}(d, lang, d.Context.Region)
+	}(d, d.Context.lang, d.Context.Region)
 
 	stats := struct {
 		autocomplete time.Duration
