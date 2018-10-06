@@ -33,7 +33,19 @@ func TestSetDefaults(t *testing.T) {
 		{"brand.name", "Jive Search"},
 		{"brand.tagline", "A search engine that doesn't track you."},
 		{"brand.logo", ""},
-		{"brand.small_logo", ""},
+		{"brand.small_logo",
+			`<svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
+			<defs>
+				<style>
+					#logo{
+						font-size:20px;
+					}            
+				</style>
+			</defs>
+			<g>
+				<text id="logo" x="0" y="37" fill="#000">Jive Search</text>
+			</g>
+		</svg>`},
 
 		// Server
 		{"server.host", fmt.Sprintf("http://127.0.0.1:%d", port)},

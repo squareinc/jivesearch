@@ -1,20 +1,5 @@
 {{define "small_logo"}}
-  {{if .Brand.SmallLogo}}
-    {{.Brand.SmallLogo|SafeHTML}}
-  {{else}}
-  <svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
-    <defs>
-      <style>
-        #logo{
-          font-size:20px;
-        }            
-      </style>
-    </defs>
-    <g>
-      <text id="logo" x="7" y="37" fill="#000">Jive Search</text>
-    </g>
-  </svg>
-  {{end}}
+  {{.Brand.SmallLogo|SafeHTML}}
 {{end}}
 
 {{define "search_form"}}

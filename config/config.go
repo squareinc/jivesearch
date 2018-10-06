@@ -35,7 +35,19 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("brand.name", "Jive Search")
 	cfg.SetDefault("brand.tagline", "A search engine that doesn't track you.")
 	cfg.SetDefault("brand.logo", "")
-	cfg.SetDefault("brand.small_logo", "")
+	cfg.SetDefault("brand.small_logo",
+		`<svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
+			<defs>
+				<style>
+					#logo{
+						font-size:20px;
+					}            
+				</style>
+			</defs>
+			<g>
+				<text id="logo" x="0" y="37" fill="#000">Jive Search</text>
+			</g>
+		</svg>`)
 
 	// Server
 	port := 8000
