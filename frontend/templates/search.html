@@ -779,30 +779,10 @@
   <div id="container" class="pure-u-1">
     <div style="text-align:center;">
       <div class="pure-u-22-24">
-        {{if .Brand.Logo}}
-          {{.Brand.Logo|SafeHTML}}
-        {{else}}
-        <svg width="205" height="65" style="cursor:pointer;">
-          <defs>
-            <style>
-              #logo {
-                font-size: 36px;
-                font-family: 'Open Sans',sans-serif;
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-              }            
-            </style>
-          </defs>            
-          <g><text id="logo" x="7" y="35" fill="#000">Jive Search</text></g>
-        </svg>
-        {{end}}
+        {{.Brand.Logo|SafeHTML}}
         {{template "search_form" .}}
         <br>
-        {{if .Brand.TagLine}}<div id="tagline">{{.Brand.TagLine}}</div>{{end}}
+        <div id="tagline">{{.Brand.TagLine}}</div>
         <div class="pure-u-1" style="margin-top:125px;">
           {{template "instructions" .}}
         </div>

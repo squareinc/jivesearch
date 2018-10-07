@@ -32,7 +32,25 @@ func TestSetDefaults(t *testing.T) {
 		// Brand
 		{"brand.name", "Jive Search"},
 		{"brand.tagline", "A search engine that doesn't track you."},
-		{"brand.logo", ""},
+		{"brand.logo",
+			`<svg width="205" height="65" style="cursor:pointer;">
+			<defs>
+				<style>
+					#logo {
+						font-size: 36px;
+						font-family: 'Open Sans',sans-serif;
+						-webkit-touch-callout: none;
+						-webkit-user-select: none;
+						-khtml-user-select: none;
+						-moz-user-select: none;
+						-ms-user-select: none;
+						user-select: none;
+					}            
+				</style>
+			</defs>            
+			<g><text id="logo" x="7" y="35" fill="#000">Jive Search</text></g>
+		</svg>`},
+
 		{"brand.small_logo",
 			`<svg xmlns="http://www.w3.org/2000/svg" width="115px" height="48px">
 			<defs>
