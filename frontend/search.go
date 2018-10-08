@@ -30,6 +30,7 @@ type Context struct {
 	R            string          `json:"-"`
 	N            string          `json:"-"`
 	T            string          `json:"-"`
+	Ref          string          `json:"-"`
 	Safe         bool            `json:"-"`
 	DefaultBangs []DefaultBang   `json:"-"`
 	Preferred    []language.Tag  `json:"-"`
@@ -167,6 +168,7 @@ func (f *Frontend) getData(r *http.Request) data {
 	d.Context.L = strings.TrimSpace(r.FormValue("l"))
 	d.Context.N = strings.TrimSpace(r.FormValue("n"))
 	d.Context.R = strings.TrimSpace(r.FormValue("r"))
+	d.Context.Ref = strings.TrimSpace(r.FormValue("ref"))
 	d.Context.T = strings.TrimSpace(r.FormValue("t"))
 	d.Context.DefaultBangs = f.defaultBangs(r)
 	d.Context.Preferred = f.detectLanguage(r)
