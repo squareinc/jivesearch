@@ -8,7 +8,7 @@
     <form id="form" name="x" method="GET" action="/" role="search">
       {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
       {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
-      {{if .Context.Ref}}<input type="hidden" name="r" value="{{.Context.Ref}}"/>{{end}}
+      {{if .Context.Ref}}<input type="hidden" name="ref" value="{{.Context.Ref}}"/>{{end}}
       {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
       {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
       {{if eq .Context.Safe false}}<input type="hidden" name="safe" value="f"/>{{end}}
