@@ -115,6 +115,7 @@ Marked items indicate progress has been made in that category. There is much mor
         - [x] Converters (foreign exchange, meters to feet, mb to gb, etc...)
     - [x] Maps
     - [x] Package Tracking (UPS, FedEx, USPS, etc...)
+    - [x] Shopping
     - [x] Stack Overflow
     - [x] Stock Quotes & Charts    
     - [x] Weather
@@ -127,7 +128,6 @@ Marked items indicate progress has been made in that category. There is much mor
 - [x] Image Search
 - [ ] Video Search
 - [ ] News
-- [ ] Shopping
 - [ ] Custom CSS Themes
 
 <br>
