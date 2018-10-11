@@ -332,8 +332,8 @@ func (t *table) setColumns() error {
 	case wikidataTable:
 		t.columns = []column{
 			{"id", "text", true},
-			{"labels", "jsonb", true},
-			{"aliases", "jsonb", true},
+			{"labels", "jsonb", false},
+			{"aliases", "jsonb", false},
 			{"descriptions", "jsonb", false},
 			{"claims", "jsonb", true},
 		}

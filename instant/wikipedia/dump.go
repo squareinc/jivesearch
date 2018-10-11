@@ -283,7 +283,7 @@ func isSupported(w string, supported []language.Tag) (language.Tag, bool) {
 
 	// skip some files that we will never need to download
 	skip := []string{
-		"advisory", "be_x_old", "commons", "donate", "foundation", "incubator",
+		"advisory", "be_x_old", "commons", "donate", "fixcopyright", "foundation", "incubator",
 		"labs", "labtest", "login", "mediawiki", "meta", "nostalgia", "outreach",
 		"quality", "species", "simple", "sources", "strategy", "test",
 		"testwikidata", "usability", "vote", "wikidata", // we get wikidata from another source ;)
