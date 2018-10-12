@@ -229,7 +229,7 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 		return item, err
 	}
 
-	//fmt.Println(sql)
+	//log.Debug.Println(sql)
 
 	err = json.Unmarshal([]byte(definitions), &item.Wiktionary.Definitions)
 	return item, err
