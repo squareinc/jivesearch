@@ -26252,10 +26252,10 @@
 
 [[bang]]
     name = "Māori Dictionary"
-    favicon = "http://maoridictionary.co.nz/favicon.ico"
+    favicon = "https://maoridictionary.co.nz/favicon.ico"
     triggers = ["maori"]
     [bang.regions]
-        default = "http://maoridictionary.co.nz/search?idiom=&phrase=&proverb=&loan=&histLoanWords=&keywords={{{term}}}"
+        default = "https://maoridictionary.co.nz/search?idiom=&phrase=&proverb=&loan=&histLoanWords=&keywords={{{term}}}"
 
 [[bang]]
     name = "Městská knihovna v Praze"
