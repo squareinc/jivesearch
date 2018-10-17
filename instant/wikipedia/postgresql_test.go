@@ -56,36 +56,39 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *Item
+		want []*Item
 	}{
 		{
 			"shaq",
 			args{
 				"Shaquille O'Neal", language.MustParse("en"),
 				[]driver.Value{
-					"Q169452", "Shaquille O'Neal", "Shaquille O'Neal is a basketball player",
+					"Q169452", "Shaquille O'Neal", "Shaquille O'Neal is a basketball player", "{}",
 					"{}", "Shaquille O'Neal", shaqWiktionaryJSON,
 					[]byte(shaqRawLabels), []byte(shaqRawAliases), []byte(shaqRawDescriptions), shaqClaimsJSON,
 				},
 			},
-			&Item{
-				Wikipedia: Wikipedia{
-					Language: "en",
-					Title:    "Shaquille O'Neal",
-					Text:     "Shaquille O'Neal is a basketball player",
+			[]*Item{
+				{
+					Wikipedia: Wikipedia{
+						Language:     "en",
+						OutgoingLink: []string{},
+						Title:        "Shaquille O'Neal",
+						Text:         "Shaquille O'Neal is a basketball player",
+					},
+					Wikidata: &Wikidata{
+						ID:           "Q169452",
+						Descriptions: shaqDescriptions,
+						Aliases:      shaqAliases,
+						Labels:       shaqLabels,
+						Claims:       shaqClaimsPostgres,
+					},
+					Wikiquote: Wikiquote{
+						//Quotes: shaqQuotes, // not really sure how to test for pq.Array
+						Quotes: []string{},
+					},
+					Wiktionary: *shaqWiktionary,
 				},
-				Wikidata: &Wikidata{
-					ID:           "Q169452",
-					Descriptions: shaqDescriptions,
-					Aliases:      shaqAliases,
-					Labels:       shaqLabels,
-					Claims:       shaqClaimsPostgres,
-				},
-				Wikiquote: Wikiquote{
-					//Quotes: shaqQuotes, // not really sure how to test for pq.Array
-					Quotes: []string{},
-				},
-				Wiktionary: *shaqWiktionary,
 			},
 		},
 	}
@@ -99,7 +102,7 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 			defer db.Close()
 
 			rows := sqlmock.NewRows(
-				[]string{"id", "title", "text", "quotes", "wktitle", "definitions",
+				[]string{"id", "title", "text", "outgoing_link", "quotes", "wktitle", "definitions",
 					"labels", "aliases", "descriptions", "claims",
 				},
 			)
@@ -122,8 +125,8 @@ func TestPostgreSQL_Fetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %+v, want %+v", got, tt.want)
+			if !reflect.DeepEqual(got[0], tt.want[0]) {
+				t.Errorf("got %+v, want %+v", got[0], tt.want[0])
 			}
 		})
 	}
@@ -191,7 +194,7 @@ func TestPostgreSQL_Dump(t *testing.T) {
 				w := tt.row.(*Wikipedia)
 
 				mock.ExpectPrepare("COPY").ExpectExec().
-					WithArgs(w.ID, w.Title, w.Text).
+					WithArgs(w.ID, w.Title, w.Text, pq.Array(w.OutgoingLink), w.Popularity).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 			case WikidataFT:
 				wd := tt.row.(*Wikidata)
@@ -243,6 +246,7 @@ func TestPostgreSQL_Dump(t *testing.T) {
 			case WikipediaFT:
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			case WikidataFT:
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("CREATE INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
@@ -261,6 +265,7 @@ func TestPostgreSQL_Dump(t *testing.T) {
 			mock.ExpectExec("ALTER TABLE").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			switch tt.args.ft {
 			case WikipediaFT:
+				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectExec("ALTER INDEX").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
 			case WikidataFT:

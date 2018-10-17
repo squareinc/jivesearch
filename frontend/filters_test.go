@@ -998,10 +998,10 @@ func TestWikiLabel(t *testing.T) {
 }
 
 func TestWikipediaItem(t *testing.T) {
-	want := &wikipedia.Item{}
+	want := []*wikipedia.Item{{}}
 
 	d := instant.Data{
-		Solution: &wikipedia.Item{},
+		Solution: []*wikipedia.Item{{}},
 	}
 
 	got := wikipediaItem(d)

@@ -12,7 +12,7 @@ import (
 // Fetcher outlines the methods used to retrieve Wikipedia snippets
 type Fetcher interface {
 	Setup() error
-	Fetch(query string, lang language.Tag) (*Item, error)
+	Fetch(query string, lang language.Tag) ([]*Item, error)
 }
 
 // Item is the contains the complete wiki info for a person, thing or word.
@@ -25,11 +25,13 @@ type Item struct {
 
 // Wikipedia holds the summary text of an article
 type Wikipedia struct {
-	ID       string `json:"wikibase_item"`
-	Language string `json:"language"`
-	Title    string `json:"title"`
-	Text     string `json:"text"`
-	truncate int
+	ID           string   `json:"wikibase_item"`
+	Language     string   `json:"language"`
+	OutgoingLink []string `json:"outgoing_link,omitempty"`
+	Popularity   float64  `json:"popularity_score,omitempty"`
+	Title        string   `json:"title"`
+	Text         string   `json:"text"`
+	truncate     int
 	//Popularity float32 `json:"popularity_score"` // I can't seem to find any documentation for this
 }
 

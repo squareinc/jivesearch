@@ -502,8 +502,8 @@ func wikiDateTime(dt wikipedia.DateTime) string {
 	return ""
 }
 
-func wikipediaItem(sol instant.Data) *wikipedia.Item {
-	return sol.Solution.(*wikipedia.Item)
+func wikipediaItem(sol instant.Data) []*wikipedia.Item {
+	return sol.Solution.([]*wikipedia.Item)
 }
 
 // wikiJoin joins a slice of Wikidata items

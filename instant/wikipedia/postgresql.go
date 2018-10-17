@@ -61,7 +61,7 @@ func (c *Claims) Scan(value interface{}) error {
 
 // Fetch retrieves an Item from PostgreSQL
 // https://www.wikidata.org/w/api.php
-func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
+func (p *PostgreSQL) Fetch(query string, lang language.Tag) ([]*Item, error) {
 	item := &Item{
 		Wikipedia: Wikipedia{
 			Language: lang.String(),
@@ -191,7 +191,7 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 			SELECT *
 			FROM (
 				SELECT 
-				w."id", w."title", w."text", wq."quotes", 
+				w."id", w."title", w."text", w."outgoing_link", wq."quotes", 
 				wd."labels", wd."aliases", wd."descriptions", wd."claims" 
 				FROM %vwikipedia w
 				LEFT JOIN %vwikiquote wq ON w.id = wq.id
@@ -208,7 +208,7 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 		),
 		%v
 		SELECT
-			coalesce(item."id", ''), coalesce(item."title", ''), coalesce(item."text", ''),
+			coalesce(item."id", ''), coalesce(item."title", ''), coalesce(item."text", ''), coalesce(item."outgoing_link", '{}'),
 			coalesce(item."quotes", '{}'), coalesce(item."wktitle", ''), coalesce(item."definitions", '[]'),
 			coalesce(item."labels", '{}'::jsonb), coalesce(item."aliases", '{}'::jsonb), 
 			coalesce(item."descriptions", '{}'::jsonb), %v "claims"
@@ -220,19 +220,76 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) (*Item, error) {
 	var definitions string
 
 	err := p.DB.QueryRow(sql, query, query).Scan(
-		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text,
+		&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text, pq.Array(&item.Wikipedia.OutgoingLink),
 		pq.Array(&item.Wikiquote.Quotes), &item.Wiktionary.Title, &definitions,
 		&item.Labels, &item.Aliases, &item.Descriptions, &item.Claims,
 	)
 
 	if err != nil {
-		return item, err
+		return []*Item{item}, err
 	}
 
-	//log.Debug.Println(sql)
+	log.Debug.Println(sql)
 
 	err = json.Unmarshal([]byte(definitions), &item.Wiktionary.Definitions)
-	return item, err
+
+	// is it a disambiguation page???
+	if v, ok := item.Wikidata.Descriptions["en"]; ok {
+		if v.Text == "Wikimedia disambiguation page" {
+			dis := []string{}
+			lc := strings.ToLower(item.Wikipedia.Title)
+
+			for _, d := range item.OutgoingLink {
+				if strings.HasPrefix(strings.ToLower(d), lc+"_") || strings.HasPrefix(strings.ToLower(d), lc+",_") { // e.g. Sublime,_Texas w/ a comma
+					d = strings.Replace(d, "_", " ", -1)
+					fmt.Printf(`LOWER('%v'),`, d)
+					dis = append(dis, strings.ToLower(d))
+				}
+			}
+
+			sql = fmt.Sprintf(`SELECT w.id, title, text, popularity_score
+				FROM %vwikipedia w
+				LEFT JOIN wikidata wd ON w.ID=wd.ID
+				WHERE LOWER(w.title) = ANY($1)
+				ORDER BY popularity_score DESC
+				LIMIT 10
+			`, item.Wikipedia.Language)
+
+			items := []*Item{}
+
+			rows, err := p.DB.Query(sql, pq.Array(dis))
+			if err != nil {
+				return []*Item{item}, err
+			}
+			defer rows.Close()
+			for rows.Next() {
+				item := &Item{
+					Wikipedia: Wikipedia{
+						Language: lang.String(),
+					},
+					Wikidata: &Wikidata{
+						Claims: &Claims{},
+					},
+					Wiktionary: Wiktionary{
+						Language: lang.String(),
+					},
+				}
+				var pop float64
+				if err := rows.Scan(&item.Wikidata.ID, &item.Wikipedia.Title, &item.Wikipedia.Text, &pop); err != nil {
+					return []*Item{item}, err
+				}
+
+				items = append(items, item)
+			}
+			if err := rows.Err(); err != nil {
+				return items, err
+			}
+
+			return items, err
+		}
+	}
+
+	return []*Item{item}, err
 }
 
 type transaction = func(tx *sql.Tx) error
@@ -318,6 +375,8 @@ func (t *table) setColumns() error {
 			{"id", "text", true},
 			{"title", "text", true},
 			{"text", "text", false},
+			{"outgoing_link", "text[]", false},
+			{"popularity_score", "numeric", true},
 		}
 	case wikiquoteTable:
 		t.columns = []column{
@@ -349,7 +408,12 @@ func (t *table) createTable() string {
 
 	cols := []string{}
 	for _, col := range t.columns {
-		cols = append(cols, fmt.Sprintf("%v %v NOT NULL", col.name, col.t))
+		switch col.name {
+		case "outgoing_link":
+			cols = append(cols, fmt.Sprintf("%v %v", col.name, col.t))
+		default:
+			cols = append(cols, fmt.Sprintf("%v %v NOT NULL", col.name, col.t))
+		}
 	}
 
 	c += strings.Join(cols, ", ") + ")"
@@ -380,7 +444,7 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 		switch row.(type) {
 		case *Wikipedia:
 			w := row.(*Wikipedia)
-			r = []interface{}{w.ID, w.Title, w.Text}
+			r = []interface{}{w.ID, w.Title, w.Text, pq.Array(w.OutgoingLink), w.Popularity}
 		case *Wikidata:
 			w := row.(*Wikidata)
 

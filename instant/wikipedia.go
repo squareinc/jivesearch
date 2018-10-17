@@ -119,7 +119,7 @@ type Age struct {
 // TODO: Return the Title (and perhaps Image???) as
 // confirmation that we fetched the right asset.
 func (w *Wikipedia) solve(r *http.Request) Answerer {
-	item, err := w.Fetch(w.remainder, w.language)
+	items, err := w.Fetch(w.remainder, w.language)
 	if err != nil {
 		w.Err = err
 		return w
@@ -127,12 +127,15 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 
 	switch w.triggerWord {
 	case age, howOldIs, birthday, born:
-		if len(item.Birthday) == 0 {
-			return w
-		}
+		b := &Birthday{}
 
-		w.Type = WikidataBirthdayType
-		b := &Birthday{item.Birthday[0]}
+		for _, item := range items {
+			if len(item.Birthday) == 0 {
+				return w
+			}
+			w.Type = WikidataBirthdayType
+			b.Birthday = item.Birthday[0]
+		}
 
 		if w.triggerWord == "age" || w.triggerWord == "how old is" {
 			w.Type = WikidataAgeType
@@ -141,8 +144,10 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 				Birthday: b,
 			}
 
-			if len(item.Death) > 0 {
-				a.Death = &Death{item.Death[0]}
+			for _, item := range items {
+				if len(item.Death) > 0 {
+					a.Death = &Death{item.Death[0]}
+				}
 			}
 
 			w.Data.Solution = a
@@ -152,48 +157,53 @@ func (w *Wikipedia) solve(r *http.Request) Answerer {
 
 		w.Data.Solution = b
 	case death, died:
-		if len(item.Death) > 0 {
-			w.Type = WikidataDeathType
-			w.Data.Solution = &Death{item.Death[0]}
+		for _, item := range items {
+			if len(item.Death) > 0 {
+				w.Type = WikidataDeathType
+				w.Data.Solution = &Death{item.Death[0]}
+			}
 		}
 	case howTallis, howTallwas, height:
-		if len(item.Height) == 0 {
-			return w
+		for _, item := range items {
+			if len(item.Height) == 0 {
+				return w
+			}
+			w.Type = WikidataHeightType
+			w.Data.Solution = item.Height
 		}
-
-		w.Type = WikidataHeightType
-		w.Data.Solution = item.Height
 	case mass, weigh, weight:
-		if len(item.Weight) == 0 {
-			return w
+		for _, item := range items {
+			if len(item.Weight) == 0 {
+				return w
+			}
+			w.Type = WikidataWeightType
+			w.Data.Solution = item.Weight
 		}
-
-		w.Type = WikidataWeightType
-		w.Data.Solution = item.Weight
 	case quote, quotes:
-		if len(item.Wikiquote.Quotes) == 0 {
-			return w
+		for _, item := range items {
+			if len(item.Wikiquote.Quotes) == 0 {
+				return w
+			}
+			w.Type = WikiquoteType
+			w.Data.Solution = item.Wikiquote.Quotes
 		}
-
-		w.Type = WikiquoteType
-		w.Data.Solution = item.Wikiquote.Quotes
 	case define, definition:
-		if len(item.Wiktionary.Definitions) == 0 {
-			return w
+		for _, item := range items {
+			if len(item.Wiktionary.Definitions) == 0 {
+				return w
+			}
+			w.Type = WiktionaryType
+			w.Data.Solution = item.Wiktionary
 		}
-
-		w.Type = WiktionaryType
-		w.Data.Solution = item.Wiktionary
 	default: // full Wikipedia box
 		w.Type = WikipediaType
-		w.Data.Solution = item
+		w.Data.Solution = items
 	}
 
 	return w
 }
 
 func (w *Wikipedia) tests() []test {
-
 	tests := []test{
 		{
 			query: "Bob Marley age",
@@ -312,19 +322,21 @@ func (w *Wikipedia) tests() []test {
 				{
 					Type:      WikipediaType,
 					Triggered: true,
-					Solution: &wikipedia.Item{
-						Wikidata: &wikipedia.Wikidata{
-							Claims: &wikipedia.Claims{
-								Birthday: []wikipedia.DateTime{
-									{
-										Value:    "1942-11-27T00:00:00Z",
-										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+					Solution: []*wikipedia.Item{
+						{
+							Wikidata: &wikipedia.Wikidata{
+								Claims: &wikipedia.Claims{
+									Birthday: []wikipedia.DateTime{
+										{
+											Value:    "1942-11-27T00:00:00Z",
+											Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+										},
 									},
-								},
-								Death: []wikipedia.DateTime{
-									{
-										Value:    "1970-09-18T00:00:00Z",
-										Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+									Death: []wikipedia.DateTime{
+										{
+											Value:    "1970-09-18T00:00:00Z",
+											Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+										},
 									},
 								},
 							},

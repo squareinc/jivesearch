@@ -802,41 +802,45 @@ func (m *mockWeatherFetcher) FetchByZip(zip int) (*weather.Weather, error) {
 // mock Wikipedia Fetcher
 type mockWikipediaFetcher struct{}
 
-func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
+func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) ([]*wikipedia.Item, error) {
 	switch query {
 	case "bob marley":
-		return &wikipedia.Item{
-			Wikidata: &wikipedia.Wikidata{
-				Claims: &wikipedia.Claims{
-					Birthday: []wikipedia.DateTime{
-						{
-							Value:    "1945-02-06T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+		return []*wikipedia.Item{
+			{
+				Wikidata: &wikipedia.Wikidata{
+					Claims: &wikipedia.Claims{
+						Birthday: []wikipedia.DateTime{
+							{
+								Value:    "1945-02-06T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
-					},
-					Death: []wikipedia.DateTime{
-						{
-							Value:    "1981-05-11T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						Death: []wikipedia.DateTime{
+							{
+								Value:    "1981-05-11T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
 					},
 				},
 			},
 		}, nil
 	case "jimi hendrix":
-		return &wikipedia.Item{
-			Wikidata: &wikipedia.Wikidata{
-				Claims: &wikipedia.Claims{
-					Birthday: []wikipedia.DateTime{
-						{
-							Value:    "1942-11-27T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+		return []*wikipedia.Item{
+			{
+				Wikidata: &wikipedia.Wikidata{
+					Claims: &wikipedia.Claims{
+						Birthday: []wikipedia.DateTime{
+							{
+								Value:    "1942-11-27T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
-					},
-					Death: []wikipedia.DateTime{
-						{
-							Value:    "1970-09-18T00:00:00Z",
-							Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+						Death: []wikipedia.DateTime{
+							{
+								Value:    "1970-09-18T00:00:00Z",
+								Calendar: wikipedia.Wikidata{ID: "Q1985727"},
+							},
 						},
 					},
 				},
@@ -844,46 +848,54 @@ func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikiped
 		}, nil
 
 	case "shaquille o'neal":
-		return &wikipedia.Item{
-			Wikidata: &wikipedia.Wikidata{
-				Claims: &wikipedia.Claims{
-					Height: []wikipedia.Quantity{
-						{
-							Amount: "2.16",
-							Unit:   wikipedia.Wikidata{ID: "Q11573"},
+		return []*wikipedia.Item{
+			{
+				Wikidata: &wikipedia.Wikidata{
+					Claims: &wikipedia.Claims{
+						Height: []wikipedia.Quantity{
+							{
+								Amount: "2.16",
+								Unit:   wikipedia.Wikidata{ID: "Q11573"},
+							},
 						},
-					},
-					Weight: []wikipedia.Quantity{
-						{
-							Amount: "147",
-							Unit:   wikipedia.Wikidata{ID: "Q11573"},
+						Weight: []wikipedia.Quantity{
+							{
+								Amount: "147",
+								Unit:   wikipedia.Wikidata{ID: "Q11573"},
+							},
 						},
 					},
 				},
 			},
 		}, nil
 	case "michael jordan":
-		return &wikipedia.Item{
-			Wikiquote: wikipedia.Wikiquote{
-				Quotes: []string{
-					"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
-					"ball is life",
+		return []*wikipedia.Item{
+			{
+				Wikiquote: wikipedia.Wikiquote{
+					Quotes: []string{
+						"I can accept failure. Everyone fails at something. But I can't accept not trying (no hard work)",
+						"ball is life",
+					},
 				},
 			},
 		}, nil
 	case "guitar":
-		return &wikipedia.Item{
-			Wiktionary: wikipedia.Wiktionary{
-				Title: "guitar",
-				Definitions: []*wikipedia.Definition{
-					{Part: "noun", Meaning: "musical instrument"},
+		return []*wikipedia.Item{
+			{
+				Wiktionary: wikipedia.Wiktionary{
+					Title: "guitar",
+					Definitions: []*wikipedia.Definition{
+						{Part: "noun", Meaning: "musical instrument"},
+					},
 				},
 			},
 		}, nil
 	default:
-		return &wikipedia.Item{
-			Wikidata: &wikipedia.Wikidata{
-				Claims: &wikipedia.Claims{},
+		return []*wikipedia.Item{
+			{
+				Wikidata: &wikipedia.Wikidata{
+					Claims: &wikipedia.Claims{},
+				},
 			},
 		}, nil
 	}

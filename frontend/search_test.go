@@ -507,9 +507,8 @@ func (s *mockStackOverflowFetcher) Fetch(query string, tags []string) (stackover
 // mock Wikipedia Fetcher
 type mockWikipediaFetcher struct{}
 
-func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) (*wikipedia.Item, error) {
-	return &wikipedia.Item{}, nil
-
+func (mf *mockWikipediaFetcher) Fetch(query string, lang language.Tag) ([]*wikipedia.Item, error) {
+	return []*wikipedia.Item{{}}, nil
 }
 
 func (mf *mockWikipediaFetcher) Setup() error {
@@ -519,7 +518,7 @@ func (mf *mockWikipediaFetcher) Setup() error {
 var mockInstantAnswer = instant.Data{
 	Type:      "wikipedia",
 	Triggered: true,
-	Solution:  &wikipedia.Item{},
+	Solution:  []*wikipedia.Item{{}},
 	Err:       nil,
 }
 

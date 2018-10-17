@@ -8,7 +8,11 @@ import (
 )
 
 var shaqWikipedia = &Wikipedia{
-	"Q169452", "en", "Shaquille O'Neal", `Shaquille Rashaun O'Neal, Ed.D, nicknamed "Shaq", is an American retired professional ...`, 90,
+	ID:       "Q169452",
+	Language: "en",
+	Title:    "Shaquille O'Neal",
+	Text:     `Shaquille Rashaun O'Neal, Ed.D, nicknamed "Shaq", is an American retired professional ...`,
+	truncate: 90,
 }
 
 var shaqRawWikipediaJSON = []byte(`{"wikibase_item": "Q169452", "language": "en", "title": "Shaquille O'Neal",	"text": "Shaquille Rashaun O'Neal, Ed.D (born March 6, 1972), nicknamed \"Shaq\" (SHAK), is an American retired professional basketball player and rapper, currently serving as a sports analyst on the television program Inside the"}`)
