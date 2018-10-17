@@ -229,7 +229,7 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) ([]*Item, error) {
 		return []*Item{item}, err
 	}
 
-	log.Debug.Println(sql)
+	//log.Debug.Println(sql)
 
 	err = json.Unmarshal([]byte(definitions), &item.Wiktionary.Definitions)
 
@@ -242,7 +242,6 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) ([]*Item, error) {
 			for _, d := range item.OutgoingLink {
 				if strings.HasPrefix(strings.ToLower(d), lc+"_") || strings.HasPrefix(strings.ToLower(d), lc+",_") { // e.g. Sublime,_Texas w/ a comma
 					d = strings.Replace(d, "_", " ", -1)
-					fmt.Printf(`LOWER('%v'),`, d)
 					dis = append(dis, strings.ToLower(d))
 				}
 			}
