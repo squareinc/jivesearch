@@ -85,6 +85,8 @@ func (f *Frontend) getAnswer(r *http.Request, dd data, ic chan instant.Data) {
 	case instant.CurrencyType, instant.StockQuoteType, instant.FedExType, instant.UPSType, instant.USPSType:
 		d = 1 * time.Minute
 		cache = true
+	case instant.WikipediaType: // I can't figure out how to cache this without errors...
+		cache = false
 	default:
 		cache = true
 	}
@@ -243,7 +245,7 @@ func detectType(t instant.Type) interface{} {
 	case instant.LocalWeatherType, instant.WeatherType:
 		v = &weather.Weather{}
 	case instant.WikipediaType:
-		v = &wikipedia.Item{}
+		v = []*wikipedia.Item{}
 	case instant.WikidataAgeType:
 		v = &instant.Age{
 			Birthday: &instant.Birthday{},
