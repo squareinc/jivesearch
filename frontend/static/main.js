@@ -39,6 +39,11 @@ $(document).ready(function() {
     return label
   }
 
+  // Wikipedia disambiguation page link
+  $(document).on('click', '.wikipedia_disambiguation', function(){
+    changeParamAndRedirect("q", $(this).data('title')); 
+  });
+
   // autocomplete
   $(function(){
     $("#query").autocomplete({
