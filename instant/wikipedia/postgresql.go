@@ -235,9 +235,9 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) ([]*Item, error) {
 
 	// is it a disambiguation page???
 	if v, ok := item.Wikidata.Descriptions["en"]; ok {
-		if v.Text == "Wikimedia disambiguation page" {
+		if v.Text == "Wikipedia disambiguation page" || v.Text == "Wikimedia disambiguation page" {
 			dis := []string{}
-			lc := strings.ToLower(item.Wikipedia.Title)
+			lc := strings.ToLower(strings.Replace(item.Wikipedia.Title, " ", "_", -1))
 
 			for _, d := range item.OutgoingLink {
 				if strings.HasPrefix(strings.ToLower(d), lc+"_") || strings.HasPrefix(strings.ToLower(d), lc+",_") { // e.g. Sublime,_Texas w/ a comma
@@ -260,6 +260,9 @@ func (p *PostgreSQL) Fetch(query string, lang language.Tag) ([]*Item, error) {
 			if err != nil {
 				return []*Item{item}, err
 			}
+
+			//log.Debug.Println(pq.Array(dis))
+
 			defer rows.Close()
 			for rows.Next() {
 				item := &Item{
