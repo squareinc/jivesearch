@@ -233,23 +233,25 @@ func TestSearchHandler(t *testing.T) {
 		output   string
 		t        string
 		safe     string
+		filter   string
 		want     *response
 	}{
 		{
-			"empty", "en", "", "", "", "",
+			"empty", "en", "", "", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
 					Context: Context{
+						F:    search.Moderate,
 						Safe: true,
 					},
 				},
 			},
 		},
 		{
-			"basic", "en", " some query ", "", "", "f",
+			"basic", "en", " some query ", "", "", "f", "off",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -264,6 +266,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						F:            search.Off,
 						Safe:         false,
 					},
 					Results: Results{
@@ -274,7 +277,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"not cached", "en", "not cached", "", "", "",
+			"not cached", "en", "not cached", "", "", "", "strict",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -289,6 +292,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						F:            search.Strict,
 						Safe:         true,
 					},
 					Results: Results{
@@ -299,7 +303,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"json", "en", " some query", "json", "", "",
+			"json", "en", " some query", "json", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "json",
@@ -314,6 +318,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						F:            search.Moderate,
 						Safe:         true,
 					},
 					Results: Results{
@@ -324,14 +329,14 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"!bang", "", "!g something", "", "", "",
+			"!bang", "", "!g something", "", "", "", "",
 			&response{
 				status:   http.StatusFound,
 				redirect: "https://encrypted.google.com/search?hl=en&q=something",
 			},
 		},
 		{
-			"images", "en", "some query", "", "images", "",
+			"images", "en", "some query", "", "images", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
@@ -346,6 +351,7 @@ func TestSearchHandler(t *testing.T) {
 						Region:       language.MustParseRegion("US"),
 						Number:       25,
 						Page:         1,
+						F:            search.Moderate,
 						Safe:         true,
 						T:            "images",
 					},
@@ -400,6 +406,7 @@ func TestSearchHandler(t *testing.T) {
 			q.Add("o", c.output)
 			q.Add("t", c.t)
 			q.Add("safe", c.safe)
+			q.Add("f", c.filter)
 			req.URL.RawQuery = q.Encode()
 
 			got := f.searchHandler(httptest.NewRecorder(), req)
@@ -413,7 +420,7 @@ func TestSearchHandler(t *testing.T) {
 
 type mockSearch struct{}
 
-func (s *mockSearch) Fetch(q string, lang language.Tag, region language.Region, page int, number int) (*search.Results, error) {
+func (s *mockSearch) Fetch(q string, f search.Filter, lang language.Tag, region language.Region, page int, number int) (*search.Results, error) {
 	return mockSearchResults, nil
 }
 

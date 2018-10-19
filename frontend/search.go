@@ -24,8 +24,9 @@ import (
 // Context holds a user's request context so we can pass it to our template's form.
 // Query, Language, and Region are the RAW query string variables.
 type Context struct {
-	Q            string `json:"query"`
-	L            string `json:"-"`
+	Q            string        `json:"query"`
+	L            string        `json:"-"`
+	F            search.Filter `json:"-"`
 	lang         language.Tag
 	R            string          `json:"-"`
 	N            string          `json:"-"`
@@ -153,12 +154,22 @@ func (f *Frontend) getData(r *http.Request) data {
 		MapBoxKey: f.MapBoxKey,
 		Context: Context{
 			Q:    strings.TrimSpace(r.FormValue("q")),
+			F:    search.Moderate,
 			Safe: true,
 		},
 	}
 
 	if strings.TrimSpace(r.FormValue("safe")) == "f" {
 		d.Context.Safe = false
+	}
+
+	switch strings.TrimSpace(r.FormValue("f")) {
+	case "strict":
+		d.Context.F = search.Strict
+	case "off":
+		d.Context.F = search.Off
+	default:
+		d.Context.F = search.Moderate
 	}
 
 	if d.Context.Q == "" {
@@ -366,7 +377,7 @@ func (f *Frontend) searchResults(d data, lang language.Tag, region language.Regi
 	}
 
 	offset := d.Context.Page*d.Context.Number - d.Context.Number
-	sr, err := f.Search.Fetch(d.Context.Q, lang, region, d.Context.Number, offset)
+	sr, err := f.Search.Fetch(d.Context.Q, d.Context.F, lang, region, d.Context.Number, offset)
 	if err != nil {
 		log.Info.Println(err)
 	}

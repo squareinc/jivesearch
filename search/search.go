@@ -11,11 +11,23 @@ import (
 
 // Fetcher outlines the methods used to retrieve the core search results
 type Fetcher interface {
-	Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*Results, error)
+	Fetch(q string, s Filter, lang language.Tag, region language.Region, number int, offset int) (*Results, error)
 }
 
 // Provider is a search provider
 type Provider string
+
+// Filter is the safe search settings
+type Filter string
+
+// Strict indicates the strongest safe search settings
+var Strict Filter = "strict"
+
+// Off indicates the weakest safe search settings
+var Off Filter = "off"
+
+// Moderate indicates a moderate safe search setting
+var Moderate Filter = "moderate"
 
 // Results are the core search results from a query
 type Results struct {

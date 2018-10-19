@@ -28,10 +28,10 @@ type Yandex struct {
 // Fetch retrieves search results from the Yandex API.
 // https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
 // https://xml.yandex.com/test/
-func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*search.Results, error) {
+func (y *Yandex) Fetch(q string, filter search.Filter, lang language.Tag, region language.Region, number int, offset int) (*search.Results, error) {
 	page := (offset / number) + 1
 
-	u, err := y.buildYandexURL(q, lang, region, number, page)
+	u, err := y.buildYandexURL(q, filter, lang, region, number, page)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (y *Yandex) Fetch(q string, lang language.Tag, region language.Region, numb
 }
 
 // https://tech.yandex.com/xml/doc/dg/concepts/get-request-docpage/
-func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language.Region, number int, page int) (*url.URL, error) {
+func (y *Yandex) buildYandexURL(query string, filter search.Filter, lang language.Tag, region language.Region, number int, page int) (*url.URL, error) {
 	u, err := url.Parse("https://yandex.com/search/xml")
 	if err != nil {
 		return nil, err
@@ -105,7 +105,7 @@ func (y *Yandex) buildYandexURL(query string, lang language.Tag, region language
 	//q.Add("lr", region.String()) // ID of the search country/region...only applies to Russian and Turkey search types
 	q.Add("l10n", "en") // notification language
 	//q.Add("sortby", "rlv") // relevancy by default
-	//q.Add("filter", "")
+	q.Add("filter", string(filter))
 	//q.Add("maxpassages", "")
 	q.Add("groupby", fmt.Sprintf("attr=d.mode=deep.groups-on-page=%v.docs-in-group=1", number))
 	q.Add("page", strconv.Itoa(page-1))

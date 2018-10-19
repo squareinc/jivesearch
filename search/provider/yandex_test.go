@@ -89,6 +89,7 @@ var YandexHendrixResponse = `<?xml version="1.0" encoding="utf-8"?>
 func TestYandexFetch(t *testing.T) {
 	type args struct {
 		q      string
+		filter search.Filter
 		lang   language.Tag
 		region language.Region
 		number int
@@ -123,8 +124,8 @@ func TestYandexFetch(t *testing.T) {
 	}{
 		{
 			name:  "basic",
-			args:  args{"jimi hendrix", language.English, language.MustParseRegion("US"), 25, 1},
-			u:     `https://yandex.com/search/xml?groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
+			args:  args{"jimi hendrix", search.Moderate, language.English, language.MustParseRegion("US"), 25, 1},
+			u:     `https://yandex.com/search/xml?filter=moderate&groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
 			yresp: YandexHendrixResponse,
 			want: &search.Results{
 				Provider: YandexProvider,
@@ -144,7 +145,7 @@ func TestYandexFetch(t *testing.T) {
 				User:   "user",
 				Key:    "key",
 			}
-			got, err := y.Fetch(tt.args.q, tt.args.lang, tt.args.region, tt.args.number, tt.args.page)
+			got, err := y.Fetch(tt.args.q, tt.args.filter, tt.args.lang, tt.args.region, tt.args.number, tt.args.page)
 			if err != nil {
 				t.Fatal(err)
 			}

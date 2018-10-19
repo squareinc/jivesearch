@@ -20,6 +20,7 @@ func TestFetch(t *testing.T) {
 	for _, c := range []struct {
 		name   string
 		query  string
+		filter Filter
 		lang   language.Tag
 		region language.Region
 		number int
@@ -31,6 +32,7 @@ func TestFetch(t *testing.T) {
 		{
 			name:   "basic",
 			query:  "Bob Dylan",
+			filter: Moderate,
 			lang:   language.English,
 			region: language.MustParseRegion("US"),
 			number: 25,
@@ -97,6 +99,7 @@ func TestFetch(t *testing.T) {
 		{
 			name:   "language",
 			query:  "jimi hendrix",
+			filter: Strict,
 			lang:   language.BrazilianPortuguese,
 			region: language.MustParseRegion("BR"),
 			number: 2500,
@@ -178,7 +181,7 @@ func TestFetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			got, err := e.Fetch(c.query, c.lang, c.region, c.number, c.page)
+			got, err := e.Fetch(c.query, c.filter, c.lang, c.region, c.number, c.page)
 			if err != c.want.err {
 				t.Fatalf("got err %q; want %q", err, c.want.err)
 			}

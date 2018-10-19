@@ -26,7 +26,7 @@ type ElasticSearch struct {
 // https://www.elastic.co/guide/en/elasticsearch/guide/current/shingles.html
 // Note: "It is not useful to mix not_analyzed fields with analyzed fields in multi_match queries."
 // TODO: A better domain name method...we could use regex ('.*hendrix'), prefix query, etc.
-func (e *ElasticSearch) Fetch(q string, lang language.Tag, region language.Region, number int, offset int) (*Results, error) {
+func (e *ElasticSearch) Fetch(q string, filter Filter, lang language.Tag, region language.Region, number int, offset int) (*Results, error) {
 	res := &Results{}
 
 	qu := elastic.NewBoolQuery().
