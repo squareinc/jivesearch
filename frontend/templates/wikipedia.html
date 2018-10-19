@@ -1,6 +1,6 @@
 {{define "wikipedia"}}
   <div id="wikipedia" class="pure-u-1 pure-u-xl-9-24">
-  {{$context := .Context}}
+  {{$context := .}}
   {{$wikipedias := .Instant|WikipediaItem}}
   {{$length := len $wikipedias}}
   {{range $i, $wikipedia := $wikipedias}}
@@ -25,7 +25,7 @@
             <script src="/static/instant/maps/mapbox.js"></script>
             <script src="/static/instant/maps/geo-viewport.js"></script>
             <script>
-              mapboxgl.accessToken = "{{.MapBoxKey}}";
+              mapboxgl.accessToken = "{{$context.MapBoxKey}}";
               var map = new mapboxgl.Map({
                 container: "map",
                 style: "mapbox://styles/mapbox/streets-v9",
@@ -46,7 +46,7 @@
             {{$wikipedia.Wikipedia.Title}}
           </div>
           <div class="pure-u-1" style="font-size:14px;margin-bottom:1px;color:#666;margin-bottom:4px;">
-            {{$des := WikiLabel $wikipedia.Descriptions $context.Preferred}}
+            {{$des := WikiLabel $wikipedia.Descriptions $context.Context.Preferred}}
             {{Truncate $des 55 true}}
           </div>
 
@@ -154,7 +154,7 @@
               {{if eq $i 0}}<em>Spouse:</em>
               {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {{end}} 
-              {{WikiLabel .Labels $context.Preferred}}
+              {{WikiLabel .Labels $context.Context.Preferred}}
             {{end}}
             {{range $i, $s := $c.Start}}
               {{if eq $i 0}}(m. {{WikiDateTime $s}}{{end}}{{if not $c.End}}){{end}}
@@ -172,7 +172,7 @@
               <em>Started:</em> {{WikiDateTime $c}} 
               {{range $j, $l := $loc}}
                 {{if eq $j 0}}
-                  - {{WikiLabel .Labels $context.Preferred}}
+                  - {{WikiLabel .Labels $context.Context.Preferred}}
                 {{end}}
               {{end}}
             </div>
@@ -185,7 +185,7 @@
               {{if eq $i 0}}<em>Members:</em>
               {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {{end}} 
-              {{WikiLabel .Labels $context.Preferred}}
+              {{WikiLabel .Labels $context.Context.Preferred}}
             {{end}}
             {{range $i, $s := $c.Start}}
               {{if eq $i 0}}({{WikiDateTime $s}}{{end}}{{if not $c.End}} - ){{end}}
@@ -198,14 +198,14 @@
 
           {{if $wikipedia.Claims.Genre}}
           <div class="pure-u-1 wikipedia_claim">
-            <em>Genre:</em> {{WikiJoin $wikipedia.Claims.Genre $context.Preferred}}
+            <em>Genre:</em> {{WikiJoin $wikipedia.Claims.Genre $context.Context.Preferred}}
           </div>
           {{end}}
 
           {{range $i, $c := $wikipedia.Claims.Height}}
             {{if eq $i 0}}
             <div class="pure-u-1 wikipedia_claim">
-              <em>Height:</em> {{WikiAmount $c $context.Region}}
+              <em>Height:</em> {{WikiAmount $c $context.Context.Region}}
             </div>
             {{end}}
           {{end}}
@@ -213,7 +213,7 @@
           {{range $i, $c := $wikipedia.Claims.Weight}}
             {{if eq $i 0}}
             <div class="pure-u-1 wikipedia_claim">
-              <em>Weight:</em> {{WikiAmount $c $context.Region}}
+              <em>Weight:</em> {{WikiAmount $c $context.Context.Region}}
             </div>
             {{end}}
           {{end}}
@@ -221,7 +221,7 @@
           {{range $i, $c := $wikipedia.Claims.Currency}}
             {{if eq $i 0}}
             <div class="pure-u-1 wikipedia_claim">
-              <em>Currency:</em> {{WikiLabel $c.Labels $context.Preferred}}
+              <em>Currency:</em> {{WikiLabel $c.Labels $context.Context.Preferred}}
             </div>
             {{end}}
           {{end}}
