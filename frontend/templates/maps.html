@@ -76,15 +76,19 @@
             map.setCenter([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]);
           }
         {{else if eq .Instant.Type "wikipedia"}}
-          {{$wikipedia := .Instant|WikipediaItem}}
-          {{if $wikipedia.Claims.Coordinate}}
-            {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
-            directions.setDestination({{WikiLabel .Instant.Solution.Labels .Context.Preferred}});
-            map.setCenter([{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}]);
-          {{else}}
-            $(document).ready(function() {
-              changeParamAndRedirect("t", "");
-            });
+          {{$preferred := .Context.Preferred}}
+          {{$wikipedias := .Instant|WikipediaItem}}
+          {{range $i, $wikipedia := $wikipedias}}
+            {{if $wikipedia.Claims.Coordinate}}
+              {{$labels := $wikipedia.Labels}}
+              {{$coordinate := index $wikipedia.Claims.Coordinate 0}}
+              directions.setDestination({{WikiLabel $labels $preferred}});
+              map.setCenter([{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}]);
+            {{else}}
+              $(document).ready(function() {
+                changeParamAndRedirect("t", "");
+              });
+          {{end}}
           {{end}}
         {{end}}
 
