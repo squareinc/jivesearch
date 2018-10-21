@@ -19,12 +19,14 @@ $(document).ready(function() {
 
   // redirect to a default !bang
   $(document).on('click', '.bang_submit', function(){
-    changeParamAndRedirect("q", $(this).data('location'));
+    params = changeParam("q", $(this).data('location'));
+    redirect(params);
   });
 
   // Traditional Pagination
   $(document).on('click', '.pagination', function(){
-    changeParamAndRedirect("p", $(this).data('page')); 
+    params = changeParam("p", $(this).data('page'));
+    redirect(params);
   });
 
   function isBang(item) {
@@ -41,7 +43,8 @@ $(document).ready(function() {
 
   // Wikipedia disambiguation page link
   $(document).on('click', '.wikipedia_disambiguation', function(){
-    changeParamAndRedirect("q", $(this).data('title')); 
+    params = changeParam("q", $(this).data('title'));
+    redirect(params);
   });
 
   // autocomplete
@@ -109,12 +112,9 @@ $(document).ready(function() {
 
   // redirect "did you mean?" queries
   $("#alternative").on("click", function(){  
-    changeParamAndRedirect("q", $(this).attr("data-alternative"));  
+    params = changeParam("q", $(this).attr("data-alternative")); 
+    redirect(params);
   });
-
-  function queryString(){
-    return window.location.search;
-  }
 
   $("#safesearch").show();
   $("#safesearchbtn").on("click", function(){
@@ -123,26 +123,31 @@ $(document).ready(function() {
 
   $("#safe").on("click", function(){
     var checked = $("#safe").is(':checked') ? "" : "f";
-    changeParamAndRedirect("safe", checked);
+    params = changeParam("safe", checked);
+    redirect(params);
   });
 
   $("#search_filter").on('change', function() {
     var checked = $('input[name=search_filter]:checked', '#search_filter').val();
     console.log(checked);
-    changeParamAndRedirect("f", checked);
+    params = changeParam("f", checked);
+    redirect(params);
   });
 
   $("#all").on("click", function(){
     // we should delete the param but this works also 
-    changeParamAndRedirect("t", "");
+    params = changeParam("t", "");
+    redirect(params);
   });
 
   $("#images").on("click", function(){
-    changeParamAndRedirect("t", "images");
+    params = changeParam("t", "images");
+    redirect(params);
   });
 
   $("#map, #maps").on("click", function(){
-    changeParamAndRedirect("t", "maps");
+    params = changeParam("t", "maps");
+    redirect(params);
   });
 
   var b = browser();

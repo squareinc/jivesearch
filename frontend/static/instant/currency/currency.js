@@ -18,7 +18,8 @@ window.onload = function() {
             if (!isNaN(inputs[i].value)){
                 curr1 = $(selects[0]).find(':selected').attr('currency');
                 curr2 = $(selects[1]).find(':selected').attr('currency');
-                changeParamAndRedirect("q", notional + " " + curr1 + " to " + curr2); 
+                params = changeParam("q", notional + " " + curr1 + " to " + curr2);
+                redirect(params);
             }
         });
     });

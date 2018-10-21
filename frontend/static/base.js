@@ -1,4 +1,4 @@
-var changeParamAndRedirect = function (key, value) {
+var changeParam = function (key, value) {
   var  urlQueryString = document.location.search,
        newParam = key + '=' + value,
        params = '?' + newParam;
@@ -19,5 +19,9 @@ var changeParamAndRedirect = function (key, value) {
 
   // no parameter was set so we don't need the question mark
   params = params == '?' ? '' : params;
+  return params
+};
+
+var redirect = function(params){
   window.location.href = window.location.pathname + params;
 };

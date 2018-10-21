@@ -7,7 +7,8 @@
     <script src="/static/base.js"></script>
     <script>
       $(document).ready(function() {
-        changeParamAndRedirect("t", "");
+        params = changeParam("t", "");
+        redirect(params);
       });
     </script>
   </body>
@@ -86,7 +87,8 @@
               map.setCenter([{{index $coordinate.Longitude 0}}, {{index $coordinate.Latitude 0}}]);
             {{else}}
               $(document).ready(function() {
-                changeParamAndRedirect("t", "");
+                params = changeParam("t", "");
+                redirect(params);
               });
           {{end}}
           {{end}}
