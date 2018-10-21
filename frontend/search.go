@@ -163,6 +163,8 @@ func (f *Frontend) getData(r *http.Request) data {
 		d.Context.Safe = false
 	}
 
+	// Note: We can combine Safe with F. They are only separate for now
+	// because image filter is a boolean but that can be changed to off, moderate and strict.
 	switch strings.TrimSpace(r.FormValue("f")) {
 	case "strict":
 		d.Context.F = search.Strict

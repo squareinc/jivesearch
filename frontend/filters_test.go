@@ -9,6 +9,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/congress"
+	"github.com/jivesearch/jivesearch/search"
 
 	"github.com/jivesearch/jivesearch/instant/econ"
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
@@ -597,6 +598,29 @@ func TestWeatherDailyForecast(t *testing.T) {
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Fatalf("got %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTitle(t *testing.T) {
+	for _, tt := range []struct {
+		s    interface{}
+		want string
+	}{
+		{
+			s:    "you should tItle tHIS strinG",
+			want: "You Should TItle THIS StrinG",
+		},
+		{
+			s:    search.Moderate,
+			want: "Moderate",
+		},
+	} {
+		t.Run(tt.want, func(t *testing.T) {
+			got := title(tt.s)
+			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
 			}
 		})
 	}

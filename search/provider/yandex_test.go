@@ -123,9 +123,35 @@ func TestYandexFetch(t *testing.T) {
 		want  *search.Results
 	}{
 		{
-			name:  "basic",
+			name:  "moderate",
 			args:  args{"jimi hendrix", search.Moderate, language.English, language.MustParseRegion("US"), 25, 1},
 			u:     `https://yandex.com/search/xml?filter=moderate&groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
+			yresp: YandexHendrixResponse,
+			want: &search.Results{
+				Provider: YandexProvider,
+				Count:    6367388,
+				Documents: []*document.Document{
+					doc1, doc2,
+				},
+			},
+		},
+		{
+			name:  "strict",
+			args:  args{"jimi hendrix", search.Strict, language.English, language.MustParseRegion("US"), 25, 1},
+			u:     `https://yandex.com/search/xml?filter=strict&groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
+			yresp: YandexHendrixResponse,
+			want: &search.Results{
+				Provider: YandexProvider,
+				Count:    6367388,
+				Documents: []*document.Document{
+					doc1, doc2,
+				},
+			},
+		},
+		{
+			name:  "off",
+			args:  args{"jimi hendrix", search.Off, language.English, language.MustParseRegion("US"), 25, 1},
+			u:     `https://yandex.com/search/xml?filter=off&groupby=attr%3Dd.mode%3Ddeep.groups-on-page%3D25.docs-in-group%3D1&key=key&l10n=en&page=0&query=jimi+hendrix&showmecaptcha=no&user=user`,
 			yresp: YandexHendrixResponse,
 			want: &search.Results{
 				Provider: YandexProvider,

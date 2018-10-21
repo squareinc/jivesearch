@@ -18,6 +18,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/congress"
+	"github.com/jivesearch/jivesearch/search"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/jivesearch/jivesearch/instant"
@@ -43,6 +44,7 @@ var funcMap = template.FuncMap{
 	"Source":               source,
 	"StripHTML":            stripHTML,
 	"Subtract":             subtract,
+	"Title":                title,
 	"Truncate":             truncate,
 	"WeatherCode":          weatherCode,
 	"WeatherDailyForecast": weatherDailyForecast,
@@ -260,6 +262,18 @@ func source(answer instant.Data) string {
 	}
 
 	return f
+}
+
+func title(i interface{}) string {
+	var s string
+
+	switch i.(type) {
+	case search.Filter:
+		s = string(i.(search.Filter))
+	default:
+		s = i.(string)
+	}
+	return strings.Title(s)
 }
 
 // Preserving words is a crude translation from the python answer:

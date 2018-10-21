@@ -126,6 +126,12 @@ $(document).ready(function() {
     changeParamAndRedirect("safe", checked);
   });
 
+  $("#search_filter").on('change', function() {
+    var checked = $('input[name=search_filter]:checked', '#search_filter').val();
+    console.log(checked);
+    changeParamAndRedirect("f", checked);
+  });
+
   $("#all").on("click", function(){
     // we should delete the param but this works also 
     changeParamAndRedirect("t", "");
