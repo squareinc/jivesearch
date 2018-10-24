@@ -31,14 +31,14 @@ var Moderate Filter = "moderate"
 
 // Results are the core search results from a query
 type Results struct {
-	Provider   Provider
-	Count      int64                `json:"count"`
-	Page       string               `json:"page"`
-	Previous   string               `json:"previous"`
+	Provider   Provider             `json:"-"`
+	Count      int64                `json:"-"`
+	Page       string               `json:"-"`
+	Previous   string               `json:"-"`
 	Next       string               `json:"next"`
-	Last       string               `json:"last"`
-	Pagination []string             `json:"pagination"`
-	Documents  []*document.Document `json:"links"`
+	Last       string               `json:"-"`
+	Pagination []string             `json:"-"`
+	Documents  []*document.Document `json:"documents"`
 }
 
 // AddPagination adds pagination to the search results

@@ -29,6 +29,7 @@ type Context struct {
 	F            search.Filter `json:"-"`
 	lang         language.Tag
 	R            string          `json:"-"`
+	S            string          `json:"-"`
 	N            string          `json:"-"`
 	T            string          `json:"-"`
 	Ref          string          `json:"-"`
@@ -48,10 +49,10 @@ type DefaultBang struct {
 
 // Results is the results from search, instant, wikipedia, etc
 type Results struct {
-	Alternative string          `json:"alternative"`
-	Images      *img.Results    `json:"images"`
-	Instant     instant.Data    `json:"instant"`
-	Search      *search.Results `json:"search"`
+	Alternative string          `json:"-"`
+	Images      *img.Results    `json:"images,omitempty"`
+	Instant     instant.Data    `json:"-"`
+	Search      *search.Results `json:"search,omitempty"`
 }
 
 // Instant is a wrapper to facilitate custom unmarshalling
@@ -60,8 +61,8 @@ type Instant struct {
 }
 
 type data struct {
-	Brand
-	MapBoxKey string
+	Brand     `json:"-"`
+	MapBoxKey string `json:"-"`
 	Context   `json:"-"`
 	Results
 }
@@ -181,6 +182,7 @@ func (f *Frontend) getData(r *http.Request) data {
 	d.Context.L = strings.TrimSpace(r.FormValue("l"))
 	d.Context.N = strings.TrimSpace(r.FormValue("n"))
 	d.Context.R = strings.TrimSpace(r.FormValue("r"))
+	d.Context.S = strings.TrimSpace(r.FormValue("s"))
 	d.Context.Ref = strings.TrimSpace(r.FormValue("ref"))
 	d.Context.T = strings.TrimSpace(r.FormValue("t"))
 	d.Context.DefaultBangs = f.defaultBangs(r)
@@ -339,6 +341,13 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 			}
 			stats.instant = time.Since(strt).Round(time.Microsecond)
 		case d.Search = <-sc:
+			for _, doc := range d.Search.Documents {
+				// Truncate Title/Description here so the preserve-worded
+				// version is available for infinite scrolling.
+				doc.Title = truncate(doc.Title, 60, true)
+				doc.Description = truncate(doc.Description, 215, true)
+			}
+
 			stats.search = time.Since(strt).Round(time.Millisecond)
 		case err := <-ac:
 			if err != nil {

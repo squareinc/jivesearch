@@ -29,6 +29,47 @@ $(document).ready(function() {
     redirect(params);
   });
 
+  // Infinite Scroll
+  var fetching = false;
+  $(window).scroll(function() {
+    if (($("#infinite_scroll").length == 1) && (fetching===false) && ($(window).scrollTop() == $(document).height() - $(window).height())) {
+      fetching = true;
+      var page = $("#next_page").attr("data-page");
+      if (page === undefined){
+        return;
+      }
+      var params = changeParam("p", page);
+      params = params + "&o=json"; // add the new param
+      var u = window.location.pathname + params;
+      $.ajax({
+        url: u,
+      }).done(function(data) {
+        $("#next_page").attr("data-page", data.search.next);
+        var i;
+        for (i = 0; i < data.search.documents.length; i++) {
+          /*
+          This is a workaround for empty search results we get sometimes...
+          can't simply clone as we may not have results for first page.
+          */
+         var doc = data.search.documents[i];
+         var h = `<div class="pure-u-1">
+            <div class="pure-u-22-24 pure-u-md-21-24 result">
+              <div class="title"><a href="`+doc.id+`" rel="noopener">`+doc.title+`</a></div>
+              <div class="url">`+doc.id.substring(0,80)+`</div>
+              <div class="description">`+doc.description+`</div>
+            </div>
+          </div>`;
+
+          $("#documents").append(h);
+        }
+        
+        fetching = false;
+      }).always(function(data) {
+        
+      });
+    }
+  });  
+
   function isBang(item) {
     return item.hasOwnProperty("trigger");
   }
