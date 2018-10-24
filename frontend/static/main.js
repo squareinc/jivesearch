@@ -170,7 +170,6 @@ $(document).ready(function() {
 
   $("#search_filter").on('change', function() {
     var checked = $('input[name=search_filter]:checked', '#search_filter').val();
-    console.log(checked);
     params = changeParam("f", checked);
     redirect(params);
   });

@@ -6,13 +6,14 @@
 <div id="search_container">
   <div class="ui-widget">
     <form id="form" name="x" method="GET" action="/" role="search">
+      {{if .Context.F}}<input type="hidden" name="f" value="{{.Context.F}}"/>{{end}}
       {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
-      {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
-      {{if .Context.Ref}}<input type="hidden" name="ref" value="{{.Context.Ref}}"/>{{end}}
       {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
+      {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
+      {{if .Context.Ref}}<input type="hidden" name="ref" value="{{.Context.Ref}}"/>{{end}}     
       {{if .Context.S}}<input type="hidden" name="s" value="{{.Context.S}}"/>{{end}}
-      {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
       {{if eq .Context.Safe false}}<input type="hidden" name="safe" value="f"/>{{end}}
+      {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
       <!--don't set 'p' param...always force it back to page 1 on new query-->
     	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
           autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
