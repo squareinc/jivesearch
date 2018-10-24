@@ -134,13 +134,13 @@
           <button id="safesearchbtn">SafeSearch <span id="safesearch_selection">{{$context.F | Title}}</span></button>
           <div id="safesearch-content" style="min-width: 250px;">
             <form id="search_filter">
-              <label class="safesearch-content-label" for="safe" style="padding: 10px 10px;">
+              <label class="safesearch-content-label" for="safe" style="padding: 7px 10px;">
                 <input type="radio" name="search_filter" value="strict" {{if eq $context.F "strict"}}checked="checked"{{end}}> Strict </br>
               </label>
-              <label class="safesearch-content-label" for="safe" style="padding: 10px 10px;">
+              <label class="safesearch-content-label" for="safe" style="padding: 7px 10px;">
                 <input type="radio" name="search_filter" value="moderate" {{if eq $context.F "moderate"}}checked="checked"{{end}}> Moderate </br>
               </label>
-              <label class="safesearch-content-label" for="safe" style="padding: 10px 10px;">
+              <label class="safesearch-content-label" for="safe" style="padding: 7px 10px;">
                 <input type="radio" name="search_filter" value="off" {{if eq $context.F "off"}}checked="checked"{{end}}> Off </br>
               </label>
             </form>
