@@ -3,7 +3,7 @@ $(document).ready(function() {
   // Highlighting here ensures we don't introduce unsafe characters.
   // This is not ideal and should be replaced with a template 
   // function in Go as this will break if javascript is disabled.
-  $(".description").each(function(index, value){
+  var highlight = function(value){
     var q = String($("#query").data("query")).split(" ");
     var content = $(value).html();
     var c = content.split(" ");
@@ -14,7 +14,11 @@ $(document).ready(function() {
         }
       }
     }
-    $(value).html(c.join(" "));
+    return c.join(" ")
+  }
+
+  $(".description").each(function(index, value){
+    $(value).html(highlight(value));
   });
 
   // redirect to a default !bang
@@ -53,13 +57,15 @@ $(document).ready(function() {
           can't simply clone as we may not have results for first page.
           */
          var doc = data.search.documents[i];
+         var desc = highlight(`<div class="description">`+doc.description+`</div>`); // bit redundant to repeat the <div tag here...
          var h = `<div class="pure-u-1">
             <div class="pure-u-22-24 pure-u-md-21-24 result">
               <div class="title"><a href="`+doc.id+`" rel="noopener">`+doc.title+`</a></div>
               <div class="url">`+doc.id.substring(0,80)+`</div>
-              <div class="description">`+doc.description+`</div>
+              <div class="description">`+desc+`</div>
             </div>
           </div>`;
+
           $("#documents").append(h);
         }
         fetching = false;
