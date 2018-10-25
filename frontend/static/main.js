@@ -34,6 +34,7 @@ $(document).ready(function() {
   $(window).scroll(function() {
     if (($("#infinite_scroll").length == 1) && (fetching===false) && ($(window).scrollTop() == $(document).height() - $(window).height())) {
       fetching = true;
+      $("#loading").show();
       var page = $("#next_page").attr("data-page");
       if (page === undefined){
         return;
@@ -59,13 +60,11 @@ $(document).ready(function() {
               <div class="description">`+doc.description+`</div>
             </div>
           </div>`;
-
           $("#documents").append(h);
         }
-        
         fetching = false;
       }).always(function(data) {
-        
+        $("#loading").hide();
       });
     }
   });  

@@ -49,18 +49,13 @@
       </div>
       {{end}}
     </div>
-    {{if eq .Search.Provider "Yandex"}}
-    <div class="pure-u-1" style="display:table-cell;vertical-align:middle;">
-      <span class="image" style="margin-left:5px;">
-        <img src="/static/providers/yandex-for-white-background.png"/>
-        <span style="display:table-cell;font-size:16px;color:#444;">has found {{.Search.Count|Commafy}} answers</span>
-      </span>        
-    </div>
-    {{end}}
     {{if .Search.Pagination}}
       {{if .S}}
       <div class="pure-u-1" style="text-align:center;padding-top:10px;padding-bottom:35px;">
       {{else}}
+      <div id="loading" class="pure-u-20-24" style="margin-top:5px;margin-bottom:15px;">
+        <img src="/static/loading.gif" alt="loading" width="16" height="16" style="display:block;margin:auto;" />
+      </div>
       <div id="infinite_scroll" class="pure-u-1" style="text-align:center;padding-top:10px;padding-bottom:35px;display:none;">
       {{end}}
         <div class="pure-u-1" style="display:inline-block;color:#3367e5;">
@@ -75,6 +70,14 @@
           {{end}}
         </div>
       </div>
+    {{end}}
+    {{if eq .Search.Provider "Yandex"}}
+    <div class="pure-u-1" style="display:table-cell;vertical-align:middle;">
+      <span class="image" style="margin-left:5px;">
+        <img src="/static/providers/yandex-for-white-background.png"/>
+        <span style="display:table-cell;font-size:16px;color:#444;">has found {{.Search.Count|Commafy}} answers</span>
+      </span>        
+    </div>
     {{end}}
   {{else}}
   <div class="pure-u-1">
