@@ -34,6 +34,20 @@ $(document).ready(function() {
   });
 
   // Infinite Scroll
+  // ===== Scroll to Top ==== 
+  $(window).scroll(function() {
+    if ($(this).scrollTop() >= 400) {     // If page is scrolled more than 400px
+      $('#return-to-top').fadeIn(200);    // Fade in the arrow
+    } else {
+      $('#return-to-top').fadeOut(200);   // Else fade out the arrow
+    }
+  });
+  $('#return-to-top').click(function() {  
+    $('body,html').animate({
+      scrollTop : 0                       
+    }, 500);
+  });
+  
   var fetching = false;
   $(window).scroll(function() {
     if (($("#infinite_scroll").length == 1) && (fetching===false) && ($(window).scrollTop() == $(document).height() - $(window).height())) {
