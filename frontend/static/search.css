@@ -106,6 +106,17 @@ i {
 .social_media:hover {
     text-decoration: underline;
 }
+.wikipedia_item {
+  cursor: pointer;
+  text-decoration: none;
+  color: #1a0dab;
+}
+.wikipedia_item:hover {
+  text-decoration: underline;
+}
+.wikipedia_item:visited {
+  color: #609;
+}
 .arrow {
     margin: 2px 0;
     display: block;

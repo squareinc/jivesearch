@@ -101,8 +101,8 @@ $(document).ready(function() {
     return label
   }
 
-  // Wikipedia disambiguation page link
-  $(document).on('click', '.wikipedia_disambiguation', function(){
+  // Wikipedia disambiguation page link & other links w/in Wikipedia snippets
+  $(document).on('click', '.wikipedia_disambiguation, .wikipedia_item', function(){
     params = changeParam("q", $(this).data('title'));
     redirect(params);
   });

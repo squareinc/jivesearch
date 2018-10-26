@@ -153,8 +153,9 @@
             {{range $c.Item}}
               {{if eq $i 0}}<em>Spouse:</em>
               {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {{end}} 
-              {{WikiLabel .Labels $context.Context.Preferred}}
+              {{end}}
+              {{$item := WikiLabel .Labels $context.Context.Preferred}}
+              <span class="wikipedia_item" data-title="{{$item}}">{{$item}}</span>
             {{end}}
             {{range $i, $s := $c.Start}}
               {{if eq $i 0}}(m. {{WikiDateTime $s}}{{end}}{{if not $c.End}}){{end}}
@@ -184,15 +185,16 @@
             {{range $c.Item}}
               {{if eq $i 0}}<em>Members:</em>
               {{else}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {{end}} 
-              {{WikiLabel .Labels $context.Context.Preferred}}
+              {{end}}
+              {{$item := WikiLabel .Labels $context.Context.Preferred}}
+              <span class="wikipedia_item" data-title="{{$item}}">{{$item}}</span>
             {{end}}
             {{range $i, $s := $c.Start}}
               {{if eq $i 0}}({{WikiDateTime $s}}{{end}}{{if not $c.End}} - ){{end}}
             {{end}}
             {{range $i, $e := $c.End}}
               {{if eq $i 0}}- {{WikiDateTime $e}}){{end}}
-            {{end}}              
+            {{end}}
             </div>
           {{end}}
 
