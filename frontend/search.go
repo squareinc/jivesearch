@@ -26,6 +26,7 @@ import (
 type Context struct {
 	Q            string        `json:"query"`
 	L            string        `json:"-"`
+	D            string        `json:"-"`
 	F            search.Filter `json:"-"`
 	lang         language.Tag
 	R            string          `json:"-"`
@@ -179,6 +180,7 @@ func (f *Frontend) getData(r *http.Request) data {
 		return d
 	}
 
+	d.Context.D = strings.TrimSpace(r.FormValue("d"))
 	d.Context.L = strings.TrimSpace(r.FormValue("l"))
 	d.Context.N = strings.TrimSpace(r.FormValue("n"))
 	d.Context.R = strings.TrimSpace(r.FormValue("r"))
