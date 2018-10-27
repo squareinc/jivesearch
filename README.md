@@ -8,7 +8,7 @@
 
 
 <p align="center">
-Jive Search is the open source search engine that does not track you. Search privately, now : https://jivesearch.com
+Jive Search is the open source search engine that doesn't track you. Search privately, now : https://jivesearch.com
 </p>
 
 <br>
