@@ -17,7 +17,7 @@
       {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
       <!--don't set 'p' param...always force it back to page 1 on new query-->
     	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
-          autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
+        autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />
       <button id="search_submit" type="submit" tabindex="2"><i class="icon-search" aria-hidden="true"></i></button>
     </form>
   </div>
