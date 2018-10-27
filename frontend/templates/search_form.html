@@ -7,7 +7,7 @@
   <div class="ui-widget">
     <form id="form" name="x" method="GET" action="/" role="search">
       {{if .Context.D}}<input type="hidden" name="d" value="{{.Context.D}}"/>{{end}}
-      {{if .Context.F}}<input type="hidden" name="f" value="{{.Context.F}}"/>{{end}}
+      {{if ne .Context.F "moderate"}}<input type="hidden" name="f" value="{{.Context.F}}"/>{{end}}
       {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}
       {{if .Context.N}}<input type="hidden" name="n" value="{{.Context.N}}"/>{{end}}
       {{if .Context.R}}<input type="hidden" name="r" value="{{.Context.R}}"/>{{end}}
