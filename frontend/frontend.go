@@ -137,8 +137,29 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				rsp.status, rsp.err = http.StatusInternalServerError, err
 				errHandler(w, rsp)
 			}
-		case http.StatusFound: // !bang
-			http.Redirect(w, r, rsp.redirect, http.StatusFound)
+		case http.StatusFound:
+			switch rsp.data.(type) {
+			case map[string][]string: // POST request
+				// The http spec indicates 3xx redirects cannot change the
+				// method (e.g. GET to POST). Thus, the code below with
+				// http.Redirect will not work.
+				/*
+					m := rsp.data.(map[string][]string)
+					j, err := json.Marshal(m)
+					if err != nil {
+						log.Info.Println(err)
+					}
+
+					r.Method = "POST"
+					r.URL, _ = url.Parse(rsp.redirect)
+					r.RequestURI = rsp.redirect
+					r.Body = ioutil.NopCloser(bytes.NewReader(j))
+					r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+					http.Redirect(w, r, rsp.redirect, http.StatusMovedPermanently)
+				*/
+			default: // !bang
+				http.Redirect(w, r, rsp.redirect, http.StatusFound)
+			}
 		case http.StatusBadRequest, http.StatusInternalServerError:
 			errHandler(w, rsp)
 		default:

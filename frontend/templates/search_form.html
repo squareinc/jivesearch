@@ -5,7 +5,7 @@
 {{define "search_form"}}
 <div id="search_container">
   <div class="ui-widget">
-    <form id="form" name="x" method="GET" action="/" role="search">
+    <form id="form" name="x" method="{{if .Context.POST}}POST{{else}}GET{{end}}" action="/" role="search">
       {{if .Context.D}}<input type="hidden" name="d" value="{{.Context.D}}"/>{{end}}
       {{if ne .Context.F "moderate"}}<input type="hidden" name="f" value="{{.Context.F}}"/>{{end}}
       {{if .Context.L}}<input type="hidden" name="l" value="{{.Context.L}}"/>{{end}}

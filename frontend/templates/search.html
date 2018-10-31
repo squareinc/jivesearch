@@ -1,4 +1,6 @@
-{{define "title"}}{{if .Context.Q}}{{.Context.Q}} - {{end}}{{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}{{end}}
+{{define "title"}}
+  {{if .Context.POST}}{{else if .Context.Q}}{{.Context.Q}} - {{end}}{{.Brand.Name}}
+{{end}}
 
 {{define "css"}}
   {{if .Context.Q}}

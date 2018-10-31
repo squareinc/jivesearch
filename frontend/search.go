@@ -29,6 +29,7 @@ type Context struct {
 	D            string        `json:"-"`
 	F            search.Filter `json:"-"`
 	lang         language.Tag
+	POST         bool            `json:"-"`
 	R            string          `json:"-"`
 	S            string          `json:"-"`
 	N            string          `json:"-"`
@@ -151,6 +152,8 @@ func (f *Frontend) addQuery(q string) error {
 }
 
 func (f *Frontend) getData(r *http.Request) data {
+	r.ParseForm() // for POST requests
+
 	d := data{
 		Brand:     f.Brand,
 		MapBoxKey: f.MapBoxKey,
@@ -183,6 +186,7 @@ func (f *Frontend) getData(r *http.Request) data {
 	d.Context.D = strings.TrimSpace(r.FormValue("d"))
 	d.Context.L = strings.TrimSpace(r.FormValue("l"))
 	d.Context.N = strings.TrimSpace(r.FormValue("n"))
+	d.Context.POST = strings.ToLower(strings.TrimSpace(r.FormValue("post"))) == "true"
 	d.Context.R = strings.TrimSpace(r.FormValue("r"))
 	d.Context.S = strings.TrimSpace(r.FormValue("s"))
 	d.Context.Ref = strings.TrimSpace(r.FormValue("ref"))
@@ -225,6 +229,26 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 	if d.Context.Q == "" {
 		return resp
 	}
+
+	// if they sent a GET request but want POST then redirect them
+	// The http spec indicates 3xx redirects cannot change the
+	// method (e.g. GET to POST). Even if we hack around http.Redirect()
+	// it isn't guaranteed that all browsers would turn it into a POST request.
+	// Perhaps a better way is to send to a page with a POST form then submit that form via JavaScript.
+	/*
+		if r.Method == "GET" && d.POST {
+			m := map[string][]string{}
+			for k, v := range r.URL.Query() {
+				m[k] = v
+			}
+
+			return &response{
+				status:   302,
+				redirect: "/",
+				data:     m,
+			}
+		}
+	*/
 
 	// is it a !bang? Redirect them
 	if bng, loc, ok := f.Bangs.Detect(d.Context.Q, d.Context.Region, d.Context.lang); ok {
