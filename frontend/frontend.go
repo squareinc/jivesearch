@@ -155,7 +155,7 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					r.RequestURI = rsp.redirect
 					r.Body = ioutil.NopCloser(bytes.NewReader(j))
 					r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-					http.Redirect(w, r, rsp.redirect, http.StatusMovedPermanently)
+					http.Redirect(w, r, rsp.redirect, http.StatusFound)
 				*/
 			default: // !bang
 				http.Redirect(w, r, rsp.redirect, http.StatusFound)

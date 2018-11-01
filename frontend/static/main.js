@@ -50,7 +50,7 @@ $(document).ready(function() {
   
   var fetching = false;
   $(window).scroll(function() {
-    if (($("#infinite_scroll").length == 1) && (fetching===false) && ($(window).scrollTop() == $(document).height() - $(window).height())) {
+    if (($("#infinite_scroll").length == 1) && (fetching===false) && ($(window).scrollTop() == ($(document).height() - $(window).height())) - 25) {
       fetching = true;
       $("#loading").show();
       var page = $("#next_page").attr("data-page");
