@@ -96,8 +96,8 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Filetype search
     - [x] Language & Region
     - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
-    - [ ] Proxy
-    - [ ] SafeSearch    
+    - [ ] Proxy Links
+    - [x] SafeSearch    
     - [ ] Time Search (past year/month/day/hour, etc.
     - [x] 3rd party search providers
         - [x] Yandex API
@@ -110,7 +110,7 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Flight Info & Status
     - [x] JavaScript-based answers
         - [x] Basic calculator
-            - [ ] Mortgage, financial and other calculators
+            - [x] Mortgage, financial and other calculators
         - [x] CSS/JavaScript/JSON/etc minifier and prettifier
         - [x] Converters (foreign exchange, meters to feet, mb to gb, etc...)
     - [x] Maps
