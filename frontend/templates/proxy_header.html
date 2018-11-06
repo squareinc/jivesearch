@@ -1,0 +1,21 @@
+{{define "title"}}About {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}{{end}}
+
+{{define "css"}}
+<link rel="stylesheet" href="/static/search.css">
+<style>
+  body{
+    padding: 0;
+  }
+</style>
+{{end}}
+
+{{define "javascript"}}{{end}}
+
+{{define "content"}}
+<div class="pure-u-1" style="background-color:#efefef;">
+  <div class="pure-u-1 pure-u-xl-2-24 spacer" style="text-align:center;">
+    <a href="/">{{template "small_logo" .}}</a>
+  </div>
+  <div class="pure-u-1 pure-u-xl-22-24">{{template "search_form" .}}</div>
+</div>
+{{end}}

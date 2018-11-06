@@ -1,0 +1,23 @@
+{{define "title"}}About {{if .Brand.Name}}{{.Brand.Name}}{{else}}Jive Search{{end}}{{end}}
+
+{{define "css"}}
+<link rel="stylesheet" href="/static/search.css">
+<style>
+body{
+  padding: 0;
+}
+</style>
+{{end}}
+
+{{define "javascript"}}{{end}}
+
+{{define "content"}}
+<div id="container" class="pure-g">
+  <div class="pure-u-1">
+      <iframe scrolling="no" height="60px" style="height: 60px; margin: 0px; z-index: 9999; position: fixed; top: 0px; width: 1px; min-width: 100%;" frameborder="0" src="/proxy_header"></iframe>
+  </div>
+  <div class="pure-u-1">
+    <iframe srcdoc="{{.HTML}}" frameborder="0" scrolling="yes" style="padding-top:60px;position:absolute;width:1px;min-width:100%;overflow:auto !important;box-sizing: border-box;" height="100%" width="100%"></iframe>
+  </div>
+</div>
+{{end}}

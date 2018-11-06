@@ -285,6 +285,24 @@ var ParseTemplates = func() {
 				"templates/opensearch.xml",
 			),
 	)
+	templates["proxy_header"] = template.Must(
+		template.New("base.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/base.html",
+				"templates/search_form.html",
+				"templates/proxy_header.html",
+			),
+	)
+	templates["proxy"] = template.Must(
+		template.New("base.html").
+			Funcs(funcMap).
+			ParseFiles(
+				"templates/base.html",
+				"templates/search_form.html",
+				"templates/proxy.html",
+			),
+	)
 	templates["search"] = template.Must(
 		template.New("base.html").
 			Funcs(funcMap).
