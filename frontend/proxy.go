@@ -107,17 +107,23 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("img").Each(func(i int, s *goquery.Selection) {
 		for _, src := range []string{"src", "srcset"} {
 			if lnk, ok := s.Attr(src); ok {
+				if lnk == "" {
+					continue
+				}
+
+				if src == "srcset" {
+					lnk = strings.Fields(lnk)[0]
+				}
+
 				u, err := url.Parse(lnk)
 				if err != nil {
 					log.Info.Println(err)
 				}
 
-				u, err = createProxyLink(base.ResolveReference(u))
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				s.SetAttr(src, u.String())
+				u = base.ResolveReference(u)
+				key := hmacKey(u.String())
+				l := fmt.Sprintf("/image/,s%v/%v", key, u.String())
+				s.SetAttr(src, l)
 			}
 		}
 	})
@@ -138,8 +144,6 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 				if err != nil {
 					log.Info.Println(err)
 				}
-
-				fmt.Println("here:", base)
 
 				u = base.ResolveReference(u)
 				res, err := get(u.String())
@@ -181,7 +185,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	if err != nil {
 		log.Info.Println(err)
 	}
-	fmt.Println(h)
+	//fmt.Println(h)
 
 	resp.data = proxyResponse{
 		Brand: f.Brand,
