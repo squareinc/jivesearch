@@ -53,8 +53,6 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		log.Info.Println(err)
 	}
 
-	fmt.Println(base)
-
 	res, err := get(base.String())
 	if err != nil {
 		log.Info.Println(err)
@@ -107,12 +105,13 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("img").Each(func(i int, s *goquery.Selection) {
 		for _, src := range []string{"src", "srcset"} {
 			if lnk, ok := s.Attr(src); ok {
-				if lnk == "" {
+				if lnk == "" || isBase64(lnk) {
 					continue
 				}
 
+				fields := strings.Fields(lnk)
 				if src == "srcset" {
-					lnk = strings.Fields(lnk)[0]
+					lnk = fields[0]
 				}
 
 				u, err := url.Parse(lnk)
@@ -123,6 +122,10 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 				u = base.ResolveReference(u)
 				key := hmacKey(u.String())
 				l := fmt.Sprintf("/image/,s%v/%v", key, u.String())
+
+				if len(fields) > 1 { // include the responsive size if srcset
+					l = fmt.Sprintf("%v %v", l, strings.Join(fields, " "))
+				}
 				s.SetAttr(src, l)
 			}
 		}
@@ -130,7 +133,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	// proxy url() within style tags
 	doc.Find("style").Each(func(i int, s *goquery.Selection) {
-		h := replaceCSS(s.Text())
+		h := replaceCSS(base, s.Text())
 
 		// replace the link with the css
 		s.ReplaceWithHtml(fmt.Sprintf(`<style>%v</style>`, h))
@@ -158,7 +161,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 					log.Info.Println(err)
 				}
 
-				st := replaceCSS(string(h))
+				st := replaceCSS(base, string(h))
 
 				// replace the link with the css
 				s.ReplaceWithHtml(fmt.Sprintf(`<style>%v</style>`, st))
@@ -195,18 +198,53 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	return resp
 }
 
-// can have ', ", or no quotes
-var reCSSLinkReplacer = regexp.MustCompile(`url\(['"]?(?P<url>.*?)['"]?\)`)
+func isBase64(s string) bool {
+	return strings.HasPrefix(strings.ToLower(s), "data:")
+}
 
-func replaceCSS(s string) string {
+// can have ', ", or no quotes
+var reCSSLinkReplacer = regexp.MustCompile(`(url\(['"]?)(?P<link>.*?)['"]?\)`)
+
+// https://stackoverflow.com/a/28005189/522962
+func replaceAllSubmatchFunc(re *regexp.Regexp, b []byte, f func(s []byte) []byte) []byte {
+	idxs := re.FindAllSubmatchIndex(b, -1)
+	if len(idxs) == 0 {
+		return b
+	}
+	l := len(idxs)
+	ret := append([]byte{}, b[:idxs[0][0]]...)
+	for i, pair := range idxs {
+		ret = append(ret, f(b[pair[4]:pair[5]])...) // 2 & 3 are <url>. 4 & 5 are the <link>
+		if i+1 < l {
+			ret = append(ret, b[pair[1]:idxs[i+1][0]]...)
+		}
+	}
+	ret = append(ret, b[idxs[len(idxs)-1][1]:]...)
+	return ret
+}
+
+func replaceCSS(base *url.URL, s string) string {
 	// replace any urls with a proxied link
-	s = reCSSLinkReplacer.ReplaceAllStringFunc(s, func(m string) string {
-		key := hmacKey(m)
-		u := fmt.Sprintf("/image/,s%v/%v", key, m)
-		return fmt.Sprintf("url(/proxy/%v)", u)
+	ss := replaceAllSubmatchFunc(reCSSLinkReplacer, []byte(s), func(ss []byte) []byte {
+		if isBase64(string(ss)) { // base64 image
+			return []byte(s)
+		}
+
+		m := string(ss)
+
+		u, err := url.Parse(m)
+		if err != nil {
+			log.Info.Println(err)
+		}
+
+		u = base.ResolveReference(u)
+
+		key := hmacKey(u.String())
+		uu := fmt.Sprintf("/image/,s%v/%v", key, u.String())
+		return []byte(fmt.Sprintf("url(%q)", uu))
 	})
 
-	return s
+	return string(ss)
 }
 
 func createProxyLink(u *url.URL) (*url.URL, error) {
