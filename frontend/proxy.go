@@ -86,12 +86,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		for _, href := range []string{"href"} {
 			if lnk, ok := s.Attr(href); ok {
-				u, err := url.Parse(lnk)
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				u, err = createProxyLink(base.ResolveReference(u))
+				u, err := createProxyLink(base, lnk)
 				if err != nil {
 					log.Info.Println(err)
 				}
@@ -105,28 +100,31 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("img").Each(func(i int, s *goquery.Selection) {
 		for _, src := range []string{"src", "srcset"} {
 			if lnk, ok := s.Attr(src); ok {
-				if lnk == "" || isBase64(lnk) {
+				if lnk == "" {
 					continue
 				}
 
-				fields := strings.Fields(lnk)
-				if src == "srcset" {
-					lnk = fields[0]
+				matches := reSrcSet.FindAllStringSubmatch(lnk, -1)
+				if len(matches) == 0 {
+					u := createProxyImage(base, lnk)
+					s.SetAttr(src, u)
+					continue
 				}
 
-				u, err := url.Parse(lnk)
-				if err != nil {
-					log.Info.Println(err)
+				lnks := []string{}
+
+				for _, m := range matches {
+					if isBase64(m[1]) {
+						lnks = append(lnks, m[1])
+						continue
+					}
+
+					u := createProxyImage(base, m[1])
+
+					lnks = append(lnks, fmt.Sprintf("%v %v", u, m[2]))
 				}
 
-				u = base.ResolveReference(u)
-				key := hmacKey(u.String())
-				l := fmt.Sprintf("/image/,s%v/%v", key, u.String())
-
-				if len(fields) > 1 { // include the responsive size if srcset
-					l = fmt.Sprintf("%v %v", l, strings.Join(fields, " "))
-				}
-				s.SetAttr(src, l)
+				s.SetAttr(src, strings.Join(lnks, " "))
 			}
 		}
 	})
@@ -168,12 +166,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 			}
 		} else { // just proxy the href
 			if lnk, ok := s.Attr("href"); ok {
-				u, err := url.Parse(lnk)
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				u, err = createProxyLink(base.ResolveReference(u))
+				u, err := createProxyLink(base, lnk)
 				if err != nil {
 					log.Info.Println(err)
 				}
@@ -204,6 +197,7 @@ func isBase64(s string) bool {
 
 // can have ', ", or no quotes
 var reCSSLinkReplacer = regexp.MustCompile(`(url\(['"]?)(?P<link>.*?)['"]?\)`)
+var reSrcSet = regexp.MustCompile(`(?P<url>.*?),? (?P<size>[0-9]+(\.[0-9]+)?[wx],?)?\s?`)
 
 // https://stackoverflow.com/a/28005189/522962
 func replaceAllSubmatchFunc(re *regexp.Regexp, b []byte, f func(s []byte) []byte) []byte {
@@ -247,7 +241,26 @@ func replaceCSS(base *url.URL, s string) string {
 	return string(ss)
 }
 
-func createProxyLink(u *url.URL) (*url.URL, error) {
+func createProxyImage(base *url.URL, lnk string) string {
+	u, err := url.Parse(lnk)
+	if err != nil {
+		panic(err)
+	}
+
+	u = base.ResolveReference(u)
+	key := hmacKey(u.String())
+	l := fmt.Sprintf("/image/,s%v/%v", key, u.String())
+	return l
+}
+
+func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
+	u, err := url.Parse(lnk)
+	if err != nil {
+		panic(err)
+	}
+
+	u = base.ResolveReference(u)
+
 	uu, err := url.Parse("/proxy")
 	if err != nil {
 		return nil, err
