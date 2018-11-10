@@ -110,6 +110,16 @@ func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					errHandler(w, rsp)
 					return
 				}
+			case "proxy_css":
+				w.Header().Set("Content-Type", "text/css; charset=utf-8")
+
+				b := []byte(rsp.data.(string))
+
+				if _, err := buf.Write(b); err != nil {
+					rsp.status, rsp.err = http.StatusInternalServerError, err
+					errHandler(w, rsp)
+					return
+				}
 			default: // parse the template
 				switch rsp.template {
 				case "opensearch":

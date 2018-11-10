@@ -43,6 +43,31 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		err: nil,
 	}
 
+	css := r.FormValue("css")
+	if css != "" {
+		u, err := url.Parse(css)
+		if err != nil {
+			log.Info.Println(err)
+		}
+
+		res, err := get(u.String())
+		if err != nil {
+			log.Info.Println(err)
+		}
+
+		defer res.Body.Close()
+
+		h, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			log.Info.Println(err)
+		}
+
+		resp.data = replaceCSS(u, string(h))
+
+		resp.template = "proxy_css"
+		return resp
+	}
+
 	u := r.FormValue("u")
 	if u == "" {
 		return resp
@@ -64,11 +89,6 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	if err != nil {
 		log.Info.Println(err)
 	}
-
-	fmt.Println("Yo, we are removing all <li> tags....remember to remove this part...")
-	doc.Find("li").Each(func(i int, s *goquery.Selection) {
-		s.Remove()
-	})
 
 	// TODO: remove all comments...no need for them
 
@@ -141,32 +161,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("link").Each(func(i int, s *goquery.Selection) {
 		if rel, ok := s.Attr("rel"); ok && strings.ToLower(rel) == "stylesheet" {
 			if lnk, ok := s.Attr("href"); ok {
-				u, err := url.Parse(lnk)
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				u = base.ResolveReference(u)
-				res, err := get(u.String())
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				defer res.Body.Close()
-
-				h, err := ioutil.ReadAll(res.Body)
-				if err != nil {
-					log.Info.Println(err)
-				}
-
-				st := replaceCSS(base, string(h))
-
-				// replace the link with the css
-				s.ReplaceWithHtml(fmt.Sprintf(`<style>%v</style>`, st))
-			}
-		} else { // just proxy the href
-			if lnk, ok := s.Attr("href"); ok {
-				u, err := createProxyLink(base, lnk)
+				u, err := createProxyCSSLink(base, lnk)
 				if err != nil {
 					log.Info.Println(err)
 				}
@@ -177,11 +172,9 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	})
 
 	h, err := doc.Html()
-	//_, err = doc.Html()
 	if err != nil {
 		log.Info.Println(err)
 	}
-	//fmt.Println(h)
 
 	resp.data = proxyResponse{
 		Brand: f.Brand,
@@ -221,7 +214,7 @@ func replaceCSS(base *url.URL, s string) string {
 	// replace any urls with a proxied link
 	ss := replaceAllSubmatchFunc(reCSSLinkReplacer, []byte(s), func(ss []byte) []byte {
 		if isBase64(string(ss)) { // base64 image
-			return []byte(s)
+			return []byte(fmt.Sprintf("url(%q)", ss))
 		}
 
 		m := string(ss)
@@ -253,6 +246,26 @@ func createProxyImage(base *url.URL, lnk string) string {
 	return l
 }
 
+func createProxyCSSLink(base *url.URL, lnk string) (*url.URL, error) {
+	u, err := url.Parse(lnk)
+	if err != nil {
+		panic(err)
+	}
+
+	u = base.ResolveReference(u)
+
+	uu, err := url.Parse("/proxy")
+	if err != nil {
+		return nil, err
+	}
+
+	q := uu.Query()
+	q.Add("key", hmacKey(u.String()))
+	q.Add("css", u.String())
+	uu.RawQuery = q.Encode()
+	return uu, err
+}
+
 func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
 	u, err := url.Parse(lnk)
 	if err != nil {
@@ -268,7 +281,7 @@ func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
 
 	q := uu.Query()
 	q.Add("key", hmacKey(u.String()))
-	q.Add("url", u.String())
+	q.Add("u", u.String())
 	uu.RawQuery = q.Encode()
 	return uu, err
 }
