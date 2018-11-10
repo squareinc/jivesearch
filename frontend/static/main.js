@@ -17,6 +17,12 @@ $(document).ready(function() {
     return c.join(" ")
   }
 
+  // this is a workaround for https://github.com/jivesearch/jivesearch/issues/66
+  if ($(".document").length === 0){
+    $("#empty").hide();
+    fetch(1);
+  };
+
   $(".description").each(function(index, value){
     $(value).html(highlight(value));
   });
@@ -57,37 +63,42 @@ $(document).ready(function() {
       if (page === undefined){
         return;
       }
-      var params = changeParam("p", page);
-      params = params + "&o=json"; // add the new param
-      var u = window.location.pathname + params;
-      $.ajax({
-        url: u,
-      }).done(function(data) {
-        $("#next_page").attr("data-page", data.search.next);
-        var i;
-        for (i = 0; i < data.search.documents.length; i++) {
-          /*
-          This is a workaround for empty search results we get sometimes...
-          can't simply clone as we may not have results for first page.
-          */
-         var doc = data.search.documents[i];
-         var desc = highlight(`<div class="description">`+doc.description+`</div>`); // bit redundant to repeat the <div tag here...
-         var h = `<div class="pure-u-1">
-            <div class="pure-u-22-24 pure-u-md-21-24 result">
-              <div class="title"><a href="`+doc.id+`" rel="noopener">`+doc.title+`</a></div>
-              <div class="url">`+doc.id.substring(0,80)+`</div>
-              <div class="description">`+desc+`</div>
-            </div>
-          </div>`;
 
-          $("#documents").append(h);
-        }
-        fetching = false;
-      }).always(function(data) {
-        $("#loading").hide();
-      });
+      fetch(page);
     }
-  });  
+  }); 
+
+  function fetch(page){
+    var params = changeParam("p", page);
+    params = params + "&o=json"; // add the new param
+    var u = window.location.pathname + params;
+    $.ajax({
+      url: u,
+    }).done(function(data) {
+      $("#next_page").attr("data-page", data.search.next);
+      var i;
+      for (i = 0; i < data.search.documents.length; i++) {
+        /*
+        This is a workaround for empty search results we get sometimes...
+        can't simply clone as we may not have results for first page.
+        */
+        var doc = data.search.documents[i];
+        var desc = highlight(`<div class="description">`+doc.description+`</div>`); // bit redundant to repeat the <div tag here...
+        var h = `<div class="pure-u-1">
+          <div class="pure-u-22-24 pure-u-md-21-24 result">
+            <div class="title"><a href="`+doc.id+`" rel="noopener">`+doc.title+`</a></div>
+            <div class="url">`+doc.id.substring(0,80)+`</div>
+            <div class="description">`+desc+`</div>
+          </div>
+        </div>`;
+
+        $("#documents").append(h);
+      }
+      fetching = false;
+    }).always(function(data) {
+      $("#loading").hide();
+    });
+  }
 
   function isBang(item) {
     return item.hasOwnProperty("trigger");
