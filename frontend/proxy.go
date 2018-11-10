@@ -1,6 +1,9 @@
 package frontend
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -42,23 +45,32 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		err: nil,
 	}
 
+	signature := r.FormValue("key")
+
 	css := r.FormValue("css")
 	if css != "" {
 		u, err := url.Parse(css)
 		if err != nil {
-			log.Info.Println(err)
+			log.Debug.Println(err)
+			return resp
+		}
+
+		if !validSignature([]byte(hmacSecret()), u, signature) {
+			return resp
 		}
 
 		res, err := f.get(u)
 		if err != nil {
-			log.Info.Println(err)
+			log.Debug.Println(err)
+			return resp
 		}
 
 		defer res.Body.Close()
 
 		h, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			log.Info.Println(err)
+			log.Debug.Println(err)
+			return resp
 		}
 
 		resp.data = replaceCSS(u, string(h))
@@ -74,19 +86,26 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	base, err := url.Parse(u)
 	if err != nil {
-		log.Info.Println(err)
+		log.Debug.Println(err)
+		return resp
+	}
+
+	if !validSignature([]byte(hmacSecret()), base, signature) {
+		return resp
 	}
 
 	res, err := f.get(base)
 	if err != nil {
-		log.Info.Println(err)
+		log.Debug.Println(err)
+		return resp
 	}
 
 	defer res.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Info.Println(err)
+		log.Debug.Println(err)
+		return resp
 	}
 
 	// TODO: remove all comments...no need for them
@@ -108,7 +127,8 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 			if lnk, ok := s.Attr(href); ok {
 				u, err := createProxyLink(base, lnk)
 				if err != nil {
-					log.Info.Println(err)
+					log.Debug.Println(err)
+					return
 				}
 
 				s.SetAttr(href, u.String())
@@ -162,7 +182,8 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 			if lnk, ok := s.Attr("href"); ok {
 				u, err := createProxyCSSLink(base, lnk)
 				if err != nil {
-					log.Info.Println(err)
+					log.Debug.Println(err)
+					return
 				}
 
 				s.SetAttr("href", u.String())
@@ -172,7 +193,8 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	h, err := doc.Html()
 	if err != nil {
-		log.Info.Println(err)
+		log.Debug.Println(err)
+		return resp
 	}
 
 	resp.data = proxyResponse{
@@ -283,6 +305,25 @@ func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
 	q.Add("u", u.String())
 	uu.RawQuery = q.Encode()
 	return uu, err
+}
+
+// validSignature returns whether the request signature is valid.
+func validSignature(key []byte, u *url.URL, signature string) bool {
+	if m := len(signature) % 4; m != 0 { // add padding if missing
+		signature += strings.Repeat("=", 4-m)
+	}
+
+	got, err := base64.URLEncoding.DecodeString(signature)
+	if err != nil {
+		log.Debug.Printf("error base64 decoding signature %q", signature)
+		return false
+	}
+
+	mac := hmac.New(sha256.New, key)
+	mac.Write([]byte(u.String()))
+	want := mac.Sum(nil)
+
+	return hmac.Equal(got, want)
 }
 
 func (f *Frontend) get(u *url.URL) (*http.Response, error) {
