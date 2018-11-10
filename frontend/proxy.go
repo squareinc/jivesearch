@@ -112,6 +112,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 				}
 
 				s.SetAttr(href, u.String())
+				s.SetAttr("target", "_top") // make all links open in the main page (not w/in the iframe)
 			}
 		}
 	})
@@ -152,12 +153,10 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	// proxy url() within style tags
 	doc.Find("style").Each(func(i int, s *goquery.Selection) {
 		h := replaceCSS(base, s.Text())
-
-		// replace the link with the css
 		s.ReplaceWithHtml(fmt.Sprintf(`<style>%v</style>`, h))
 	})
 
-	// within each external css file, proxy all url() items
+	// replace external stylesheets with a proxied version
 	doc.Find("link").Each(func(i int, s *goquery.Selection) {
 		if rel, ok := s.Attr("rel"); ok && strings.ToLower(rel) == "stylesheet" {
 			if lnk, ok := s.Attr("href"); ok {
