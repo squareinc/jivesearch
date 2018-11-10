@@ -99,7 +99,8 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	// disable all forms
 	doc.Find("form").Each(func(i int, s *goquery.Selection) {
-		s.SetAttr("disabled", "disabled")
+		s.SetAttr("disabled", "disabled") // doesn't seem to work....
+		s.SetAttr("action", "javascript:void(0);")
 	})
 
 	// proxy links
