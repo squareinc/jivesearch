@@ -309,6 +309,8 @@ func main() {
 		log.Info.Println(err)
 	}
 
+	f.ProxyClient = httpClient
+
 	// supported languages
 	supported, unsupported := languages(v)
 	for _, lang := range unsupported {

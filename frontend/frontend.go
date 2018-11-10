@@ -36,9 +36,10 @@ type Frontend struct {
 		*http.Client
 	}
 	*instant.Instant
-	MapBoxKey string
-	Suggest   suggest.Suggester
-	Search    search.Fetcher
+	MapBoxKey   string
+	ProxyClient *http.Client
+	Suggest     suggest.Suggester
+	Search      search.Fetcher
 	Wikipedia
 	GitHub
 }

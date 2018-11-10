@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jivesearch/jivesearch/log"
@@ -50,7 +49,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 			log.Info.Println(err)
 		}
 
-		res, err := get(u.String())
+		res, err := f.get(u)
 		if err != nil {
 			log.Info.Println(err)
 		}
@@ -78,7 +77,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		log.Info.Println(err)
 	}
 
-	res, err := get(base.String())
+	res, err := f.get(base)
 	if err != nil {
 		log.Info.Println(err)
 	}
@@ -286,20 +285,12 @@ func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
 	return uu, err
 }
 
-func get(u string) (*http.Response, error) {
+func (f *Frontend) get(u *url.URL) (*http.Response, error) {
 	// we don't want &httputil.ReverseProxy as we don't want to pass the user's IP address & other info.
-	uri, err := url.Parse(u)
+	request, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	client := http.Client{
-		Timeout: 2 * time.Second,
-	}
-	request, err := http.NewRequest("GET", uri.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return client.Do(request)
+	return f.ProxyClient.Do(request)
 }
