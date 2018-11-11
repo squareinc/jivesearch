@@ -100,18 +100,6 @@ $(document).ready(function() {
     });
   }
 
-  function isBang(item) {
-    return item.hasOwnProperty("trigger");
-  }
-
-  function label(item){
-    var label = item.label;
-    if (isBang(item)){
-      label = "!" + item.trigger;
-    }
-    return label
-  }
-
   // Wikipedia disambiguation page link & other links w/in Wikipedia snippets
   $(document).on('click', '.wikipedia_disambiguation, .wikipedia_item', function(){
     params = changeParam("q", $(this).data('title'));

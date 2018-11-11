@@ -32,6 +32,18 @@ var redirect = function(params){
   window.location.href = window.location.pathname + params;
 };
 
+function isBang(item) {
+  return item.hasOwnProperty("trigger");
+}
+
+function label(item){
+  var label = item.label;
+  if (isBang(item)){
+    label = "!" + item.trigger;
+  }
+  return label
+}
+
 $(document).ready(function() {
   // autocomplete
   $(function(){
