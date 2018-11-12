@@ -19,28 +19,32 @@ type proxyResponse struct {
 	Brand
 	Context `json:"-"`
 	HTML    string `json:"-"`
+	URL     string `json:"-"`
 }
 
 func (f *Frontend) proxyHeaderHandler(w http.ResponseWriter, r *http.Request) *response {
 	resp := &response{
 		status:   http.StatusOK,
 		template: "proxy_header",
-		err:      nil,
-	}
-
-	resp.data = proxyResponse{
-		Brand: f.Brand,
+		data: proxyResponse{
+			Brand: f.Brand,
+			URL:   r.FormValue("u"),
+		},
+		err: nil,
 	}
 
 	return resp
 }
 
 func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *response {
+	u := r.FormValue("u")
+
 	resp := &response{
 		status:   http.StatusOK,
 		template: "proxy",
 		data: proxyResponse{
 			Brand: f.Brand,
+			URL:   u,
 		},
 		err: nil,
 	}
@@ -79,7 +83,6 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		return resp
 	}
 
-	u := r.FormValue("u")
 	if u == "" {
 		return resp
 	}
@@ -200,6 +203,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	resp.data = proxyResponse{
 		Brand: f.Brand,
 		HTML:  h,
+		URL:   u,
 	}
 
 	return resp
