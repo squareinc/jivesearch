@@ -128,7 +128,7 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		for _, href := range []string{"href"} {
 			if lnk, ok := s.Attr(href); ok {
-				u, err := createProxyLink(base, lnk)
+				u, err := createProxyLink(base, lnk, false)
 				if err != nil {
 					log.Debug.Println(err)
 					return
@@ -137,6 +137,19 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 				s.SetAttr(href, u.String())
 				s.SetAttr("target", "_top") // make all links open in the main page (not w/in the iframe)
 			}
+		}
+	})
+
+	// proxy iframe src
+	doc.Find("iframe").Each(func(i int, s *goquery.Selection) {
+		if lnk, ok := s.Attr("src"); ok {
+			u, err := createProxyLink(base, lnk, true)
+			if err != nil {
+				log.Debug.Println(err)
+				return
+			}
+
+			s.SetAttr("src", u.String())
 		}
 	})
 
@@ -200,10 +213,16 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		return resp
 	}
 
-	resp.data = proxyResponse{
-		Brand: f.Brand,
-		HTML:  h,
-		URL:   u,
+	switch r.FormValue("iframe") {
+	case "true":
+		resp.template = "proxy_iframe"
+		resp.data = string(h)
+	default:
+		resp.data = proxyResponse{
+			Brand: f.Brand,
+			HTML:  h,
+			URL:   u,
+		}
 	}
 
 	return resp
@@ -291,7 +310,7 @@ func createProxyCSSLink(base *url.URL, lnk string) (*url.URL, error) {
 	return uu, err
 }
 
-func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
+func createProxyLink(base *url.URL, lnk string, iframe bool) (*url.URL, error) {
 	u, err := url.Parse(lnk)
 	if err != nil {
 		panic(err)
@@ -307,6 +326,9 @@ func createProxyLink(base *url.URL, lnk string) (*url.URL, error) {
 	q := uu.Query()
 	q.Add("key", hmacKey(u.String()))
 	q.Add("u", u.String())
+	if iframe {
+		q.Add("iframe", "true")
+	}
 	uu.RawQuery = q.Encode()
 	return uu, err
 }
