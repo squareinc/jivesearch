@@ -186,10 +186,18 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		}
 	})
 
-	// proxy url() within style tags
+	// proxy url() within <style></style> tags
 	doc.Find("style").Each(func(i int, s *goquery.Selection) {
 		h := replaceCSS(base, s.Text())
 		s.ReplaceWithHtml(fmt.Sprintf(`<style>%v</style>`, h))
+	})
+
+	// proxy url() for any inline styles
+	doc.Find("*").Each(func(i int, s *goquery.Selection) {
+		attr := "style"
+		if style, ok := s.Attr(attr); ok {
+			s.SetAttr(attr, replaceCSS(base, style))
+		}
 	})
 
 	// replace external stylesheets with a proxied version
