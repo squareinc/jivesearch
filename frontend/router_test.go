@@ -51,6 +51,16 @@ func TestRouter(t *testing.T) {
 			method: "GET",
 			url:    "http://localhost/opensearch.xml",
 		},
+		{
+			name:   "proxy",
+			method: "GET",
+			url:    "http://localhost/proxy/?u=https://example.com",
+		},
+		{
+			name:   "proxy_header",
+			method: "GET",
+			url:    "http://localhost/proxy_header",
+		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			cfg := &mockProvider{

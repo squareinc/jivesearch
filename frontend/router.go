@@ -35,7 +35,7 @@ func (f *Frontend) Router(cfg config.Provider) *mux.Router {
 	router.NewRoute().Name("proxy").Methods("GET").Path("/proxy").Handler(
 		f.middleware(appHandler(f.proxyHandler)),
 	)
-	router.NewRoute().Name("proxyHeader").Methods("GET").Path("/proxy_header").Handler(
+	router.NewRoute().Name("proxy_header").Methods("GET").Path("/proxy_header").Handler(
 		f.middleware(appHandler(f.proxyHeaderHandler)),
 	)
 
