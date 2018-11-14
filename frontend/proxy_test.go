@@ -91,10 +91,24 @@ func TestProxyHandler(t *testing.T) {
 								<head>
 									<script>alert("this is dangerous!")</script>
 								</head>
-								<body></body>
+								<body>
+									<form id="form">
+									</form>
+									<a href="https://www.example.com">A link</a>
+									<a href="/relative/link">A relative link</a>
+									<iframe src="https://example.com/iframe/stuff"></iframe>
+								</body>
 							</html>`,
 			},
-			`<html><head></head><body></body></html>`,
+			`<html>
+				<head></head>
+				<body>
+					<form id=form disabled action=javascript:void(0);></form>
+					<a href="/proxy?key=_Zbla8JTucVtfb7n-QIGsrKozkTGaGsuKlxppnXb6xM%3D&amp;u=https%3A%2F%2Fwww.example.com" target=_top>A link</a>
+					<a href="/proxy?key=j_gIsLDElFG1Qnp3TAYn1KD5dwvJ0gB_KqvUjXvM64g%3D&amp;u=https%3A%2F%2Fexample.com%2Frelative%2Flink" target=_top>A relative link</a>
+					<iframe src="/proxy?iframe=true&amp;key=QtzD41Rkf5VUsmVPv9kSn4VHfUqf2jMljGktkjYVOVc%3D&amp;u=https%3A%2F%2Fexample.com%2Fiframe%2Fstuff"></iframe>
+				</body>
+			</html>`,
 		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
