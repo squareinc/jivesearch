@@ -354,6 +354,7 @@
   name = "github.com/tdewolff/minify"
   packages = [
     ".",
+    "css",
     "html",
     "js"
   ]
@@ -365,6 +366,7 @@
   packages = [
     ".",
     "buffer",
+    "css",
     "html",
     "js",
     "strconv"
@@ -496,6 +498,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8efcd359205794f8ffbfa27cf974b5c9bd273bb1e8e3dba163c07931b2d33b49"
+  inputs-digest = "181ae3a7c46ceac81cb0f611a334bb3ed75ceea88f103207ae767ee819e13c7d"
   solver-name = "gps-cdcl"
   solver-version = 1
