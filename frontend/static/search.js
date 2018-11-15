@@ -20,7 +20,7 @@ $(document).ready(function() {
   // this is a workaround for https://github.com/jivesearch/jivesearch/issues/66
   if ($(".document").length === 0){
     $("#empty").hide();
-    fetch(1);
+    fetch(1, true);
   };
 
   $(".description").each(function(index, value){
@@ -64,13 +64,16 @@ $(document).ready(function() {
         return;
       }
 
-      fetch(page);
+      fetch(page, false);
     }
   }); 
 
-  function fetch(page){
+  function fetch(page, isretry){
     var params = changeParam("p", page);
     params = params + "&o=json"; // add the new param
+    if (isretry === true){ // were the initial results blank and this is just a retry?
+      params = params + "&isretry=true";
+    }
     var u = window.location.pathname + params;
     $.ajax({
       url: u,
