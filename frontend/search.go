@@ -259,6 +259,21 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 		}
 	}
 
+	// Do they just want the first result?
+	// "! example", "example !" or "\example" but NOT "example ! now"
+	fields := strings.Fields(d.Context.Q)
+	if fields[0] == "!" || fields[len(fields)-1] == "!" || strings.HasPrefix(fields[0], `\`) {
+		docs := f.searchResults(d, d.Context.lang, d.Context.Region, r.URL)
+		for _, doc := range docs.Documents {
+			loc := doc.ID
+
+			return &response{
+				status:   302,
+				redirect: loc,
+			}
+		}
+	}
+
 	channels := 1
 	imageCH := make(chan *img.Results)
 	sc := make(chan *search.Results)

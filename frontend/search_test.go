@@ -363,6 +363,13 @@ func TestSearchHandler(t *testing.T) {
 				},
 			},
 		},
+		{
+			"first result", "", "! first result", "", "", "", "",
+			&response{
+				status:   http.StatusFound,
+				redirect: "https://example.com",
+			},
+		},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			var matcher = language.NewMatcher(
@@ -488,7 +495,10 @@ var mockSearchResults = &search.Results{
 	Next:       "2",
 	Last:       "72",
 	Pagination: []string{"1"},
-	Documents:  []*document.Document{},
+	Documents: []*document.Document{
+		{ID: "https://example.com"},
+		{ID: "https://examples.com"},
+	},
 }
 
 var mockImageResults = &img.Results{
