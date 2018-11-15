@@ -21,6 +21,14 @@ $(document).ready(function() {
   if ($(".document").length === 0){
     $("#empty").hide();
     fetch(1, true);
+
+    // Do they just want the first result?
+    // "! example", "example !" or "\example" but NOT "example ! now"
+    var fields = $("#query").data("query").split(" ");
+    if ((fields[0] == "!") || (fields[fields.length - 1] == "!") || (fields[0].startsWith(`\\`))) {
+      var u = $(".document:first").find(".title").find("a").attr("href");
+      window.location.replace(u);
+    }
   };
 
   $(".description").each(function(index, value){
