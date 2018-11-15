@@ -104,7 +104,7 @@ func TestProxyHandler(t *testing.T) {
 									<iframe src="https://example.com/iframe/stuff"></iframe>
 									<img src="nice.jpg" alt="nice image">
 									<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAggg==" alt="Red dot" />
-									<div style="background-image: url("paper.gif");">Cool div you got there. Would be a shame if we proxied the url.</div>
+									<div style="background-image: url('paper.gif');">Cool div you got there. Would be a shame if we proxied the url.</div>
 								</body>
 							</html>`,
 			},
@@ -123,10 +123,27 @@ func TestProxyHandler(t *testing.T) {
 					<iframe src="/proxy?iframe=true&amp;key=QtzD41Rkf5VUsmVPv9kSn4VHfUqf2jMljGktkjYVOVc%3D&amp;u=https%3A%2F%2Fexample.com%2Fiframe%2Fstuff"></iframe>
 					<img src="/image/,sypKZuwtHssDFg_bLaExLhx4rYNnbr0KkzPeekQYRlGA=/https://example.com/nice.jpg" alt="nice image">
 					<img src=data:image/png;base64 alt="Red dot">
-					<div style=background-image:url( paper.gif");">Cool div you got there. Would be a shame if we proxied the url.</div>
+					<div style='background-image:url("/image/,s1aMOcTAkBGs07NYeV9NjCCrDMIAQ7vtELioY-qfeDpo=/https://example.com/paper.gif")'>Cool div you got there. Would be a shame if we proxied the url.</div>
 				</body>
 			</html>`,
 		},
+		/*
+			{
+				"css",
+				args{
+					css:    "https://example.com/my.css",
+					u:      "",
+					key:    "jfsdijf89sd",
+					secret: "my_secret",
+					resp: `.body {margin:0}
+								#mydiv {background-image: url(paper.gif)}
+					`,
+				},
+				`.body {margin:0}
+					#mydiv {background-image:url(/image/,s1aMOcTAkBGs07NYeV9NjCCrDMIAQ7vtELioY-qfeDpo=/https://example.com/paper.gif)}
+				`,
+			},
+		*/
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			log.Debug.SetOutput(os.Stdout)
@@ -136,16 +153,24 @@ func TestProxyHandler(t *testing.T) {
 				ProxyClient: &http.Client{},
 			}
 
+			hmacSecret = func() string { return c.args.secret }
+			k := hmacKey(c.u)
+
 			responder := httpmock.NewStringResponder(200, c.resp)
-			httpmock.RegisterResponder("GET", c.args.u, responder)
+
+			if c.args.u != "" {
+				httpmock.RegisterResponder("GET", c.args.u, responder)
+			}
+
+			if c.args.css != "" {
+				k = hmacKey(c.css)
+				httpmock.RegisterResponder("GET", c.args.css, responder)
+			}
 
 			req, err := http.NewRequest("GET", "/proxy", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			hmacSecret = func() string { return c.args.secret }
-			k := hmacKey(c.u)
 
 			q := req.URL.Query()
 			q.Add("css", c.css)
@@ -168,6 +193,8 @@ func TestProxyHandler(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			got := f.proxyHandler(httptest.NewRecorder(), req)
+
 			want := &response{
 				status:   http.StatusOK,
 				template: "proxy",
@@ -178,14 +205,28 @@ func TestProxyHandler(t *testing.T) {
 				},
 			}
 
-			got := f.proxyHandler(httptest.NewRecorder(), req)
-			g := got.data.(proxyResponse)
-			g.HTML, err = htmlMinify(g.HTML)
-			if err != nil {
-				t.Fatal(err)
+			if c.args.u != "" {
+				g := got.data.(proxyResponse)
+				g.HTML, err = htmlMinify(g.HTML)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				got.data = g
 			}
 
-			got.data = g
+			if c.args.css != "" {
+				want.template = "proxy_css"
+				want.data = s
+
+				g := got.data.(string)
+				g, err = htmlMinify(g)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				got.data = g
+			}
 
 			if !reflect.DeepEqual(got, want) {
 				t.Fatalf("got %+v; want %+v", got, want)
