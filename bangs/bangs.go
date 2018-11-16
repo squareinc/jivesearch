@@ -3,6 +3,7 @@ package bangs
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"golang.org/x/text/language"
@@ -110,7 +111,7 @@ func (b *Bangs) Detect(q string, region language.Region, l language.Tag) (Bang, 
 
 			for _, reg := range []string{strings.ToLower(region.String()), def} { // use default region if no region specified
 				if u, ok := bng.Regions[reg]; ok {
-					u = strings.Replace(u, "{{{term}}}", remainder, -1)
+					u = strings.Replace(u, "{{{term}}}", url.QueryEscape(remainder), -1)
 					return bng, strings.Replace(u, "{{{lang}}}", l.String(), -1), true
 				}
 			}

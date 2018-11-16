@@ -134,6 +134,24 @@ func TestDetect(t *testing.T) {
 			},
 		},
 		{
+			q: "!g at&t", r: "US", l: language.English,
+			want: data{
+				b: Bang{
+					Name:     "Google",
+					FavIcon:  "https://www.google.com/favicon.ico",
+					Triggers: []string{"g", "google"},
+					Regions: map[string]string{
+						"ru":      "https://www.google.ru/search?hl={{{lang}}}&q={{{term}}}",
+						"default": "https://encrypted.google.com/search?hl={{{lang}}}&q={{{term}}}",
+						"ca":      "https://www.google.ca/search?q={{{term}}}",
+						"fr":      "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
+					},
+				},
+				loc: "https://encrypted.google.com/search?hl=en&q=at%26t",
+				ok:  true,
+			},
+		},
+		{
 			q: "!g bob french", r: "fr", l: language.English,
 			want: data{
 				b: Bang{
@@ -147,7 +165,7 @@ func TestDetect(t *testing.T) {
 						"fr":      "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
 					},
 				},
-				loc: "https://www.google.fr/search?hl=en&q=bob french",
+				loc: "https://www.google.fr/search?hl=en&q=bob+french",
 				ok:  true,
 			},
 		},
@@ -162,7 +180,7 @@ func TestDetect(t *testing.T) {
 						"default": "https://www.google.fr/search?hl={{{lang}}}&q={{{term}}}",
 					},
 				},
-				loc: "https://www.google.fr/search?hl=en&q=something french",
+				loc: "https://www.google.fr/search?hl=en&q=something+french",
 				ok:  true,
 			},
 		},
