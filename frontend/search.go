@@ -17,6 +17,7 @@ import (
 	"github.com/jivesearch/jivesearch/log"
 	"github.com/jivesearch/jivesearch/search"
 	img "github.com/jivesearch/jivesearch/search/image"
+	"github.com/jivesearch/jivesearch/suggest"
 	"github.com/pkg/errors"
 	"golang.org/x/text/language"
 )
@@ -136,6 +137,8 @@ func (f *Frontend) detectRegion(lang language.Tag, r *http.Request) language.Reg
 	return reg.Canonicalize()
 }
 
+var errIsNaughty = fmt.Errorf("Naughty word")
+
 func (f *Frontend) addQuery(q string) error {
 	exists, err := f.Suggest.Exists(q)
 	if err != nil {
@@ -143,6 +146,11 @@ func (f *Frontend) addQuery(q string) error {
 	}
 
 	if !exists {
+		// are any of the words NSFW?
+		if suggest.Naughty(q) {
+			return errIsNaughty
+		}
+
 		if err := f.Suggest.Insert(q); err != nil {
 			return err
 		}
@@ -391,7 +399,11 @@ func (f *Frontend) searchHandler(w http.ResponseWriter, r *http.Request) *respon
 
 			stats.search = time.Since(strt).Round(time.Millisecond)
 		case err := <-ac:
-			if err != nil {
+			switch err {
+			case nil:
+			case errIsNaughty:
+				log.Debug.Println(err)
+			default:
 				log.Info.Println(err)
 			}
 			stats.autocomplete = time.Since(strt).Round(time.Millisecond)

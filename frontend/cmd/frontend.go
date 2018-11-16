@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 
@@ -156,6 +157,17 @@ func main() {
 		if err := f.Suggest.Setup(); err != nil {
 			panic(err)
 		}
+	}
+
+	// load naughty list
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	//parent := filepath.Dir(cwd)
+	if err := suggest.NewNaughty(path.Join(cwd, "../suggest/naughty.txt")); err != nil {
+		panic(err)
 	}
 
 	// !bangs
