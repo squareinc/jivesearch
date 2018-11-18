@@ -200,7 +200,8 @@
 
           {{if $wikipedia.Claims.Genre}}
           <div class="pure-u-1 wikipedia_claim">
-            <em>Genre:</em> {{WikiJoin $wikipedia.Claims.Genre $context.Context.Preferred}}
+            {{$genre := WikiJoin $wikipedia.Claims.Genre $context.Context.Preferred}}
+            <em>Genre:</em> {{$genre | Title}}
           </div>
           {{end}}
 
