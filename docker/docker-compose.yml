@@ -24,6 +24,7 @@ services:
     container_name: nginx
     environment:
       NGINX_DOMAIN: jivesearch.com
+      ONION: jivexx2rbi6llz37jq37n4uqff4kdipqbqd24c437c56om6uxbzhtdid.onion
     ports:
       - 80:80
       - 443:443
