@@ -35,6 +35,7 @@ type about struct {
 	Brand
 	Context      `json:"-"`
 	Contributors []*contributor
+	Onion        string
 }
 
 func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *response {
@@ -43,6 +44,7 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 		template: "about",
 		data: about{
 			Brand: f.Brand,
+			Onion: f.Onion,
 		},
 	}
 
@@ -68,6 +70,7 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 	resp.data = about{
 		Brand:        f.Brand,
 		Contributors: cont,
+		Onion:        f.Onion,
 	}
 
 	return resp

@@ -70,6 +70,7 @@ func setup(v *viper.Viper) *http.Server {
 			Logo:      v.GetString("brand.logo"),
 			SmallLogo: v.GetString("brand.small_logo"),
 		},
+		Onion: v.GetString("onion"),
 	}
 
 	router := f.Router(v)

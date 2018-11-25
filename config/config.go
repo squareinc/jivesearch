@@ -138,6 +138,9 @@ func SetDefaults(cfg Provider) {
 	cfg.SetDefault("nsfw.workers", 10)
 	cfg.SetDefault("nsfw.since", now().AddDate(0, -1, 0))
 
+	// Tor
+	cfg.SetDefault("onion", "jivexx2rbi6llz37jq37n4uqff4kdipqbqd24c437c56om6uxbzhtdid.onion")
+
 	// ProPublica API
 	cfg.SetDefault("propublica.key", "my_key")
 

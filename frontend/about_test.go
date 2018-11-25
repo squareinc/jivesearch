@@ -43,6 +43,7 @@ func TestAboutHandler(t *testing.T) {
 		GitHub: GitHub{
 			HTTPClient: &http.Client{},
 		},
+		Onion: "my.onion",
 	}
 
 	req, err := http.NewRequest("GET", "/about", nil)
@@ -76,6 +77,7 @@ func TestAboutHandler(t *testing.T) {
 					Contributions:     19,
 				},
 			},
+			Onion: f.Onion,
 		},
 	}
 

@@ -37,6 +37,7 @@ type Frontend struct {
 	}
 	*instant.Instant
 	MapBoxKey   string
+	Onion       string
 	ProxyClient *http.Client
 	Suggest     suggest.Suggester
 	Search      search.Fetcher

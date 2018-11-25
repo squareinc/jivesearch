@@ -118,6 +118,9 @@ func TestSetDefaults(t *testing.T) {
 		{"nsfw.workers", 10},
 		{"nsfw.since", time.Date(2018, 01, 06, 20, 34, 58, 651387237, time.UTC)},
 
+		// Tor
+		{"onion", "jivexx2rbi6llz37jq37n4uqff4kdipqbqd24c437c56om6uxbzhtdid.onion"},
+
 		// ProPublica API
 		{"propublica.key", "my_key"},
 
