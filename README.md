@@ -96,7 +96,7 @@ Marked items indicate progress has been made in that category. There is much mor
     - [ ] Filetype search
     - [x] Language & Region
     - [ ] Phrase Suggester (a.k.a. "Did You Mean?")
-    - [ ] Proxy Links
+    - [x] Proxy Links
     - [x] SafeSearch    
     - [ ] Time Search (past year/month/day/hour, etc.
     - [x] 3rd party search providers
@@ -129,6 +129,7 @@ Marked items indicate progress has been made in that category. There is much mor
 - [ ] Video Search
 - [ ] News
 - [ ] Custom CSS Themes
+- [x] Tor
 
 <br>
 
