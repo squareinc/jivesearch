@@ -61,7 +61,7 @@ services:
     image: redis
     container_name: redis
     ports:
-      - 6379:6379
+      - ${REDIS_PORT}:6379
     restart: on-failure:5
 
 networks:
