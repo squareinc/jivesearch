@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="/static/base.css">
     {{template "css" .}}
     <!--Themes overwrite ALL css-->
-    {{if eq .Context.Theme ""}}{{else}}<link rel="stylesheet" href="/static/themes/{{.Context.Theme}}">{{end}}
+    {{if eq .Context.Theme ""}}{{else}}<link rel="stylesheet" href="/static/themes/{{.Context.Theme}}.css">{{end}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!--https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html-->

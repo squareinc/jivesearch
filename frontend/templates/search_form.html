@@ -15,6 +15,7 @@
       {{if .Context.S}}<input type="hidden" name="s" value="{{.Context.S}}"/>{{end}}
       {{if eq .Context.Safe false}}<input type="hidden" name="safe" value="f"/>{{end}}
       {{if .Context.T}}<input type="hidden" name="t" value="{{.Context.T}}"/>{{end}}
+      {{if .Context.Theme}}<input type="hidden" name="theme" value="{{.Context.Theme}}"/>{{end}}
       <!--don't set 'p' param...always force it back to page 1 on new query-->
     	<input id="query" type="text" data-query="{{.Context.Q}}" placeholder="" name="q" maxlength="2048" tabindex="1"
         autocomplete="off" title="Search" value="{{.Context.Q}}" aria-label="Search" autofocus />

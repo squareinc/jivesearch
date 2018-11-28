@@ -177,8 +177,9 @@ func (f *Frontend) getData(r *http.Request) data {
 		d.Context.Safe = false
 	}
 
-	if val, ok := themes[strings.ToLower(r.FormValue("theme"))]; ok {
-		d.Context.Theme = val
+	th := strings.ToLower(r.FormValue("theme"))
+	if _, ok := themes[th]; ok {
+		d.Context.Theme = th
 	}
 
 	// Note: We can combine Safe with F. They are only separate for now
@@ -492,6 +493,6 @@ func cacheKey(item string, lang language.Tag, region language.Region, u *url.URL
 	return fmt.Sprintf("::%v::%v::%v::%v", item, lang.String(), region.String(), u.String())
 }
 
-var themes = map[string]string{
-	"night": "night.css",
+var themes = map[string]bool{
+	"night": true,
 }
