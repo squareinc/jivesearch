@@ -42,6 +42,7 @@ type Context struct {
 	Region       language.Region `json:"-"`
 	Number       int             `json:"-"`
 	Page         int             `json:"-"`
+	Theme        string          `json:"-"`
 }
 
 // DefaultBang is the user's preffered !bang
@@ -174,6 +175,10 @@ func (f *Frontend) getData(r *http.Request) data {
 
 	if strings.TrimSpace(r.FormValue("safe")) == "f" {
 		d.Context.Safe = false
+	}
+
+	if val, ok := themes[strings.ToLower(r.FormValue("theme"))]; ok {
+		d.Context.Theme = val
 	}
 
 	// Note: We can combine Safe with F. They are only separate for now
@@ -485,4 +490,8 @@ func cacheKey(item string, lang language.Tag, region language.Region, u *url.URL
 	// ::search::en-US::US::/?q=reverse+%22this%22
 	// ::instant::en-US::US::/?q=reverse+%22this%22
 	return fmt.Sprintf("::%v::%v::%v::%v", item, lang.String(), region.String(), u.String())
+}
+
+var themes = map[string]string{
+	"night": "night.css",
 }
