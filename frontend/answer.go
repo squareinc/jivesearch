@@ -22,7 +22,7 @@ func (f *Frontend) answerHandler(w http.ResponseWriter, r *http.Request) *respon
 	d := data{
 		Brand:     f.Brand,
 		MapBoxKey: f.MapBoxKey,
-		Context:   Context{},
+		Context:   &Context{},
 	}
 
 	resp := &response{

@@ -234,16 +234,17 @@ func TestSearchHandler(t *testing.T) {
 		t        string
 		safe     string
 		filter   string
+		theme    string
 		want     *response
 	}{
 		{
-			"empty", "en", "", "", "", "", "",
+			"empty", "en", "", "", "", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
-					Context: Context{
+					Context: &Context{
 						F:    search.Moderate,
 						Safe: true,
 					},
@@ -251,13 +252,13 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"basic", "en", " some query ", "", "", "f", "off",
+			"basic", "en", " some query ", "", "", "f", "off", "night",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
-					Context: Context{
+					Context: &Context{
 						Q:            "some query",
 						L:            "en",
 						lang:         language.MustParse("en"),
@@ -268,6 +269,7 @@ func TestSearchHandler(t *testing.T) {
 						Page:         1,
 						F:            search.Off,
 						Safe:         false,
+						Theme:        "night",
 					},
 					Results: Results{
 						Instant: mockInstantAnswer,
@@ -277,13 +279,13 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"not cached", "en", "not cached", "", "", "", "strict",
+			"not cached", "en", "not cached", "", "", "", "strict", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
-					Context: Context{
+					Context: &Context{
 						Q:            "not cached",
 						L:            "en",
 						lang:         language.MustParse("en"),
@@ -303,13 +305,13 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"json", "en", " some query", "json", "", "", "",
+			"json", "en", " some query", "json", "", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "json",
 				data: data{
 					Brand: Brand{},
-					Context: Context{
+					Context: &Context{
 						Q:            "some query",
 						L:            "en",
 						lang:         language.MustParse("en"),
@@ -329,20 +331,20 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"!bang", "", "!g something", "", "", "", "",
+			"!bang", "", "!g something", "", "", "", "", "",
 			&response{
 				status:   http.StatusFound,
 				redirect: "https://encrypted.google.com/search?hl=en&q=something",
 			},
 		},
 		{
-			"images", "en", "some query", "", "images", "", "",
+			"images", "en", "some query", "", "images", "", "", "",
 			&response{
 				status:   http.StatusOK,
 				template: "search",
 				data: data{
 					Brand: Brand{},
-					Context: Context{
+					Context: &Context{
 						Q:            "some query",
 						L:            "en",
 						lang:         language.MustParse("en"),
@@ -364,7 +366,7 @@ func TestSearchHandler(t *testing.T) {
 			},
 		},
 		{
-			"first result", "", "! first result", "", "", "", "",
+			"first result", "", "! first result", "", "", "", "", "",
 			&response{
 				status:   http.StatusFound,
 				redirect: "https://example.com",
@@ -414,6 +416,7 @@ func TestSearchHandler(t *testing.T) {
 			q.Add("t", c.t)
 			q.Add("safe", c.safe)
 			q.Add("f", c.filter)
+			q.Add("theme", c.theme)
 			req.URL.RawQuery = q.Encode()
 
 			got := f.searchHandler(httptest.NewRecorder(), req)

@@ -64,10 +64,19 @@ type Instant struct {
 	instant.Data
 }
 
+func (c *Context) setTheme(r *http.Request) *Context {
+	th := strings.ToLower(r.FormValue("theme"))
+	if _, ok := themes[th]; ok {
+		c.Theme = th
+	}
+
+	return c
+}
+
 type data struct {
 	Brand     `json:"-"`
 	MapBoxKey string `json:"-"`
-	Context   `json:"-"`
+	*Context  `json:"-"`
 	Results
 }
 
@@ -166,7 +175,7 @@ func (f *Frontend) getData(r *http.Request) data {
 	d := data{
 		Brand:     f.Brand,
 		MapBoxKey: f.MapBoxKey,
-		Context: Context{
+		Context: &Context{
 			Q:    strings.TrimSpace(r.FormValue("q")),
 			F:    search.Moderate,
 			Safe: true,
@@ -177,10 +186,7 @@ func (f *Frontend) getData(r *http.Request) data {
 		d.Context.Safe = false
 	}
 
-	th := strings.ToLower(r.FormValue("theme"))
-	if _, ok := themes[th]; ok {
-		d.Context.Theme = th
-	}
+	d.Context.setTheme(r)
 
 	// Note: We can combine Safe with F. They are only separate for now
 	// because image filter is a boolean but that can be changed to off, moderate and strict.

@@ -33,19 +33,24 @@ type contributor struct {
 
 type about struct {
 	Brand
-	Context      `json:"-"`
+	*Context     `json:"-"`
 	Contributors []*contributor
 	Onion        string
 }
 
 func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *response {
+	abt := about{
+		Brand:   f.Brand,
+		Context: &Context{},
+		Onion:   f.Onion,
+	}
+
+	abt.setTheme(r)
+
 	resp := &response{
 		status:   http.StatusOK,
 		template: "about",
-		data: about{
-			Brand: f.Brand,
-			Onion: f.Onion,
-		},
+		data:     abt,
 	}
 
 	/*
@@ -60,18 +65,14 @@ func (f *Frontend) aboutHandler(w http.ResponseWriter, r *http.Request) *respons
 
 	defer rsp.Body.Close()
 
-	cont := []*contributor{}
-	err = json.NewDecoder(rsp.Body).Decode(&cont)
+	abt.Contributors = []*contributor{}
+	err = json.NewDecoder(rsp.Body).Decode(&abt.Contributors)
 	if err != nil {
 		resp.err = err
 		return resp
 	}
 
-	resp.data = about{
-		Brand:        f.Brand,
-		Contributors: cont,
-		Onion:        f.Onion,
-	}
+	resp.data = abt
 
 	return resp
 }

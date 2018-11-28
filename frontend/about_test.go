@@ -55,6 +55,7 @@ func TestAboutHandler(t *testing.T) {
 		status:   http.StatusOK,
 		template: "about",
 		data: about{
+			Context: &Context{},
 			Contributors: []*contributor{
 				{
 					Login:             "bobsomebody",
