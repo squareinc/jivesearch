@@ -37,7 +37,7 @@ func (f *Frontend) proxyHeaderHandler(w http.ResponseWriter, r *http.Request) *r
 }
 
 func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *response {
-	u := r.FormValue("u")
+	u := r.FormValue("q")
 
 	resp := &response{
 		status:   http.StatusOK,
@@ -49,21 +49,25 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 		err: nil,
 	}
 
+	if u == "" {
+		return resp
+	}
+
 	signature := r.FormValue("key")
 
 	css := r.FormValue("css")
-	if css != "" {
-		u, err := url.Parse(css)
+	if css == "true" {
+		uu, err := url.Parse(u)
 		if err != nil {
 			log.Debug.Println(err)
 			return resp
 		}
 
-		if !validSignature([]byte(hmacSecret()), u, signature) {
+		if !validSignature([]byte(hmacSecret()), uu, signature) {
 			return resp
 		}
 
-		res, err := f.get(u)
+		res, err := f.get(uu)
 		if err != nil {
 			log.Debug.Println(err)
 			return resp
@@ -77,13 +81,9 @@ func (f *Frontend) proxyHandler(w http.ResponseWriter, r *http.Request) *respons
 			return resp
 		}
 
-		resp.data = replaceCSS(u, string(h))
+		resp.data = replaceCSS(uu, string(h))
 
 		resp.template = "proxy_css"
-		return resp
-	}
-
-	if u == "" {
 		return resp
 	}
 
@@ -313,7 +313,8 @@ func createProxyCSSLink(base *url.URL, lnk string) (*url.URL, error) {
 
 	q := uu.Query()
 	q.Add("key", hmacKey(u.String()))
-	q.Add("css", u.String())
+	q.Add("q", u.String())
+	q.Add("css", "true")
 	uu.RawQuery = q.Encode()
 	return uu, err
 }
@@ -333,7 +334,7 @@ func createProxyLink(base *url.URL, lnk string, iframe bool) (*url.URL, error) {
 
 	q := uu.Query()
 	q.Add("key", hmacKey(u.String()))
-	q.Add("u", u.String())
+	q.Add("q", u.String())
 	if iframe {
 		q.Add("iframe", "true")
 	}

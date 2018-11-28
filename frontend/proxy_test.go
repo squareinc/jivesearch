@@ -70,7 +70,7 @@ func TestProxyHandler(t *testing.T) {
 
 	type args struct {
 		css    string
-		u      string
+		q      string
 		key    string
 		secret string
 		resp   string
@@ -85,7 +85,7 @@ func TestProxyHandler(t *testing.T) {
 			"basic",
 			args{
 				css:    "",
-				u:      "https://example.com",
+				q:      "https://example.com",
 				key:    "jfsdijf89sd",
 				secret: "my_secret",
 				resp: `<html>
@@ -110,7 +110,7 @@ func TestProxyHandler(t *testing.T) {
 			},
 			`<html>
 				<head>
-				<link rel=stylesheet href="/proxy?css=https%3A%2F%2Fexample.com%2Fmystyle.css&amp;key=3jUnkmdp2GQ0a9mmkFWYaTq6pg9rxGdVlic5t4fvfKc%3D">
+				<link rel=stylesheet href="/proxy?css=true&amp;key=3jUnkmdp2GQ0a9mmkFWYaTq6pg9rxGdVlic5t4fvfKc%3D&amp;q=https%3A%2F%2Fexample.com%2Fmystyle.css">
 				<style>
 					.body {margin:0}
 					#mydiv {background: lightblue url("/image/,sUKGG_QlTynjPRkhces2ykv26GkZbya3NOhrjgMZCWXY=/https://example.com/img_tree.gif") no-repeat fixed center}
@@ -118,9 +118,9 @@ func TestProxyHandler(t *testing.T) {
 				</head>
 				<body>
 					<form id=form disabled action=javascript:void(0);></form>
-					<a href="/proxy?key=_Zbla8JTucVtfb7n-QIGsrKozkTGaGsuKlxppnXb6xM%3D&amp;u=https%3A%2F%2Fwww.example.com" target=_top>A link</a>
-					<a href="/proxy?key=j_gIsLDElFG1Qnp3TAYn1KD5dwvJ0gB_KqvUjXvM64g%3D&amp;u=https%3A%2F%2Fexample.com%2Frelative%2Flink" target=_top>A relative link</a>
-					<iframe src="/proxy?iframe=true&amp;key=QtzD41Rkf5VUsmVPv9kSn4VHfUqf2jMljGktkjYVOVc%3D&amp;u=https%3A%2F%2Fexample.com%2Fiframe%2Fstuff"></iframe>
+					<a href="/proxy?key=_Zbla8JTucVtfb7n-QIGsrKozkTGaGsuKlxppnXb6xM%3D&amp;q=https%3A%2F%2Fwww.example.com" target=_top>A link</a>
+					<a href="/proxy?key=j_gIsLDElFG1Qnp3TAYn1KD5dwvJ0gB_KqvUjXvM64g%3D&amp;q=https%3A%2F%2Fexample.com%2Frelative%2Flink" target=_top>A relative link</a>
+					<iframe src="/proxy?iframe=true&amp;key=QtzD41Rkf5VUsmVPv9kSn4VHfUqf2jMljGktkjYVOVc%3D&amp;q=https%3A%2F%2Fexample.com%2Fiframe%2Fstuff"></iframe>
 					<img src="/image/,sypKZuwtHssDFg_bLaExLhx4rYNnbr0KkzPeekQYRlGA=/https://example.com/nice.jpg" alt="nice image">
 					<img src=data:image/png;base64 alt="Red dot">
 					<div style='background-image:url("/image/,s1aMOcTAkBGs07NYeV9NjCCrDMIAQ7vtELioY-qfeDpo=/https://example.com/paper.gif")'>Cool div you got there. Would be a shame if we proxied the url.</div>
@@ -154,12 +154,12 @@ func TestProxyHandler(t *testing.T) {
 			}
 
 			hmacSecret = func() string { return c.args.secret }
-			k := hmacKey(c.u)
+			k := hmacKey(c.q)
 
 			responder := httpmock.NewStringResponder(200, c.resp)
 
-			if c.args.u != "" {
-				httpmock.RegisterResponder("GET", c.args.u, responder)
+			if c.args.q != "" {
+				httpmock.RegisterResponder("GET", c.args.q, responder)
 			}
 
 			if c.args.css != "" {
@@ -174,7 +174,7 @@ func TestProxyHandler(t *testing.T) {
 
 			q := req.URL.Query()
 			q.Add("css", c.css)
-			q.Add("u", c.u)
+			q.Add("q", c.q)
 			q.Add("key", k)
 			req.URL.RawQuery = q.Encode()
 
@@ -201,11 +201,11 @@ func TestProxyHandler(t *testing.T) {
 				data: proxyResponse{
 					Brand: Brand{},
 					HTML:  s,
-					URL:   c.args.u,
+					URL:   c.args.q,
 				},
 			}
 
-			if c.args.u != "" {
+			if c.args.q != "" {
 				g := got.data.(proxyResponse)
 				g.HTML, err = htmlMinify(g.HTML)
 				if err != nil {
