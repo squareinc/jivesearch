@@ -40,7 +40,7 @@ $ domain=example.com && onion=myonion.onion && data_directory=/path/to/data && s
 
 Elasticsearch may give you an error about max virtual memory areas. In that case:
 ```bash
-# Add the following to the bottom of /etc/sysctl.conf:
+# Add the following to the bottom of /etc/sysctl.conf (requires restart):
 vm.max_map_count=262144
 ```
 
