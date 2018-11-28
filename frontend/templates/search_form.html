@@ -45,7 +45,7 @@
       <div class="pure-u-22-24 pure-u-md-21-24 result">
         <div class="title"><a href="{{$doc.ID}}" rel="noopener">{{$doc.Title}}</a></div>
         <div class="url">
-          {{Truncate $doc.ID 80 false}} 
+          {{Truncate $doc.ID 60 false}} 
           <span style="margin-left:15px;"><a href="/proxy?q={{$doc.ID}}&key={{$doc.ID | HMACKey}}" style="color:#555;font-size:15px;">Proxy</a></span></div>
         <div class="description">{{$doc.Description}}</div>
       </div>
