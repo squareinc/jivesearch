@@ -242,7 +242,7 @@ func main() {
 func linkHandler(q *queue.Queue, links chan string, errs chan error) {
 	for lnk := range links {
 		if err := q.AddURL(lnk); err != nil {
-			errs <- errors.Wrapf(err, "%q", lnk)
+			log.Debug.Println(fmt.Sprintf("%q %v", lnk, err))
 			return
 		}
 	}
