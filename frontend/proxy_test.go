@@ -19,7 +19,7 @@ import (
 func TestProxyHeaderHandler(t *testing.T) {
 	for _, c := range []struct {
 		name string
-		u    string
+		q    string
 		want *response
 	}{
 		{
@@ -52,7 +52,7 @@ func TestProxyHeaderHandler(t *testing.T) {
 			}
 
 			q := req.URL.Query()
-			q.Add("u", c.u)
+			q.Add("q", c.q)
 			req.URL.RawQuery = q.Encode()
 
 			got := f.proxyHeaderHandler(httptest.NewRecorder(), req)

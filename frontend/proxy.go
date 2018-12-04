@@ -28,7 +28,7 @@ func (f *Frontend) proxyHeaderHandler(w http.ResponseWriter, r *http.Request) *r
 		template: "proxy_header",
 		data: proxyResponse{
 			Brand: f.Brand,
-			URL:   r.FormValue("u"),
+			URL:   r.FormValue("q"),
 		},
 		err: nil,
 	}
