@@ -35757,6 +35757,13 @@
         default = "http://search.scielo.org/?q={{{term}}}&where=ORG"
 
 [[bang]]
+    name = "SCI-HUB"
+    favicon = "https://sci-hub.tw/favicon.ico"
+    triggers = ["scihub"]
+    [bang.regions]
+        default = "http://sci-hub.tw/{{{term}}}"
+
+[[bang]]
     name = "Scilab Documentation"
     favicon = "https://help.scilab.org/favicon.ico"
     triggers = ["scilab"]
