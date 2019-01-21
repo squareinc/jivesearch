@@ -124,7 +124,7 @@ Marked items indicate progress has been made in that category. There is much mor
     - [x] Wikiquote
     - [x] Wiktionary    
     - [ ] Many more instant answers (including from 3rd party APIs)
-    - [ ] Translate trigger words and answers to other languages?
+    - [ ] Translate trigger words and answers to other languages
 - [x] Image Search
 - [ ] Video Search
 - [ ] News
