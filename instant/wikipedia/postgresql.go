@@ -443,17 +443,14 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 	for row := range t.rows {
 		r := []interface{}{}
 
-		switch row.(type) {
+		switch row := row.(type) {
 		case *Wikipedia:
-			w := row.(*Wikipedia)
-			r = []interface{}{w.ID, w.Title, w.Text, pq.Array(w.OutgoingLink), w.Popularity}
+			r = []interface{}{row.ID, row.Title, row.Text, pq.Array(row.OutgoingLink), row.Popularity}
 		case *Wikidata:
-			w := row.(*Wikidata)
-
-			r = []interface{}{w.ID}
+			r = []interface{}{row.ID}
 
 			// The following are all jsonb columns.
-			val := reflect.ValueOf(w).Elem()
+			val := reflect.ValueOf(row).Elem()
 			for i := 1; i < val.NumField(); i++ {
 				j, e := json.Marshal(val.Field(i).Interface())
 				if e != nil {
@@ -464,17 +461,15 @@ func (t *table) insert(tx *sql.Tx) (err error) {
 				r = append(r, string(j))
 			}
 		case *Wikiquote:
-			w := row.(*Wikiquote)
-			if len(w.Quotes) == 0 {
+			if len(row.Quotes) == 0 {
 				continue
 			}
-			r = []interface{}{w.ID, pq.Array(w.Quotes)}
+			r = []interface{}{row.ID, pq.Array(row.Quotes)}
 		case *Wiktionary:
-			w := row.(*Wiktionary)
-			r = []interface{}{w.Title}
+			r = []interface{}{row.Title}
 
 			// jsonb column
-			j, e := json.Marshal(w.Definitions)
+			j, e := json.Marshal(row.Definitions)
 			if e != nil {
 				err = e
 				return

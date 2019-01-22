@@ -202,7 +202,7 @@ func Valid(c string) (bool, Currency) {
 	ac := append(ForexCurrencies, CryptoCurrencies...)
 
 	for _, cu := range ac {
-		if strings.ToLower(c) == strings.ToLower(cu.Short) {
+		if strings.EqualFold(c, cu.Short) {
 			return true, cu
 		}
 	}

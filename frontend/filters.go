@@ -67,11 +67,11 @@ func subtract(x, y int) int {
 }
 
 func commafy(v interface{}) string {
-	switch v.(type) {
+	switch v := v.(type) {
 	case int:
-		return humanize.Comma(int64(v.(int)))
+		return humanize.Comma(int64(v))
 	case int64:
-		return humanize.Comma(v.(int64))
+		return humanize.Comma(v)
 	case float32, float64:
 		return humanize.Commaf(v.(float64))
 	default:
@@ -267,9 +267,9 @@ func source(answer instant.Data) string {
 func title(i interface{}) string {
 	var s string
 
-	switch i.(type) {
+	switch i := i.(type) {
 	case search.Filter:
-		s = string(i.(search.Filter))
+		s = string(i)
 	default:
 		s = i.(string)
 	}
@@ -555,14 +555,13 @@ func wikiLabel(labels map[string]wikipedia.Text, preferred []language.Tag) strin
 // e.g. a person's age
 func wikiYears(start, end interface{}) int {
 	var parseDateTime = func(d interface{}) time.Time {
-		switch d.(type) {
+		switch d := d.(type) {
 		case wikipedia.DateTime:
-			dt := d.(wikipedia.DateTime)
 			for j, f := range []string{time.RFC3339Nano, "2006"} {
 				if j == 1 {
-					dt.Value = dt.Value[:4]
+					d.Value = d.Value[:4]
 				}
-				t, err := time.Parse(f, dt.Value)
+				t, err := time.Parse(f, d.Value)
 				if err != nil {
 					log.Debug.Println(err)
 					continue
@@ -571,7 +570,7 @@ func wikiYears(start, end interface{}) int {
 			}
 
 		case time.Time:
-			return d.(time.Time)
+			return d
 		default:
 			log.Debug.Printf("unknown type %T\n", d)
 		}
