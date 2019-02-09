@@ -48,7 +48,7 @@ func TestFetch(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			want := &geoip2.City{}
+			want := &City{}
 			want.City.Names = tt.want.city
 
 			if !reflect.DeepEqual(got, want) {

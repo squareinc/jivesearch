@@ -200,6 +200,11 @@ func SetDefaults(cfg Provider) {
 	cmd.Flags().String("provider", "", "choose search provider")
 	cfg.BindPFlag("search.provider", cmd.Flags().Lookup("provider"))
 
+	// Jive Data
+	cfg.SetDefault("jivedata.key", "TRIAL")
+	cmd.Flags().Bool("jivedata", false, "use jivedata")
+	cfg.BindPFlag("jivedata", cmd.Flags().Lookup("jivedata"))
+
 	// wikipedia dump file settings
 	cmd.Flags().String("dir", "", "path to save wiki dump files")
 	cfg.BindPFlag("wikipedia.dir", cmd.Flags().Lookup("dir"))

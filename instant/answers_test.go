@@ -25,7 +25,6 @@ import (
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
-	geoip2 "github.com/oschwald/geoip2-golang"
 	"golang.org/x/text/language"
 )
 
@@ -418,8 +417,8 @@ func (m *mockGDPFetcher) Fetch(country string, start time.Time, end time.Time) (
 // mock location fetcher
 type mockLocationFetcher struct{}
 
-func (l *mockLocationFetcher) Fetch(ip net.IP) (*geoip2.City, error) {
-	c := &geoip2.City{}
+func (l *mockLocationFetcher) Fetch(ip net.IP) (*location.City, error) {
+	c := &location.City{}
 	c.City.Names = map[string]string{"en": "Someville"}
 	c.Location.Latitude = 12
 	c.Location.Longitude = 18

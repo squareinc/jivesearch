@@ -5,8 +5,6 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-
-	geoip2 "github.com/oschwald/geoip2-golang"
 )
 
 // JiveData is a location data provider
@@ -16,8 +14,8 @@ type JiveData struct {
 }
 
 // Fetch gets geolocation data from an IP Address
-func (j *JiveData) Fetch(ip net.IP) (*geoip2.City, error) {
-	u, err := url.Parse("https://jivedata.com")
+func (j *JiveData) Fetch(ip net.IP) (*City, error) {
+	u, err := url.Parse("https://jivedata.com/geolocation")
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +25,6 @@ func (j *JiveData) Fetch(ip net.IP) (*geoip2.City, error) {
 	q.Set("ip", ip.String())
 	u.RawQuery = q.Encode()
 
-	c := &geoip2.City{}
-
 	resp, err := j.HTTPClient.Get(u.String())
 	if err != nil {
 		return nil, err
@@ -36,6 +32,7 @@ func (j *JiveData) Fetch(ip net.IP) (*geoip2.City, error) {
 
 	defer resp.Body.Close()
 
+	c := &City{}
 	err = json.NewDecoder(resp.Body).Decode(&c)
 	return c, err
 }

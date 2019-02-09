@@ -4,8 +4,6 @@ package location
 import (
 	"encoding/xml"
 	"net"
-
-	geoip2 "github.com/oschwald/geoip2-golang"
 )
 
 // Location is the lat/long of a place
@@ -16,7 +14,7 @@ type Location struct {
 
 // Fetcher retrieves stock quotes
 type Fetcher interface {
-	Fetch(ip net.IP) (*geoip2.City, error)
+	Fetch(ip net.IP) (*City, error)
 }
 
 type xmlMap map[string]string
