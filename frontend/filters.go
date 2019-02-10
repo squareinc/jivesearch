@@ -18,6 +18,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/congress"
+	"github.com/jivesearch/jivesearch/instant/whois"
 	"github.com/jivesearch/jivesearch/search"
 
 	humanize "github.com/dustin/go-humanize"
@@ -42,6 +43,7 @@ var funcMap = template.FuncMap{
 	"Percent":              percent,
 	"SafeHTML":             safeHTML,
 	"Source":               source,
+	"SortWHOISNameServers": sortWHOISNameServers,
 	"StripHTML":            stripHTML,
 	"Subtract":             subtract,
 	"Title":                title,
@@ -127,6 +129,11 @@ func percent(v float64) string {
 
 func safeHTML(value string) template.HTML {
 	return template.HTML(value)
+}
+
+func sortWHOISNameServers(servers []whois.NameServer) []whois.NameServer {
+	sort.Slice(servers, func(i, j int) bool { return servers[i].Name < servers[j].Name })
+	return servers
 }
 
 func stripHTML(s string) string {
@@ -248,6 +255,9 @@ func source(answer instant.Data) string {
 		default:
 			log.Debug.Printf("unknown weather provider %v\n", w.Provider)
 		}
+	case "whois":
+		img = fmt.Sprintf(`<img width="12" height="12" alt="jivedata" src="%v"/>`, proxyFavIcon("https://jivedata.com/static/favicon.ico"))
+		f = fmt.Sprintf(`%v <a href="https://jivedata.com">Jive Data</a>`, img)
 	case "wikidata age", "wikidata birthday", "wikidata death", "wikidata height", "wikidata weight":
 		img = fmt.Sprintf(`<img width="12" height="12" alt="wikipedia" src="%v"/>`, proxyFavIcon("https://en.wikipedia.org/favicon.ico"))
 		f = fmt.Sprintf(`%v <a href="https://www.wikipedia.org/">Wikipedia</a>`, img)

@@ -17,6 +17,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/econ"
 	ggdp "github.com/jivesearch/jivesearch/instant/econ/gdp"
 	pop "github.com/jivesearch/jivesearch/instant/econ/population"
+	"github.com/jivesearch/jivesearch/instant/whois"
 
 	"github.com/jivesearch/jivesearch/instant/location"
 	"github.com/jivesearch/jivesearch/instant/parcel"
@@ -69,6 +70,7 @@ func answers(i Instant) []Answerer {
 		&URLEncode{},
 		&UserAgent{},
 		&StackOverflow{Fetcher: i.StackOverflowFetcher},
+		&WHOIS{Fetcher: i.WHOISFetcher},
 		&Weather{Fetcher: i.WeatherFetcher, LocationFetcher: i.LocationFetcher},
 		&Wikipedia{
 			Fetcher: i.WikipediaFetcher,
@@ -99,6 +101,7 @@ func TestDetect(t *testing.T) {
 		UPSFetcher:           &mockUPSFetcher{},
 		USPSFetcher:          &mockUSPSFetcher{},
 		WeatherFetcher:       &mockWeatherFetcher{},
+		WHOISFetcher:         &mockWHOISFetcher{},
 		WikipediaFetcher:     &mockWikipediaFetcher{},
 	}
 
@@ -796,6 +799,29 @@ func (m *mockWeatherFetcher) FetchByZip(zip int) (*weather.Weather, error) {
 	}
 
 	return w, nil
+}
+
+// mock WHOIS Fetcher
+type mockWHOISFetcher struct{}
+
+func (f *mockWHOISFetcher) Fetch(domain string) (*whois.Response, error) {
+	resp := &whois.Response{}
+
+	switch domain {
+	case "google.com":
+		resp = &whois.Response{
+			Domain:   domain,
+			DomainID: "2138514_DOMAIN_COM-VRSN",
+			Status:   "registered",
+			Nameservers: []whois.NameServer{
+				{Name: "ns3.google.com"}, {Name: "ns4.google.com"}, {Name: "ns1.google.com"}, {Name: "ns2.google.com"},
+			},
+			Available:  false,
+			Registered: true,
+		}
+	}
+
+	return resp, nil
 }
 
 // mock Wikipedia Fetcher

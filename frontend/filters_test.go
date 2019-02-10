@@ -9,6 +9,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/congress"
+	"github.com/jivesearch/jivesearch/instant/whois"
 	"github.com/jivesearch/jivesearch/search"
 
 	"github.com/jivesearch/jivesearch/instant/econ"
@@ -230,6 +231,36 @@ func TestSafeHTML(t *testing.T) {
 			got := safeHTML(tt.arg)
 
 			if got != tt.want {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSortWHOISNameServers(t *testing.T) {
+	for _, tt := range []struct {
+		name string
+		arg  []whois.NameServer
+		want []whois.NameServer
+	}{
+		{
+			name: "basic",
+			arg: []whois.NameServer{
+				{Name: "ns10.something.com"},
+				{Name: "ns2.something.com"},
+				{Name: "ns1.something.com"},
+			},
+			want: []whois.NameServer{
+				{Name: "ns1.something.com"},
+				{Name: "ns2.something.com"},
+				{Name: "ns3.something.com"},
+			},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := sortWHOISNameServers(tt.arg)
+
+			if reflect.DeepEqual(got, tt.want) {
 				t.Fatalf("got %q; want %q", got, tt.want)
 			}
 		})

@@ -11,6 +11,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
+	"github.com/jivesearch/jivesearch/instant/whois"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 )
 
@@ -32,6 +33,7 @@ func TestDetectType(t *testing.T) {
 		{instant.StockQuoteType, &stock.Quote{}},
 		{instant.URLShortenerType, &shortener.Response{}},
 		{instant.WeatherType, &weather.Weather{}},
+		{instant.WHOISType, &whois.Response{}},
 		{instant.WikipediaType, []*wikipedia.Item{}},
 		{
 			"wikidata age", &instant.Age{

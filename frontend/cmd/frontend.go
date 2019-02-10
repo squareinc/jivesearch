@@ -12,6 +12,7 @@ import (
 
 	"github.com/jivesearch/jivesearch/instant/breach"
 	"github.com/jivesearch/jivesearch/instant/congress"
+	"github.com/jivesearch/jivesearch/instant/whois"
 
 	"github.com/jivesearch/jivesearch/instant/econ/gdp"
 
@@ -312,6 +313,10 @@ func main() {
 		WeatherFetcher: &weather.OpenWeatherMap{
 			HTTPClient: httpClient,
 			Key:        v.GetString("openweathermap.key"),
+		},
+		WHOISFetcher: &whois.JiveData{ // until there are multiple whois fetchers Jive Data will be the default
+			HTTPClient: httpClient,
+			Key:        v.GetString("jivedata.key"),
 		},
 		WikipediaFetcher: &wikipedia.PostgreSQL{
 			DB: db,

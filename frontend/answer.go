@@ -13,6 +13,7 @@ import (
 	"github.com/jivesearch/jivesearch/instant/shortener"
 	"github.com/jivesearch/jivesearch/instant/stock"
 	"github.com/jivesearch/jivesearch/instant/weather"
+	"github.com/jivesearch/jivesearch/instant/whois"
 	"github.com/jivesearch/jivesearch/instant/wikipedia"
 	"github.com/jivesearch/jivesearch/log"
 	"golang.org/x/text/language"
@@ -163,6 +164,7 @@ func (f *Frontend) DetectInstantAnswer(r *http.Request, lang language.Tag, onlyM
 			&instant.UserAgent{},
 			&instant.StackOverflow{Fetcher: f.Instant.StackOverflowFetcher},
 			&instant.Weather{Fetcher: f.Instant.WeatherFetcher, LocationFetcher: f.Instant.LocationFetcher},
+			&instant.WHOIS{Fetcher: f.Instant.WHOISFetcher},
 			&instant.Wikipedia{
 				Fetcher: f.Instant.WikipediaFetcher,
 			}, // always keep this last so that Wikipedia Box will trigger if none other
@@ -244,6 +246,8 @@ func detectType(t instant.Type) interface{} {
 		v = &shortener.Response{}
 	case instant.LocalWeatherType, instant.WeatherType:
 		v = &weather.Weather{}
+	case instant.WHOISType:
+		v = &whois.Response{}
 	case instant.WikipediaType:
 		v = []*wikipedia.Item{}
 	case instant.WikidataAgeType:

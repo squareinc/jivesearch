@@ -722,6 +722,41 @@
           {{template "source" .}}
         </div>
         {{end}}
+      {{else if eq .Instant.Type "whois"}}
+        {{if .Instant.Solution}}
+        <div id="answer" class="pure-u-1" style="height:225px;">
+          <div style="margin:15px;margin-bottom:5px;">
+            <div class="pure-u-1">
+              <div class="pure-u-1" style="font-size:20px;">{{.Instant.Solution.Domain}}</div><br><br>
+              <div class="pure-u-1" style="font-size:14px;color:#444;">Available: {{if eq .Instant.Solution.Available true}}Yes{{else}}No{{end}}</div>
+              {{if eq .Instant.Solution.Available false}}
+                {{if .Instant.Solution.Created}}
+                <div class="pure-u-1" style="font-size:14px;color:#444;">
+                  Created: {{.Instant.Solution.Created.Format "Jan 2, 2006"}} {{if .Instant.Solution.Updated}}<small>(Updated: {{.Instant.Solution.Updated.Format "Jan 2, 2006"}})</small>{{end}}
+                </div>
+                {{end}}
+                {{if .Instant.Solution.Expires}}
+                <div class="pure-u-1" style="font-size:14px;color:#444;">
+                  Expires: {{.Instant.Solution.Expires.Format "Jan 2, 2006"}}
+                </div>
+                {{end}}
+                {{if .Instant.Solution.Registrar}}
+                <div class="pure-u-1" style="font-size:14px;color:#444;">
+                  Registrar: <a href="{{.Instant.Solution.Registrar.URL}}">{{.Instant.Solution.Registrar.Name}}</a>
+                </div>
+                {{end}}
+                <div class="pure-u-1" style="font-size:14px;color:#444;">
+                  Name Servers:
+                  {{range $i, $n := .Instant.Solution.Nameservers | SortWHOISNameServers}}
+                    {{$n.Name}}
+                  {{end}}
+                </div>
+              {{end}}
+            </div>
+          </div>
+          {{template "source" .}}
+        </div>
+        {{end}}
       {{else if or (eq .Instant.Type "wikidata age") (eq .Instant.Type "wikidata birthday") (eq .Instant.Type "wikidata death") (eq .Instant.Type "wikidata height") (eq .Instant.Type "wikidata weight")}}
         {{if .Instant.Solution}}
         <div id="answer" class="pure-u-1">
