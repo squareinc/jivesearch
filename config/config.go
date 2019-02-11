@@ -28,9 +28,6 @@ func SetDefaults(cfg Provider) {
 
 	cfg.SetDefault("hmac.secret", "")
 
-	// Bangs
-	cfg.SetDefault("bangs.path", "../bangs")
-
 	// Brand
 	cfg.SetDefault("brand.name", "Jive Search")
 	cfg.SetDefault("brand.tagline", "A search engine that doesn't track you.")

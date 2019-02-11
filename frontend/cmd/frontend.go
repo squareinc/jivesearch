@@ -175,8 +175,12 @@ func main() {
 	// !bangs
 	vb := viper.New()
 	vb.SetConfigType("toml")
+	vb.AddConfigPath("../bangs")
 	vb.SetConfigName("bangs") // the default !bangs config file
-	vb.AddConfigPath(v.GetString("bangs.path"))
+	if v.GetBool("debug") {
+		vb.SetConfigName("bangs.test") // a shorter file to load quicker when debugging
+	}
+
 	f.Bangs, err = bangs.New(vb)
 	if err != nil {
 		panic(err)
