@@ -44,10 +44,6 @@ Elasticsearch may give you an error about max virtual memory areas. In that case
 vm.max_map_count=262144
 ```
 
-For local development we recommend setting an environment variable for your !bangs to speed up loading:
-```bash
-export JIVESEARCH_BANGS_PATH="/path/to/file"
-```
 For systemd settings (replace "myuser" below and edit env variables as needed):
 ```bash
 sudo curl -o /etc/systemd/system/frontend.service https://gist.githubusercontent.com/brentadamson/7b8117347909cc38384fed589a3d785d/raw/19a4249931adf0ea60326a6bcb89813bf328e87a/frontend
