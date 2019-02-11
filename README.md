@@ -119,6 +119,7 @@ Marked items indicate progress has been made in that category. There is much mor
     - [x] Stack Overflow
     - [x] Stock Quotes & Charts    
     - [x] Weather
+    - [x] WHOIS
     - [x] Wikipedia summary
     - [x] Wikidata answers (how tall is, birthday, etc.)
     - [x] Wikiquote
