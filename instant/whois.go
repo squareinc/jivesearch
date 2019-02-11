@@ -51,6 +51,11 @@ func (w *WHOIS) solve(r *http.Request) Answerer {
 		return w
 	}
 
+	if resp.Error != "" {
+		w.Err = fmt.Errorf(resp.Error)
+		return w
+	}
+
 	w.Data.Solution = resp
 	return w
 }

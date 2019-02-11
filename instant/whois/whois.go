@@ -34,6 +34,7 @@ type Response struct {
 	Expires            MyTime        `json:"expires" xml:"expires"` // we need a custom unmarshaller for `""`
 	Disclaimer         string        `json:"disclaimer" xml:"disclaimer"`
 	Raw                string        `json:"raw" xml:"raw"`
+	Error              string        `json:"error" xml:"error"`
 }
 
 // NameServer is a nameserver
