@@ -97,16 +97,6 @@
   {{end}}
 {{end}}
 
-{{define "source"}}
-<div class="pure-u-1" style="margin-top:5px;">
-  <div class="pure-u-1" style="margin-top:10px;">
-  <div class="pure-u-1-2" style="float:left;text-align:left;padding:15px;">
-    <em>Source</em><br>{{.Instant|Source|SafeHTML}}
-  </div>
-  </div>
-</div>
-{{end}}
-
 {{define "content"}}
 {{$context := .Context}}
 {{if $context.Q}}
