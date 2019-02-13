@@ -20,11 +20,7 @@ import (
 )
 
 func (f *Frontend) answerHandler(w http.ResponseWriter, r *http.Request) *response {
-	d := data{
-		Brand:     f.Brand,
-		MapBoxKey: f.MapBoxKey,
-		Context:   &Context{},
-	}
+	d := f.getData(r)
 
 	resp := &response{
 		status:   http.StatusOK,
@@ -33,16 +29,12 @@ func (f *Frontend) answerHandler(w http.ResponseWriter, r *http.Request) *respon
 		err:      nil,
 	}
 
-	if r.FormValue("o") != "json" {
-		return resp
-	}
-
-	resp.template = "json"
-
 	ic := make(chan instant.Data)
 	go f.getAnswer(r, d, ic)
 
-	resp.data = <-ic
+	d.Instant = <-ic
+	resp.data = d
+
 	return resp
 }
 

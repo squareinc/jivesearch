@@ -328,6 +328,7 @@ var ParseTemplates = func() {
 			Funcs(funcMap).
 			ParseFiles(
 				"templates/base.html",
+				"templates/answer.html",
 				"templates/search_form.html",
 				"templates/search.html",
 				"templates/wikipedia.html",
