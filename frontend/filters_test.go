@@ -58,6 +58,42 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestAnswerCSS(t *testing.T) {
+	for _, tt := range []struct {
+		name string
+		want []string
+	}{
+		{
+			name: "breach",
+			want: []string{
+				"owl.carousel.min.css",
+				"breach/breach.css",
+			},
+		},
+		{
+			name: "calculator",
+			want: []string{
+				"calculator/calculator.css",
+			},
+		},
+		{
+			name: "whois",
+			want: []string{},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			a := instant.Data{
+				Type: instant.Type(tt.name),
+			}
+
+			got := answerCSS(a)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf("got %q; want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCommafy(t *testing.T) {
 	for _, tt := range []struct {
 		number interface{}

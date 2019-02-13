@@ -35,6 +35,7 @@ import (
 
 var funcMap = template.FuncMap{
 	"Add":                  add,
+	"AnswerCSS":            answerCSS,
 	"Commafy":              commafy,
 	"HMACKey":              hmacKey,
 	"Join":                 join,
@@ -64,8 +65,55 @@ func add(x, y int) int {
 	return x + y
 }
 
-func subtract(x, y int) int {
-	return x - y
+func answerCSS(a instant.Data) []string {
+	files := []string{}
+
+	switch a.Type {
+	case "breach":
+		files = []string{
+			"owl.carousel.min.css",
+			"breach/breach.css",
+		}
+	case "calculator":
+		files = []string{
+			"calculator/calculator.css",
+		}
+	case "currency":
+		files = []string{
+			"currency/currency.css",
+		}
+	case "discography":
+		files = []string{
+			"owl.carousel.min.css",
+			"discography/discography.css",
+		}
+	case "gdp":
+		files = []string{
+			"gdp/gdp.css",
+		}
+	case "maps":
+		files = []string{
+			"maps/mapbox.css",
+			"maps/mapbox_directions.css",
+		}
+	case "population":
+		files = []string{
+			"population/population.css",
+		}
+	case "stock quote":
+		files = []string{
+			"stock_quotes/stock_quotes.css",
+		}
+	case "unit converter":
+		files = []string{
+			"unit_converter/unit_converter.css",
+		}
+	case "local weather", "weather":
+		files = []string{
+			"weather/weather.css",
+		}
+	}
+	return files
 }
 
 func commafy(v interface{}) string {
@@ -272,6 +320,10 @@ func source(answer instant.Data) string {
 	}
 
 	return f
+}
+
+func subtract(x, y int) int {
+	return x - y
 }
 
 func title(i interface{}) string {
