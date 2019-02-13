@@ -50,6 +50,11 @@ func (w *WorldBank) Fetch(country string, from, to time.Time) (*Response, error)
 			Date:  time.Date(pp.Date.Date, 12, 31, 0, 0, 0, 0, time.UTC),
 			Value: pp.Value.Value,
 		}
+
+		if i.Value == 0 {
+			continue
+		}
+
 		r.History = append(r.History, i)
 	}
 
