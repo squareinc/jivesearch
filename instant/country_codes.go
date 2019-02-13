@@ -54,6 +54,7 @@ func (c *CountryCode) setRegex() Answerer {
 
 	t := strings.Join(triggers, "|")
 	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<trigger>%s) (?P<remainder>.*)$`, t)))
+	c.regex = append(c.regex, regexp.MustCompile(fmt.Sprintf(`^(?P<remainder>.*) (?P<trigger>%s)$`, t)))
 
 	return c
 }
@@ -133,6 +134,20 @@ func (c *CountryCode) tests() []test {
 						Format:   ISO3166,
 						Country:  "Sweden",
 						Solution: "SE",
+					},
+				},
+			},
+		},
+		{
+			query: "italy country code",
+			expected: []Data{
+				{
+					Type:      CountryCodeType,
+					Triggered: true,
+					Solution: CountryCodeResponse{
+						Format:   ISO3166,
+						Country:  "Italy",
+						Solution: "IT",
 					},
 				},
 			},
