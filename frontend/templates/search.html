@@ -15,24 +15,11 @@
 
 {{define "javascript"}}
   <script src="/static/search.js"></script>
-  {{if .Instant}}
-    {{if eq .Instant.Type "calculator"}}
-    <script src="/static/instant/calculator/calculator.js"></script>
-    {{else if eq .Instant.Type "currency"}}
-    <script src="/static/instant/d3.v4.min.js"></script>
-    <script src="/static/instant/currency/currency.js"></script>
-    {{else if eq .Instant.Type "breach"}}
-    <script src="/static/instant/owl.carousel.min.js"></script>
-    <script src="/static/instant/breach/breach.js"></script>
-    {{else if eq .Instant.Type "discography"}}
-    <script src="/static/instant/owl.carousel.min.js"></script>
-    <script src="/static/instant/discography/discography.js"></script>
-    {{else if eq .Instant.Type "gdp"}}
-    <script src="/static/instant/d3.v4.min.js"></script>
-    <script src="/static/instant/gdp/gdp.js"></script>
-    {{else if eq .Instant.Type "maps"}}
-    <script src="/static/instant/maps/mapbox.js"></script>
-    <script src="/static/instant/maps/mapbox_directions.js"></script>
+  {{if .Instant -}}
+    {{range $i, $f := .Instant | AnswerJS -}}
+    <script src="/static/instant/{{$f}}"></script>
+    {{- end}}
+    {{if eq .Instant.Type "maps"}}
     <script>
       mapboxgl.accessToken = "{{.MapBoxKey}}";
       var map = new mapboxgl.Map({
@@ -52,28 +39,8 @@
         map.setCenter([{{.Instant.Solution.Longitude}}, {{.Instant.Solution.Latitude}}]);
       }
     </script>
-    {{else if eq .Instant.Type "mortgage calculator"}}
-    <script src="/static/instant/mortgage_calculator/mortgage_calculator.js"></script>
-    {{else if eq .Instant.Type "population"}}
-    <script src="/static/instant/d3.v4.min.js"></script>
-    <script src="/static/instant/population/population.js"></script>
-    {{else if eq .Instant.Type "stock quote"}}
-    <script src="/static/instant/d3.v4.min.js"></script>
-    <script src="/static/instant/stock_quotes/stock_quotes.js"></script>
-    {{else if eq .Instant.Type "unit converter"}}
-    <script src="/static/instant/unit_converter/unit_converter.js"></script>
-    {{else if eq .Instant.Type "minify"}}
-    <!-- 
-      prettydiff.js combines prettydiff barebones example files to 1: 
-      https://github.com/prettydiff/prettydiff/blob/master/test/barebones/barebones.xhtml#L27 
-      If you don't combine them then you'll have to enable "unsafe-eval" in Content Security Policy header in nginx.conf
-      as pagespeed_ngx will turn some of those .js files to inline code.
-    -->
-    <!-- another option is to use https://github.com/prettier/prettier -->
-    <script src="/static/instant/minify/prettydiff.js"></script>
-    <script src="/static/instant/minify/minify.js"></script>
     {{end}}
-  {{end}}
+  {{- end}}
 {{end}}
 
 {{define "content"}}

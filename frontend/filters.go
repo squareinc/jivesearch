@@ -36,6 +36,7 @@ import (
 var funcMap = template.FuncMap{
 	"Add":                  add,
 	"AnswerCSS":            answerCSS,
+	"AnswerJS":             answerJS,
 	"Commafy":              commafy,
 	"HMACKey":              hmacKey,
 	"Join":                 join,
@@ -113,6 +114,74 @@ func answerCSS(a instant.Data) []string {
 			"weather/weather.css",
 		}
 	}
+	return files
+}
+
+func answerJS(a instant.Data) []string {
+	files := []string{}
+
+	switch a.Type {
+	case "breach":
+		files = []string{
+			"owl.carousel.min.js",
+			"breach/breach.js",
+		}
+	case "calculator":
+		files = []string{
+			"calculator/calculator.js",
+		}
+	case "currency":
+		files = []string{
+			"d3.v4.min.js",
+			"currency/currency.js",
+		}
+	case "discography":
+		files = []string{
+			"owl.carousel.min.js",
+			"discography/discography.js",
+		}
+	case "gdp":
+		files = []string{
+			"d3.v4.min.js",
+			"gdp/gdp.js",
+		}
+	case "maps":
+		files = []string{
+			"maps/mapbox.js",
+			"maps/mapbox_directions.js",
+		}
+	case "mortgage calculator":
+		files = []string{
+			"mortgage_calculator/mortgage_calculator.js",
+		}
+	case "population":
+		files = []string{
+			"d3.v4.min.js",
+			"population/population.js",
+		}
+	case "stock quote":
+		files = []string{
+			"d3.v4.min.js",
+			"stock_quotes/stock_quotes.js",
+		}
+	case "unit converter":
+		files = []string{
+			"unit_converter/unit_converter.js",
+		}
+	case "minify":
+		/*
+					prettydiff.js combines prettydiff barebones example files to 1:
+			      https://github.com/prettydiff/prettydiff/blob/master/test/barebones/barebones.xhtml#L27
+			      If you don't combine them then you'll have to enable "unsafe-eval" in Content Security Policy header in nginx.conf
+			      as pagespeed_ngx will turn some of those .js files to inline code.
+						Another option is to use https://github.com/prettier/prettier
+		*/
+		files = []string{
+			"minify/prettydiff.js",
+			"minify/minify.js",
+		}
+	}
+
 	return files
 }
 
