@@ -1,4 +1,0 @@
-# Output of the go coverage tool, specifically when used with LiteIDE
-cover.html
-*.out
-npm-debug.log
