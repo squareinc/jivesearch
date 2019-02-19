@@ -1,0 +1,32 @@
+language: go
+
+go:
+  - 1.10.2
+  - tip
+
+# Skip the install step. Don't `go get` dependencies. Only build with the
+# code in vendor/
+install: true
+
+matrix:
+  allow_failures:
+    - go: tip
+  fast_finish: true
+
+install:
+  - go get golang.org/x/lint/golint
+  - go get honnef.co/go/tools/cmd/megacheck 
+  - go get github.com/FiloSottile/vendorcheck
+  - go get github.com/alecthomas/gometalinter
+
+script:
+  - go vet ./...
+  - megacheck ./...
+  - gometalinter --install
+  - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
+  - vendorcheck ./...
+  - go test -race ./...
+  - golint -set_exit_status $(go list ./...) # exclude vendor directory
+
+#after_script:
+  
